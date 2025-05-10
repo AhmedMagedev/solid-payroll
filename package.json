@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "ssh root@161.97.78.56 'mkdir -p /tmp/payroll' && rsync -avz --exclude 'node_modules' --exclude '.next' --exclude '.env' ./ root@161.97.78.56:/tmp/payroll/ && ssh root@161.97.78.56 'cd /tmp/payroll && echo \"DATABASE_URL=postgresql://postgres:postgres@localhost:4003/postgres\\nDOCKER_DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:4003/postgres\" > .env && npm install && docker builder prune -a -f && docker build -t payroll-app . && docker stop solid_payroll_app || true && docker rm solid_payroll_app || true && docker run -d --add-host=host.docker.internal:host-gateway -p 3000:3000 --env-file .env --name solid_payroll_app --restart unless-stopped payroll-app'"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
@@ -21,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
