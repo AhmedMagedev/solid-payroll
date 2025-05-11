@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "ssh root@161.97.78.56 'mkdir -p /tmp/payroll' && rsync -avz --exclude 'node_modules' --exclude '.next' --exclude '.env' ./ root@161.97.78.56:/tmp/payroll/ && ssh root@161.97.78.56 'cd /tmp/payroll && echo \"DATABASE_URL=postgresql://postgres:postgres@localhost:4003/postgres\\nDOCKER_DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:4003/postgres\" > .env && npm install && docker builder prune -a -f && docker build -t payroll-app . && docker stop solid_payroll_app || true && docker rm solid_payroll_app || true && docker run -d --add-host=host.docker.internal:host-gateway -p 3000:3000 --env-file .env --name solid_payroll_app --restart unless-stopped payroll-app'"
+    "prisma:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
+    "deploy": "ssh root@161.97.78.56 'mkdir -p /tmp/payroll' && rsync -avz --exclude 'node_modules' --exclude '.next' --exclude '.env' ./ root@161.97.78.56:/tmp/payroll/ && ssh root@161.97.78.56 'cd /tmp/payroll && echo \"DATABASE_URL=postgresql://postgres:postgres@localhost:4003/postgres\\nDOCKER_DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:4003/postgres\\nJWT_SECRET=solid_payroll_secret_production\" > .env && npm install && npx prisma generate && docker builder prune -a -f && docker build -t payroll-app . && docker stop solid_payroll_app || true && docker rm solid_payroll_app || true && docker run -d --add-host=host.docker.internal:host-gateway -p 3000:3000 --env-file .env --name solid_payroll_app --restart unless-stopped payroll-app'"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.3.2",
     "prisma": "^6.7.0",
     "react": "^19.0.0",
@@ -19,6 +22,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -26,6 +31,10 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }
