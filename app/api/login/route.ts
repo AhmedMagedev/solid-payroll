@@ -37,10 +37,10 @@ export async function POST(req: Request) {
     // Set a simple session cookie
     cookieStore.set('auth_session', user.username, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       path: '/',
       maxAge: 60 * 60 * 24, // 1 day
-      sameSite: 'lax',
+      sameSite: 'strict',
     });
     console.log(`[API Login] Session cookie set for user: ${username}`);
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+// import { cookies } from 'next/headers'; // Commenting out as we'll use request.cookies
 
 const PROTECTED_ROUTES = ['/dashboard', '/dashboard/employees', '/']; // Root is also protected
 const PUBLIC_FILE = /\.(.*)$/;
@@ -25,8 +25,9 @@ export async function middleware(request: NextRequest) {
   //   return NextResponse.next();
   // }
 
-  const cookieStore = await cookies();
-  const session = cookieStore.get('auth_session')?.value;
+  // const cookieStore = await cookies(); // Original line
+  // const session = cookieStore.get('auth_session')?.value; // Original line
+  const session = request.cookies.get('auth_session')?.value; // Using request.cookies directly
   console.log(`[Middleware] Session cookie value for ${pathname}: ${session ? session.substring(0,10) + '...' : 'not found'}`);
 
   // If trying to access login page
