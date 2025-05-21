@@ -1,8 +1,21 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
+    // Check for authentication
+    const cookieStore = await cookies();
+    const session = cookieStore.get('auth_session');
+    
+    if (!session) {
+      console.log('[API Employees] No session found, returning unauthorized');
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+    
     const employees = await prisma.employee.findMany({
       orderBy: {
         createdAt: 'desc',

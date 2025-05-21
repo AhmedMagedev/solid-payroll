@@ -1,31 +1,74 @@
-import { prisma } from '@/app/lib/prisma';
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import EmployeeActions from './employee-actions';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-interface EmployeeProfilePageProps {
-  params: {
-    id: string;
-  };
+interface Employee {
+  id: number;
+  name: string;
+  email: string;
+  position: string;
+  salary: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-async function getEmployee(id: number) {
-  try {
-    const employee = await prisma.employee.findUnique({
-      where: { id },
-    });
-    return employee;
-  } catch (error) {
-    console.error("Failed to fetch employee:", error);
-    return null;
+export default function EmployeeProfilePage() {
+  const params = useParams();
+  const [employee, setEmployee] = useState<Employee | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+  const employeeId = parseInt(id, 10);
+
+  useEffect(() => {
+    async function fetchEmployee() {
+      if (isNaN(employeeId)) {
+        setError('Invalid employee ID');
+        setIsLoading(false);
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/employee/${employeeId}`, {
+          credentials: 'include',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch employee');
+        }
+        
+        const data = await response.json();
+        setEmployee(data);
+      } catch (error) {
+        console.error("Failed to fetch employee:", error);
+        setError('Could not load employee data');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    
+    fetchEmployee();
+  }, [employeeId]);
+
+  if (isLoading) {
+    return (
+      <div className="p-6 flex flex-col items-center justify-center min-h-[calc(100vh-theme(spacing.16))]">
+        <Card className="w-full max-w-md text-center">
+          <CardContent className="p-6">
+            <p>Loading employee data...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
-}
-
-export default async function EmployeeProfilePage({ params }: EmployeeProfilePageProps) {
-  const employeeId = parseInt(params.id, 10);
 
   if (isNaN(employeeId)) {
     return (
@@ -44,8 +87,6 @@ export default async function EmployeeProfilePage({ params }: EmployeeProfilePag
       </div>
     );
   }
-
-  const employee = await getEmployee(employeeId);
 
   if (!employee) {
     return (
@@ -82,7 +123,7 @@ export default async function EmployeeProfilePage({ params }: EmployeeProfilePag
 
       <Card className="w-full mx-auto relative">
         <div className="absolute top-3 right-3 z-10">
-          <EmployeeActions employeeId={employee.id} employeeName={employee.name} />
+          <EmployeeActions employeeId={employee.id} />
         </div>
 
         <CardHeader className="text-center pt-8 pb-4">

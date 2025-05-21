@@ -1,52 +1,81 @@
-import { prisma } from '@/app/lib/prisma';
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-// We'll need a form component later, e.g., EmployeeForm
-// import EmployeeForm from './employee-form'; 
-
-interface EmployeeEditPageProps {
-  params: {
-    id: string;
-  };
+interface Employee {
+  id: number;
+  name: string;
+  email: string;
+  position: string;
+  salary: number;
 }
 
-async function getEmployee(id: number) {
-  try {
-    const employee = await prisma.employee.findUnique({
-      where: { id },
-    });
-    return employee;
-  } catch (error) {
-    console.error("Failed to fetch employee for editing:", error);
-    return null;
-  }
-}
+export default function EmployeeEditPage() {
+  const params = useParams();
+  const [employee, setEmployee] = useState<Employee | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+  const employeeId = parseInt(id, 10);
 
-export default async function EmployeeEditPage({ params }: EmployeeEditPageProps) {
-  const employeeId = parseInt(params.id, 10);
+  useEffect(() => {
+    async function fetchEmployee() {
+      if (isNaN(employeeId)) {
+        setError('Invalid employee ID');
+        setIsLoading(false);
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/employee/${employeeId}`, {
+          credentials: 'include',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch employee');
+        }
+        
+        const data = await response.json();
+        setEmployee(data);
+      } catch (error) {
+        console.error("Failed to fetch employee:", error);
+        setError('Could not load employee data');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    
+    fetchEmployee();
+  }, [employeeId]);
 
-  if (isNaN(employeeId)) {
+  if (isLoading) {
     return (
       <div className="p-6">
         <Card className="w-full max-w-md mx-auto text-center">
-          <CardHeader><CardTitle className="text-destructive">Invalid Employee ID</CardTitle></CardHeader>
-          <CardContent><p>The employee ID is not valid.</p></CardContent>
+          <CardContent className="p-6">
+            <p>Loading employee data...</p>
+          </CardContent>
         </Card>
       </div>
     );
   }
 
-  const employee = await getEmployee(employeeId);
-
-  if (!employee) {
+  if (error || !employee) {
     return (
       <div className="p-6">
         <Card className="w-full max-w-md mx-auto text-center">
-          <CardHeader><CardTitle>Employee Not Found</CardTitle></CardHeader>
-          <CardContent><p>Could not find employee with ID: {employeeId}.</p></CardContent>
+          <CardHeader>
+            <CardTitle className="text-destructive">{error || 'Employee Not Found'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>{error ? error : `Could not find employee with ID: ${employeeId}.`}</p>
+          </CardContent>
         </Card>
       </div>
     );
@@ -71,7 +100,7 @@ export default async function EmployeeEditPage({ params }: EmployeeEditPageProps
             <p className="text-center text-muted-foreground">
               Employee edit form will be here.
             </p>
-            {/* <EmployeeForm employee={employee} /> */}
+            {/* Form implementation would go here */}
           </div>
         </CardContent>
       </Card>

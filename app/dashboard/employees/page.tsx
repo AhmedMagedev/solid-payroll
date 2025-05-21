@@ -42,7 +42,9 @@ export default function EmployeesPage() {
     async function fetchEmployees() {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/employees'); 
+        const response = await fetch('/api/employees', {
+          credentials: 'include',
+        }); 
         if (!response.ok) {
           throw new Error('Failed to fetch employees');
         }
