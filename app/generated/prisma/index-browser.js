@@ -151,6 +151,19 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PayoutScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  amount: 'amount',
+  isPaid: 'isPaid',
+  comment: 'comment',
+  paymentDate: 'paymentDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SystemSettingsScalarFieldEnum = {
   id: 'id',
   lateAllowanceMinutes: 'lateAllowanceMinutes',
@@ -190,6 +203,7 @@ exports.Prisma.ModelName = {
   Employee: 'Employee',
   User: 'User',
   Attendance: 'Attendance',
+  Payout: 'Payout',
   SystemSettings: 'SystemSettings'
 };
 

@@ -6,11 +6,11 @@ export async function GET() {
   try {
     const cookieStore = await cookies();
     
-    // Delete the cookie explicitly for logout
-    cookieStore.delete('auth_session');
+    // Delete the auth token cookie
+    cookieStore.delete('auth_token');
     
     // Set an expired cookie with production-compatible settings
-    cookieStore.set('auth_session', '', {
+    cookieStore.set('auth_token', '', {
       httpOnly: true,
       secure: true,
       path: '/',
@@ -18,7 +18,7 @@ export async function GET() {
       maxAge: 0, // Expire immediately
     });
     
-    console.log('[API Logout] Session cookie deleted with production-compatible settings');
+    console.log('[API Logout] Auth token cookie deleted');
     
     // Redirect to login page
     return NextResponse.redirect(new URL('/login', 'https://hr.solid-metals.com'), { 

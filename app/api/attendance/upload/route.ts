@@ -1,18 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
+import { verifyToken } from '@/app/lib/auth';
 
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
     // Check for authentication
-    const session = request.cookies.get('auth_session')?.value;
-    console.log(`[API Upload] Session check: ${session ? session.substring(0,10) + '...' : 'not found'}`);
+    let token = request.cookies.get('auth_token')?.value;
+    
+    // Check Authorization header if no cookie token
+    if (!token) {
+      const authHeader = request.headers.get('Authorization');
+      if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
+    
+    console.log(`[API Upload] Token check: ${token ? 'found' : 'not found'}`);
     console.log(`[API Upload] All cookies:`, JSON.stringify(Array.from(request.cookies.getAll())));
     
-    if (!session) {
+    if (!token) {
       console.log('[API] Upload attempt without authentication');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
+    if (!session) {
+      console.log('[API] Upload attempt with invalid token');
+      return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
     }
     
     const formData = await request.formData();

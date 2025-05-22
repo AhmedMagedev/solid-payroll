@@ -31,6 +31,12 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
+        // Store the token in localStorage for client-side authentication
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+          console.log('[Login Page] Token stored in localStorage');
+        }
+        
         console.log('[Login Page] Login successful, redirecting to /dashboard');
         toast.success("Login Successful!", { description: "Redirecting to dashboard..." });
         router.push('/dashboard');

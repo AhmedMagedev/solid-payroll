@@ -2,6 +2,7 @@ import { prisma } from '@/app/lib/prisma';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { cookies } from 'next/headers';
+import { generateToken } from '@/app/lib/auth';
 
 export async function POST(req: Request) {
   console.log('[API Login] Received login request');
@@ -31,25 +32,31 @@ export async function POST(req: Request) {
     }
     console.log(`[API Login] Password matched for user: ${username}`);
 
-    // Get the cookie store
-    const cookieStore = await cookies();
-    
-    // Set the auth session cookie with production-friendly settings
-    cookieStore.set('auth_session', user.username, {
-      // Core settings
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      
-      // Security settings - production compatible
-      httpOnly: true,
-      secure: true, // Always use secure cookies for HTTPS
-      sameSite: 'none', // Allow cross-site cookies for production domain
+    // Generate JWT token
+    const token = await generateToken({ 
+      username: user.username,
+      userId: user.id
     });
     
-    console.log(`[API Login] Session cookie set for user: ${username} with production-safe settings`);
-    console.log(`[API Login] Cookie details: path=/, secure=true, sameSite=none, httpOnly=true`);
+    // Get the cookie store and set token in cookie for SSR support
+    const cookieStore = await cookies();
+    
+    // Set the auth token cookie
+    cookieStore.set('auth_token', token, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      httpOnly: true,
+      secure: true, 
+      sameSite: 'none',
+    });
+    
+    console.log(`[API Login] Auth token generated and cookie set for user: ${username}`);
 
-    return NextResponse.json({ message: 'Login successful' }, { status: 200 });
+    // Return token in response body for client-side storage
+    return NextResponse.json({ 
+      message: 'Login successful', 
+      token
+    }, { status: 200 });
 
   } catch (error) {
     console.error('[API Login] Unexpected error:', error);

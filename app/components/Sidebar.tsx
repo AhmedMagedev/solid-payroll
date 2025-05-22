@@ -1,68 +1,137 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { HelpCircle, LogOut, Settings, Home, Users, Calendar } from 'lucide-react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Calendar, Settings } from 'lucide-react';
-// import Image from 'next/image'; // Using standard img tag for simplicity
-
-const menuItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Employees', href: '/dashboard/employees', icon: Users },
-  { name: 'Attendance', href: '/dashboard/attendance', icon: Calendar },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-  // Add more menu items here as needed
-];
 
 export default function Sidebar() {
   const pathname = usePathname();
-
-  // Helper function to determine if a menu item is active
-  const isActive = (href: string) => {
-    if (href === '/dashboard') {
-      // Dashboard is active only when the pathname is exactly '/dashboard'
-      return pathname === '/dashboard';
+  const router = useRouter();
+  
+  const handleLogout = async () => {
+    try {
+      // Clear token from localStorage first
+      localStorage.removeItem('auth_token');
+      console.log('[Sidebar] Token removed from localStorage');
+      
+      // Call logout API to clear server-side session
+      await fetch('/api/logout', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('[Sidebar] Logout API called');
+      
+      // Redirect to login page
+      router.push('/login');
+    } catch (error) {
+      console.error('[Sidebar] Error logging out:', error);
+      // Redirect to login even if the API call fails
+      router.push('/login');
     }
-    // For other items, check if the pathname starts with the href
-    return pathname.startsWith(href);
+  };
+
+  const isActive = (path: string) => {
+    if (path === '/dashboard' && pathname === '/dashboard') {
+      return true;
+    }
+    if (path !== '/dashboard' && pathname?.startsWith(path)) {
+      return true;
+    }
+    return false;
   };
 
   return (
-    <div className="flex h-screen w-64 flex-col bg-[#003366] text-white">
-      <div className=" px-4 text-center">
-        <Link href="/dashboard" className="flex items-center justify-center">
-          <Image src="/images/solidLogo.webp" alt="Solid Payroll Logo" width={120} height={24} className="object-contain" />
-        </Link>
+    <div className="bg-white h-full w-[300px] flex flex-col shadow-md hidden md:flex">
+      <div className="p-4">
+        <div className="flex items-center gap-3 mb-8">
+          <Image 
+            src="/images/solidLogo.webp" 
+            alt="Solid Payroll" 
+            width={40} 
+            height={40}
+            className="rounded"
+          />
+          <h1 className="text-xl font-bold">Solid HR</h1>
+        </div>
+        
+        <nav className="space-y-1">
+          <Link 
+            href="/dashboard" 
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              isActive('/dashboard') 
+                ? 'bg-primary text-white' 
+                : 'text-slate-700 hover:bg-gray-100'
+            }`}
+          >
+            <Home size={18} />
+            Dashboard
+          </Link>
+          
+          <Link 
+            href="/dashboard/employees" 
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              isActive('/dashboard/employees') 
+                ? 'bg-primary text-white' 
+                : 'text-slate-700 hover:bg-gray-100'
+            }`}
+          >
+            <Users size={18} />
+            Employees
+          </Link>
+          
+          <Link 
+            href="/dashboard/attendance" 
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              isActive('/dashboard/attendance') 
+                ? 'bg-primary text-white' 
+                : 'text-slate-700 hover:bg-gray-100'
+            }`}
+          >
+            <Calendar size={18} />
+            Attendance
+          </Link>
+          
+          <Link 
+            href="/dashboard/settings" 
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              isActive('/dashboard/settings') 
+                ? 'bg-primary text-white' 
+                : 'text-slate-700 hover:bg-gray-100'
+            }`}
+          >
+            <Settings size={18} />
+            Settings
+          </Link>
+        </nav>
       </div>
-      <nav className="flex-1 space-y-1 px-4 mt-6">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`
-                flex items-center rounded-md px-3 py-2.5 text-base font-medium 
-                transition-colors duration-150 ease-in-out
-                ${isActive(item.href)
-                  ? 'bg-[#002244] text-white' 
-                  : 'text-gray-300 hover:bg-[#002244] hover:text-white'
-                }
-              `}
-            >
-              {Icon && <Icon className="h-5 w-5 mr-3" />}
-              <span>{item.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
-      <div className="p-4 mt-auto mb-4">
-        <Link
-          href="/api/logout" // Updated logout link
-          className="flex w-full items-center justify-center rounded-md bg-[#002244] px-3 py-2.5 text-base font-medium text-white hover:bg-red-700 transition-colors duration-150 ease-in-out"
-        >
-          Logout
-        </Link>
+      
+      <div className="mt-auto p-4">
+        <hr className="my-4 border-t border-gray-200" />
+        <div className="space-y-1">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-red-600 hover:bg-red-50"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
+          
+          <Link 
+            href="/dashboard/help" 
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              isActive('/dashboard/help') 
+                ? 'bg-primary text-white' 
+                : 'text-slate-700 hover:bg-gray-100'
+            }`}
+          >
+            <HelpCircle size={18} />
+            Help
+          </Link>
+        </div>
       </div>
     </div>
   );
