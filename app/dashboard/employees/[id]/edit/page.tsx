@@ -14,6 +14,9 @@ interface Employee {
   email: string;
   position: string;
   salary: number;
+  dailyRate: number;
+  phone?: string;
+  paymentBasis?: string;
 }
 
 export default function EmployeeEditPage() {

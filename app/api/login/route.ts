@@ -33,16 +33,21 @@ export async function POST(req: Request) {
 
     // Get the cookie store
     const cookieStore = await cookies();
-
-    // Set a simple session cookie
+    
+    // Set the auth session cookie with production-friendly settings
     cookieStore.set('auth_session', user.username, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      // Core settings
       path: '/',
-      maxAge: 60 * 60 * 24, // 1 day
-      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      
+      // Security settings - production compatible
+      httpOnly: true,
+      secure: true, // Always use secure cookies for HTTPS
+      sameSite: 'none', // Allow cross-site cookies for production domain
     });
-    console.log(`[API Login] Session cookie set for user: ${username}`);
+    
+    console.log(`[API Login] Session cookie set for user: ${username} with production-safe settings`);
+    console.log(`[API Login] Cookie details: path=/, secure=true, sameSite=none, httpOnly=true`);
 
     return NextResponse.json({ message: 'Login successful' }, { status: 200 });
 

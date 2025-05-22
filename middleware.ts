@@ -28,7 +28,11 @@ export async function middleware(request: NextRequest) {
   // const cookieStore = await cookies(); // Original line
   // const session = cookieStore.get('auth_session')?.value; // Original line
   const session = request.cookies.get('auth_session')?.value; // Using request.cookies directly
-  console.log(`[Middleware] Session cookie value for ${pathname}: ${session ? session.substring(0,10) + '...' : 'not found'}`);
+  
+  // Minimal logging to avoid potential issues with cookies
+  if (session) {
+    console.log(`[Middleware] Session found for: ${pathname}`);
+  }
 
   // If trying to access login page
   if (pathname === '/login') {

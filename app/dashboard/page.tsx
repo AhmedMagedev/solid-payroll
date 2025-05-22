@@ -74,7 +74,7 @@ const StatBox = ({
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<Record<string, any> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -107,7 +107,7 @@ export default function DashboardPage() {
     const change = ((stats.todayAttendance - stats.yesterdayAttendance) / stats.yesterdayAttendance) * 100;
     return {
       value: Math.abs(change).toFixed(1),
-      type: change >= 0 ? 'positive' : 'negative'
+      type: change >= 0 ? 'positive' : 'negative' as 'positive' | 'negative'
     };
   };
 
@@ -186,7 +186,7 @@ export default function DashboardPage() {
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={stats.attendanceChartData}
+                    data={stats?.attendanceChartData}
                     margin={{
                       top: 5,
                       right: 30,
@@ -226,7 +226,7 @@ export default function DashboardPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={stats.paymentBasisChartData}
+                      data={stats?.paymentBasisChartData}
                       cx="50%"
                       cy="50%"
                       labelLine={true}
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                       nameKey="name"
                       label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     >
-                      {stats.paymentBasisChartData.map((entry, index) => (
+                      {stats?.paymentBasisChartData?.map((entry: any, index: number) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -277,7 +277,7 @@ export default function DashboardPage() {
               </div>
             ) : stats?.presentEmployees?.length > 0 ? (
               <div className="space-y-4">
-                {stats.presentEmployees.map((attendance, index) => (
+                {stats?.presentEmployees?.map((attendance: any, index: number) => (
                   <div key={index} className="flex items-center space-x-4">
                     <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
                       <CircleUser className="h-6 w-6" />
@@ -323,7 +323,7 @@ export default function DashboardPage() {
               </div>
             ) : stats?.topEmployeesByRate?.length > 0 ? (
               <div className="space-y-4">
-                {stats.topEmployeesByRate.map((employee, index) => (
+                {stats?.topEmployeesByRate?.map((employee: any, index: number) => (
                   <div key={index} className="flex items-center space-x-4">
                     <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary">
                       {index + 1}

@@ -1,12 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 
+export const dynamic = 'force-dynamic'; // Ensure the route is treated as dynamic
+
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request, 
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const employeeId = parseInt(params.id, 10);
+    const { id } = await params;
+    const employeeId = parseInt(id, 10);
 
     if (isNaN(employeeId)) {
       return NextResponse.json({ error: 'Invalid employee ID' }, { status: 400 });
