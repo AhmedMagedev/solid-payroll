@@ -16,13 +16,16 @@ datasource db {
 }
 
 model Employee {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  position  String
-  salary    Float
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           Int          @id @default(autoincrement())
+  name         String
+  email        String       @unique
+  position     String
+  phone        String?      // Optional phone number
+  dailyRate    Float        @default(0) @map("daily_rate")
+  paymentBasis String       @default("Daily") @map("payment_basis")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  attendance   Attendance[]
 
   @@map("employees")
 }
@@ -35,4 +38,41 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model Attendance {
+  id          Int       @id @default(autoincrement())
+  employeeId  Int       @map("employee_id")
+  date        DateTime  @db.Date
+  checkIn     DateTime  @map("check_in")
+  checkOut    DateTime? @map("check_out")
+  hoursWorked Float?    @map("hours_worked")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  employee    Employee  @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, date])
+  @@map("attendance")
+}
+
+model SystemSettings {
+  id                      Int      @id @default(autoincrement())
+  lateAllowanceMinutes    Int      @default(15) @map("late_allowance_minutes")
+  workDaySunday           Boolean  @default(false) @map("work_day_sunday")
+  workDayMonday           Boolean  @default(true) @map("work_day_monday")
+  workDayTuesday          Boolean  @default(true) @map("work_day_tuesday")
+  workDayWednesday        Boolean  @default(true) @map("work_day_wednesday")
+  workDayThursday         Boolean  @default(true) @map("work_day_thursday")
+  workDayFriday           Boolean  @default(true) @map("work_day_friday")
+  workDaySaturday         Boolean  @default(false) @map("work_day_saturday")
+  workingHoursPerDay      Float    @default(8) @map("working_hours_per_day")
+  workingHoursStart       String   @default("09:00") @map("working_hours_start")
+  workingHoursEnd         String   @default("17:00") @map("working_hours_end")
+  overtimeMultiplier      Float    @default(1.5) @map("overtime_multiplier")
+  weekendOvertimeMultiplier Float   @default(2) @map("weekend_overtime_multiplier")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
 }

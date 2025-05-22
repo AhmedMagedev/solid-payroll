@@ -125,7 +125,9 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   name: 'name',
   email: 'email',
   position: 'position',
-  salary: 'salary',
+  phone: 'phone',
+  dailyRate: 'dailyRate',
+  paymentBasis: 'paymentBasis',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -134,6 +136,36 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
   password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AttendanceScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  date: 'date',
+  checkIn: 'checkIn',
+  checkOut: 'checkOut',
+  hoursWorked: 'hoursWorked',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemSettingsScalarFieldEnum = {
+  id: 'id',
+  lateAllowanceMinutes: 'lateAllowanceMinutes',
+  workDaySunday: 'workDaySunday',
+  workDayMonday: 'workDayMonday',
+  workDayTuesday: 'workDayTuesday',
+  workDayWednesday: 'workDayWednesday',
+  workDayThursday: 'workDayThursday',
+  workDayFriday: 'workDayFriday',
+  workDaySaturday: 'workDaySaturday',
+  workingHoursPerDay: 'workingHoursPerDay',
+  workingHoursStart: 'workingHoursStart',
+  workingHoursEnd: 'workingHoursEnd',
+  overtimeMultiplier: 'overtimeMultiplier',
+  weekendOvertimeMultiplier: 'weekendOvertimeMultiplier',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -148,10 +180,17 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
   Employee: 'Employee',
-  User: 'User'
+  User: 'User',
+  Attendance: 'Attendance',
+  SystemSettings: 'SystemSettings'
 };
 
 /**

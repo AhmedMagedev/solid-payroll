@@ -3,19 +3,11 @@
 // import { prisma } from '@/app/lib/prisma'; // Removed unused import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileUpload } from "@/app/components/FileUpload";
-import {
-  Table,
-  TableBody,
-  // TableCaption, // Will remove or make static
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button"; // For pagination buttons
 import { Input } from "@/components/ui/input"; // Added for Search
 import { useState, useEffect, useMemo } from 'react'; // For pagination state and search optimization
 import Link from 'next/link'; // Added for navigation to profile page
+import { useRouter } from "next/navigation";
 
 // Define the Employee interface
 interface Employee {
@@ -23,7 +15,8 @@ interface Employee {
   name: string;
   email: string; // Keep in interface for data structure, but won't display
   position: string;
-  salary: number;
+  dailyRate: number;
+  paymentBasis?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,6 +30,7 @@ export default function EmployeesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(''); // Added for Search
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchEmployees() {
@@ -104,7 +98,12 @@ export default function EmployeesPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-full sm:max-w-xs bg-white" // Added bg-white class
           />
-          <FileUpload />
+          <div className="flex flex-row gap-2">
+            <FileUpload />
+            <Button onClick={() => router.push('/dashboard/attendance/upload')}>
+              Upload Attendance
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -113,41 +112,47 @@ export default function EmployeesPage() {
           <CardTitle>Employee Directory</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow suppressHydrationWarning={true}>{/*
-                */}<TableHead className="w-[100px]">{`ID`}</TableHead>{/*
-                */}<TableHead>{`Name`}</TableHead>{/*
-                */}{/* <TableHead>Email</TableHead> */}{/*
-                */}<TableHead>{`Position`}</TableHead>{/*
-                */}<TableHead className="text-right">{`Salary`}</TableHead>{/*
-              */}</TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow><TableCell colSpan={4} className="text-center">Loading employees...</TableCell></TableRow>
-              ) : currentEmployees.length === 0 ? (
-                <TableRow><TableCell colSpan={4} className="text-center">
-                  {searchTerm ? `No employees found matching "${searchTerm}".` : 'No employees found. Add or upload employees to get started.'}
-                </TableCell></TableRow>
-              ) : (
-                currentEmployees.map((employee) => (
-                  <TableRow key={employee.id}>
-                    <TableCell className="font-medium">{employee.id}</TableCell> {/* Display ID */}
-                    <TableCell>
-                      <Link href={`/dashboard/employees/${employee.id}`} className="hover:underline text-primary">
-                        {employee.name}
-                      </Link>
-                    </TableCell>
-                    {/* <TableCell>{employee.email}</TableCell> */} {/* Email cell removed */}
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell className="text-right">L.E {employee.salary.toFixed(2)}</TableCell> {/* Salary format updated */}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-            {/* Removed dynamic TableCaption, pagination controls will show page info */}
-          </Table>
+          {/* Custom table without whitespace issues */}
+          <div className="border rounded-md overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50">
+                <tr>
+                  <th className="h-10 px-4 text-left align-middle font-medium w-[100px]">ID</th>
+                  <th className="h-10 px-4 text-left align-middle font-medium">Name</th>
+                  <th className="h-10 px-4 text-left align-middle font-medium">Position</th>
+                  <th className="h-10 px-4 text-left align-middle font-medium">Daily Rate</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium">Est. Monthly</th>
+                </tr>
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <tr className="border-b">
+                    <td colSpan={5} className="p-4 text-center">Loading employees...</td>
+                  </tr>
+                ) : currentEmployees.length === 0 ? (
+                  <tr className="border-b">
+                    <td colSpan={5} className="p-4 text-center">
+                      {searchTerm ? `No employees found matching "${searchTerm}".` : 'No employees found. Add or upload employees to get started.'}
+                    </td>
+                  </tr>
+                ) : (
+                  currentEmployees.map((employee) => (
+                    <tr key={employee.id} className="border-b hover:bg-muted/50 transition-colors">
+                      <td className="p-4 font-medium">{employee.id}</td>
+                      <td className="p-4">
+                        <Link href={`/dashboard/employees/${employee.id}`} className="hover:underline text-primary">
+                          {employee.name}
+                        </Link>
+                      </td>
+                      <td className="p-4">{employee.position}</td>
+                      <td className="p-4">L.E {employee.dailyRate.toFixed(2)}</td>
+                      <td className="p-4 text-right">L.E {(employee.dailyRate * 22).toFixed(2)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
           {totalPages > 0 && (
             <div className="flex items-center justify-between py-4">
               <Button

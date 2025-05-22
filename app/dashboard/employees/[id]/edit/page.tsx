@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { EmployeeForm } from '../components/EmployeeForm';
 
 interface Employee {
   id: number;
@@ -95,13 +96,7 @@ export default function EmployeeEditPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">Employee ID: {employee.id}</p>
-          {/* Placeholder for EmployeeForm */}
-          <div className="p-6 border rounded-md bg-muted/20">
-            <p className="text-center text-muted-foreground">
-              Employee edit form will be here.
-            </p>
-            {/* Form implementation would go here */}
-          </div>
+          <EmployeeForm employee={employee} />
         </CardContent>
       </Card>
     </div>
