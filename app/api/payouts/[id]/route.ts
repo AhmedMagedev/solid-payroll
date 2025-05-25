@@ -5,7 +5,7 @@ import { verifyToken } from '@/app/lib/auth';
 // Get a specific payout
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify authentication
@@ -19,6 +19,7 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
     
+    const params = await context.params;
     const payoutId = parseInt(params.id, 10);
     if (isNaN(payoutId)) {
       return NextResponse.json({ error: 'Invalid payout ID' }, { status: 400 });
@@ -50,7 +51,7 @@ export async function GET(
 // Update a payout's status and comment
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify authentication
@@ -64,6 +65,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
     
+    const params = await context.params;
     const payoutId = parseInt(params.id, 10);
     if (isNaN(payoutId)) {
       return NextResponse.json({ error: 'Invalid payout ID' }, { status: 400 });

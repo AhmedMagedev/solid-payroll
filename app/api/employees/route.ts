@@ -1,15 +1,24 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/app/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { verifyToken } from '@/app/lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     // Check for authentication
-    const cookieStore = await cookies();
-    const session = cookieStore.get('auth_session');
+    const token = request.cookies.get('auth_token')?.value;
     
+    if (!token) {
+      console.log('[API Employees] No token found, returning unauthorized');
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
     if (!session) {
-      console.log('[API Employees] No session found, returning unauthorized');
+      console.log('[API Employees] Invalid token, returning unauthorized');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -33,6 +42,19 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check for authentication
+    const token = request.cookies.get('auth_token')?.value;
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
+    if (!session) {
+      return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
+    }
+    
     const data = await request.json();
     
     const { name, email, position, phone, dailyRate, paymentBasis } = data;

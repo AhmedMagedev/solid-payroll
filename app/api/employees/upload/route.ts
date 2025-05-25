@@ -20,14 +20,10 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
   // Collect all potential employee matches
   while ((matches = employeePattern.exec(content)) !== null) {
     employeeCount++;
-    const idOrPassword = matches[1]?.trim();
     const fullName = matches[2]?.trim();
-    const positionId = matches[3]?.trim();
     
     console.log(`Found potential employee #${employeeCount}:`, { 
-      idOrPassword, 
-      fullName,
-      positionId
+      fullName
     });
     
     // Skip entries with incomplete data
@@ -58,42 +54,19 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
     
     const email = `${emailFirstName}.${emailLastName || 'nolastname'}@solidpayroll.com`;
     
-    // Map position IDs to titles
-    const positions: Record<string, string> = {
-      '1': 'Manager',
-      '2': 'Developer',
-      '3': 'Designer',
-      '4': 'HR Specialist',
-      '5': 'Accountant',
-      '6': 'Sales Representative',
-      '7': 'Marketing Specialist',
-      '8': 'Customer Support',
-      '9': 'QA Engineer',
-      '10': 'IT Support'
-    };
-    
-    // Get first digit of positionId if it's longer than expected
-    const firstDigit = positionId.match(/^\d{1,2}/)?.[0] || '1';
-    const position = positions[firstDigit] || `Position ${firstDigit}`;
-    
-    // Calculate salary based on position
-    let salary = 50000; // Default base salary
-    const positionDigit = parseInt(firstDigit);
-    
-    if (positionDigit === 1) salary = 80000;
-    else if (positionDigit === 2) salary = 65000;
-    else if (positionDigit === 3) salary = 60000;
-    else if (positionDigit === 4) salary = 55000;
-    else if (positionDigit <= 9) salary = 50000 - ((positionDigit - 5) * 2000);
+    // Use default values instead of trying to extract position from random numbers
+    const position = 'Employee'; // Default position for all uploaded employees
+    const dailyRate = 200; // Default daily rate (can be edited later)
     
     employeeData.push({
       name: cleanName,
       email,
       position,
-      salary
+      dailyRate,
+      paymentBasis: 'Monthly' // Default payment basis
     });
     
-    console.log(`Processed employee: ${cleanName} (${email}) - ${position} - $${salary}`);
+    console.log(`Processed employee: ${cleanName} (${email}) - ${position} - Daily Rate: $${dailyRate}`);
   }
   
   // Alternative approach: try to find fixed-width patterns if the regex didn't work
@@ -122,10 +95,6 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
         if (nameMatch) {
           const name = nameMatch[0].trim();
           
-          // Look for a digit that could be a position ID
-          const positionMatch = chunk.match(/\d{1,2}/);
-          const positionId = positionMatch ? positionMatch[0] : '1';
-          
           // Generate email from the extracted name
           const nameParts = name.split(' ').filter(part => part.trim().length > 0);
           if (nameParts.length === 0) continue;
@@ -145,33 +114,19 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
           
           const email = `${emailFirstName}.${emailLastName || 'nolastname'}@solidpayroll.com`;
           
-          // Map position to title (reusing logic from above)
-          const positions: Record<string, string> = {
-            '1': 'Manager',
-            '2': 'Developer',
-            '3': 'Designer',
-            '4': 'HR Specialist',
-            '5': 'Accountant'
-          };
-          
-          const position = positions[positionId] || `Position ${positionId}`;
-          
-          // Set salary based on position
-          let salary = 50000;
-          const posNum = parseInt(positionId);
-          if (posNum === 1) salary = 80000;
-          else if (posNum === 2) salary = 65000;
-          else if (posNum === 3) salary = 60000;
-          else if (posNum === 4) salary = 55000;
+          // Use default values instead of generating dummy positions
+          const position = 'Employee'; // Default position for all uploaded employees
+          const dailyRate = 200; // Default daily rate (can be edited later)
           
           employeeData.push({
             name,
             email,
             position,
-            salary
+            dailyRate,
+            paymentBasis: 'Monthly' // Default payment basis
           });
           
-          console.log(`From chunk extracted: ${name} (${email}) - ${position} - $${salary}`);
+          console.log(`From chunk extracted: ${name} (${email}) - ${position} - Daily Rate: $${dailyRate}`);
         }
       } catch (error) {
         console.error("Error processing chunk:", chunk, error);
@@ -249,21 +204,31 @@ export async function POST(request: NextRequest) {
     let createdCount = 0;
     let errorCount = 0;
     
+    console.log(`[API] Starting to save ${employees.length} employees to database...`);
+    
     for (const employeeData of employees) {
       try {
+        console.log(`[API] Checking if employee exists: ${employeeData.email}`);
+        
         // Check if employee with this email already exists
         const existingEmployee = await prisma.employee.findUnique({
           where: { email: employeeData.email }
         });
         
         if (!existingEmployee) {
+          console.log(`[API] Creating new employee: ${employeeData.name} (${employeeData.email})`);
+          console.log(`[API] Employee data:`, JSON.stringify(employeeData, null, 2));
+          
           // Create new employee
           const employee = await prisma.employee.create({
             data: employeeData
           });
+          
+          console.log(`[API] Successfully created employee with ID: ${employee.id}`);
           results.push({ success: true, employee });
           createdCount++;
         } else {
+          console.log(`[API] Employee already exists: ${employeeData.email}`);
           results.push({ 
             success: false, 
             error: `Employee with email ${employeeData.email} already exists`,
@@ -272,23 +237,36 @@ export async function POST(request: NextRequest) {
           errorCount++;
         }
       } catch (error) {
-        console.error('Error creating employee:', error);
+        console.error(`[API] Error creating employee ${employeeData.email}:`, error);
         results.push({ 
           success: false, 
           error: 'Database error',
-          employeeData 
+          employeeData,
+          details: error instanceof Error ? error.message : 'Unknown error'
         });
         errorCount++;
       }
     }
     
-    return NextResponse.json({
+    console.log(`[API] Database save completed. Created: ${createdCount}, Errors: ${errorCount}, Total: ${employees.length}`);
+    
+    const responseData = {
       message: 'File processed successfully',
       createdCount,
       errorCount,
       totalFound: employees.length,
       results
-    }, { status: 201 });
+    };
+    
+    console.log(`[API] Upload response:`, JSON.stringify({
+      message: responseData.message,
+      createdCount: responseData.createdCount,
+      errorCount: responseData.errorCount,
+      totalFound: responseData.totalFound,
+      resultsCount: responseData.results.length
+    }, null, 2));
+    
+    return NextResponse.json(responseData, { status: 201 });
     
   } catch (error) {
     console.error('Error processing employee upload:', error);

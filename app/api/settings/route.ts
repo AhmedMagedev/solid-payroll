@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
+import { verifyToken } from '@/app/lib/auth';
 
 const prisma = new PrismaClient();
 
 // GET system settings
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Check for authentication
+    const token = request.cookies.get('auth_token')?.value;
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
+    if (!session) {
+      return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
+    }
     // Get the first (and only) settings record, or create it if it doesn't exist
     let settings = await prisma.systemSettings.findFirst();
     
@@ -30,6 +43,19 @@ export async function GET() {
 // Update system settings
 export async function PUT(request: NextRequest) {
   try {
+    // Check for authentication
+    const token = request.cookies.get('auth_token')?.value;
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
+    if (!session) {
+      return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
+    }
+    
     const data = await request.json();
     
     // Get existing settings or create default

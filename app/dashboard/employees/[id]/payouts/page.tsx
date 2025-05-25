@@ -43,6 +43,18 @@ interface Payout {
   paymentDate: string | null;
 }
 
+interface SystemSettings {
+  id: number;
+  workDaySunday: boolean;
+  workDayMonday: boolean;
+  workDayTuesday: boolean;
+  workDayWednesday: boolean;
+  workDayThursday: boolean;
+  workDayFriday: boolean;
+  workDaySaturday: boolean;
+  workingHoursPerDay: number;
+}
+
 export default function EmployeePayoutsPage() {
   const params = useParams();
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -53,6 +65,7 @@ export default function EmployeePayoutsPage() {
   const [isPaidStates, setIsPaidStates] = useState<Record<string, boolean>>({});
   const [comments, setComments] = useState<Record<string, string>>({});
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
+  const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   
   const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
   const employeeId = parseInt(id, 10);
@@ -98,6 +111,16 @@ export default function EmployeePayoutsPage() {
         if (payoutsResponse.ok) {
           const payoutsData = await payoutsResponse.json();
           setExistingPayouts(payoutsData);
+        }
+        
+        // Fetch system settings
+        const settingsResponse = await fetch('/api/settings', {
+          credentials: 'include',
+        });
+        
+        if (settingsResponse.ok) {
+          const settingsData = await settingsResponse.json();
+          setSystemSettings(settingsData);
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -234,7 +257,8 @@ export default function EmployeePayoutsPage() {
     
     // Calculate expected hours based on working days in period
     const workingDaysInPeriod = getWorkingDaysInPeriod(periodStart, periodEnd);
-    const expectedHours = workingDaysInPeriod * 8; // Assuming 8 hours per working day
+    const hoursPerDay = systemSettings?.workingHoursPerDay || 8; // Use system setting or default to 8
+    const expectedHours = workingDaysInPeriod * hoursPerDay;
     
     // Calculate payout based on daily rate
     const payout = daysWorked * employee.dailyRate;
@@ -248,15 +272,41 @@ export default function EmployeePayoutsPage() {
     };
   };
   
-  // Helper to calculate working days in a period (Mon-Fri)
+  // Helper to calculate working days in a period based on system settings
   const getWorkingDaysInPeriod = (start: Date, end: Date) => {
+    if (!systemSettings) {
+      // Fallback to Monday-Friday if settings not loaded yet
+      let count = 0;
+      const current = new Date(start);
+      
+      while (current <= end) {
+        const dayOfWeek = current.getDay();
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+          count++;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      
+      return count;
+    }
+    
     let count = 0;
     const current = new Date(start);
     
+    // Map day of week to system settings
+    const workDays = [
+      systemSettings.workDaySunday,    // 0 = Sunday
+      systemSettings.workDayMonday,    // 1 = Monday
+      systemSettings.workDayTuesday,   // 2 = Tuesday
+      systemSettings.workDayWednesday, // 3 = Wednesday
+      systemSettings.workDayThursday,  // 4 = Thursday
+      systemSettings.workDayFriday,    // 5 = Friday
+      systemSettings.workDaySaturday   // 6 = Saturday
+    ];
+    
     while (current <= end) {
       const dayOfWeek = current.getDay();
-      // Count Monday (1) through Friday (5)
-      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+      if (workDays[dayOfWeek]) {
         count++;
       }
       current.setDate(current.getDate() + 1);
