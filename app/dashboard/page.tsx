@@ -16,13 +16,15 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
+
 import {
   ClockIcon,
   UserIcon,
   CalendarIcon,
-  PercentIcon,
-  CircleUser
+  ClockAlert,
+  CalendarX,
+  DollarSign,
+  AlertTriangle
 } from 'lucide-react';
 
 // Dashboard stat box component
@@ -32,8 +34,6 @@ interface StatBoxProps {
   icon: React.ReactNode;
   description: string;
   isLoading?: boolean;
-  change?: string | null;
-  changeType?: 'positive' | 'negative' | null;
 }
 
 const StatBox = ({ 
@@ -41,9 +41,7 @@ const StatBox = ({
   value, 
   icon, 
   description, 
-  isLoading = false, 
-  change = null, 
-  changeType = null 
+  isLoading = false
 }: StatBoxProps) => {
   return (
     <Card>
@@ -58,11 +56,6 @@ const StatBox = ({
           <>
             <div className="text-2xl font-bold">{value}</div>
             <p className="text-xs text-muted-foreground mt-1">{description}</p>
-            {change !== null && (
-              <div className={`mt-2 flex items-center text-xs ${changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
-                {changeType === 'positive' ? '↑' : '↓'} {change}% from yesterday
-              </div>
-            )}
           </>
         )}
       </CardContent>
@@ -70,18 +63,56 @@ const StatBox = ({
   );
 };
 
-// Chart colors
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+
+
+interface DashboardStats {
+  totalEmployees: number;
+  unpaidEmployeesCount: number;
+  totalOvertimePayout: number;
+  weeklyAttendanceData: Array<{
+    week: string;
+    attendanceRate: number;
+    actualAttendance: number;
+    expectedAttendance: number;
+  }>;
+  lateArrivalsData: Array<{
+    name: string;
+    value: number;
+    percentage: number;
+  }>;
+  overtimeEmployees: Array<{
+    employee: {
+      id: number;
+      name: string;
+      position: string;
+    };
+    totalOvertimeHours: number;
+    overtimeDays: number;
+  }>;
+  absenteeismData: Array<{
+    name: string;
+    value: number;
+    percentage: number;
+  }>;
+  thisWeekStats: {
+    totalExpectedAttendance: number;
+    actualAttendance: number;
+    totalLateArrivals: number;
+    totalOnTime: number;
+  };
+}
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<Record<string, any> | null>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const response = await fetch('/api/dashboard/stats');
+        const response = await fetch('/api/dashboard/stats', {
+          credentials: 'include',
+        });
         
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard stats');
@@ -99,19 +130,6 @@ export default function DashboardPage() {
     
     fetchStats();
   }, []);
-
-  // Calculate attendance change percentage
-  const calculateAttendanceChange = () => {
-    if (!stats || stats.yesterdayAttendance === 0) return null;
-    
-    const change = ((stats.todayAttendance - stats.yesterdayAttendance) / stats.yesterdayAttendance) * 100;
-    return {
-      value: Math.abs(change).toFixed(1),
-      type: change >= 0 ? 'positive' : 'negative' as 'positive' | 'negative'
-    };
-  };
-
-  const attendanceChange = stats ? calculateAttendanceChange() : null;
 
   if (error) {
     return (
@@ -132,8 +150,8 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {/* Stats Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <StatBox
           title="Total Employees"
           value={stats ? stats.totalEmployees : '-'}
@@ -143,50 +161,43 @@ export default function DashboardPage() {
         />
         
         <StatBox
-          title="Today's Attendance"
-          value={stats ? stats.todayAttendance : '-'}
-          icon={<ClockIcon className="h-4 w-4 text-muted-foreground" />}
-          description="Employees checked in today"
-          isLoading={isLoading}
-          change={attendanceChange?.value}
-          changeType={attendanceChange?.type}
-        />
-        
-        <StatBox
-          title="Weekly Attendance"
-          value={stats ? stats.last7DaysAttendance : '-'}
-          icon={<CalendarIcon className="h-4 w-4 text-muted-foreground" />}
-          description="Total check-ins last 7 days"
+          title="Unpaid Employees"
+          value={stats ? stats.unpaidEmployeesCount : '-'}
+          icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
+          description="Employees with unpaid payouts"
           isLoading={isLoading}
         />
         
         <StatBox
-          title="Attendance Rate"
-          value={stats ? `${stats.attendancePercentage}%` : '-'}
-          icon={<PercentIcon className="h-4 w-4 text-muted-foreground" />}
-          description="Of total workforce today"
+          title="Overtime Payout This Month"
+          value={stats ? `L.E ${stats.totalOvertimePayout.toFixed(2)}` : '-'}
+          icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
+          description="Total overtime compensation"
           isLoading={isLoading}
         />
       </div>
 
-      {/* Charts row */}
+      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Attendance chart */}
-        <Card className="col-span-1">
+        {/* 1. Attendance Rate by Week */}
+        <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg">Weekly Attendance</CardTitle>
-            <CardDescription>Number of employees checking in each day</CardDescription>
+            <CardTitle className="text-lg flex items-center">
+              <CalendarIcon className="h-5 w-5 mr-2 text-primary" />
+              Attendance Rate by Week
+            </CardTitle>
+            <CardDescription>Weekly attendance rates for the last 4 weeks</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="h-[300px] flex items-center justify-center">
                 <Skeleton className="h-[250px] w-full" />
               </div>
-            ) : stats?.attendanceChartData?.length > 0 ? (
+            ) : stats?.weeklyAttendanceData && stats.weeklyAttendanceData.length > 0 ? (
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={stats?.attendanceChartData}
+                    data={stats.weeklyAttendanceData}
                     margin={{
                       top: 5,
                       right: 30,
@@ -195,157 +206,171 @@ export default function DashboardPage() {
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="#3b82f6" name="Employees" />
+                    <XAxis dataKey="week" />
+                    <YAxis domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
+                    <Tooltip 
+                      formatter={(value: number | string) => [`${value}%`, 'Attendance Rate']}
+                      labelFormatter={(label) => `Week of ${label}`}
+                    />
+                    <Bar dataKey="attendanceRate" fill="#3b82f6" name="Attendance Rate %" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for the past week
+                No attendance data available for the past 4 weeks
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Payment basis distribution chart */}
+        {/* 2. Late Arrivals Percentage (Pie Chart) */}
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle className="text-lg">Payment Basis Distribution</CardTitle>
-            <CardDescription>Employees by payment frequency</CardDescription>
+            <CardTitle className="text-lg flex items-center">
+              <ClockAlert className="h-5 w-5 mr-2 text-primary" />
+              Late Arrivals This Week
+            </CardTitle>
+            <CardDescription>Percentage of late vs on-time arrivals</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="h-[300px] flex items-center justify-center">
                 <Skeleton className="h-[250px] w-full" />
               </div>
-            ) : stats?.paymentBasisChartData?.length > 0 ? (
+            ) : stats?.lateArrivalsData && stats.lateArrivalsData.some(item => item.value > 0) ? (
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={stats?.paymentBasisChartData}
+                      data={stats.lateArrivalsData}
                       cx="50%"
                       cy="50%"
-                      labelLine={true}
+                      labelLine={false}
                       outerRadius={100}
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percentage }) => `${name}: ${percentage}%`}
                     >
-                      {stats?.paymentBasisChartData?.map((entry: any, index: number) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      {stats.lateArrivalsData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.name === 'Late' ? '#FF8042' : '#00C49F'} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip formatter={(value: number | string) => [value, 'Count']} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No payment basis data available
+                No attendance data available for this week
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* 3. Absenteeism Rate (Pie Chart) */}
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center">
+              <CalendarX className="h-5 w-5 mr-2 text-primary" />
+              Absenteeism Rate This Week
+            </CardTitle>
+            <CardDescription>Present vs absent employees this week</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="h-[300px] flex items-center justify-center">
+                <Skeleton className="h-[250px] w-full" />
+              </div>
+            ) : stats?.absenteeismData && stats.absenteeismData.some(item => item.value > 0) ? (
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={stats.absenteeismData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                      nameKey="name"
+                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                    >
+                      {stats.absenteeismData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.name === 'Present' ? '#00C49F' : '#FF8042'} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: number | string) => [value, 'Count']} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                No attendance data available for this week
               </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Additional data cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Today's present employees */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Present Today</CardTitle>
-            <CardDescription>First 5 employees who checked in today</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                    </div>
+      {/* 4. Overtime Hours This Week */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center">
+            <ClockIcon className="h-5 w-5 mr-2 text-primary" />
+            Overtime Hours This Week
+          </CardTitle>
+          <CardDescription>Employees who worked overtime this week</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="space-y-3">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[100px]" />
                   </div>
-                ))}
-              </div>
-            ) : stats?.presentEmployees?.length > 0 ? (
-              <div className="space-y-4">
-                {stats?.presentEmployees?.map((attendance: any, index: number) => (
-                  <div key={index} className="flex items-center space-x-4">
-                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                      <CircleUser className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <div className="font-medium">{attendance.employee.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {attendance.employee.position}
-                      </div>
-                    </div>
-                    <div className="ml-auto text-sm text-muted-foreground">
-                      Checked in at {new Date(attendance.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center text-muted-foreground">
-                No employees have checked in today
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Top employees by rate */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Top Salaries</CardTitle>
-            <CardDescription>Employees with highest daily rates</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : stats?.topEmployeesByRate?.length > 0 ? (
-              <div className="space-y-4">
-                {stats?.topEmployeesByRate?.map((employee: any, index: number) => (
-                  <div key={index} className="flex items-center space-x-4">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary">
+                </div>
+              ))}
+            </div>
+          ) : stats?.overtimeEmployees && stats.overtimeEmployees.length > 0 ? (
+            <div className="space-y-4">
+              {stats.overtimeEmployees.map((overtime, index) => (
+                <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary font-medium">
                       {index + 1}
                     </div>
                     <div>
-                      <div className="font-medium">{employee.name}</div>
-                      <div className="text-sm text-muted-foreground">{employee.position}</div>
-                    </div>
-                    <div className="ml-auto font-medium">
-                      L.E {employee.dailyRate.toFixed(2)}/day
+                      <div className="font-medium">{overtime.employee.name}</div>
+                      <div className="text-sm text-muted-foreground">{overtime.employee.position}</div>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center text-muted-foreground">
-                No employee data available
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                  <div className="text-right">
+                    <div className="font-semibold text-lg">
+                      {overtime.totalOvertimeHours.toFixed(1)} hrs
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {overtime.overtimeDays} day{overtime.overtimeDays !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-8 text-center text-muted-foreground">
+              <ClockIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
+              <p>No overtime recorded this week</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 } 
