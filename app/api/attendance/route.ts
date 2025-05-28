@@ -11,15 +11,27 @@ interface DateFilter {
 interface AttendanceWhereClause {
   employeeId?: number;
   date?: DateFilter;
+  employee?: {
+    name?: {
+      contains: string;
+      mode: 'insensitive';
+    };
+  };
 }
 
 export async function GET(request: NextRequest) {
   try {
-    // Get query parameters for filtering
+    // Get query parameters for filtering and pagination
     const { searchParams } = new URL(request.url);
     const employeeId = searchParams.get('employeeId');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
+    const search = searchParams.get('search'); // New search parameter
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
     
     // Build the where clause for filtering
     const where: AttendanceWhereClause = {};
@@ -40,7 +52,27 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    // Fetch attendance records with employee information
+    // Add employee name search if provided
+    if (search) {
+      where.employee = {
+        name: {
+          contains: search,
+          mode: 'insensitive' as const
+        }
+      };
+    }
+    
+    // Get total count for pagination
+    const totalCount = await prisma.attendance.count({
+      where
+    });
+    
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+    
+    // Fetch attendance records with pagination
     const attendanceRecords = await prisma.attendance.findMany({
       where,
       orderBy: {
@@ -54,7 +86,8 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      take: 100, // Limit to 100 records
+      skip: offset,
+      take: limit,
     });
     
     // Format the response
@@ -68,7 +101,19 @@ export async function GET(request: NextRequest) {
       hoursWorked: record.hoursWorked,
     }));
     
-    return NextResponse.json(formattedRecords);
+    return NextResponse.json({
+      data: formattedRecords,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalCount,
+        limit,
+        hasNextPage,
+        hasPrevPage,
+        startIndex: offset + 1,
+        endIndex: Math.min(offset + limit, totalCount)
+      }
+    });
   } catch (error: unknown) {
     console.error('Error fetching attendance records:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

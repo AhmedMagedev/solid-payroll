@@ -58,18 +58,20 @@ model Attendance {
 }
 
 model Payout {
-  id            Int      @id @default(autoincrement())
-  employeeId    Int      @map("employee_id")
-  periodStart   DateTime @db.Date @map("period_start")
-  periodEnd     DateTime @db.Date @map("period_end")
-  amount        Float    @default(0)
-  isPaid        Boolean  @default(false) @map("is_paid")
-  comment       String?
-  paymentDate   DateTime? @map("payment_date")
-  createdAt     DateTime @default(now()) @map("created_at") 
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id               Int      @id @default(autoincrement())
+  employeeId       Int      @map("employee_id")
+  periodStart      DateTime @db.Date @map("period_start")
+  periodEnd        DateTime @db.Date @map("period_end")
+  amount           Float    @default(0)
+  isPaid           Boolean  @default(false) @map("is_paid")
+  comment          String?
+  paymentDate      DateTime? @map("payment_date")
+  adjustmentAmount Float?   @default(0) @map("adjustment_amount")
+  adjustmentReason String?  @map("adjustment_reason")
+  createdAt        DateTime @default(now()) @map("created_at") 
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
-  employee      Employee @relation(fields: [employeeId], references: [id])
+  employee         Employee @relation(fields: [employeeId], references: [id])
 
   @@unique([employeeId, periodStart, periodEnd])
   @@map("payouts")

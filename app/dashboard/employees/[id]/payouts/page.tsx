@@ -41,6 +41,8 @@ interface Payout {
   isPaid: boolean;
   comment: string | null;
   paymentDate: string | null;
+  adjustmentAmount?: number;
+  adjustmentReason?: string;
 }
 
 interface SystemSettings {
@@ -62,8 +64,7 @@ export default function EmployeePayoutsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [existingPayouts, setExistingPayouts] = useState<Payout[]>([]);
-  const [isPaidStates, setIsPaidStates] = useState<Record<string, boolean>>({});
-  const [comments, setComments] = useState<Record<string, string>>({});
+  const [tempChanges, setTempChanges] = useState<Record<string, {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string}>>({});
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   
@@ -111,6 +112,7 @@ export default function EmployeePayoutsPage() {
         if (payoutsResponse.ok) {
           const payoutsData = await payoutsResponse.json();
           setExistingPayouts(payoutsData);
+          console.log('Loaded payouts from database:', payoutsData);
         }
         
         // Fetch system settings
@@ -260,15 +262,29 @@ export default function EmployeePayoutsPage() {
     const hoursPerDay = systemSettings?.workingHoursPerDay || 8; // Use system setting or default to 8
     const expectedHours = workingDaysInPeriod * hoursPerDay;
     
-    // Calculate payout based on daily rate
-    const payout = daysWorked * employee.dailyRate;
+    // Calculate regular and overtime hours
+    const regularHours = Math.min(totalHours, expectedHours);
+    const overtimeHours = Math.max(0, totalHours - expectedHours);
+    
+    // Calculate hourly rate from daily rate
+    const hourlyRate = employee.dailyRate / hoursPerDay;
+    const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
+    
+    // Calculate payout: base daily rate + overtime pay
+    const basePayout = daysWorked * employee.dailyRate;
+    const overtimePayout = overtimeHours * overtimeRate;
+    const totalPayout = basePayout + overtimePayout;
     
     return {
       daysWorked,
       workingDaysInPeriod,
       totalHours,
       expectedHours,
-      payout
+      regularHours,
+      overtimeHours,
+      basePayout,
+      overtimePayout,
+      payout: totalPayout
     };
   };
   
@@ -317,22 +333,74 @@ export default function EmployeePayoutsPage() {
   
   const paymentPeriods = getPaymentPeriods();
   
-  // Add a function to find existing payout for a period
+  // Helper function to generate period key
+  const getPeriodKey = (periodStart: Date, periodEnd: Date) => {
+    // Use date strings instead of full ISO strings for consistency
+    const startDate = periodStart.toISOString().split('T')[0];
+    const endDate = periodEnd.toISOString().split('T')[0];
+    return `${startDate}-${endDate}`;
+  };
+  
+  // Find existing payout for a period
   const findExistingPayout = (periodStart: Date, periodEnd: Date) => {
     return existingPayouts.find(payout => {
       const payoutStart = new Date(payout.periodStart);
       const payoutEnd = new Date(payout.periodEnd);
-      return (
-        payoutStart.getTime() === periodStart.getTime() && 
-        payoutEnd.getTime() === periodEnd.getTime()
-      );
+      
+      // Compare dates by converting to ISO date strings (YYYY-MM-DD) to avoid time zone and millisecond issues
+      const startMatches = payoutStart.toISOString().split('T')[0] === periodStart.toISOString().split('T')[0];
+      const endMatches = payoutEnd.toISOString().split('T')[0] === periodEnd.toISOString().split('T')[0];
+      
+      console.log('Comparing payout periods:', {
+        payoutId: payout.id,
+        dbStart: payoutStart.toISOString(),
+        dbEnd: payoutEnd.toISOString(),
+        searchStart: periodStart.toISOString(),
+        searchEnd: periodEnd.toISOString(),
+        startMatches,
+        endMatches,
+        matches: startMatches && endMatches
+      });
+      
+      return startMatches && endMatches;
     });
   };
 
-  // Add a function to save a payout
+  // Get current state for a period (combines DB and temp changes)
+  const getCurrentState = (periodStart: Date, periodEnd: Date) => {
+    const periodKey = getPeriodKey(periodStart, periodEnd);
+    const existingPayout = findExistingPayout(periodStart, periodEnd);
+    const tempChange = tempChanges[periodKey];
+    
+    return {
+      isPaid: tempChange?.isPaid !== undefined ? tempChange.isPaid : (existingPayout?.isPaid || false),
+      comment: tempChange?.comment !== undefined ? tempChange.comment : (existingPayout?.comment || ''),
+      adjustmentAmount: tempChange?.adjustmentAmount !== undefined ? tempChange.adjustmentAmount : (existingPayout?.adjustmentAmount || 0),
+      adjustmentReason: tempChange?.adjustmentReason !== undefined ? tempChange.adjustmentReason : (existingPayout?.adjustmentReason || ''),
+      hasChanges: tempChange && (
+        (tempChange.isPaid !== undefined && tempChange.isPaid !== existingPayout?.isPaid) ||
+        (tempChange.comment !== undefined && tempChange.comment !== (existingPayout?.comment || '')) ||
+        (tempChange.adjustmentAmount !== undefined && tempChange.adjustmentAmount !== (existingPayout?.adjustmentAmount || 0)) ||
+        (tempChange.adjustmentReason !== undefined && tempChange.adjustmentReason !== (existingPayout?.adjustmentReason || ''))
+      )
+    };
+  };
+
+  // Update temporary state
+  const updateTempState = (periodStart: Date, periodEnd: Date, updates: {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string}) => {
+    const periodKey = getPeriodKey(periodStart, periodEnd);
+    setTempChanges(prev => ({
+      ...prev,
+      [periodKey]: { ...prev[periodKey], ...updates }
+    }));
+  };
+
+  // Save payout to database
   const savePayout = async (periodStart: Date, periodEnd: Date, amount: number) => {
-    const periodKey = `${periodStart.toISOString()}-${periodEnd.toISOString()}`;
-    setIsUpdating({...isUpdating, [periodKey]: true});
+    const periodKey = getPeriodKey(periodStart, periodEnd);
+    const currentState = getCurrentState(periodStart, periodEnd);
+    
+    setIsUpdating(prev => ({ ...prev, [periodKey]: true }));
     
     try {
       const existingPayout = findExistingPayout(periodStart, periodEnd);
@@ -345,8 +413,10 @@ export default function EmployeePayoutsPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            isPaid: isPaidStates[periodKey] || false,
-            comment: comments[periodKey] || '',
+            isPaid: currentState.isPaid,
+            comment: currentState.comment,
+            adjustmentAmount: currentState.adjustmentAmount,
+            adjustmentReason: currentState.adjustmentReason,
           }),
         });
         
@@ -357,6 +427,13 @@ export default function EmployeePayoutsPage() {
           setExistingPayouts(prev => 
             prev.map(p => p.id === updatedPayout.id ? updatedPayout : p)
           );
+          
+          // Clear temp changes for this period
+          setTempChanges(prev => {
+            const newTemp = { ...prev };
+            delete newTemp[periodKey];
+            return newTemp;
+          });
           
           toast.success('Payout updated successfully');
         } else {
@@ -374,24 +451,34 @@ export default function EmployeePayoutsPage() {
             periodStart,
             periodEnd,
             amount,
-            isPaid: isPaidStates[periodKey] || false,
-            comment: comments[periodKey] || '',
+            isPaid: currentState.isPaid,
+            comment: currentState.comment,
+            adjustmentAmount: currentState.adjustmentAmount,
+            adjustmentReason: currentState.adjustmentReason,
           }),
         });
         
         if (response.ok) {
           const newPayout = await response.json();
           setExistingPayouts(prev => [...prev, newPayout]);
-          toast.success('Payout saved successfully');
+          
+          // Clear temp changes for this period
+          setTempChanges(prev => {
+            const newTemp = { ...prev };
+            delete newTemp[periodKey];
+            return newTemp;
+          });
+          
+          toast.success('Payout created successfully');
         } else {
-          toast.error('Failed to save payout');
+          toast.error('Failed to create payout');
         }
       }
     } catch (error) {
       console.error('Error saving payout:', error);
       toast.error('An error occurred while saving the payout');
     } finally {
-      setIsUpdating({...isUpdating, [periodKey]: false});
+      setIsUpdating(prev => ({ ...prev, [periodKey]: false }));
     }
   };
 
@@ -422,17 +509,12 @@ export default function EmployeePayoutsPage() {
         
         <TabsContent value="payouts" className="space-y-6">
           {paymentPeriods.map((period, index) => {
-            const { daysWorked, workingDaysInPeriod, totalHours, expectedHours, payout } = 
+            const { daysWorked, workingDaysInPeriod, totalHours, expectedHours, regularHours, overtimeHours, basePayout, overtimePayout, payout } = 
               calculatePeriodPayout(period.start, period.end);
             
+            const currentState = getCurrentState(period.start, period.end);
             const existingPayout = findExistingPayout(period.start, period.end);
-            const periodKey = `${period.start.toISOString()}-${period.end.toISOString()}`;
-            
-            // Initialize state for this period if not already done
-            if (existingPayout && isPaidStates[periodKey] === undefined) {
-              isPaidStates[periodKey] = existingPayout.isPaid;
-              comments[periodKey] = existingPayout.comment || '';
-            }
+            const periodKey = getPeriodKey(period.start, period.end);
             
             return (
               <Card key={index} className="overflow-hidden">
@@ -442,122 +524,207 @@ export default function EmployeePayoutsPage() {
                       <Calendar className="h-4 w-4 mr-1 text-primary" />
                       {period.label}
                     </CardTitle>
-                    <div className="flex items-center">
-                      <span className="text-xs text-muted-foreground mr-1">Mark as Paid</span>
-                      <Switch
-                        id={`paid-toggle-${index}`}
-                        checked={isPaidStates[periodKey] || false}
-                        onCheckedChange={(checked) => {
-                          setIsPaidStates({
-                            ...isPaidStates,
-                            [periodKey]: checked
-                          });
-                        }}
-                      />
+                    <div className="flex items-center gap-3">
+                      {/* Payment status on the right */}
+                      {currentState.isPaid && (
+                        <Badge variant="outline" className="bg-green-500 text-white text-xs">
+                          Paid{existingPayout?.paymentDate ? ` on ${new Date(existingPayout.paymentDate).toLocaleDateString()}` : ''}
+                        </Badge>
+                      )}
+                      <div className="flex items-center">
+                        <span className="text-xs text-muted-foreground mr-1">Mark as Paid</span>
+                        <Switch
+                          id={`paid-toggle-${index}`}
+                          checked={currentState.isPaid}
+                          onCheckedChange={(checked) => {
+                            updateTempState(period.start, period.end, { isPaid: checked });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-3">
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <div className="space-y-3">
-                      <div>
-                        <h3 className="text-md font-medium mb-2">{period.label}</h3>
-                        <div className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-muted-foreground flex items-center text-sm">
-                              <CalendarCheck className="h-3 w-3 mr-1" />
-                              Days Worked
-                            </span>
-                            <span className="font-semibold text-sm">{daysWorked} / {workingDaysInPeriod}</span>
+                  <div className="space-y-4">
+                    {/* Main content in single column for better space usage */}
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-3">
+                        <div>
+                          <h3 className="text-md font-medium mb-2">{period.label}</h3>
+                          <div className="space-y-1">
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground flex items-center text-sm">
+                                <CalendarCheck className="h-3 w-3 mr-1" />
+                                Days Worked
+                              </span>
+                              <span className="font-semibold text-sm">{daysWorked} / {workingDaysInPeriod}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground flex items-center text-sm">
+                                <Clock className="h-3 w-3 mr-1" />
+                                Regular Hours
+                              </span>
+                              <span className="font-semibold text-sm">{regularHours.toFixed(1)} / {expectedHours}</span>
+                            </div>
+                            {overtimeHours > 0 && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground flex items-center text-sm text-orange-600">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  Overtime Hours
+                                </span>
+                                <span className="font-semibold text-sm text-orange-600">{overtimeHours.toFixed(1)} hrs</span>
+                              </div>
+                            )}
                           </div>
+                        </div>
+                        
+                        <div className="pt-2 border-t space-y-1">
                           <div className="flex justify-between items-center">
                             <span className="text-muted-foreground flex items-center text-sm">
-                              <Clock className="h-3 w-3 mr-1" />
-                              Hours Worked
+                              <DollarSign className="h-3 w-3 mr-1" />
+                              Base Payout
                             </span>
-                            <span className="font-semibold text-sm">{totalHours.toFixed(1)} / {expectedHours}</span>
+                            <span className="font-semibold text-sm">L.E {basePayout.toFixed(2)}</span>
+                          </div>
+                          {overtimePayout > 0 && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground flex items-center text-sm text-orange-600">
+                                <DollarSign className="h-3 w-3 mr-1" />
+                                Overtime Pay (1.5x)
+                              </span>
+                              <span className="font-semibold text-sm text-orange-600">L.E {overtimePayout.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {currentState.adjustmentAmount !== 0 && (
+                            <div className="flex justify-between items-center">
+                              <span className={`text-muted-foreground flex items-center text-sm ${currentState.adjustmentAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                <DollarSign className="h-3 w-3 mr-1" />
+                                {currentState.adjustmentAmount > 0 ? 'Bonus/Addition' : 'Deduction/Penalty'}
+                              </span>
+                              <span className={`font-semibold text-sm ${currentState.adjustmentAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {currentState.adjustmentAmount > 0 ? '+' : ''}L.E {currentState.adjustmentAmount.toFixed(2)}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-center pt-1 border-t">
+                            <span className="text-muted-foreground flex items-center font-medium">
+                              <DollarSign className="h-4 w-4 mr-1" />
+                              Final Payout
+                            </span>
+                            <span className="text-lg font-bold">L.E {(payout + currentState.adjustmentAmount).toFixed(2)}</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="pt-2 border-t">
-                        <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground flex items-center text-sm">
-                            <DollarSign className="h-3 w-3 mr-1" />
-                            Total Payout
-                          </span>
-                          <span className="text-lg font-bold">L.E {payout.toFixed(2)}</span>
-                        </div>
-                      </div>
-                      
-                      {/* Payment status and comment section */}
-                      <div className="pt-2 border-t space-y-2">
-                        {/* Payment comment */}
+                      <div className="bg-muted/10 p-3 rounded-md">
+                        <h4 className="font-medium mb-2 text-sm">Attendance Summary</h4>
                         <div className="space-y-1">
-                          <label 
-                            htmlFor={`comment-${index}`}
-                            className="text-xs text-muted-foreground"
-                          >
-                            Payment Comment
-                          </label>
-                          <Textarea
-                            id={`comment-${index}`}
-                            placeholder="Add a comment about this payment..."
-                            value={comments[periodKey] || ''}
-                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                              setComments({
-                                ...comments,
-                                [periodKey]: e.target.value
-                              });
-                            }}
-                            className="resize-none min-h-[60px] text-sm"
-                          />
-                        </div>
-                        
-                        {/* Payment status */}
-                        {existingPayout && existingPayout.isPaid && (
-                          <div className="text-xs text-center">
-                            <Badge variant="outline" className="bg-green-500 text-white">
-                              Paid on {existingPayout.paymentDate ? new Date(existingPayout.paymentDate).toLocaleDateString() : 'Unknown date'}
-                            </Badge>
+                          <div className="flex justify-between items-center text-sm">
+                            <span>Attendance Rate</span>
+                            <span className="font-medium">
+                              {workingDaysInPeriod > 0 
+                                ? Math.round((daysWorked / workingDaysInPeriod) * 100) 
+                                : 0}%
+                            </span>
                           </div>
-                        )}
-                        
-                        {/* Save button - centered */}
-                        <div className="flex justify-center">
-                          <Button 
-                            className="h-8 text-sm px-8" 
-                            onClick={() => savePayout(period.start, period.end, payout)}
-                            disabled={isUpdating[periodKey]}
-                          >
-                            {isUpdating[periodKey] ? 'Saving...' : 'Save Payment Details'}
-                          </Button>
+                          <div className="flex justify-between items-center text-sm">
+                            <span>Absences</span>
+                            <span className="font-medium">
+                              {workingDaysInPeriod - daysWorked} day(s)
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <span>Total Hours</span>
+                            <span className="font-medium">{totalHours.toFixed(1)} hrs</span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <span>Avg. Hours/Day</span>
+                            <span className="font-medium">
+                              {daysWorked > 0 ? (totalHours / daysWorked).toFixed(1) : 0}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="bg-muted/10 p-3 rounded-md">
-                      <h4 className="font-medium mb-2 text-sm">Attendance Summary</h4>
+                    {/* Full-width comment and adjustment section */}
+                    <div className="pt-2 border-t space-y-4">
+                      {/* Adjustment Section */}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-1">
+                          <label 
+                            htmlFor={`adjustment-amount-${index}`}
+                            className="text-xs text-muted-foreground"
+                          >
+                            Adjustment Amount (L.E)
+                          </label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            id={`adjustment-amount-${index}`}
+                            placeholder="0.00 (+ for bonus, - for deduction)"
+                            value={currentState.adjustmentAmount || ''}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
+                              updateTempState(period.start, period.end, { adjustmentAmount: isNaN(value) ? 0 : value });
+                            }}
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label 
+                            htmlFor={`adjustment-reason-${index}`}
+                            className="text-xs text-muted-foreground"
+                          >
+                            Adjustment Reason
+                          </label>
+                          <input
+                            type="text"
+                            id={`adjustment-reason-${index}`}
+                            placeholder="e.g., Bonus, Late penalty, Transport allowance..."
+                            value={currentState.adjustmentReason}
+                            onChange={(e) => {
+                              updateTempState(period.start, period.end, { adjustmentReason: e.target.value });
+                            }}
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Comment Section */}
                       <div className="space-y-1">
-                        <div className="flex justify-between items-center text-sm">
-                          <span>Attendance Rate</span>
-                          <span className="font-medium">
-                            {workingDaysInPeriod > 0 
-                              ? Math.round((daysWorked / workingDaysInPeriod) * 100) 
-                              : 0}%
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm">
-                          <span>Absences</span>
-                          <span className="font-medium">
-                            {workingDaysInPeriod - daysWorked} day(s)
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm">
-                          <span>Avg. Hours/Day</span>
-                          <span className="font-medium">
-                            {daysWorked > 0 ? (totalHours / daysWorked).toFixed(1) : 0}
-                          </span>
+                        <label 
+                          htmlFor={`comment-${index}`}
+                          className="text-xs text-muted-foreground"
+                        >
+                          Payment Comment
+                        </label>
+                        <Textarea
+                          id={`comment-${index}`}
+                          placeholder="Add a comment about this payment..."
+                          value={currentState.comment}
+                          onChange={(e) => {
+                            updateTempState(period.start, period.end, { comment: e.target.value });
+                          }}
+                          className="resize-none min-h-[60px] text-sm w-full"
+                        />
+                      </div>
+                      
+                      {/* Update button - centered */}
+                      <div className="flex justify-center">
+                        <div className="flex flex-col items-center space-y-1">
+                          {currentState.hasChanges && (
+                            <div className="text-xs text-orange-600 font-medium">
+                              ⚠️ Unsaved changes
+                            </div>
+                          )}
+                                                      <Button 
+                              className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
+                              onClick={() => savePayout(period.start, period.end, payout + currentState.adjustmentAmount)}
+                              disabled={isUpdating[periodKey]}
+                            >
+                              {isUpdating[periodKey] ? 'Updating...' : 'Update Payout'}
+                            </Button>
                         </div>
                       </div>
                     </div>

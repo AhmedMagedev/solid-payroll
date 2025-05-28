@@ -148,7 +148,8 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   checkOut: 'checkOut',
   hoursWorked: 'hoursWorked',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isPaidDay: 'isPaidDay'
 };
 
 exports.Prisma.PayoutScalarFieldEnum = {
@@ -161,7 +162,9 @@ exports.Prisma.PayoutScalarFieldEnum = {
   comment: 'comment',
   paymentDate: 'paymentDate',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  adjustmentAmount: 'adjustmentAmount',
+  adjustmentReason: 'adjustmentReason'
 };
 
 exports.Prisma.SystemSettingsScalarFieldEnum = {

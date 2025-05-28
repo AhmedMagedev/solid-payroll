@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prisma:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
-    "remove-all-employees": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/remove-all-employees.ts",
+    "remove-all-employees": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/remove-all-employees.ts",
     "deploy": "rsync -avz --exclude 'node_modules' --exclude '.next' --exclude '.env' ./ root@161.97.78.56:/tmp/payroll/ && ssh root@161.97.78.56 'cd /tmp/payroll && npm install && npx prisma generate && docker build -t payroll-app . && docker stop solid_payroll_app || true && docker rm solid_payroll_app || true && docker run -d -p 3001:3000 --network solid_payroll_network --env-file .env --name solid_payroll_app --restart unless-stopped payroll-app'"
   },
   "dependencies": {

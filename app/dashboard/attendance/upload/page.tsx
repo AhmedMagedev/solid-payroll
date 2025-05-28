@@ -15,7 +15,13 @@ export default function AttendanceUploadPage() {
   const [uploadResult, setUploadResult] = useState<{ 
     success?: boolean; 
     message?: string; 
-    error?: string 
+    error?: string;
+    recordsCount?: number;
+    payouts?: {
+      created: number;
+      updated: number;
+      total: number;
+    };
   } | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +145,24 @@ export default function AttendanceUploadPage() {
                     <CheckCircle2 className="h-5 w-5 text-green-500" />
                     <AlertTitle className="text-green-800 font-medium">Success!</AlertTitle>
                     <AlertDescription className="text-green-700">
-                      {uploadResult.message}
+                      <div className="space-y-2">
+                        <p>{uploadResult.message}</p>
+                        {uploadResult.recordsCount && (
+                          <p className="font-medium">
+                            📋 Processed {uploadResult.recordsCount} attendance records
+                          </p>
+                        )}
+                        {uploadResult.payouts && (
+                          <div className="text-sm space-y-1">
+                            <p className="font-medium">💰 Payout Calculation Results:</p>
+                            <ul className="ml-4 space-y-1">
+                              <li>• Created {uploadResult.payouts.created} new payouts</li>
+                              <li>• Updated {uploadResult.payouts.updated} existing payouts</li>
+                              <li>• Total payouts processed: {uploadResult.payouts.total}</li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
                     </AlertDescription>
                   </Alert>
                 ) : (
@@ -222,6 +245,12 @@ export default function AttendanceUploadPage() {
                         <span className="text-xs font-bold text-primary">4</span>
                       </div>
                       <span className="text-sm">Hours worked are calculated from the difference between check-in and check-out</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
+                        <span className="text-xs font-bold text-primary">5</span>
+                      </div>
+                      <span className="text-sm">Payouts are automatically calculated and updated based on attendance data</span>
                     </li>
                   </ul>
                 </div>

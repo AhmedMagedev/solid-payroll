@@ -74,20 +74,27 @@ export async function PATCH(
     // Parse request body
     const data = await request.json();
     
+    console.log(`[API Payout Update] Received data for payout ${payoutId}:`, data);
+    
     // Check if payout exists
     const existingPayout = await prisma.payout.findUnique({
       where: { id: payoutId }
     });
     
     if (!existingPayout) {
+      console.log(`[API Payout Update] Payout ${payoutId} not found`);
       return NextResponse.json({ error: 'Payout not found' }, { status: 404 });
     }
+    
+    console.log(`[API Payout Update] Existing payout:`, existingPayout);
     
     // Prepare update data
     const updateData: {
       isPaid?: boolean;
       comment?: string | null;
       paymentDate?: Date | null;
+      adjustmentAmount?: number;
+      adjustmentReason?: string | null;
     } = {};
     
     // Only update fields that are provided
@@ -107,11 +114,36 @@ export async function PATCH(
       updateData.comment = data.comment;
     }
     
+    if (data.adjustmentAmount !== undefined) {
+      updateData.adjustmentAmount = data.adjustmentAmount;
+    }
+    
+    if (data.adjustmentReason !== undefined) {
+      updateData.adjustmentReason = data.adjustmentReason;
+    }
+    
+    console.log(`[API Payout Update] Update data:`, updateData);
+    
     // Update payout
     const updatedPayout = await prisma.payout.update({
       where: { id: payoutId },
       data: updateData
     });
+    
+    console.log(`[API Payout Update] Successfully updated payout:`, updatedPayout);
+    
+    // Verify the update was actually applied by fetching the record again
+    const verificationPayout = await prisma.payout.findUnique({
+      where: { id: payoutId }
+    });
+    
+    console.log(`[API Payout Update] Verification - payout from DB:`, verificationPayout);
+    
+    if (verificationPayout?.isPaid !== updatedPayout.isPaid) {
+      console.error(`[API Payout Update] WARNING: Database verification failed! Expected isPaid: ${updatedPayout.isPaid}, but DB shows: ${verificationPayout?.isPaid}`);
+    } else {
+      console.log(`[API Payout Update] ✅ Database update verified successfully`);
+    }
     
     return NextResponse.json(updatedPayout);
   } catch (error) {

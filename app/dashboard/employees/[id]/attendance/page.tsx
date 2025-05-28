@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
@@ -24,62 +24,136 @@ interface AttendanceRecord {
   hoursWorked: number | null;
 }
 
+interface SystemSettings {
+  workingHoursStart: string;
+  workingHoursEnd: string;
+  lateAllowanceMinutes: number;
+}
+
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  limit: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  startIndex: number;
+  endIndex: number;
+}
+
+interface AttendanceResponse {
+  data: AttendanceRecord[];
+  pagination: PaginationInfo;
+}
+
 export default function EmployeeAttendancePage() {
   const params = useParams();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [monthlyTotal, setMonthlyTotal] = useState<number>(0);
+  const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   
+  // Fetch system settings
   useEffect(() => {
-    async function fetchData() {
-      if (!params.id) return;
-      
+    async function fetchSystemSettings() {
       try {
-        // Fetch employee details
-        const employeeResponse = await fetch(`/api/employee/${params.id}`, {
+        const response = await fetch('/api/settings', {
           credentials: 'include',
         });
         
-        if (!employeeResponse.ok) {
-          throw new Error('Failed to fetch employee details');
+        if (response.ok) {
+          const settings = await response.json();
+          setSystemSettings(settings);
         }
-        
-        const employeeData = await employeeResponse.json();
-        setEmployee(employeeData);
-        
-        // Fetch attendance records
-        const attendanceResponse = await fetch(`/api/attendance?employeeId=${params.id}`, {
-          credentials: 'include',
-        });
-        
-        if (!attendanceResponse.ok) {
-          throw new Error('Failed to fetch attendance records');
-        }
-        
-        const attendanceData = await attendanceResponse.json();
-        setAttendanceRecords(attendanceData);
-        
-        // Calculate monthly total hours
+      } catch (err) {
+        console.error('Error fetching system settings:', err);
+      }
+    }
+    
+    fetchSystemSettings();
+  }, []);
+
+  const fetchData = useCallback(async (page: number) => {
+    if (!params.id) return;
+    
+    try {
+      setIsLoading(true);
+      
+      // Fetch employee details
+      const employeeResponse = await fetch(`/api/employee/${params.id}`, {
+        credentials: 'include',
+      });
+      
+      if (!employeeResponse.ok) {
+        throw new Error('Failed to fetch employee details');
+      }
+      
+      const employeeData = await employeeResponse.json();
+      setEmployee(employeeData);
+      
+      // Fetch attendance records with pagination
+      const params2 = new URLSearchParams({
+        employeeId: params.id as string,
+        page: page.toString(),
+        limit: '20'
+      });
+      
+      const attendanceResponse = await fetch(`/api/attendance?${params2.toString()}`, {
+        credentials: 'include',
+      });
+      
+      if (!attendanceResponse.ok) {
+        throw new Error('Failed to fetch attendance records');
+      }
+      
+      const attendanceData: AttendanceResponse = await attendanceResponse.json();
+      const records = attendanceData.data || attendanceData; // Fallback for old format
+      setAttendanceRecords(records);
+      setPagination(attendanceData.pagination || null);
+      
+      // Calculate total hours (for all records, not just current page)
+      // We'll need to fetch all records for accurate total
+      if (attendanceData.pagination) {
+        // For paginated response, show current page stats only
         let totalHours = 0;
-        for (const record of attendanceData) {
+        for (const record of records) {
           if (record.hoursWorked) {
             totalHours += record.hoursWorked;
           }
         }
         setMonthlyTotal(totalHours);
-        
-      } catch (err) {
-        setError('Error loading data. Please try again.');
-        console.error('Error fetching data:', err);
-      } finally {
-        setIsLoading(false);
+      } else {
+        // Fallback for old format
+        let totalHours = 0;
+        for (const record of records) {
+          if (record.hoursWorked) {
+            totalHours += record.hoursWorked;
+          }
+        }
+        setMonthlyTotal(totalHours);
       }
+      
+      setError(null);
+    } catch (err) {
+      setError('Error loading data. Please try again.');
+      console.error('Error fetching data:', err);
+    } finally {
+      setIsLoading(false);
     }
-    
-    fetchData();
   }, [params.id]);
+
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [currentPage, fetchData]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
   function formatTime(timeString: string | null) {
     if (!timeString) return 'N/A';
@@ -100,9 +174,59 @@ export default function EmployeeAttendancePage() {
     }
   }
   
+  // Check if check-in is late (past working hours start + grace period)
+  function isCheckInLate(checkInTime: string, recordDate: string): boolean {
+    if (!systemSettings || !checkInTime) return false;
+    
+    try {
+      const checkIn = new Date(checkInTime);
+      const recordDateObj = new Date(recordDate);
+      
+      // Parse working hours start time
+      const [hours, minutes] = systemSettings.workingHoursStart.split(':');
+      const expectedStartTime = new Date(recordDateObj);
+      expectedStartTime.setHours(parseInt(hours), parseInt(minutes) + systemSettings.lateAllowanceMinutes, 0, 0);
+      
+      return checkIn > expectedStartTime;
+    } catch {
+      return false;
+    }
+  }
+
+  // Check if check-out is early (before working hours end)
+  function isCheckOutEarly(checkOutTime: string | null, recordDate: string): boolean {
+    if (!systemSettings || !checkOutTime) return false;
+    
+    try {
+      const checkOut = new Date(checkOutTime);
+      const recordDateObj = new Date(recordDate);
+      
+      // Parse working hours end time
+      const [hours, minutes] = systemSettings.workingHoursEnd.split(':');
+      const expectedEndTime = new Date(recordDateObj);
+      expectedEndTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      
+      return checkOut < expectedEndTime;
+    } catch {
+      return false;
+    }
+  }
+
+  // Format time with conditional styling
+  function formatTimeWithStyling(
+    timeString: string | null, 
+    isLate: boolean, 
+    isEarly: boolean
+  ): React.ReactNode {
+    const timeText = formatTime(timeString);
+    const className = (isLate || isEarly) ? 'text-red-600 font-medium' : '';
+    
+    return <span className={className}>{timeText}</span>;
+  }
+  
   function calculateExpectedSalary() {
     if (!employee) return 0;
-    const workingDays = attendanceRecords.length;
+    const workingDays = pagination ? pagination.totalCount : attendanceRecords.length;
     return workingDays * employee.dailyRate;
   }
 
@@ -148,19 +272,35 @@ export default function EmployeeAttendancePage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Workdays</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {pagination ? `Total Records (Page ${pagination.currentPage} of ${pagination.totalPages})` : 'Total Workdays'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{attendanceRecords.length} days</div>
+            <div className="text-3xl font-bold">
+              {pagination ? `${pagination.totalCount} total` : `${attendanceRecords.length} days`}
+            </div>
+            {pagination && (
+              <div className="text-xs text-muted-foreground mt-1">
+                Showing {pagination.startIndex} - {pagination.endIndex}
+              </div>
+            )}
           </CardContent>
         </Card>
         
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Hours</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {pagination ? 'Hours (Current Page)' : 'Total Hours'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{monthlyTotal.toFixed(2)} hours</div>
+            {pagination && (
+              <div className="text-xs text-muted-foreground mt-1">
+                Page {pagination.currentPage} of {pagination.totalPages}
+              </div>
+            )}
           </CardContent>
         </Card>
         
@@ -187,6 +327,11 @@ export default function EmployeeAttendancePage() {
         <Card className="shadow-sm">
           <CardHeader className="border-b">
             <CardTitle>Attendance History</CardTitle>
+            {pagination && (
+              <div className="text-sm text-muted-foreground">
+                Showing {pagination.startIndex} - {pagination.endIndex} of {pagination.totalCount} records
+              </div>
+            )}
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
@@ -203,8 +348,20 @@ export default function EmployeeAttendancePage() {
                   {attendanceRecords.map((record) => (
                     <tr key={record.id} className="border-b border-border/50 hover:bg-muted/30">
                       <td className="px-6 py-4 font-medium">{formatDate(record.date)}</td>
-                      <td className="px-6 py-4">{formatTime(record.checkIn)}</td>
-                      <td className="px-6 py-4">{formatTime(record.checkOut)}</td>
+                      <td className="px-6 py-4">
+                        {formatTimeWithStyling(
+                          record.checkIn,
+                          isCheckInLate(record.checkIn, record.date),
+                          false
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        {formatTimeWithStyling(
+                          record.checkOut,
+                          false,
+                          isCheckOutEarly(record.checkOut, record.date)
+                        )}
+                      </td>
                       <td className="px-6 py-4">
                         {record.hoursWorked !== null 
                           ? `${record.hoursWorked.toFixed(2)}h` 
@@ -217,6 +374,64 @@ export default function EmployeeAttendancePage() {
             </div>
           </CardContent>
         </Card>
+      )}
+      
+      {/* Pagination Controls */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+          <div className="text-sm text-muted-foreground">
+            Page {pagination.currentPage} of {pagination.totalPages} ({pagination.totalCount} total records)
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={!pagination.hasPrevPage || isLoading}
+            >
+              Previous
+            </Button>
+            
+            {/* Page Numbers */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                let pageNum;
+                if (pagination.totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= pagination.totalPages - 2) {
+                  pageNum = pagination.totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={pageNum === currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handlePageChange(pageNum)}
+                    disabled={isLoading}
+                    className="w-8 h-8 p-0"
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={!pagination.hasNextPage || isLoading}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );

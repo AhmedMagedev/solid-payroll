@@ -135,10 +135,115 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Auto-calculate payouts for affected employees
+    console.log('[API Upload] Starting automatic payout calculation...');
+    
+    // Get unique employee IDs from processed attendance records
+    const affectedEmployeeIds = [...new Set(attendanceRecords.map(record => record.employeeId))];
+    console.log(`[API Upload] Auto-calculating payouts for ${affectedEmployeeIds.length} employees`);
+    
+    let payoutsCreated = 0;
+    let payoutsUpdated = 0;
+    
+    for (const employeeId of affectedEmployeeIds) {
+      try {
+        // Get employee details
+        const employee = await prisma.employee.findUnique({
+          where: { id: employeeId }
+        });
+        
+        if (!employee) continue;
+        
+        // Get all attendance records for this employee
+        const allAttendance = await prisma.attendance.findMany({
+          where: { employeeId },
+          orderBy: { date: 'asc' }
+        });
+        
+        if (allAttendance.length === 0) continue;
+        
+        // Group attendance by month (for monthly payment basis)
+        const attendanceByMonth = new Map<string, typeof allAttendance>();
+        
+        allAttendance.forEach(record => {
+          const date = new Date(record.date);
+          const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+          
+          if (!attendanceByMonth.has(monthKey)) {
+            attendanceByMonth.set(monthKey, []);
+          }
+          attendanceByMonth.get(monthKey)!.push(record);
+        });
+        
+        // Process each month
+        for (const [monthKey, monthAttendance] of attendanceByMonth) {
+          const [year, month] = monthKey.split('-').map(Number);
+          const periodStart = new Date(year, month - 1, 1);
+          const periodEnd = new Date(year, month, 0); // Last day of month
+          
+          // Check if payout already exists
+          const existingPayout = await prisma.payout.findUnique({
+            where: {
+              employeeId_periodStart_periodEnd: {
+                employeeId,
+                periodStart,
+                periodEnd
+              }
+            }
+          });
+          
+          // Calculate payout
+          const daysWorked = monthAttendance.length;
+          const totalHours = monthAttendance.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
+          const calculatedAmount = daysWorked * employee.dailyRate;
+          
+          if (existingPayout) {
+            // Update existing payout if amount changed
+            if (existingPayout.amount !== calculatedAmount) {
+              await prisma.payout.update({
+                where: { id: existingPayout.id },
+                data: { 
+                  amount: calculatedAmount,
+                  comment: `Auto-updated: ${daysWorked} days, ${totalHours.toFixed(1)} hours`,
+                  updatedAt: new Date()
+                }
+              });
+              payoutsUpdated++;
+              console.log(`[API Upload] Updated payout for ${employee.name} (${monthKey}): ${calculatedAmount}`);
+            }
+          } else {
+            // Create new payout
+            await prisma.payout.create({
+              data: {
+                employeeId,
+                periodStart,
+                periodEnd,
+                amount: calculatedAmount,
+                isPaid: false,
+                comment: `Auto-calculated: ${daysWorked} days, ${totalHours.toFixed(1)} hours`
+              }
+            });
+            payoutsCreated++;
+            console.log(`[API Upload] Created payout for ${employee.name} (${monthKey}): ${calculatedAmount}`);
+          }
+        }
+      } catch (payoutError) {
+        console.error(`[API Upload] Error calculating payouts for employee ${employeeId}:`, payoutError);
+        // Continue processing other employees even if one fails
+      }
+    }
+    
+    console.log(`[API Upload] Payout calculation completed. Created: ${payoutsCreated}, Updated: ${payoutsUpdated}`);
+
     return NextResponse.json({
       success: true,
-      message: `Successfully processed ${attendanceRecords.length} attendance records.`,
-      recordsCount: attendanceRecords.length
+      message: `Successfully processed ${attendanceRecords.length} attendance records and updated payouts.`,
+      recordsCount: attendanceRecords.length,
+      payouts: {
+        created: payoutsCreated,
+        updated: payoutsUpdated,
+        total: payoutsCreated + payoutsUpdated
+      }
     });
   } catch (error: unknown) {
     console.error('Error processing attendance upload:', error);

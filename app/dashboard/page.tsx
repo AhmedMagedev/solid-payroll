@@ -68,6 +68,7 @@ const StatBox = ({
 interface DashboardStats {
   totalEmployees: number;
   unpaidEmployeesCount: number;
+  totalPayrollPaidThisMonth: number;
   totalOvertimePayout: number;
   weeklyAttendanceData: Array<{
     week: string;
@@ -99,6 +100,12 @@ interface DashboardStats {
     actualAttendance: number;
     totalLateArrivals: number;
     totalOnTime: number;
+  };
+  metadata?: {
+    isCurrentWeek: boolean;
+    dataWeekStart: string;
+    dataWeekEnd: string;
+    currentDate: string;
   };
 }
 
@@ -150,8 +157,33 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Show notice if data is from previous week */}
+      {stats?.metadata && !stats.metadata.isCurrentWeek && (
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">
+                Showing data from previous week
+              </h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p>
+                  No attendance data found for the current week. Displaying statistics from{' '}
+                  {new Date(stats.metadata.dataWeekStart).toLocaleDateString()} to{' '}
+                  {new Date(stats.metadata.dataWeekEnd).toLocaleDateString()}.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatBox
           title="Total Employees"
           value={stats ? stats.totalEmployees : '-'}
@@ -165,6 +197,14 @@ export default function DashboardPage() {
           value={stats ? stats.unpaidEmployeesCount : '-'}
           icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
           description="Employees with unpaid payouts"
+          isLoading={isLoading}
+        />
+        
+        <StatBox
+          title="Payroll Paid This Month"
+          value={stats ? `L.E ${stats.totalPayrollPaidThisMonth.toFixed(2)}` : '-'}
+          icon={<DollarSign className="h-4 w-4 text-green-600" />}
+          description="Total payroll paid out"
           isLoading={isLoading}
         />
         
@@ -218,7 +258,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for the past 4 weeks
+                No attendance data available for {stats?.metadata?.isCurrentWeek ? 'this week' : 'the selected period'}
               </div>
             )}
           </CardContent>
@@ -229,7 +269,7 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="text-lg flex items-center">
               <ClockAlert className="h-5 w-5 mr-2 text-primary" />
-              Late Arrivals This Week
+              Late Arrivals {stats?.metadata?.isCurrentWeek ? 'This Week' : 'Recent Week'}
             </CardTitle>
             <CardDescription>Percentage of late vs on-time arrivals</CardDescription>
           </CardHeader>
@@ -264,7 +304,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for this week
+                No attendance data available for {stats?.metadata?.isCurrentWeek ? 'this week' : 'the selected period'}
               </div>
             )}
           </CardContent>
@@ -275,7 +315,7 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="text-lg flex items-center">
               <CalendarX className="h-5 w-5 mr-2 text-primary" />
-              Absenteeism Rate This Week
+              Absenteeism Rate {stats?.metadata?.isCurrentWeek ? 'This Week' : 'Recent Week'}
             </CardTitle>
             <CardDescription>Present vs absent employees this week</CardDescription>
           </CardHeader>
@@ -310,7 +350,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for this week
+                No attendance data available for {stats?.metadata?.isCurrentWeek ? 'this week' : 'the selected period'}
               </div>
             )}
           </CardContent>
@@ -322,7 +362,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center">
             <ClockIcon className="h-5 w-5 mr-2 text-primary" />
-            Overtime Hours This Week
+            Overtime Hours {stats?.metadata?.isCurrentWeek ? 'This Week' : 'Recent Week'}
           </CardTitle>
           <CardDescription>Employees who worked overtime this week</CardDescription>
         </CardHeader>
@@ -366,7 +406,7 @@ export default function DashboardPage() {
           ) : (
             <div className="py-8 text-center text-muted-foreground">
               <ClockIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No overtime recorded this week</p>
+              <p>No overtime recorded {stats?.metadata?.isCurrentWeek ? 'this week' : 'for the selected period'}</p>
             </div>
           )}
         </CardContent>

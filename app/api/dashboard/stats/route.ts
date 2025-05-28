@@ -22,8 +22,31 @@ export async function GET(request: NextRequest) {
 
     // Get current date and week
     const today = new Date();
-    const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // Start week on Monday
-    const endOfThisWeek = endOfWeek(today, { weekStartsOn: 1 });
+    let startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // Start week on Monday
+    let endOfThisWeek = endOfWeek(today, { weekStartsOn: 1 });
+    
+    // Check if there's any attendance data for this week
+    const currentWeekAttendanceCount = await prisma.attendance.count({
+      where: {
+        date: {
+          gte: startOfThisWeek,
+          lte: endOfThisWeek
+        }
+      }
+    });
+    
+    // If no data for current week, find the most recent week with data
+    if (currentWeekAttendanceCount === 0) {
+      const mostRecentAttendance = await prisma.attendance.findFirst({
+        orderBy: { date: 'desc' },
+        select: { date: true }
+      });
+      
+      if (mostRecentAttendance) {
+        startOfThisWeek = startOfWeek(mostRecentAttendance.date, { weekStartsOn: 1 });
+        endOfThisWeek = endOfWeek(mostRecentAttendance.date, { weekStartsOn: 1 });
+      }
+    }
     
     // Get system settings for working hours
     const systemSettings = await prisma.systemSettings.findFirst();
@@ -46,10 +69,29 @@ export async function GET(request: NextRequest) {
     });
     const unpaidEmployeesCount = unpaidPayouts.length;
     
-    // Calculate overtime payout for this month
+    // Calculate total payroll paid this month
     const startOfThisMonth = startOfMonth(today);
     const endOfThisMonth = endOfMonth(today);
     
+    const paidPayoutsThisMonth = await prisma.payout.findMany({
+      where: {
+        isPaid: true,
+        paymentDate: {
+          gte: startOfThisMonth,
+          lte: endOfThisMonth
+        }
+      },
+      select: {
+        amount: true,
+        adjustmentAmount: true
+      }
+    });
+    
+    const totalPayrollPaidThisMonth = paidPayoutsThisMonth.reduce((total, payout) => {
+      return total + payout.amount + (payout.adjustmentAmount || 0);
+    }, 0);
+    
+    // Calculate overtime payout for this month
     const thisMonthOvertimeData = await prisma.attendance.findMany({
       where: {
         date: {
@@ -220,6 +262,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       totalEmployees,
       unpaidEmployeesCount,
+      totalPayrollPaidThisMonth,
       totalOvertimePayout,
       weeklyAttendanceData,
       lateArrivalsData,
@@ -230,6 +273,12 @@ export async function GET(request: NextRequest) {
         actualAttendance: actualAttendanceThisWeek,
         totalLateArrivals: lateArrivals,
         totalOnTime: onTimeArrivals
+      },
+      metadata: {
+        isCurrentWeek: currentWeekAttendanceCount > 0,
+        dataWeekStart: startOfThisWeek.toISOString(),
+        dataWeekEnd: endOfThisWeek.toISOString(),
+        currentDate: today.toISOString()
       }
     });
     

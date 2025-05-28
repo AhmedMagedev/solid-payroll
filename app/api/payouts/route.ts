@@ -80,7 +80,9 @@ export async function POST(request: NextRequest) {
         amount: data.amount,
         isPaid: data.isPaid || false,
         comment: data.comment || null,
-        paymentDate: data.isPaid ? new Date() : null
+        paymentDate: data.isPaid ? new Date() : null,
+        adjustmentAmount: data.adjustmentAmount || 0,
+        adjustmentReason: data.adjustmentReason || null
       }
     });
     
