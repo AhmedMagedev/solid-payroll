@@ -34,6 +34,11 @@ export type Attendance = $Result.DefaultSelection<Prisma.$AttendancePayload>
  */
 export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
 /**
+ * Model PayoutAdjustment
+ * 
+ */
+export type PayoutAdjustment = $Result.DefaultSelection<Prisma.$PayoutAdjustmentPayload>
+/**
  * Model SystemSettings
  * 
  */
@@ -203,6 +208,16 @@ export class PrismaClient<
     * ```
     */
   get payout(): Prisma.PayoutDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.payoutAdjustment`: Exposes CRUD operations for the **PayoutAdjustment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PayoutAdjustments
+    * const payoutAdjustments = await prisma.payoutAdjustment.findMany()
+    * ```
+    */
+  get payoutAdjustment(): Prisma.PayoutAdjustmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.systemSettings`: Exposes CRUD operations for the **SystemSettings** model.
@@ -657,6 +672,7 @@ export namespace Prisma {
     User: 'User',
     Attendance: 'Attendance',
     Payout: 'Payout',
+    PayoutAdjustment: 'PayoutAdjustment',
     SystemSettings: 'SystemSettings'
   };
 
@@ -676,7 +692,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "employee" | "user" | "attendance" | "payout" | "systemSettings"
+      modelProps: "employee" | "user" | "attendance" | "payout" | "payoutAdjustment" | "systemSettings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -976,6 +992,80 @@ export namespace Prisma {
           }
         }
       }
+      PayoutAdjustment: {
+        payload: Prisma.$PayoutAdjustmentPayload<ExtArgs>
+        fields: Prisma.PayoutAdjustmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PayoutAdjustmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PayoutAdjustmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>
+          }
+          findFirst: {
+            args: Prisma.PayoutAdjustmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PayoutAdjustmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>
+          }
+          findMany: {
+            args: Prisma.PayoutAdjustmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>[]
+          }
+          create: {
+            args: Prisma.PayoutAdjustmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>
+          }
+          createMany: {
+            args: Prisma.PayoutAdjustmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PayoutAdjustmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>[]
+          }
+          delete: {
+            args: Prisma.PayoutAdjustmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>
+          }
+          update: {
+            args: Prisma.PayoutAdjustmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.PayoutAdjustmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PayoutAdjustmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PayoutAdjustmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.PayoutAdjustmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutAdjustmentPayload>
+          }
+          aggregate: {
+            args: Prisma.PayoutAdjustmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePayoutAdjustment>
+          }
+          groupBy: {
+            args: Prisma.PayoutAdjustmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PayoutAdjustmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PayoutAdjustmentCountArgs<ExtArgs>
+            result: $Utils.Optional<PayoutAdjustmentCountAggregateOutputType> | number
+          }
+        }
+      }
       SystemSettings: {
         payload: Prisma.$SystemSettingsPayload<ExtArgs>
         fields: Prisma.SystemSettingsFieldRefs
@@ -1138,6 +1228,7 @@ export namespace Prisma {
     user?: UserOmit
     attendance?: AttendanceOmit
     payout?: PayoutOmit
+    payoutAdjustment?: PayoutAdjustmentOmit
     systemSettings?: SystemSettingsOmit
   }
 
@@ -1265,6 +1356,37 @@ export namespace Prisma {
    */
   export type EmployeeCountOutputTypeCountPayoutsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PayoutWhereInput
+  }
+
+
+  /**
+   * Count Type PayoutCountOutputType
+   */
+
+  export type PayoutCountOutputType = {
+    adjustments: number
+  }
+
+  export type PayoutCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    adjustments?: boolean | PayoutCountOutputTypeCountAdjustmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PayoutCountOutputType without action
+   */
+  export type PayoutCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutCountOutputType
+     */
+    select?: PayoutCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PayoutCountOutputType without action
+   */
+  export type PayoutCountOutputTypeCountAdjustmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PayoutAdjustmentWhereInput
   }
 
 
@@ -4680,6 +4802,7 @@ export namespace Prisma {
     updatedAt: Date | null
     adjustmentAmount: number | null
     adjustmentReason: string | null
+    includeOvertime: boolean | null
   }
 
   export type PayoutMaxAggregateOutputType = {
@@ -4695,6 +4818,7 @@ export namespace Prisma {
     updatedAt: Date | null
     adjustmentAmount: number | null
     adjustmentReason: string | null
+    includeOvertime: boolean | null
   }
 
   export type PayoutCountAggregateOutputType = {
@@ -4710,6 +4834,7 @@ export namespace Prisma {
     updatedAt: number
     adjustmentAmount: number
     adjustmentReason: number
+    includeOvertime: number
     _all: number
   }
 
@@ -4741,6 +4866,7 @@ export namespace Prisma {
     updatedAt?: true
     adjustmentAmount?: true
     adjustmentReason?: true
+    includeOvertime?: true
   }
 
   export type PayoutMaxAggregateInputType = {
@@ -4756,6 +4882,7 @@ export namespace Prisma {
     updatedAt?: true
     adjustmentAmount?: true
     adjustmentReason?: true
+    includeOvertime?: true
   }
 
   export type PayoutCountAggregateInputType = {
@@ -4771,6 +4898,7 @@ export namespace Prisma {
     updatedAt?: true
     adjustmentAmount?: true
     adjustmentReason?: true
+    includeOvertime?: true
     _all?: true
   }
 
@@ -4873,6 +5001,7 @@ export namespace Prisma {
     updatedAt: Date
     adjustmentAmount: number | null
     adjustmentReason: string | null
+    includeOvertime: boolean
     _count: PayoutCountAggregateOutputType | null
     _avg: PayoutAvgAggregateOutputType | null
     _sum: PayoutSumAggregateOutputType | null
@@ -4907,7 +5036,10 @@ export namespace Prisma {
     updatedAt?: boolean
     adjustmentAmount?: boolean
     adjustmentReason?: boolean
+    includeOvertime?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    adjustments?: boolean | Payout$adjustmentsArgs<ExtArgs>
+    _count?: boolean | PayoutCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payout"]>
 
   export type PayoutSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4923,6 +5055,7 @@ export namespace Prisma {
     updatedAt?: boolean
     adjustmentAmount?: boolean
     adjustmentReason?: boolean
+    includeOvertime?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payout"]>
 
@@ -4939,6 +5072,7 @@ export namespace Prisma {
     updatedAt?: boolean
     adjustmentAmount?: boolean
     adjustmentReason?: boolean
+    includeOvertime?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payout"]>
 
@@ -4955,11 +5089,14 @@ export namespace Prisma {
     updatedAt?: boolean
     adjustmentAmount?: boolean
     adjustmentReason?: boolean
+    includeOvertime?: boolean
   }
 
-  export type PayoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "periodStart" | "periodEnd" | "amount" | "isPaid" | "comment" | "paymentDate" | "createdAt" | "updatedAt" | "adjustmentAmount" | "adjustmentReason", ExtArgs["result"]["payout"]>
+  export type PayoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "periodStart" | "periodEnd" | "amount" | "isPaid" | "comment" | "paymentDate" | "createdAt" | "updatedAt" | "adjustmentAmount" | "adjustmentReason" | "includeOvertime", ExtArgs["result"]["payout"]>
   export type PayoutInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    adjustments?: boolean | Payout$adjustmentsArgs<ExtArgs>
+    _count?: boolean | PayoutCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PayoutIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
@@ -4972,6 +5109,7 @@ export namespace Prisma {
     name: "Payout"
     objects: {
       employee: Prisma.$EmployeePayload<ExtArgs>
+      adjustments: Prisma.$PayoutAdjustmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4986,6 +5124,7 @@ export namespace Prisma {
       updatedAt: Date
       adjustmentAmount: number | null
       adjustmentReason: string | null
+      includeOvertime: boolean
     }, ExtArgs["result"]["payout"]>
     composites: {}
   }
@@ -5381,6 +5520,7 @@ export namespace Prisma {
   export interface Prisma__PayoutClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    adjustments<T extends Payout$adjustmentsArgs<ExtArgs> = {}>(args?: Subset<T, Payout$adjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5422,6 +5562,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Payout", 'DateTime'>
     readonly adjustmentAmount: FieldRef<"Payout", 'Float'>
     readonly adjustmentReason: FieldRef<"Payout", 'String'>
+    readonly includeOvertime: FieldRef<"Payout", 'Boolean'>
   }
     
 
@@ -5818,6 +5959,30 @@ export namespace Prisma {
   }
 
   /**
+   * Payout.adjustments
+   */
+  export type Payout$adjustmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    where?: PayoutAdjustmentWhereInput
+    orderBy?: PayoutAdjustmentOrderByWithRelationInput | PayoutAdjustmentOrderByWithRelationInput[]
+    cursor?: PayoutAdjustmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PayoutAdjustmentScalarFieldEnum | PayoutAdjustmentScalarFieldEnum[]
+  }
+
+  /**
    * Payout without action
    */
   export type PayoutDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5833,6 +5998,1132 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PayoutInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PayoutAdjustment
+   */
+
+  export type AggregatePayoutAdjustment = {
+    _count: PayoutAdjustmentCountAggregateOutputType | null
+    _avg: PayoutAdjustmentAvgAggregateOutputType | null
+    _sum: PayoutAdjustmentSumAggregateOutputType | null
+    _min: PayoutAdjustmentMinAggregateOutputType | null
+    _max: PayoutAdjustmentMaxAggregateOutputType | null
+  }
+
+  export type PayoutAdjustmentAvgAggregateOutputType = {
+    id: number | null
+    payoutId: number | null
+    amount: number | null
+  }
+
+  export type PayoutAdjustmentSumAggregateOutputType = {
+    id: number | null
+    payoutId: number | null
+    amount: number | null
+  }
+
+  export type PayoutAdjustmentMinAggregateOutputType = {
+    id: number | null
+    payoutId: number | null
+    type: string | null
+    amount: number | null
+    reason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PayoutAdjustmentMaxAggregateOutputType = {
+    id: number | null
+    payoutId: number | null
+    type: string | null
+    amount: number | null
+    reason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PayoutAdjustmentCountAggregateOutputType = {
+    id: number
+    payoutId: number
+    type: number
+    amount: number
+    reason: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PayoutAdjustmentAvgAggregateInputType = {
+    id?: true
+    payoutId?: true
+    amount?: true
+  }
+
+  export type PayoutAdjustmentSumAggregateInputType = {
+    id?: true
+    payoutId?: true
+    amount?: true
+  }
+
+  export type PayoutAdjustmentMinAggregateInputType = {
+    id?: true
+    payoutId?: true
+    type?: true
+    amount?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PayoutAdjustmentMaxAggregateInputType = {
+    id?: true
+    payoutId?: true
+    type?: true
+    amount?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PayoutAdjustmentCountAggregateInputType = {
+    id?: true
+    payoutId?: true
+    type?: true
+    amount?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PayoutAdjustmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PayoutAdjustment to aggregate.
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PayoutAdjustments to fetch.
+     */
+    orderBy?: PayoutAdjustmentOrderByWithRelationInput | PayoutAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PayoutAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PayoutAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PayoutAdjustments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PayoutAdjustments
+    **/
+    _count?: true | PayoutAdjustmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PayoutAdjustmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PayoutAdjustmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PayoutAdjustmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PayoutAdjustmentMaxAggregateInputType
+  }
+
+  export type GetPayoutAdjustmentAggregateType<T extends PayoutAdjustmentAggregateArgs> = {
+        [P in keyof T & keyof AggregatePayoutAdjustment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePayoutAdjustment[P]>
+      : GetScalarType<T[P], AggregatePayoutAdjustment[P]>
+  }
+
+
+
+
+  export type PayoutAdjustmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PayoutAdjustmentWhereInput
+    orderBy?: PayoutAdjustmentOrderByWithAggregationInput | PayoutAdjustmentOrderByWithAggregationInput[]
+    by: PayoutAdjustmentScalarFieldEnum[] | PayoutAdjustmentScalarFieldEnum
+    having?: PayoutAdjustmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PayoutAdjustmentCountAggregateInputType | true
+    _avg?: PayoutAdjustmentAvgAggregateInputType
+    _sum?: PayoutAdjustmentSumAggregateInputType
+    _min?: PayoutAdjustmentMinAggregateInputType
+    _max?: PayoutAdjustmentMaxAggregateInputType
+  }
+
+  export type PayoutAdjustmentGroupByOutputType = {
+    id: number
+    payoutId: number
+    type: string
+    amount: number
+    reason: string
+    createdAt: Date
+    updatedAt: Date
+    _count: PayoutAdjustmentCountAggregateOutputType | null
+    _avg: PayoutAdjustmentAvgAggregateOutputType | null
+    _sum: PayoutAdjustmentSumAggregateOutputType | null
+    _min: PayoutAdjustmentMinAggregateOutputType | null
+    _max: PayoutAdjustmentMaxAggregateOutputType | null
+  }
+
+  type GetPayoutAdjustmentGroupByPayload<T extends PayoutAdjustmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PayoutAdjustmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PayoutAdjustmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PayoutAdjustmentGroupByOutputType[P]>
+            : GetScalarType<T[P], PayoutAdjustmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PayoutAdjustmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    payoutId?: boolean
+    type?: boolean
+    amount?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    payout?: boolean | PayoutDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["payoutAdjustment"]>
+
+  export type PayoutAdjustmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    payoutId?: boolean
+    type?: boolean
+    amount?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    payout?: boolean | PayoutDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["payoutAdjustment"]>
+
+  export type PayoutAdjustmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    payoutId?: boolean
+    type?: boolean
+    amount?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    payout?: boolean | PayoutDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["payoutAdjustment"]>
+
+  export type PayoutAdjustmentSelectScalar = {
+    id?: boolean
+    payoutId?: boolean
+    type?: boolean
+    amount?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PayoutAdjustmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "payoutId" | "type" | "amount" | "reason" | "createdAt" | "updatedAt", ExtArgs["result"]["payoutAdjustment"]>
+  export type PayoutAdjustmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    payout?: boolean | PayoutDefaultArgs<ExtArgs>
+  }
+  export type PayoutAdjustmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    payout?: boolean | PayoutDefaultArgs<ExtArgs>
+  }
+  export type PayoutAdjustmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    payout?: boolean | PayoutDefaultArgs<ExtArgs>
+  }
+
+  export type $PayoutAdjustmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PayoutAdjustment"
+    objects: {
+      payout: Prisma.$PayoutPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      payoutId: number
+      type: string
+      amount: number
+      reason: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["payoutAdjustment"]>
+    composites: {}
+  }
+
+  type PayoutAdjustmentGetPayload<S extends boolean | null | undefined | PayoutAdjustmentDefaultArgs> = $Result.GetResult<Prisma.$PayoutAdjustmentPayload, S>
+
+  type PayoutAdjustmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PayoutAdjustmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PayoutAdjustmentCountAggregateInputType | true
+    }
+
+  export interface PayoutAdjustmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PayoutAdjustment'], meta: { name: 'PayoutAdjustment' } }
+    /**
+     * Find zero or one PayoutAdjustment that matches the filter.
+     * @param {PayoutAdjustmentFindUniqueArgs} args - Arguments to find a PayoutAdjustment
+     * @example
+     * // Get one PayoutAdjustment
+     * const payoutAdjustment = await prisma.payoutAdjustment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PayoutAdjustmentFindUniqueArgs>(args: SelectSubset<T, PayoutAdjustmentFindUniqueArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PayoutAdjustment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PayoutAdjustmentFindUniqueOrThrowArgs} args - Arguments to find a PayoutAdjustment
+     * @example
+     * // Get one PayoutAdjustment
+     * const payoutAdjustment = await prisma.payoutAdjustment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PayoutAdjustmentFindUniqueOrThrowArgs>(args: SelectSubset<T, PayoutAdjustmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PayoutAdjustment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentFindFirstArgs} args - Arguments to find a PayoutAdjustment
+     * @example
+     * // Get one PayoutAdjustment
+     * const payoutAdjustment = await prisma.payoutAdjustment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PayoutAdjustmentFindFirstArgs>(args?: SelectSubset<T, PayoutAdjustmentFindFirstArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PayoutAdjustment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentFindFirstOrThrowArgs} args - Arguments to find a PayoutAdjustment
+     * @example
+     * // Get one PayoutAdjustment
+     * const payoutAdjustment = await prisma.payoutAdjustment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PayoutAdjustmentFindFirstOrThrowArgs>(args?: SelectSubset<T, PayoutAdjustmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PayoutAdjustments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PayoutAdjustments
+     * const payoutAdjustments = await prisma.payoutAdjustment.findMany()
+     * 
+     * // Get first 10 PayoutAdjustments
+     * const payoutAdjustments = await prisma.payoutAdjustment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const payoutAdjustmentWithIdOnly = await prisma.payoutAdjustment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PayoutAdjustmentFindManyArgs>(args?: SelectSubset<T, PayoutAdjustmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PayoutAdjustment.
+     * @param {PayoutAdjustmentCreateArgs} args - Arguments to create a PayoutAdjustment.
+     * @example
+     * // Create one PayoutAdjustment
+     * const PayoutAdjustment = await prisma.payoutAdjustment.create({
+     *   data: {
+     *     // ... data to create a PayoutAdjustment
+     *   }
+     * })
+     * 
+     */
+    create<T extends PayoutAdjustmentCreateArgs>(args: SelectSubset<T, PayoutAdjustmentCreateArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PayoutAdjustments.
+     * @param {PayoutAdjustmentCreateManyArgs} args - Arguments to create many PayoutAdjustments.
+     * @example
+     * // Create many PayoutAdjustments
+     * const payoutAdjustment = await prisma.payoutAdjustment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PayoutAdjustmentCreateManyArgs>(args?: SelectSubset<T, PayoutAdjustmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PayoutAdjustments and returns the data saved in the database.
+     * @param {PayoutAdjustmentCreateManyAndReturnArgs} args - Arguments to create many PayoutAdjustments.
+     * @example
+     * // Create many PayoutAdjustments
+     * const payoutAdjustment = await prisma.payoutAdjustment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PayoutAdjustments and only return the `id`
+     * const payoutAdjustmentWithIdOnly = await prisma.payoutAdjustment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PayoutAdjustmentCreateManyAndReturnArgs>(args?: SelectSubset<T, PayoutAdjustmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PayoutAdjustment.
+     * @param {PayoutAdjustmentDeleteArgs} args - Arguments to delete one PayoutAdjustment.
+     * @example
+     * // Delete one PayoutAdjustment
+     * const PayoutAdjustment = await prisma.payoutAdjustment.delete({
+     *   where: {
+     *     // ... filter to delete one PayoutAdjustment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PayoutAdjustmentDeleteArgs>(args: SelectSubset<T, PayoutAdjustmentDeleteArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PayoutAdjustment.
+     * @param {PayoutAdjustmentUpdateArgs} args - Arguments to update one PayoutAdjustment.
+     * @example
+     * // Update one PayoutAdjustment
+     * const payoutAdjustment = await prisma.payoutAdjustment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PayoutAdjustmentUpdateArgs>(args: SelectSubset<T, PayoutAdjustmentUpdateArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PayoutAdjustments.
+     * @param {PayoutAdjustmentDeleteManyArgs} args - Arguments to filter PayoutAdjustments to delete.
+     * @example
+     * // Delete a few PayoutAdjustments
+     * const { count } = await prisma.payoutAdjustment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PayoutAdjustmentDeleteManyArgs>(args?: SelectSubset<T, PayoutAdjustmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PayoutAdjustments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PayoutAdjustments
+     * const payoutAdjustment = await prisma.payoutAdjustment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PayoutAdjustmentUpdateManyArgs>(args: SelectSubset<T, PayoutAdjustmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PayoutAdjustments and returns the data updated in the database.
+     * @param {PayoutAdjustmentUpdateManyAndReturnArgs} args - Arguments to update many PayoutAdjustments.
+     * @example
+     * // Update many PayoutAdjustments
+     * const payoutAdjustment = await prisma.payoutAdjustment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PayoutAdjustments and only return the `id`
+     * const payoutAdjustmentWithIdOnly = await prisma.payoutAdjustment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PayoutAdjustmentUpdateManyAndReturnArgs>(args: SelectSubset<T, PayoutAdjustmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PayoutAdjustment.
+     * @param {PayoutAdjustmentUpsertArgs} args - Arguments to update or create a PayoutAdjustment.
+     * @example
+     * // Update or create a PayoutAdjustment
+     * const payoutAdjustment = await prisma.payoutAdjustment.upsert({
+     *   create: {
+     *     // ... data to create a PayoutAdjustment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PayoutAdjustment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PayoutAdjustmentUpsertArgs>(args: SelectSubset<T, PayoutAdjustmentUpsertArgs<ExtArgs>>): Prisma__PayoutAdjustmentClient<$Result.GetResult<Prisma.$PayoutAdjustmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PayoutAdjustments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentCountArgs} args - Arguments to filter PayoutAdjustments to count.
+     * @example
+     * // Count the number of PayoutAdjustments
+     * const count = await prisma.payoutAdjustment.count({
+     *   where: {
+     *     // ... the filter for the PayoutAdjustments we want to count
+     *   }
+     * })
+    **/
+    count<T extends PayoutAdjustmentCountArgs>(
+      args?: Subset<T, PayoutAdjustmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PayoutAdjustmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PayoutAdjustment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PayoutAdjustmentAggregateArgs>(args: Subset<T, PayoutAdjustmentAggregateArgs>): Prisma.PrismaPromise<GetPayoutAdjustmentAggregateType<T>>
+
+    /**
+     * Group by PayoutAdjustment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAdjustmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PayoutAdjustmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PayoutAdjustmentGroupByArgs['orderBy'] }
+        : { orderBy?: PayoutAdjustmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PayoutAdjustmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPayoutAdjustmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PayoutAdjustment model
+   */
+  readonly fields: PayoutAdjustmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PayoutAdjustment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PayoutAdjustmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    payout<T extends PayoutDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PayoutDefaultArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PayoutAdjustment model
+   */
+  interface PayoutAdjustmentFieldRefs {
+    readonly id: FieldRef<"PayoutAdjustment", 'Int'>
+    readonly payoutId: FieldRef<"PayoutAdjustment", 'Int'>
+    readonly type: FieldRef<"PayoutAdjustment", 'String'>
+    readonly amount: FieldRef<"PayoutAdjustment", 'Float'>
+    readonly reason: FieldRef<"PayoutAdjustment", 'String'>
+    readonly createdAt: FieldRef<"PayoutAdjustment", 'DateTime'>
+    readonly updatedAt: FieldRef<"PayoutAdjustment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PayoutAdjustment findUnique
+   */
+  export type PayoutAdjustmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * Filter, which PayoutAdjustment to fetch.
+     */
+    where: PayoutAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * PayoutAdjustment findUniqueOrThrow
+   */
+  export type PayoutAdjustmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * Filter, which PayoutAdjustment to fetch.
+     */
+    where: PayoutAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * PayoutAdjustment findFirst
+   */
+  export type PayoutAdjustmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * Filter, which PayoutAdjustment to fetch.
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PayoutAdjustments to fetch.
+     */
+    orderBy?: PayoutAdjustmentOrderByWithRelationInput | PayoutAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PayoutAdjustments.
+     */
+    cursor?: PayoutAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PayoutAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PayoutAdjustments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PayoutAdjustments.
+     */
+    distinct?: PayoutAdjustmentScalarFieldEnum | PayoutAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * PayoutAdjustment findFirstOrThrow
+   */
+  export type PayoutAdjustmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * Filter, which PayoutAdjustment to fetch.
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PayoutAdjustments to fetch.
+     */
+    orderBy?: PayoutAdjustmentOrderByWithRelationInput | PayoutAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PayoutAdjustments.
+     */
+    cursor?: PayoutAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PayoutAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PayoutAdjustments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PayoutAdjustments.
+     */
+    distinct?: PayoutAdjustmentScalarFieldEnum | PayoutAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * PayoutAdjustment findMany
+   */
+  export type PayoutAdjustmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * Filter, which PayoutAdjustments to fetch.
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PayoutAdjustments to fetch.
+     */
+    orderBy?: PayoutAdjustmentOrderByWithRelationInput | PayoutAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PayoutAdjustments.
+     */
+    cursor?: PayoutAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PayoutAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PayoutAdjustments.
+     */
+    skip?: number
+    distinct?: PayoutAdjustmentScalarFieldEnum | PayoutAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * PayoutAdjustment create
+   */
+  export type PayoutAdjustmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PayoutAdjustment.
+     */
+    data: XOR<PayoutAdjustmentCreateInput, PayoutAdjustmentUncheckedCreateInput>
+  }
+
+  /**
+   * PayoutAdjustment createMany
+   */
+  export type PayoutAdjustmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PayoutAdjustments.
+     */
+    data: PayoutAdjustmentCreateManyInput | PayoutAdjustmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PayoutAdjustment createManyAndReturn
+   */
+  export type PayoutAdjustmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many PayoutAdjustments.
+     */
+    data: PayoutAdjustmentCreateManyInput | PayoutAdjustmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PayoutAdjustment update
+   */
+  export type PayoutAdjustmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PayoutAdjustment.
+     */
+    data: XOR<PayoutAdjustmentUpdateInput, PayoutAdjustmentUncheckedUpdateInput>
+    /**
+     * Choose, which PayoutAdjustment to update.
+     */
+    where: PayoutAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * PayoutAdjustment updateMany
+   */
+  export type PayoutAdjustmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PayoutAdjustments.
+     */
+    data: XOR<PayoutAdjustmentUpdateManyMutationInput, PayoutAdjustmentUncheckedUpdateManyInput>
+    /**
+     * Filter which PayoutAdjustments to update
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * Limit how many PayoutAdjustments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PayoutAdjustment updateManyAndReturn
+   */
+  export type PayoutAdjustmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * The data used to update PayoutAdjustments.
+     */
+    data: XOR<PayoutAdjustmentUpdateManyMutationInput, PayoutAdjustmentUncheckedUpdateManyInput>
+    /**
+     * Filter which PayoutAdjustments to update
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * Limit how many PayoutAdjustments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PayoutAdjustment upsert
+   */
+  export type PayoutAdjustmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PayoutAdjustment to update in case it exists.
+     */
+    where: PayoutAdjustmentWhereUniqueInput
+    /**
+     * In case the PayoutAdjustment found by the `where` argument doesn't exist, create a new PayoutAdjustment with this data.
+     */
+    create: XOR<PayoutAdjustmentCreateInput, PayoutAdjustmentUncheckedCreateInput>
+    /**
+     * In case the PayoutAdjustment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PayoutAdjustmentUpdateInput, PayoutAdjustmentUncheckedUpdateInput>
+  }
+
+  /**
+   * PayoutAdjustment delete
+   */
+  export type PayoutAdjustmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
+    /**
+     * Filter which PayoutAdjustment to delete.
+     */
+    where: PayoutAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * PayoutAdjustment deleteMany
+   */
+  export type PayoutAdjustmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PayoutAdjustments to delete
+     */
+    where?: PayoutAdjustmentWhereInput
+    /**
+     * Limit how many PayoutAdjustments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PayoutAdjustment without action
+   */
+  export type PayoutAdjustmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PayoutAdjustment
+     */
+    select?: PayoutAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PayoutAdjustment
+     */
+    omit?: PayoutAdjustmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutAdjustmentInclude<ExtArgs> | null
   }
 
 
@@ -7091,10 +8382,24 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     adjustmentAmount: 'adjustmentAmount',
-    adjustmentReason: 'adjustmentReason'
+    adjustmentReason: 'adjustmentReason',
+    includeOvertime: 'includeOvertime'
   };
 
   export type PayoutScalarFieldEnum = (typeof PayoutScalarFieldEnum)[keyof typeof PayoutScalarFieldEnum]
+
+
+  export const PayoutAdjustmentScalarFieldEnum: {
+    id: 'id',
+    payoutId: 'payoutId',
+    type: 'type',
+    amount: 'amount',
+    reason: 'reason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PayoutAdjustmentScalarFieldEnum = (typeof PayoutAdjustmentScalarFieldEnum)[keyof typeof PayoutAdjustmentScalarFieldEnum]
 
 
   export const SystemSettingsScalarFieldEnum: {
@@ -7442,7 +8747,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Payout"> | Date | string
     adjustmentAmount?: FloatNullableFilter<"Payout"> | number | null
     adjustmentReason?: StringNullableFilter<"Payout"> | string | null
+    includeOvertime?: BoolFilter<"Payout"> | boolean
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    adjustments?: PayoutAdjustmentListRelationFilter
   }
 
   export type PayoutOrderByWithRelationInput = {
@@ -7458,7 +8765,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
     adjustmentAmount?: SortOrderInput | SortOrder
     adjustmentReason?: SortOrderInput | SortOrder
+    includeOvertime?: SortOrder
     employee?: EmployeeOrderByWithRelationInput
+    adjustments?: PayoutAdjustmentOrderByRelationAggregateInput
   }
 
   export type PayoutWhereUniqueInput = Prisma.AtLeast<{
@@ -7478,7 +8787,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Payout"> | Date | string
     adjustmentAmount?: FloatNullableFilter<"Payout"> | number | null
     adjustmentReason?: StringNullableFilter<"Payout"> | string | null
+    includeOvertime?: BoolFilter<"Payout"> | boolean
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    adjustments?: PayoutAdjustmentListRelationFilter
   }, "id" | "employeeId_periodStart_periodEnd">
 
   export type PayoutOrderByWithAggregationInput = {
@@ -7494,6 +8805,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     adjustmentAmount?: SortOrderInput | SortOrder
     adjustmentReason?: SortOrderInput | SortOrder
+    includeOvertime?: SortOrder
     _count?: PayoutCountOrderByAggregateInput
     _avg?: PayoutAvgOrderByAggregateInput
     _max?: PayoutMaxOrderByAggregateInput
@@ -7517,6 +8829,74 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Payout"> | Date | string
     adjustmentAmount?: FloatNullableWithAggregatesFilter<"Payout"> | number | null
     adjustmentReason?: StringNullableWithAggregatesFilter<"Payout"> | string | null
+    includeOvertime?: BoolWithAggregatesFilter<"Payout"> | boolean
+  }
+
+  export type PayoutAdjustmentWhereInput = {
+    AND?: PayoutAdjustmentWhereInput | PayoutAdjustmentWhereInput[]
+    OR?: PayoutAdjustmentWhereInput[]
+    NOT?: PayoutAdjustmentWhereInput | PayoutAdjustmentWhereInput[]
+    id?: IntFilter<"PayoutAdjustment"> | number
+    payoutId?: IntFilter<"PayoutAdjustment"> | number
+    type?: StringFilter<"PayoutAdjustment"> | string
+    amount?: FloatFilter<"PayoutAdjustment"> | number
+    reason?: StringFilter<"PayoutAdjustment"> | string
+    createdAt?: DateTimeFilter<"PayoutAdjustment"> | Date | string
+    updatedAt?: DateTimeFilter<"PayoutAdjustment"> | Date | string
+    payout?: XOR<PayoutScalarRelationFilter, PayoutWhereInput>
+  }
+
+  export type PayoutAdjustmentOrderByWithRelationInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    payout?: PayoutOrderByWithRelationInput
+  }
+
+  export type PayoutAdjustmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: PayoutAdjustmentWhereInput | PayoutAdjustmentWhereInput[]
+    OR?: PayoutAdjustmentWhereInput[]
+    NOT?: PayoutAdjustmentWhereInput | PayoutAdjustmentWhereInput[]
+    payoutId?: IntFilter<"PayoutAdjustment"> | number
+    type?: StringFilter<"PayoutAdjustment"> | string
+    amount?: FloatFilter<"PayoutAdjustment"> | number
+    reason?: StringFilter<"PayoutAdjustment"> | string
+    createdAt?: DateTimeFilter<"PayoutAdjustment"> | Date | string
+    updatedAt?: DateTimeFilter<"PayoutAdjustment"> | Date | string
+    payout?: XOR<PayoutScalarRelationFilter, PayoutWhereInput>
+  }, "id">
+
+  export type PayoutAdjustmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PayoutAdjustmentCountOrderByAggregateInput
+    _avg?: PayoutAdjustmentAvgOrderByAggregateInput
+    _max?: PayoutAdjustmentMaxOrderByAggregateInput
+    _min?: PayoutAdjustmentMinOrderByAggregateInput
+    _sum?: PayoutAdjustmentSumOrderByAggregateInput
+  }
+
+  export type PayoutAdjustmentScalarWhereWithAggregatesInput = {
+    AND?: PayoutAdjustmentScalarWhereWithAggregatesInput | PayoutAdjustmentScalarWhereWithAggregatesInput[]
+    OR?: PayoutAdjustmentScalarWhereWithAggregatesInput[]
+    NOT?: PayoutAdjustmentScalarWhereWithAggregatesInput | PayoutAdjustmentScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"PayoutAdjustment"> | number
+    payoutId?: IntWithAggregatesFilter<"PayoutAdjustment"> | number
+    type?: StringWithAggregatesFilter<"PayoutAdjustment"> | string
+    amount?: FloatWithAggregatesFilter<"PayoutAdjustment"> | number
+    reason?: StringWithAggregatesFilter<"PayoutAdjustment"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PayoutAdjustment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PayoutAdjustment"> | Date | string
   }
 
   export type SystemSettingsWhereInput = {
@@ -7861,7 +9241,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustmentAmount?: number | null
     adjustmentReason?: string | null
+    includeOvertime?: boolean
     employee: EmployeeCreateNestedOneWithoutPayoutsInput
+    adjustments?: PayoutAdjustmentCreateNestedManyWithoutPayoutInput
   }
 
   export type PayoutUncheckedCreateInput = {
@@ -7877,6 +9259,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustmentAmount?: number | null
     adjustmentReason?: string | null
+    includeOvertime?: boolean
+    adjustments?: PayoutAdjustmentUncheckedCreateNestedManyWithoutPayoutInput
   }
 
   export type PayoutUpdateInput = {
@@ -7890,7 +9274,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
     employee?: EmployeeUpdateOneRequiredWithoutPayoutsNestedInput
+    adjustments?: PayoutAdjustmentUpdateManyWithoutPayoutNestedInput
   }
 
   export type PayoutUncheckedUpdateInput = {
@@ -7906,6 +9292,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+    adjustments?: PayoutAdjustmentUncheckedUpdateManyWithoutPayoutNestedInput
   }
 
   export type PayoutCreateManyInput = {
@@ -7921,6 +9309,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustmentAmount?: number | null
     adjustmentReason?: string | null
+    includeOvertime?: boolean
   }
 
   export type PayoutUpdateManyMutationInput = {
@@ -7934,6 +9323,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PayoutUncheckedUpdateManyInput = {
@@ -7949,6 +9339,73 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type PayoutAdjustmentCreateInput = {
+    type: string
+    amount: number
+    reason: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payout: PayoutCreateNestedOneWithoutAdjustmentsInput
+  }
+
+  export type PayoutAdjustmentUncheckedCreateInput = {
+    id?: number
+    payoutId: number
+    type: string
+    amount: number
+    reason: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutAdjustmentUpdateInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payout?: PayoutUpdateOneRequiredWithoutAdjustmentsNestedInput
+  }
+
+  export type PayoutAdjustmentUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    payoutId?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutAdjustmentCreateManyInput = {
+    id?: number
+    payoutId: number
+    type: string
+    amount: number
+    reason: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutAdjustmentUpdateManyMutationInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutAdjustmentUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    payoutId?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SystemSettingsCreateInput = {
@@ -8452,6 +9909,16 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type PayoutAdjustmentListRelationFilter = {
+    every?: PayoutAdjustmentWhereInput
+    some?: PayoutAdjustmentWhereInput
+    none?: PayoutAdjustmentWhereInput
+  }
+
+  export type PayoutAdjustmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type PayoutEmployeeIdPeriodStartPeriodEndCompoundUniqueInput = {
     employeeId: number
     periodStart: Date | string
@@ -8471,6 +9938,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     adjustmentAmount?: SortOrder
     adjustmentReason?: SortOrder
+    includeOvertime?: SortOrder
   }
 
   export type PayoutAvgOrderByAggregateInput = {
@@ -8493,6 +9961,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     adjustmentAmount?: SortOrder
     adjustmentReason?: SortOrder
+    includeOvertime?: SortOrder
   }
 
   export type PayoutMinOrderByAggregateInput = {
@@ -8508,6 +9977,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     adjustmentAmount?: SortOrder
     adjustmentReason?: SortOrder
+    includeOvertime?: SortOrder
   }
 
   export type PayoutSumOrderByAggregateInput = {
@@ -8515,6 +9985,53 @@ export namespace Prisma {
     employeeId?: SortOrder
     amount?: SortOrder
     adjustmentAmount?: SortOrder
+  }
+
+  export type PayoutScalarRelationFilter = {
+    is?: PayoutWhereInput
+    isNot?: PayoutWhereInput
+  }
+
+  export type PayoutAdjustmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PayoutAdjustmentAvgOrderByAggregateInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type PayoutAdjustmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PayoutAdjustmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PayoutAdjustmentSumOrderByAggregateInput = {
+    id?: SortOrder
+    payoutId?: SortOrder
+    amount?: SortOrder
   }
 
   export type SystemSettingsCountOrderByAggregateInput = {
@@ -8738,12 +10255,68 @@ export namespace Prisma {
     connect?: EmployeeWhereUniqueInput
   }
 
+  export type PayoutAdjustmentCreateNestedManyWithoutPayoutInput = {
+    create?: XOR<PayoutAdjustmentCreateWithoutPayoutInput, PayoutAdjustmentUncheckedCreateWithoutPayoutInput> | PayoutAdjustmentCreateWithoutPayoutInput[] | PayoutAdjustmentUncheckedCreateWithoutPayoutInput[]
+    connectOrCreate?: PayoutAdjustmentCreateOrConnectWithoutPayoutInput | PayoutAdjustmentCreateOrConnectWithoutPayoutInput[]
+    createMany?: PayoutAdjustmentCreateManyPayoutInputEnvelope
+    connect?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+  }
+
+  export type PayoutAdjustmentUncheckedCreateNestedManyWithoutPayoutInput = {
+    create?: XOR<PayoutAdjustmentCreateWithoutPayoutInput, PayoutAdjustmentUncheckedCreateWithoutPayoutInput> | PayoutAdjustmentCreateWithoutPayoutInput[] | PayoutAdjustmentUncheckedCreateWithoutPayoutInput[]
+    connectOrCreate?: PayoutAdjustmentCreateOrConnectWithoutPayoutInput | PayoutAdjustmentCreateOrConnectWithoutPayoutInput[]
+    createMany?: PayoutAdjustmentCreateManyPayoutInputEnvelope
+    connect?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+  }
+
   export type EmployeeUpdateOneRequiredWithoutPayoutsNestedInput = {
     create?: XOR<EmployeeCreateWithoutPayoutsInput, EmployeeUncheckedCreateWithoutPayoutsInput>
     connectOrCreate?: EmployeeCreateOrConnectWithoutPayoutsInput
     upsert?: EmployeeUpsertWithoutPayoutsInput
     connect?: EmployeeWhereUniqueInput
     update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutPayoutsInput, EmployeeUpdateWithoutPayoutsInput>, EmployeeUncheckedUpdateWithoutPayoutsInput>
+  }
+
+  export type PayoutAdjustmentUpdateManyWithoutPayoutNestedInput = {
+    create?: XOR<PayoutAdjustmentCreateWithoutPayoutInput, PayoutAdjustmentUncheckedCreateWithoutPayoutInput> | PayoutAdjustmentCreateWithoutPayoutInput[] | PayoutAdjustmentUncheckedCreateWithoutPayoutInput[]
+    connectOrCreate?: PayoutAdjustmentCreateOrConnectWithoutPayoutInput | PayoutAdjustmentCreateOrConnectWithoutPayoutInput[]
+    upsert?: PayoutAdjustmentUpsertWithWhereUniqueWithoutPayoutInput | PayoutAdjustmentUpsertWithWhereUniqueWithoutPayoutInput[]
+    createMany?: PayoutAdjustmentCreateManyPayoutInputEnvelope
+    set?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    disconnect?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    delete?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    connect?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    update?: PayoutAdjustmentUpdateWithWhereUniqueWithoutPayoutInput | PayoutAdjustmentUpdateWithWhereUniqueWithoutPayoutInput[]
+    updateMany?: PayoutAdjustmentUpdateManyWithWhereWithoutPayoutInput | PayoutAdjustmentUpdateManyWithWhereWithoutPayoutInput[]
+    deleteMany?: PayoutAdjustmentScalarWhereInput | PayoutAdjustmentScalarWhereInput[]
+  }
+
+  export type PayoutAdjustmentUncheckedUpdateManyWithoutPayoutNestedInput = {
+    create?: XOR<PayoutAdjustmentCreateWithoutPayoutInput, PayoutAdjustmentUncheckedCreateWithoutPayoutInput> | PayoutAdjustmentCreateWithoutPayoutInput[] | PayoutAdjustmentUncheckedCreateWithoutPayoutInput[]
+    connectOrCreate?: PayoutAdjustmentCreateOrConnectWithoutPayoutInput | PayoutAdjustmentCreateOrConnectWithoutPayoutInput[]
+    upsert?: PayoutAdjustmentUpsertWithWhereUniqueWithoutPayoutInput | PayoutAdjustmentUpsertWithWhereUniqueWithoutPayoutInput[]
+    createMany?: PayoutAdjustmentCreateManyPayoutInputEnvelope
+    set?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    disconnect?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    delete?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    connect?: PayoutAdjustmentWhereUniqueInput | PayoutAdjustmentWhereUniqueInput[]
+    update?: PayoutAdjustmentUpdateWithWhereUniqueWithoutPayoutInput | PayoutAdjustmentUpdateWithWhereUniqueWithoutPayoutInput[]
+    updateMany?: PayoutAdjustmentUpdateManyWithWhereWithoutPayoutInput | PayoutAdjustmentUpdateManyWithWhereWithoutPayoutInput[]
+    deleteMany?: PayoutAdjustmentScalarWhereInput | PayoutAdjustmentScalarWhereInput[]
+  }
+
+  export type PayoutCreateNestedOneWithoutAdjustmentsInput = {
+    create?: XOR<PayoutCreateWithoutAdjustmentsInput, PayoutUncheckedCreateWithoutAdjustmentsInput>
+    connectOrCreate?: PayoutCreateOrConnectWithoutAdjustmentsInput
+    connect?: PayoutWhereUniqueInput
+  }
+
+  export type PayoutUpdateOneRequiredWithoutAdjustmentsNestedInput = {
+    create?: XOR<PayoutCreateWithoutAdjustmentsInput, PayoutUncheckedCreateWithoutAdjustmentsInput>
+    connectOrCreate?: PayoutCreateOrConnectWithoutAdjustmentsInput
+    upsert?: PayoutUpsertWithoutAdjustmentsInput
+    connect?: PayoutWhereUniqueInput
+    update?: XOR<XOR<PayoutUpdateToOneWithWhereWithoutAdjustmentsInput, PayoutUpdateWithoutAdjustmentsInput>, PayoutUncheckedUpdateWithoutAdjustmentsInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -9005,6 +10578,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustmentAmount?: number | null
     adjustmentReason?: string | null
+    includeOvertime?: boolean
+    adjustments?: PayoutAdjustmentCreateNestedManyWithoutPayoutInput
   }
 
   export type PayoutUncheckedCreateWithoutEmployeeInput = {
@@ -9019,6 +10594,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustmentAmount?: number | null
     adjustmentReason?: string | null
+    includeOvertime?: boolean
+    adjustments?: PayoutAdjustmentUncheckedCreateNestedManyWithoutPayoutInput
   }
 
   export type PayoutCreateOrConnectWithoutEmployeeInput = {
@@ -9094,6 +10671,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Payout"> | Date | string
     adjustmentAmount?: FloatNullableFilter<"Payout"> | number | null
     adjustmentReason?: StringNullableFilter<"Payout"> | string | null
+    includeOvertime?: BoolFilter<"Payout"> | boolean
   }
 
   export type EmployeeCreateWithoutAttendanceInput = {
@@ -9192,6 +10770,33 @@ export namespace Prisma {
     create: XOR<EmployeeCreateWithoutPayoutsInput, EmployeeUncheckedCreateWithoutPayoutsInput>
   }
 
+  export type PayoutAdjustmentCreateWithoutPayoutInput = {
+    type: string
+    amount: number
+    reason: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutAdjustmentUncheckedCreateWithoutPayoutInput = {
+    id?: number
+    type: string
+    amount: number
+    reason: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutAdjustmentCreateOrConnectWithoutPayoutInput = {
+    where: PayoutAdjustmentWhereUniqueInput
+    create: XOR<PayoutAdjustmentCreateWithoutPayoutInput, PayoutAdjustmentUncheckedCreateWithoutPayoutInput>
+  }
+
+  export type PayoutAdjustmentCreateManyPayoutInputEnvelope = {
+    data: PayoutAdjustmentCreateManyPayoutInput | PayoutAdjustmentCreateManyPayoutInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmployeeUpsertWithoutPayoutsInput = {
     update: XOR<EmployeeUpdateWithoutPayoutsInput, EmployeeUncheckedUpdateWithoutPayoutsInput>
     create: XOR<EmployeeCreateWithoutPayoutsInput, EmployeeUncheckedCreateWithoutPayoutsInput>
@@ -9228,6 +10833,113 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
+  export type PayoutAdjustmentUpsertWithWhereUniqueWithoutPayoutInput = {
+    where: PayoutAdjustmentWhereUniqueInput
+    update: XOR<PayoutAdjustmentUpdateWithoutPayoutInput, PayoutAdjustmentUncheckedUpdateWithoutPayoutInput>
+    create: XOR<PayoutAdjustmentCreateWithoutPayoutInput, PayoutAdjustmentUncheckedCreateWithoutPayoutInput>
+  }
+
+  export type PayoutAdjustmentUpdateWithWhereUniqueWithoutPayoutInput = {
+    where: PayoutAdjustmentWhereUniqueInput
+    data: XOR<PayoutAdjustmentUpdateWithoutPayoutInput, PayoutAdjustmentUncheckedUpdateWithoutPayoutInput>
+  }
+
+  export type PayoutAdjustmentUpdateManyWithWhereWithoutPayoutInput = {
+    where: PayoutAdjustmentScalarWhereInput
+    data: XOR<PayoutAdjustmentUpdateManyMutationInput, PayoutAdjustmentUncheckedUpdateManyWithoutPayoutInput>
+  }
+
+  export type PayoutAdjustmentScalarWhereInput = {
+    AND?: PayoutAdjustmentScalarWhereInput | PayoutAdjustmentScalarWhereInput[]
+    OR?: PayoutAdjustmentScalarWhereInput[]
+    NOT?: PayoutAdjustmentScalarWhereInput | PayoutAdjustmentScalarWhereInput[]
+    id?: IntFilter<"PayoutAdjustment"> | number
+    payoutId?: IntFilter<"PayoutAdjustment"> | number
+    type?: StringFilter<"PayoutAdjustment"> | string
+    amount?: FloatFilter<"PayoutAdjustment"> | number
+    reason?: StringFilter<"PayoutAdjustment"> | string
+    createdAt?: DateTimeFilter<"PayoutAdjustment"> | Date | string
+    updatedAt?: DateTimeFilter<"PayoutAdjustment"> | Date | string
+  }
+
+  export type PayoutCreateWithoutAdjustmentsInput = {
+    periodStart: Date | string
+    periodEnd: Date | string
+    amount?: number
+    isPaid?: boolean
+    comment?: string | null
+    paymentDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustmentAmount?: number | null
+    adjustmentReason?: string | null
+    includeOvertime?: boolean
+    employee: EmployeeCreateNestedOneWithoutPayoutsInput
+  }
+
+  export type PayoutUncheckedCreateWithoutAdjustmentsInput = {
+    id?: number
+    employeeId: number
+    periodStart: Date | string
+    periodEnd: Date | string
+    amount?: number
+    isPaid?: boolean
+    comment?: string | null
+    paymentDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustmentAmount?: number | null
+    adjustmentReason?: string | null
+    includeOvertime?: boolean
+  }
+
+  export type PayoutCreateOrConnectWithoutAdjustmentsInput = {
+    where: PayoutWhereUniqueInput
+    create: XOR<PayoutCreateWithoutAdjustmentsInput, PayoutUncheckedCreateWithoutAdjustmentsInput>
+  }
+
+  export type PayoutUpsertWithoutAdjustmentsInput = {
+    update: XOR<PayoutUpdateWithoutAdjustmentsInput, PayoutUncheckedUpdateWithoutAdjustmentsInput>
+    create: XOR<PayoutCreateWithoutAdjustmentsInput, PayoutUncheckedCreateWithoutAdjustmentsInput>
+    where?: PayoutWhereInput
+  }
+
+  export type PayoutUpdateToOneWithWhereWithoutAdjustmentsInput = {
+    where?: PayoutWhereInput
+    data: XOR<PayoutUpdateWithoutAdjustmentsInput, PayoutUncheckedUpdateWithoutAdjustmentsInput>
+  }
+
+  export type PayoutUpdateWithoutAdjustmentsInput = {
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+    employee?: EmployeeUpdateOneRequiredWithoutPayoutsNestedInput
+  }
+
+  export type PayoutUncheckedUpdateWithoutAdjustmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type AttendanceCreateManyEmployeeInput = {
     id?: number
     date: Date | string
@@ -9251,6 +10963,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustmentAmount?: number | null
     adjustmentReason?: string | null
+    includeOvertime?: boolean
   }
 
   export type AttendanceUpdateWithoutEmployeeInput = {
@@ -9296,6 +11009,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+    adjustments?: PayoutAdjustmentUpdateManyWithoutPayoutNestedInput
   }
 
   export type PayoutUncheckedUpdateWithoutEmployeeInput = {
@@ -9310,6 +11025,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+    adjustments?: PayoutAdjustmentUncheckedUpdateManyWithoutPayoutNestedInput
   }
 
   export type PayoutUncheckedUpdateManyWithoutEmployeeInput = {
@@ -9324,6 +11041,42 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustmentAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    includeOvertime?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type PayoutAdjustmentCreateManyPayoutInput = {
+    id?: number
+    type: string
+    amount: number
+    reason: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutAdjustmentUpdateWithoutPayoutInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutAdjustmentUncheckedUpdateWithoutPayoutInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutAdjustmentUncheckedUpdateManyWithoutPayoutInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    reason?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

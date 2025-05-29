@@ -64,15 +64,17 @@ export async function POST(request: NextRequest) {
           }
         });
 
-        // Calculate payout for this period
+        // Calculate payout for this period - only count days where isPaidDay is true
         const periodAttendance = attendance.filter(record => {
           const recordDate = typeof record.date === 'string' ? parseISO(record.date) : new Date(record.date);
           return isWithinInterval(recordDate, { start: periodStart, end: periodEnd });
         });
 
-        const daysWorked = periodAttendance.length;
-        const totalHours = periodAttendance.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
+        const paidDays = periodAttendance.filter(record => record.isPaidDay !== false); // Include records where isPaidDay is true or undefined (for backward compatibility)
+        const daysWorked = paidDays.length;
+        const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
         const calculatedAmount = daysWorked * employee.dailyRate;
+        const unpaidDays = periodAttendance.length - daysWorked;
 
         if (existingPayout) {
           // Update existing payout if the calculated amount is different
@@ -96,7 +98,7 @@ export async function POST(request: NextRequest) {
               periodEnd,
               amount: calculatedAmount,
               isPaid: false,
-              comment: `Auto-calculated: ${daysWorked} days worked, ${totalHours.toFixed(1)} hours`
+              comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`
             }
           });
           totalCreated++;

@@ -16,6 +16,7 @@ interface Attendance {
   checkOut: string | null;
   hoursWorked: number | null;
   employeeName?: string;
+  isPaidDay?: boolean; // Optional for backward compatibility
 }
 
 interface PaginationInfo {
@@ -362,6 +363,7 @@ export default function AttendancePage() {
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check In</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check Out</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Hours</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -379,6 +381,17 @@ export default function AttendancePage() {
                         {record.hoursWorked !== null 
                           ? <span className="font-medium">{record.hoursWorked.toFixed(2)}h</span> 
                           : <span className="text-muted-foreground">N/A</span>}
+                      </td>
+                      <td className="py-4 px-6">
+                        {record.isPaidDay === false ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Unpaid (Late)
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Paid
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

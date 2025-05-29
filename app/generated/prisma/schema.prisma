@@ -52,22 +52,37 @@ model Attendance {
 }
 
 model Payout {
-  id               Int       @id @default(autoincrement())
-  employeeId       Int       @map("employee_id")
-  periodStart      DateTime  @map("period_start") @db.Date
-  periodEnd        DateTime  @map("period_end") @db.Date
-  amount           Float     @default(0)
-  isPaid           Boolean   @default(false) @map("is_paid")
+  id               Int                @id @default(autoincrement())
+  employeeId       Int                @map("employee_id")
+  periodStart      DateTime           @map("period_start") @db.Date
+  periodEnd        DateTime           @map("period_end") @db.Date
+  amount           Float              @default(0)
+  isPaid           Boolean            @default(false) @map("is_paid")
   comment          String?
-  paymentDate      DateTime? @map("payment_date")
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @updatedAt @map("updated_at")
-  adjustmentAmount Float?    @default(0) @map("adjustment_amount")
-  adjustmentReason String?   @map("adjustment_reason")
-  employee         Employee  @relation(fields: [employeeId], references: [id])
+  paymentDate      DateTime?          @map("payment_date")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  adjustmentAmount Float?             @default(0) @map("adjustment_amount")
+  adjustmentReason String?            @map("adjustment_reason")
+  includeOvertime  Boolean            @default(false) @map("include_overtime")
+  employee         Employee           @relation(fields: [employeeId], references: [id])
+  adjustments      PayoutAdjustment[]
 
   @@unique([employeeId, periodStart, periodEnd])
   @@map("payouts")
+}
+
+model PayoutAdjustment {
+  id        Int      @id @default(autoincrement())
+  payoutId  Int      @map("payout_id")
+  type      String // "bonus", "deduction", "overtime", "other"
+  amount    Float
+  reason    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  payout    Payout   @relation(fields: [payoutId], references: [id], onDelete: Cascade)
+
+  @@map("payout_adjustments")
 }
 
 model SystemSettings {

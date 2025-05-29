@@ -33,6 +33,11 @@ export async function GET(
             name: true,
             paymentBasis: true
           }
+        },
+        adjustments: {
+          orderBy: {
+            createdAt: 'desc'
+          }
         }
       }
     });
@@ -41,7 +46,17 @@ export async function GET(
       return NextResponse.json({ error: 'Payout not found' }, { status: 404 });
     }
     
-    return NextResponse.json(payout);
+    // Calculate total amounts including adjustments
+    const adjustmentsTotal = payout.adjustments.reduce((sum, adj) => sum + adj.amount, 0);
+    const totalAmount = payout.amount + (payout.adjustmentAmount || 0) + adjustmentsTotal;
+
+    const payoutWithTotals = {
+      ...payout,
+      adjustmentsTotal,
+      totalAmount
+    };
+    
+    return NextResponse.json(payoutWithTotals);
   } catch (error) {
     console.error('Error fetching payout:', error);
     return NextResponse.json({ error: 'Failed to fetch payout' }, { status: 500 });
@@ -95,6 +110,7 @@ export async function PATCH(
       paymentDate?: Date | null;
       adjustmentAmount?: number;
       adjustmentReason?: string | null;
+      includeOvertime?: boolean;
     } = {};
     
     // Only update fields that are provided
@@ -120,6 +136,10 @@ export async function PATCH(
     
     if (data.adjustmentReason !== undefined) {
       updateData.adjustmentReason = data.adjustmentReason;
+    }
+    
+    if (data.includeOvertime !== undefined) {
+      updateData.includeOvertime = data.includeOvertime;
     }
     
     console.log(`[API Payout Update] Update data:`, updateData);

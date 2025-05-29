@@ -22,6 +22,7 @@ interface AttendanceRecord {
   checkIn: string;
   checkOut: string | null;
   hoursWorked: number | null;
+  isPaidDay?: boolean; // Optional for backward compatibility
 }
 
 interface SystemSettings {
@@ -226,8 +227,12 @@ export default function EmployeeAttendancePage() {
   
   function calculateExpectedSalary() {
     if (!employee) return 0;
-    const workingDays = pagination ? pagination.totalCount : attendanceRecords.length;
-    return workingDays * employee.dailyRate;
+    // Count only paid days for salary calculation
+    const paidDays = attendanceRecords.filter(record => record.isPaidDay !== false);
+    const paidDaysCount = pagination ? 
+      Math.round((paidDays.length / attendanceRecords.length) * pagination.totalCount) : 
+      paidDays.length;
+    return paidDaysCount * employee.dailyRate;
   }
 
   if (isLoading) {
@@ -269,22 +274,38 @@ export default function EmployeeAttendancePage() {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              {pagination ? `Total Records (Page ${pagination.currentPage} of ${pagination.totalPages})` : 'Total Workdays'}
+              Total Attendance
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {pagination ? `${pagination.totalCount} total` : `${attendanceRecords.length} days`}
+              {pagination ? pagination.totalCount : attendanceRecords.length} days
             </div>
             {pagination && (
               <div className="text-xs text-muted-foreground mt-1">
                 Showing {pagination.startIndex} - {pagination.endIndex}
               </div>
             )}
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Paid Days
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-green-600">
+              {attendanceRecords.filter(record => record.isPaidDay !== false).length} days
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              Days eligible for salary
+            </div>
           </CardContent>
         </Card>
         
@@ -310,7 +331,7 @@ export default function EmployeeAttendancePage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">L.E {calculateExpectedSalary().toFixed(2)}</div>
-            <div className="text-xs text-muted-foreground mt-1">Based on L.E {employee.dailyRate.toFixed(2)}/day</div>
+            <div className="text-xs text-muted-foreground mt-1">Based on paid days only</div>
           </CardContent>
         </Card>
       </div>
@@ -342,6 +363,7 @@ export default function EmployeeAttendancePage() {
                     <th className="h-12 px-6 text-left align-middle font-medium">Check In</th>
                     <th className="h-12 px-6 text-left align-middle font-medium">Check Out</th>
                     <th className="h-12 px-6 text-left align-middle font-medium">Hours</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -366,6 +388,17 @@ export default function EmployeeAttendancePage() {
                         {record.hoursWorked !== null 
                           ? `${record.hoursWorked.toFixed(2)}h` 
                           : 'N/A'}
+                      </td>
+                      <td className="px-6 py-4">
+                        {record.isPaidDay === false ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Unpaid (Late)
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Paid
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

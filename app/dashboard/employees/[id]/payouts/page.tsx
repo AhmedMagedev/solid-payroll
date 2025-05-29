@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Textarea } from "../../../../../components/ui/textarea";
 import { Switch } from "../../../../../components/ui/switch";
 import { Toaster } from "../../../../../components/ui/sonner";
+import PayoutAdjustments from '../../../../components/PayoutAdjustments';
 
 interface Employee {
   id: number;
@@ -30,6 +31,17 @@ interface Attendance {
   checkIn: string;
   checkOut: string | null;
   hoursWorked: number | null;
+  isPaidDay?: boolean; // Optional for backward compatibility
+}
+
+interface PayoutAdjustment {
+  id: number;
+  payoutId: number;
+  type: string;
+  amount: number;
+  reason: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Payout {
@@ -43,6 +55,10 @@ interface Payout {
   paymentDate: string | null;
   adjustmentAmount?: number;
   adjustmentReason?: string;
+  adjustments?: PayoutAdjustment[];
+  adjustmentsTotal?: number;
+  totalAmount?: number;
+  includeOvertime?: boolean;
 }
 
 interface SystemSettings {
@@ -64,7 +80,7 @@ export default function EmployeePayoutsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [existingPayouts, setExistingPayouts] = useState<Payout[]>([]);
-  const [tempChanges, setTempChanges] = useState<Record<string, {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string}>>({});
+  const [tempChanges, setTempChanges] = useState<Record<string, {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string, includeOvertime?: boolean}>>({});
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   
@@ -249,11 +265,13 @@ export default function EmployeePayoutsPage() {
       return isWithinInterval(recordDate, { start: periodStart, end: periodEnd });
     });
     
-    // Calculate days worked
-    const daysWorked = periodAttendance.length;
+    // Calculate days worked - only count days where isPaidDay is true (or undefined for backward compatibility)
+    const paidDays = periodAttendance.filter(record => record.isPaidDay !== false);
+    const daysWorked = paidDays.length;
+    const unpaidDays = periodAttendance.length - daysWorked;
     
-    // Calculate total hours worked
-    const totalHours = periodAttendance.reduce((sum, record) => {
+    // Calculate total hours worked - only from paid days
+    const totalHours = paidDays.reduce((sum, record) => {
       return sum + (record.hoursWorked || 0);
     }, 0);
     
@@ -263,8 +281,19 @@ export default function EmployeePayoutsPage() {
     const expectedHours = workingDaysInPeriod * hoursPerDay;
     
     // Calculate regular and overtime hours
-    const regularHours = Math.min(totalHours, expectedHours);
-    const overtimeHours = Math.max(0, totalHours - expectedHours);
+    // NEW LOGIC: Calculate overtime based on daily hours, not total period hours
+    let regularHours = 0;
+    let overtimeHours = 0;
+    
+    paidDays.forEach(record => {
+      const dailyHours = record.hoursWorked || 0;
+      if (dailyHours <= hoursPerDay) {
+        regularHours += dailyHours;
+      } else {
+        regularHours += hoursPerDay;
+        overtimeHours += (dailyHours - hoursPerDay);
+      }
+    });
     
     // Calculate hourly rate from daily rate
     const hourlyRate = employee.dailyRate / hoursPerDay;
@@ -277,6 +306,7 @@ export default function EmployeePayoutsPage() {
     
     return {
       daysWorked,
+      unpaidDays,
       workingDaysInPeriod,
       totalHours,
       expectedHours,
@@ -377,17 +407,19 @@ export default function EmployeePayoutsPage() {
       comment: tempChange?.comment !== undefined ? tempChange.comment : (existingPayout?.comment || ''),
       adjustmentAmount: tempChange?.adjustmentAmount !== undefined ? tempChange.adjustmentAmount : (existingPayout?.adjustmentAmount || 0),
       adjustmentReason: tempChange?.adjustmentReason !== undefined ? tempChange.adjustmentReason : (existingPayout?.adjustmentReason || ''),
+      includeOvertime: tempChange?.includeOvertime !== undefined ? tempChange.includeOvertime : (existingPayout?.includeOvertime || false),
       hasChanges: tempChange && (
         (tempChange.isPaid !== undefined && tempChange.isPaid !== existingPayout?.isPaid) ||
         (tempChange.comment !== undefined && tempChange.comment !== (existingPayout?.comment || '')) ||
         (tempChange.adjustmentAmount !== undefined && tempChange.adjustmentAmount !== (existingPayout?.adjustmentAmount || 0)) ||
-        (tempChange.adjustmentReason !== undefined && tempChange.adjustmentReason !== (existingPayout?.adjustmentReason || ''))
+        (tempChange.adjustmentReason !== undefined && tempChange.adjustmentReason !== (existingPayout?.adjustmentReason || '')) ||
+        (tempChange.includeOvertime !== undefined && tempChange.includeOvertime !== (existingPayout?.includeOvertime || false))
       )
     };
   };
 
   // Update temporary state
-  const updateTempState = (periodStart: Date, periodEnd: Date, updates: {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string}) => {
+  const updateTempState = (periodStart: Date, periodEnd: Date, updates: {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string, includeOvertime?: boolean}) => {
     const periodKey = getPeriodKey(periodStart, periodEnd);
     setTempChanges(prev => ({
       ...prev,
@@ -417,6 +449,7 @@ export default function EmployeePayoutsPage() {
             comment: currentState.comment,
             adjustmentAmount: currentState.adjustmentAmount,
             adjustmentReason: currentState.adjustmentReason,
+            includeOvertime: currentState.includeOvertime,
           }),
         });
         
@@ -455,6 +488,7 @@ export default function EmployeePayoutsPage() {
             comment: currentState.comment,
             adjustmentAmount: currentState.adjustmentAmount,
             adjustmentReason: currentState.adjustmentReason,
+            includeOvertime: currentState.includeOvertime,
           }),
         });
         
@@ -509,7 +543,7 @@ export default function EmployeePayoutsPage() {
         
         <TabsContent value="payouts" className="space-y-6">
           {paymentPeriods.map((period, index) => {
-            const { daysWorked, workingDaysInPeriod, totalHours, expectedHours, regularHours, overtimeHours, basePayout, overtimePayout, payout } = 
+            const { daysWorked, unpaidDays, workingDaysInPeriod, totalHours, expectedHours, regularHours, overtimeHours, basePayout, overtimePayout } = 
               calculatePeriodPayout(period.start, period.end);
             
             const currentState = getCurrentState(period.start, period.end);
@@ -566,7 +600,7 @@ export default function EmployeePayoutsPage() {
                               </span>
                               <span className="font-semibold text-sm">{regularHours.toFixed(1)} / {expectedHours}</span>
                             </div>
-                            {overtimeHours > 0 && (
+                            {overtimeHours >= 0.1 && (
                               <div className="flex justify-between items-center">
                                 <span className="text-muted-foreground flex items-center text-sm text-orange-600">
                                   <Clock className="h-3 w-3 mr-1" />
@@ -586,13 +620,31 @@ export default function EmployeePayoutsPage() {
                             </span>
                             <span className="font-semibold text-sm">L.E {basePayout.toFixed(2)}</span>
                           </div>
-                          {overtimePayout > 0 && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground flex items-center text-sm text-orange-600">
-                                <DollarSign className="h-3 w-3 mr-1" />
-                                Overtime Pay (1.5x)
-                              </span>
-                              <span className="font-semibold text-sm text-orange-600">L.E {overtimePayout.toFixed(2)}</span>
+                          {overtimePayout >= 0.1 && (
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-muted-foreground flex items-center text-sm text-orange-600">
+                                    <Clock className="h-3 w-3 mr-1" />
+                                    Overtime Hours ({overtimeHours.toFixed(1)} hrs)
+                                  </span>
+                                  <Switch
+                                    id={`overtime-toggle-${index}`}
+                                    checked={currentState.includeOvertime}
+                                    onCheckedChange={(checked) => {
+                                      updateTempState(period.start, period.end, { includeOvertime: checked });
+                                    }}
+                                  />
+                                </div>
+                                <span className={`font-semibold text-sm ${currentState.includeOvertime ? 'text-orange-600' : 'text-muted-foreground line-through'}`}>
+                                  L.E {overtimePayout.toFixed(2)}
+                                </span>
+                              </div>
+                              {!currentState.includeOvertime && (
+                                <div className="text-xs text-muted-foreground text-orange-600 ml-4">
+                                  ⚠️ Overtime pay excluded from payout
+                                </div>
+                              )}
                             </div>
                           )}
                           {currentState.adjustmentAmount !== 0 && (
@@ -606,12 +658,25 @@ export default function EmployeePayoutsPage() {
                               </span>
                             </div>
                           )}
+                          {existingPayout && existingPayout.adjustmentsTotal !== undefined && existingPayout.adjustmentsTotal !== 0 && (
+                            <div className="flex justify-between items-center">
+                              <span className={`text-muted-foreground flex items-center text-sm ${existingPayout.adjustmentsTotal > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                <DollarSign className="h-3 w-3 mr-1" />
+                                Multiple Adjustments
+                              </span>
+                              <span className={`font-semibold text-sm ${existingPayout.adjustmentsTotal > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {existingPayout.adjustmentsTotal > 0 ? '+' : ''}L.E {existingPayout.adjustmentsTotal.toFixed(2)}
+                              </span>
+                            </div>
+                          )}
                           <div className="flex justify-between items-center pt-1 border-t">
                             <span className="text-muted-foreground flex items-center font-medium">
                               <DollarSign className="h-4 w-4 mr-1" />
                               Final Payout
                             </span>
-                            <span className="text-lg font-bold">L.E {(payout + currentState.adjustmentAmount).toFixed(2)}</span>
+                            <span className="text-lg font-bold">
+                              L.E {(basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount + (existingPayout?.adjustmentsTotal || 0)).toFixed(2)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -628,9 +693,19 @@ export default function EmployeePayoutsPage() {
                             </span>
                           </div>
                           <div className="flex justify-between items-center text-sm">
+                            <span>Paid Days</span>
+                            <span className="font-medium text-green-600">{daysWorked} day(s)</span>
+                          </div>
+                          {unpaidDays > 0 && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span>Unpaid Days (Late)</span>
+                              <span className="font-medium text-red-600">{unpaidDays} day(s)</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-center text-sm">
                             <span>Absences</span>
                             <span className="font-medium">
-                              {workingDaysInPeriod - daysWorked} day(s)
+                              {workingDaysInPeriod - (daysWorked + unpaidDays)} day(s)
                             </span>
                           </div>
                           <div className="flex justify-between items-center text-sm">
@@ -649,47 +724,85 @@ export default function EmployeePayoutsPage() {
                     
                     {/* Full-width comment and adjustment section */}
                     <div className="pt-2 border-t space-y-4">
-                      {/* Adjustment Section */}
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-1">
-                          <label 
-                            htmlFor={`adjustment-amount-${index}`}
-                            className="text-xs text-muted-foreground"
-                          >
-                            Adjustment Amount (L.E)
-                          </label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            id={`adjustment-amount-${index}`}
-                            placeholder="0.00 (+ for bonus, - for deduction)"
-                            value={currentState.adjustmentAmount || ''}
-                            onChange={(e) => {
-                              const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
-                              updateTempState(period.start, period.end, { adjustmentAmount: isNaN(value) ? 0 : value });
-                            }}
-                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                          />
+                      {/* New Multiple Adjustments Component - Now available for all periods */}
+                      <PayoutAdjustments 
+                        payoutId={existingPayout?.id || null}
+                        adjustments={existingPayout?.adjustments || []}
+                        onAdjustmentsChange={(updatedAdjustments) => {
+                          if (existingPayout) {
+                            // Update existing payout
+                            setExistingPayouts(prev => prev.map(payout => 
+                              payout.id === existingPayout.id 
+                                ? { 
+                                    ...payout, 
+                                    adjustments: updatedAdjustments,
+                                    adjustmentsTotal: updatedAdjustments.reduce((sum, adj) => sum + adj.amount, 0),
+                                    totalAmount: payout.amount + (payout.adjustmentAmount || 0) + updatedAdjustments.reduce((sum, adj) => sum + adj.amount, 0)
+                                  }
+                                : payout
+                            ));
+                          } else {
+                            // Create new payout first, then add adjustments
+                            // This will be handled by the PayoutAdjustments component
+                            console.log('New payout needs to be created with adjustments:', updatedAdjustments);
+                          }
+                        }}
+                        onPayoutCreated={(newPayout: Payout) => {
+                          // Add newly created payout to state
+                          setExistingPayouts(prev => [...prev, newPayout]);
+                        }}
+                        periodStart={period.start}
+                        periodEnd={period.end}
+                        employeeId={employeeId}
+                        calculatedAmount={basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount}
+                      />
+                      
+                      {/* Legacy Single Adjustment (for existing adjustmentAmount) */}
+                      {(currentState.adjustmentAmount !== 0 || currentState.adjustmentReason) && (
+                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
+                          <h4 className="text-sm font-medium text-amber-800 mb-2">Legacy Adjustment</h4>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-1">
+                              <label 
+                                htmlFor={`adjustment-amount-${index}`}
+                                className="text-xs text-muted-foreground"
+                              >
+                                Adjustment Amount (L.E)
+                              </label>
+                              <input
+                                type="number"
+                                step="0.01"
+                                id={`adjustment-amount-${index}`}
+                                placeholder="0.00 (+ for bonus, - for deduction)"
+                                value={currentState.adjustmentAmount || ''}
+                                onChange={(e) => {
+                                  const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
+                                  updateTempState(period.start, period.end, { adjustmentAmount: isNaN(value) ? 0 : value });
+                                }}
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label 
+                                htmlFor={`adjustment-reason-${index}`}
+                                className="text-xs text-muted-foreground"
+                              >
+                                Adjustment Reason
+                              </label>
+                              <input
+                                type="text"
+                                id={`adjustment-reason-${index}`}
+                                placeholder="e.g., Bonus, Late penalty, Transport allowance..."
+                                value={currentState.adjustmentReason}
+                                onChange={(e) => {
+                                  updateTempState(period.start, period.end, { adjustmentReason: e.target.value });
+                                }}
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div className="space-y-1">
-                          <label 
-                            htmlFor={`adjustment-reason-${index}`}
-                            className="text-xs text-muted-foreground"
-                          >
-                            Adjustment Reason
-                          </label>
-                          <input
-                            type="text"
-                            id={`adjustment-reason-${index}`}
-                            placeholder="e.g., Bonus, Late penalty, Transport allowance..."
-                            value={currentState.adjustmentReason}
-                            onChange={(e) => {
-                              updateTempState(period.start, period.end, { adjustmentReason: e.target.value });
-                            }}
-                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                        </div>
-                      </div>
+                      )}
                       
                       {/* Comment Section */}
                       <div className="space-y-1">
@@ -718,13 +831,13 @@ export default function EmployeePayoutsPage() {
                               ⚠️ Unsaved changes
                             </div>
                           )}
-                                                      <Button 
-                              className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
-                              onClick={() => savePayout(period.start, period.end, payout + currentState.adjustmentAmount)}
-                              disabled={isUpdating[periodKey]}
-                            >
-                              {isUpdating[periodKey] ? 'Updating...' : 'Update Payout'}
-                            </Button>
+                          <Button 
+                            className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
+                            onClick={() => savePayout(period.start, period.end, basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount)}
+                            disabled={isUpdating[periodKey]}
+                          >
+                            {isUpdating[periodKey] ? 'Updating...' : 'Update Payout'}
+                          </Button>
                         </div>
                       </div>
                     </div>

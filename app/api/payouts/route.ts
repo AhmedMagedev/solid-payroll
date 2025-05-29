@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       query.employeeId = parseInt(employeeId, 10);
     }
     
-    // Fetch payouts
+    // Fetch payouts with adjustments
     const payouts = await prisma.payout.findMany({
       where: query,
       include: {
@@ -35,6 +35,11 @@ export async function GET(request: NextRequest) {
             name: true,
             paymentBasis: true
           }
+        },
+        adjustments: {
+          orderBy: {
+            createdAt: 'desc'
+          }
         }
       },
       orderBy: {
@@ -42,7 +47,19 @@ export async function GET(request: NextRequest) {
       }
     });
     
-    return NextResponse.json(payouts);
+    // Calculate total amounts including adjustments
+    const payoutsWithTotals = payouts.map(payout => {
+      const adjustmentsTotal = payout.adjustments.reduce((sum, adj) => sum + adj.amount, 0);
+      const totalAmount = payout.amount + (payout.adjustmentAmount || 0) + adjustmentsTotal;
+      
+      return {
+        ...payout,
+        adjustmentsTotal,
+        totalAmount
+      };
+    });
+    
+    return NextResponse.json(payoutsWithTotals);
   } catch (error) {
     console.error('Error fetching payouts:', error);
     return NextResponse.json({ error: 'Failed to fetch payouts' }, { status: 500 });
@@ -82,7 +99,8 @@ export async function POST(request: NextRequest) {
         comment: data.comment || null,
         paymentDate: data.isPaid ? new Date() : null,
         adjustmentAmount: data.adjustmentAmount || 0,
-        adjustmentReason: data.adjustmentReason || null
+        adjustmentReason: data.adjustmentReason || null,
+        includeOvertime: data.includeOvertime || false
       }
     });
     

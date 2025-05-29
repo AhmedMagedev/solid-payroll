@@ -31,7 +31,12 @@ export async function POST(request: NextRequest) {
       console.log('[API] Upload attempt with invalid token');
       return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
     }
-    
+
+    // Fetch system settings for grace period calculation
+    const systemSettings = await prisma.systemSettings.findFirst();
+    const lateAllowanceMinutes = systemSettings?.lateAllowanceMinutes || 15;
+    const workingHoursStart = systemSettings?.workingHoursStart || "09:00";
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -79,6 +84,26 @@ export async function POST(request: NextRequest) {
       recordsByEmployeeAndDay.get(key)!.records.push(timestampStr);
     }
 
+    // Helper function to check if check-in is beyond grace period
+    function isCheckInBeyondGracePeriod(checkInTime: Date): boolean {
+      try {
+        // Parse working hours start time
+        const [hours, minutes] = workingHoursStart.split(':');
+        
+        // Create grace end time in local timezone (UTC+3)
+        // Convert checkInTime to local time for comparison
+        const localCheckIn = new Date(checkInTime.getTime() + (3 * 60 * 60 * 1000)); // Add 3 hours for UTC+3
+        
+        // Create grace end time for the same day in local timezone
+        const graceEndTime = new Date(localCheckIn);
+        graceEndTime.setUTCHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
+        
+        return localCheckIn > graceEndTime;
+      } catch {
+        return false;
+      }
+    }
+
     const attendanceRecords = [];
 
     // Process each employee's daily records
@@ -96,6 +121,9 @@ export async function POST(request: NextRequest) {
         const diffMs = checkOut.getTime() - checkIn.getTime();
         hoursWorked = diffMs / (1000 * 60 * 60); // Convert ms to hours
       }
+
+      // Determine if this day should be paid (false if late beyond grace period)
+      const isPaidDay = !isCheckInBeyondGracePeriod(checkIn);
 
       // Check if the employee exists
       const employee = await prisma.employee.findUnique({
@@ -118,14 +146,16 @@ export async function POST(request: NextRequest) {
           update: {
             checkIn,
             checkOut,
-            hoursWorked
+            hoursWorked,
+            isPaidDay
           },
           create: {
             employeeId,
             date: new Date(date),
             checkIn,
             checkOut,
-            hoursWorked
+            hoursWorked,
+            isPaidDay
           }
         });
 
@@ -192,9 +222,10 @@ export async function POST(request: NextRequest) {
             }
           });
           
-          // Calculate payout
-          const daysWorked = monthAttendance.length;
-          const totalHours = monthAttendance.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
+          // Calculate payout - only count days where isPaidDay is true
+          const paidDays = monthAttendance.filter(record => record.isPaidDay);
+          const daysWorked = paidDays.length;
+          const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
           const calculatedAmount = daysWorked * employee.dailyRate;
           
           if (existingPayout) {
@@ -204,7 +235,7 @@ export async function POST(request: NextRequest) {
                 where: { id: existingPayout.id },
                 data: { 
                   amount: calculatedAmount,
-                  comment: `Auto-updated: ${daysWorked} days, ${totalHours.toFixed(1)} hours`,
+                  comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours (${monthAttendance.length - daysWorked} unpaid days)`,
                   updatedAt: new Date()
                 }
               });
@@ -220,7 +251,7 @@ export async function POST(request: NextRequest) {
                 periodEnd,
                 amount: calculatedAmount,
                 isPaid: false,
-                comment: `Auto-calculated: ${daysWorked} days, ${totalHours.toFixed(1)} hours`
+                comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours (${monthAttendance.length - daysWorked} unpaid days)`
               }
             });
             payoutsCreated++;

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider      = "prisma-client-js"
   output        = "../app/generated/prisma"
@@ -20,7 +14,7 @@ model Employee {
   name         String
   email        String       @unique
   position     String
-  phone        String?      // Optional phone number
+  phone        String?
   dailyRate    Float        @default(0) @map("daily_rate")
   paymentBasis String       @default("Daily") @map("payment_basis")
   createdAt    DateTime     @default(now()) @map("created_at")
@@ -50,7 +44,7 @@ model Attendance {
   hoursWorked Float?    @map("hours_worked")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-
+  isPaidDay   Boolean   @default(true) @map("is_paid_day")
   employee    Employee  @relation(fields: [employeeId], references: [id])
 
   @@unique([employeeId, date])
@@ -58,42 +52,56 @@ model Attendance {
 }
 
 model Payout {
-  id               Int      @id @default(autoincrement())
-  employeeId       Int      @map("employee_id")
-  periodStart      DateTime @db.Date @map("period_start")
-  periodEnd        DateTime @db.Date @map("period_end")
-  amount           Float    @default(0)
-  isPaid           Boolean  @default(false) @map("is_paid")
+  id               Int       @id @default(autoincrement())
+  employeeId       Int       @map("employee_id")
+  periodStart      DateTime  @map("period_start") @db.Date
+  periodEnd        DateTime  @map("period_end") @db.Date
+  amount           Float     @default(0)
+  isPaid           Boolean   @default(false) @map("is_paid")
   comment          String?
   paymentDate      DateTime? @map("payment_date")
-  adjustmentAmount Float?   @default(0) @map("adjustment_amount")
-  adjustmentReason String?  @map("adjustment_reason")
-  createdAt        DateTime @default(now()) @map("created_at") 
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  employee         Employee @relation(fields: [employeeId], references: [id])
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  adjustmentAmount Float?    @default(0) @map("adjustment_amount")
+  adjustmentReason String?   @map("adjustment_reason")
+  includeOvertime  Boolean   @default(false) @map("include_overtime")
+  employee         Employee  @relation(fields: [employeeId], references: [id])
+  adjustments      PayoutAdjustment[]
 
   @@unique([employeeId, periodStart, periodEnd])
   @@map("payouts")
 }
 
+model PayoutAdjustment {
+  id        Int      @id @default(autoincrement())
+  payoutId  Int      @map("payout_id")
+  type      String   // "bonus", "deduction", "overtime", "other"
+  amount    Float
+  reason    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  payout    Payout   @relation(fields: [payoutId], references: [id], onDelete: Cascade)
+
+  @@map("payout_adjustments")
+}
+
 model SystemSettings {
-  id                      Int      @id @default(autoincrement())
-  lateAllowanceMinutes    Int      @default(15) @map("late_allowance_minutes")
-  workDaySunday           Boolean  @default(false) @map("work_day_sunday")
-  workDayMonday           Boolean  @default(true) @map("work_day_monday")
-  workDayTuesday          Boolean  @default(true) @map("work_day_tuesday")
-  workDayWednesday        Boolean  @default(true) @map("work_day_wednesday")
-  workDayThursday         Boolean  @default(true) @map("work_day_thursday")
-  workDayFriday           Boolean  @default(true) @map("work_day_friday")
-  workDaySaturday         Boolean  @default(false) @map("work_day_saturday")
-  workingHoursPerDay      Float    @default(8) @map("working_hours_per_day")
-  workingHoursStart       String   @default("09:00") @map("working_hours_start")
-  workingHoursEnd         String   @default("17:00") @map("working_hours_end")
-  overtimeMultiplier      Float    @default(1.5) @map("overtime_multiplier")
-  weekendOvertimeMultiplier Float   @default(2) @map("weekend_overtime_multiplier")
-  createdAt               DateTime @default(now()) @map("created_at")
-  updatedAt               DateTime @updatedAt @map("updated_at")
+  id                        Int      @id @default(autoincrement())
+  lateAllowanceMinutes      Int      @default(15) @map("late_allowance_minutes")
+  workDaySunday             Boolean  @default(false) @map("work_day_sunday")
+  workDayMonday             Boolean  @default(true) @map("work_day_monday")
+  workDayTuesday            Boolean  @default(true) @map("work_day_tuesday")
+  workDayWednesday          Boolean  @default(true) @map("work_day_wednesday")
+  workDayThursday           Boolean  @default(true) @map("work_day_thursday")
+  workDayFriday             Boolean  @default(true) @map("work_day_friday")
+  workDaySaturday           Boolean  @default(false) @map("work_day_saturday")
+  workingHoursPerDay        Float    @default(8) @map("working_hours_per_day")
+  workingHoursStart         String   @default("09:00") @map("working_hours_start")
+  workingHoursEnd           String   @default("17:00") @map("working_hours_end")
+  overtimeMultiplier        Float    @default(1.5) @map("overtime_multiplier")
+  weekendOvertimeMultiplier Float    @default(2) @map("weekend_overtime_multiplier")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
 
   @@map("system_settings")
 }

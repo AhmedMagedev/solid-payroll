@@ -164,7 +164,18 @@ exports.Prisma.PayoutScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   adjustmentAmount: 'adjustmentAmount',
-  adjustmentReason: 'adjustmentReason'
+  adjustmentReason: 'adjustmentReason',
+  includeOvertime: 'includeOvertime'
+};
+
+exports.Prisma.PayoutAdjustmentScalarFieldEnum = {
+  id: 'id',
+  payoutId: 'payoutId',
+  type: 'type',
+  amount: 'amount',
+  reason: 'reason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SystemSettingsScalarFieldEnum = {
@@ -207,6 +218,7 @@ exports.Prisma.ModelName = {
   User: 'User',
   Attendance: 'Attendance',
   Payout: 'Payout',
+  PayoutAdjustment: 'PayoutAdjustment',
   SystemSettings: 'SystemSettings'
 };
 

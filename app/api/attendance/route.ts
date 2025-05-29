@@ -99,6 +99,7 @@ export async function GET(request: NextRequest) {
       checkIn: record.checkIn,
       checkOut: record.checkOut,
       hoursWorked: record.hoursWorked,
+      isPaidDay: record.isPaidDay
     }));
     
     return NextResponse.json({
