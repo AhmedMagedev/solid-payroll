@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     const lines = fileContent.split('\n').filter(line => line.trim());
 
     // Process attendance records
-    const recordsByEmployeeAndDay = new Map<string, { records: string[], employeeId: number, date: string }>();
+    const recordsByEmployeeAndDay = new Map<string, { records: string[], deviceId: string, date: string }>();
 
     // Parse each line of the file
     for (const line of lines) {
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
         continue; // Skip invalid lines
       }
       
-      const employeeId = parseInt(parts[0], 10);
-      if (isNaN(employeeId)) continue;
+      const deviceId = parts[0]; // This is the fingerprint/device ID, not employee ID
+      if (!deviceId) continue;
       
       const timestampStr = `${parts[1]} ${parts[2]}`;
       const timestamp = new Date(timestampStr);
@@ -71,12 +71,12 @@ export async function POST(request: NextRequest) {
       if (isNaN(timestamp.getTime())) continue;
       
       const dateStr = timestamp.toISOString().split('T')[0];
-      const key = `${employeeId}-${dateStr}`;
+      const key = `${deviceId}-${dateStr}`;
       
       if (!recordsByEmployeeAndDay.has(key)) {
         recordsByEmployeeAndDay.set(key, {
           records: [],
-          employeeId,
+          deviceId,
           date: dateStr
         });
       }
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     const attendanceRecords = [];
 
     // Process each employee's daily records
-    for (const { records, employeeId, date } of recordsByEmployeeAndDay.values()) {
+    for (const { records, deviceId, date } of recordsByEmployeeAndDay.values()) {
       if (records.length === 0) continue;
       
       // Sort records by timestamp
@@ -125,12 +125,13 @@ export async function POST(request: NextRequest) {
       // Determine if this day should be paid (false if late beyond grace period)
       const isPaidDay = !isCheckInBeyondGracePeriod(checkIn);
 
-      // Check if the employee exists
-      const employee = await prisma.employee.findUnique({
-        where: { id: employeeId }
+      // Check if the employee exists by fingerprint ID
+      const employee = await prisma.employee.findFirst({
+        where: { fingerprintId: deviceId }
       });
 
       if (!employee) {
+        console.log(`[API Upload] Employee with device ID '${deviceId}' not found, skipping record`);
         continue; // Skip if employee doesn't exist
       }
 
@@ -139,7 +140,7 @@ export async function POST(request: NextRequest) {
         const attendance = await prisma.attendance.upsert({
           where: {
             employeeId_date: {
-              employeeId,
+              employeeId: employee.id,
               date: new Date(date)
             }
           },
@@ -150,7 +151,7 @@ export async function POST(request: NextRequest) {
             isPaidDay
           },
           create: {
-            employeeId,
+            employeeId: employee.id,
             date: new Date(date),
             checkIn,
             checkOut,
@@ -161,7 +162,7 @@ export async function POST(request: NextRequest) {
 
         attendanceRecords.push(attendance);
       } catch (err) {
-        console.error(`Error processing record for employee ${employeeId} on ${date}:`, err);
+        console.error(`Error processing record for employee ${deviceId} on ${date}:`, err);
       }
     }
 

@@ -196,10 +196,10 @@ export default function AttendanceUploadPage() {
                   Format Specification
                 </h3>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Each line should contain the employee ID, timestamp, and other optional data separated by spaces:
+                  Each line should contain the device ID (fingerprint ID), timestamp, and other optional data separated by spaces:
                 </p>
                 <pre className="bg-muted p-3 rounded-md text-sm overflow-x-auto border">
-                  &lt;EmployeeID&gt; &lt;YYYY-MM-DD HH:MM:SS&gt; [optional data]
+                  &lt;DeviceID&gt; &lt;YYYY-MM-DD HH:MM:SS&gt; [optional data]
                 </pre>
               </div>
               
@@ -207,11 +207,14 @@ export default function AttendanceUploadPage() {
                 <h3 className="text-base font-medium flex items-center mb-2">
                   Example
                 </h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Note: 1, 2, 3 are device IDs that must match the Fingerprint Device ID field in employee profiles:
+                </p>
                 <pre className="bg-muted p-3 rounded-md text-sm overflow-x-auto border">
-                  1 2025-01-14 10:55:36 2 0 1 0{'\n'}
-                  1 2025-01-14 17:45:27 2 0 1 0{'\n'}
-                  2 2025-01-14 08:30:15 2 0 1 0{'\n'}
-                  2 2025-01-14 16:35:22 2 0 1 0
+                  1	2025-01-14 10:55:36	2	0	1	0{'\n'}
+                  1	2025-01-14 17:45:27	2	0	1	0{'\n'}
+                  2	2025-01-14 08:30:15	2	0	1	0{'\n'}
+                  2	2025-01-14 16:35:22	2	0	1	0
                 </pre>
               </div>
               

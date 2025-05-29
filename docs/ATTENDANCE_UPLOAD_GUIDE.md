@@ -48,22 +48,32 @@ The upload results show:
 
 ### Required Format
 ```
-<EmployeeID> <YYYY-MM-DD HH:MM:SS> [optional data]
+<DeviceID> <YYYY-MM-DD HH:MM:SS> [optional data]
 ```
 
 ### Example
 ```
-1 2025-01-14 09:00:00 2 0 1 0
-1 2025-01-14 17:30:00 2 0 1 0
-2 2025-01-14 08:30:15 2 0 1 0
-2 2025-01-14 16:35:22 2 0 1 0
+1	2025-01-14 09:00:00	2	0	1	0
+1	2025-01-14 17:30:00	2	0	1	0
+2	2025-01-14 08:30:15	2	0	1	0
+2	2025-01-14 16:35:22	2	0	1	0
 ```
 
 ### Processing Rules
+- **Device ID Mapping**: The first field should be the employee's fingerprint device ID (simple numbers like 1, 2, 3, etc.)
+- **Employee Matching**: System looks up employees by their "Fingerprint Device ID" field
+- **Missing Employees**: Records with unmatched device IDs are skipped with a log message
+- **Field Separation**: Fields can be separated by spaces or tabs
 - First record per day = Check-in time
 - Last record per day = Check-out time
 - Hours worked = Difference between check-out and check-in
 - Multiple records per day are automatically handled
+
+### Important Notes
+- **Device ID Required**: All employees must have a valid fingerprint device ID set in their profile (e.g., "1", "2", "3")
+- **Exact Match**: Device IDs in the file must exactly match the "Fingerprint Device ID" field
+- **Numeric Format**: Device IDs are typically simple numbers (1, 2, 3, 5, 6, 7, etc.)
+- **No Duplicates**: System prevents duplicate attendance records for the same employee and date
 
 ## Payout Calculation Logic
 
