@@ -3,6 +3,7 @@ interface Employee {
   name: string;
   email: string;
   position: string;
+  fingerprintId?: string;
   dailyRate: number;
   paymentBasis?: string;
   createdAt: Date;
@@ -50,6 +51,12 @@ export default function EmployeeList({ employees }: EmployeeListProps) {
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               >
+                Device ID
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              >
                 Daily Rate
               </th>
               <th
@@ -71,6 +78,15 @@ export default function EmployeeList({ employees }: EmployeeListProps) {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">{employee.position}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-500 font-mono">
+                    {employee.fingerprintId ? (
+                      employee.fingerprintId
+                    ) : (
+                      <span className="text-orange-600 italic">Not set</span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, DollarSign, Calendar, Mail, Hash, CreditCard, Phone } from 'lucide-react';
+import { ArrowLeft, DollarSign, Calendar, Mail, Hash, CreditCard, Phone, Fingerprint } from 'lucide-react';
 import EmployeeActions from './employee-actions';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ interface Employee {
   email: string;
   position: string;
   phone?: string; // Optional phone number
+  fingerprintId?: string; // For mapping to attendance device IDs
   dailyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
   createdAt: string;
@@ -182,6 +183,23 @@ export default function EmployeeProfilePage() {
                     Phone
                   </dt>
                   <dd className="mt-1 text-base">{employee.phone}</dd>
+                </div>
+              )}
+              {employee.fingerprintId ? (
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-muted-foreground flex items-center">
+                    <Fingerprint className="h-4 w-4 mr-2" />
+                    Device ID
+                  </dt>
+                  <dd className="mt-1 text-base font-mono">{employee.fingerprintId}</dd>
+                </div>
+              ) : (
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-muted-foreground flex items-center">
+                    <Fingerprint className="h-4 w-4 mr-2" />
+                    Device ID
+                  </dt>
+                  <dd className="mt-1 text-base text-orange-600 italic">Not set - required for attendance mapping</dd>
                 </div>
               )}
               <div className="sm:col-span-1">

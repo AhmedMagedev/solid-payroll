@@ -1422,6 +1422,7 @@ export namespace Prisma {
     email: string | null
     position: string | null
     phone: string | null
+    fingerprintId: string | null
     dailyRate: number | null
     paymentBasis: string | null
     createdAt: Date | null
@@ -1434,6 +1435,7 @@ export namespace Prisma {
     email: string | null
     position: string | null
     phone: string | null
+    fingerprintId: string | null
     dailyRate: number | null
     paymentBasis: string | null
     createdAt: Date | null
@@ -1446,6 +1448,7 @@ export namespace Prisma {
     email: number
     position: number
     phone: number
+    fingerprintId: number
     dailyRate: number
     paymentBasis: number
     createdAt: number
@@ -1470,6 +1473,7 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
+    fingerprintId?: true
     dailyRate?: true
     paymentBasis?: true
     createdAt?: true
@@ -1482,6 +1486,7 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
+    fingerprintId?: true
     dailyRate?: true
     paymentBasis?: true
     createdAt?: true
@@ -1494,6 +1499,7 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
+    fingerprintId?: true
     dailyRate?: true
     paymentBasis?: true
     createdAt?: true
@@ -1593,6 +1599,7 @@ export namespace Prisma {
     email: string
     position: string
     phone: string | null
+    fingerprintId: string | null
     dailyRate: number
     paymentBasis: string
     createdAt: Date
@@ -1624,6 +1631,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
+    fingerprintId?: boolean
     dailyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
@@ -1639,6 +1647,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
+    fingerprintId?: boolean
     dailyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
@@ -1651,6 +1660,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
+    fingerprintId?: boolean
     dailyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
@@ -1663,13 +1673,14 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
+    fingerprintId?: boolean
     dailyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "dailyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "fingerprintId" | "dailyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
@@ -1690,6 +1701,7 @@ export namespace Prisma {
       email: string
       position: string
       phone: string | null
+      fingerprintId: string | null
       dailyRate: number
       paymentBasis: string
       createdAt: Date
@@ -2124,6 +2136,7 @@ export namespace Prisma {
     readonly email: FieldRef<"Employee", 'String'>
     readonly position: FieldRef<"Employee", 'String'>
     readonly phone: FieldRef<"Employee", 'String'>
+    readonly fingerprintId: FieldRef<"Employee", 'String'>
     readonly dailyRate: FieldRef<"Employee", 'Float'>
     readonly paymentBasis: FieldRef<"Employee", 'String'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
@@ -8335,6 +8348,7 @@ export namespace Prisma {
     email: 'email',
     position: 'position',
     phone: 'phone',
+    fingerprintId: 'fingerprintId',
     dailyRate: 'dailyRate',
     paymentBasis: 'paymentBasis',
     createdAt: 'createdAt',
@@ -8528,6 +8542,7 @@ export namespace Prisma {
     email?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
+    fingerprintId?: StringNullableFilter<"Employee"> | string | null
     dailyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
@@ -8542,6 +8557,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
+    fingerprintId?: SortOrderInput | SortOrder
     dailyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -8559,6 +8575,7 @@ export namespace Prisma {
     name?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
+    fingerprintId?: StringNullableFilter<"Employee"> | string | null
     dailyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
@@ -8573,6 +8590,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
+    fingerprintId?: SortOrderInput | SortOrder
     dailyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -8593,6 +8611,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Employee"> | string
     position?: StringWithAggregatesFilter<"Employee"> | string
     phone?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    fingerprintId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     dailyRate?: FloatWithAggregatesFilter<"Employee"> | number
     paymentBasis?: StringWithAggregatesFilter<"Employee"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -9013,6 +9032,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -9027,6 +9047,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -9040,6 +9061,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9054,6 +9076,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9068,6 +9091,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -9079,6 +9103,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9091,6 +9116,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9632,6 +9658,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
+    fingerprintId?: SortOrder
     dailyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -9649,6 +9676,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
+    fingerprintId?: SortOrder
     dailyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -9661,6 +9689,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
+    fingerprintId?: SortOrder
     dailyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -10679,6 +10708,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -10692,6 +10722,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -10720,6 +10751,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10733,6 +10765,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10745,6 +10778,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -10758,6 +10792,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
+    fingerprintId?: string | null
     dailyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -10813,6 +10848,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10826,6 +10862,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     dailyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

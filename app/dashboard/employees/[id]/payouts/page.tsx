@@ -21,6 +21,7 @@ interface Employee {
   name: string;
   email: string;
   position: string;
+  fingerprintId?: string;
   dailyRate: number;
   paymentBasis: string;
 }

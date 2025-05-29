@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"; // Added for Search
 import { useState, useEffect, useMemo } from 'react'; // For pagination state and search optimization
 import Link from 'next/link'; // Added for navigation to profile page
 import { useRouter } from "next/navigation";
+import { Edit } from 'lucide-react';
+import { QuickDeleteButton } from "../../../components/QuickDeleteButton";
 
 // Define the Employee interface
 interface Employee {
@@ -15,6 +17,7 @@ interface Employee {
   name: string;
   email: string; // Keep in interface for data structure, but won't display
   position: string;
+  fingerprintId?: string;
   dailyRate: number;
   paymentBasis?: string;
   createdAt: Date;
@@ -99,6 +102,9 @@ export default function EmployeesPage() {
             className="max-w-full sm:max-w-xs bg-white" // Added bg-white class
           />
           <div className="flex flex-row gap-2">
+            <Button onClick={() => router.push('/dashboard/employees/create')}>
+              Add Employee
+            </Button>
             <FileUpload />
             <Button onClick={() => router.push('/dashboard/attendance/upload')}>
               Upload Attendance
@@ -120,18 +126,20 @@ export default function EmployeesPage() {
                   <th className="h-10 px-4 text-left align-middle font-medium w-[100px]">ID</th>
                   <th className="h-10 px-4 text-left align-middle font-medium">Name</th>
                   <th className="h-10 px-4 text-left align-middle font-medium">Position</th>
+                  <th className="h-10 px-4 text-left align-middle font-medium">Device ID</th>
                   <th className="h-10 px-4 text-left align-middle font-medium">Daily Rate</th>
                   <th className="h-10 px-4 text-right align-middle font-medium">Est. Monthly</th>
+                  <th className="h-10 px-4 text-center align-middle font-medium w-[120px]">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading ? (
                   <tr className="border-b">
-                    <td colSpan={5} className="p-4 text-center">Loading employees...</td>
+                    <td colSpan={7} className="p-4 text-center">Loading employees...</td>
                   </tr>
                 ) : currentEmployees.length === 0 ? (
                   <tr className="border-b">
-                    <td colSpan={5} className="p-4 text-center">
+                    <td colSpan={7} className="p-4 text-center">
                       {searchTerm ? `No employees found matching "${searchTerm}".` : 'No employees found. Add or upload employees to get started.'}
                     </td>
                   </tr>
@@ -145,8 +153,35 @@ export default function EmployeesPage() {
                         </Link>
                       </td>
                       <td className="p-4">{employee.position}</td>
+                      <td className="p-4 font-mono text-sm">
+                        {employee.fingerprintId ? (
+                          employee.fingerprintId
+                        ) : (
+                          <span className="text-orange-600 italic">Not set</span>
+                        )}
+                      </td>
                       <td className="p-4">L.E {employee.dailyRate.toFixed(2)}</td>
                       <td className="p-4 text-right">L.E {(employee.dailyRate * 22).toFixed(2)}</td>
+                      <td className="p-4">
+                        <div className="flex items-center justify-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => router.push(`/dashboard/employees/${employee.id}/edit`)}
+                            className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
+                            title="Edit employee"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <QuickDeleteButton 
+                            employeeId={employee.id} 
+                            employeeName={employee.name}
+                            onDelete={() => {
+                              setAllEmployees(prev => prev.filter(emp => emp.id !== employee.id));
+                            }}
+                          />
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}

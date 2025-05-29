@@ -10,17 +10,18 @@ datasource db {
 }
 
 model Employee {
-  id           Int          @id @default(autoincrement())
-  name         String
-  email        String       @unique
-  position     String
-  phone        String?
-  dailyRate    Float        @default(0) @map("daily_rate")
-  paymentBasis String       @default("Daily") @map("payment_basis")
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  attendance   Attendance[]
-  payouts      Payout[]
+  id            Int          @id @default(autoincrement())
+  name          String
+  email         String       @unique
+  position      String
+  phone         String?
+  fingerprintId String?      @map("fingerprint_id")
+  dailyRate     Float        @default(0) @map("daily_rate")
+  paymentBasis  String       @default("Daily") @map("payment_basis")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  attendance    Attendance[]
+  payouts       Payout[]
 
   @@map("employees")
 }

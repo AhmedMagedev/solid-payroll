@@ -20,6 +20,7 @@ interface Employee {
   email: string;
   position: string;
   phone?: string; // Optional phone number field
+  fingerprintId?: string; // For mapping to attendance device IDs
   dailyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
 }
@@ -35,6 +36,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     email: employee.email,
     position: employee.position,
     phone: employee.phone || '',
+    fingerprintId: employee.fingerprintId || '',
     dailyRate: employee.dailyRate.toString(),
     paymentBasis: employee.paymentBasis || 'Monthly', // Default to Monthly
   });
@@ -68,6 +70,9 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       if (!formData.position.trim()) {
         throw new Error('Position is required');
       }
+      if (!formData.fingerprintId.trim()) {
+        throw new Error('Fingerprint Device ID is required');
+      }
       if (!formData.paymentBasis) {
         throw new Error('Payment basis is required');
       }
@@ -89,6 +94,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           email: formData.email,
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
+          fingerprintId: formData.fingerprintId, // Required field, no need for null check
           dailyRate,
           paymentBasis: formData.paymentBasis,
         }),
@@ -180,6 +186,22 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           disabled={isSubmitting}
           placeholder="+20 123 456 7890"
         />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="fingerprintId">Fingerprint Device ID</Label>
+        <Input
+          id="fingerprintId"
+          name="fingerprintId"
+          value={formData.fingerprintId}
+          onChange={handleChange}
+          disabled={isSubmitting}
+          placeholder="Device ID from attendance sheets (e.g., EMP001, 12345)"
+          required
+        />
+        <p className="text-xs text-muted-foreground">
+          Enter the unique ID used in attendance device exports to map this employee correctly.
+        </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
