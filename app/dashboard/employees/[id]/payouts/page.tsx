@@ -282,18 +282,60 @@ export default function EmployeePayoutsPage() {
     
     // Calculate regular and overtime hours
     // NEW LOGIC: Calculate overtime based on daily hours, not total period hours
+    // RULE: Overtime only counts if employee is present the next working day (if it's not a day off)
+    // RULE: Only first 2 hours of overtime per day get overtime rate, rest paid at regular rate
     let regularHours = 0;
     let overtimeHours = 0;
+    let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap
     
-    paidDays.forEach(record => {
+    paidDays.forEach((record) => {
       const dailyHours = record.hoursWorked || 0;
-      if (dailyHours <= hoursPerDay) {
-        regularHours += dailyHours;
+      const recordDate = parseISO(record.date);
+      
+      // Check if this day has overtime hours
+      if (dailyHours > hoursPerDay) {
+        const potentialOvertimeHours = dailyHours - hoursPerDay;
+        
+        // Check if employee must be present next working day for overtime eligibility
+        const nextWorkingDay = getNextWorkingDay(recordDate);
+        let isOvertimeEligible = true;
+        
+        if (nextWorkingDay) {
+          // Check if employee was present on the next working day
+          const nextDayAttendance = paidDays.find(a => {
+            const aDate = parseISO(a.date);
+            return aDate.toDateString() === nextWorkingDay.toDateString();
+          });
+          
+          // If next working day exists and employee was not present, overtime is not eligible
+          if (!nextDayAttendance) {
+            isOvertimeEligible = false;
+          }
+        }
+        
+        if (isOvertimeEligible) {
+          regularHours += hoursPerDay;
+          
+          // Apply 2-hour overtime cap rule
+          if (potentialOvertimeHours <= 2) {
+            // All overtime hours within cap - paid at overtime rate
+            overtimeHours += potentialOvertimeHours;
+          } else {
+            // First 2 hours at overtime rate, rest at regular rate
+            overtimeHours += 2;
+            excessOvertimeHours += (potentialOvertimeHours - 2);
+          }
+        } else {
+          // Overtime not eligible, treat as regular hours up to standard hours
+          regularHours += Math.min(dailyHours, hoursPerDay);
+        }
       } else {
-        regularHours += hoursPerDay;
-        overtimeHours += (dailyHours - hoursPerDay);
+        regularHours += dailyHours;
       }
     });
+    
+    // Include excess overtime hours in regular hours for payment calculation
+    regularHours += excessOvertimeHours;
     
     // Calculate hourly rate from daily rate
     const hourlyRate = employee.dailyRate / hoursPerDay;
@@ -312,6 +354,7 @@ export default function EmployeePayoutsPage() {
       expectedHours,
       regularHours,
       overtimeHours,
+      excessOvertimeHours,
       basePayout,
       overtimePayout,
       payout: totalPayout
@@ -359,6 +402,35 @@ export default function EmployeePayoutsPage() {
     }
     
     return count;
+  };
+  
+  // Helper to get the next working day after a given date
+  const getNextWorkingDay = (date: Date) => {
+    if (!systemSettings) return null;
+    
+    const workDays = [
+      systemSettings.workDaySunday,    // 0 = Sunday
+      systemSettings.workDayMonday,    // 1 = Monday
+      systemSettings.workDayTuesday,   // 2 = Tuesday
+      systemSettings.workDayWednesday, // 3 = Wednesday
+      systemSettings.workDayThursday,  // 4 = Thursday
+      systemSettings.workDayFriday,    // 5 = Friday
+      systemSettings.workDaySaturday   // 6 = Saturday
+    ];
+    
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    
+    // Look for the next 7 days to find a working day
+    for (let i = 0; i < 7; i++) {
+      const dayOfWeek = nextDay.getDay();
+      if (workDays[dayOfWeek]) {
+        return nextDay;
+      }
+      nextDay.setDate(nextDay.getDate() + 1);
+    }
+    
+    return null; // No working day found in the next 7 days
   };
   
   const paymentPeriods = getPaymentPeriods();
@@ -543,7 +615,7 @@ export default function EmployeePayoutsPage() {
         
         <TabsContent value="payouts" className="space-y-6">
           {paymentPeriods.map((period, index) => {
-            const { daysWorked, unpaidDays, workingDaysInPeriod, totalHours, expectedHours, regularHours, overtimeHours, basePayout, overtimePayout } = 
+            const { daysWorked, unpaidDays, workingDaysInPeriod, totalHours, expectedHours, regularHours, overtimeHours, excessOvertimeHours, basePayout, overtimePayout } = 
               calculatePeriodPayout(period.start, period.end);
             
             const currentState = getCurrentState(period.start, period.end);
@@ -609,6 +681,15 @@ export default function EmployeePayoutsPage() {
                                 <span className="font-semibold text-sm text-orange-600">{overtimeHours.toFixed(1)} hrs</span>
                               </div>
                             )}
+                            {excessOvertimeHours >= 0.1 && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground flex items-center text-sm text-amber-600">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  Excess Overtime (Regular Rate)
+                                </span>
+                                <span className="font-semibold text-sm text-amber-600">{excessOvertimeHours.toFixed(1)} hrs</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         
@@ -643,6 +724,11 @@ export default function EmployeePayoutsPage() {
                               {!currentState.includeOvertime && (
                                 <div className="text-xs text-muted-foreground text-orange-600 ml-4">
                                   ⚠️ Overtime pay excluded from payout
+                                </div>
+                              )}
+                              {excessOvertimeHours >= 0.1 && (
+                                <div className="text-xs text-muted-foreground text-amber-600 ml-4">
+                                  ℹ️ {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
                                 </div>
                               )}
                             </div>
