@@ -52,7 +52,7 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
     
     if (!emailFirstName) continue; // Skip if no valid first name
     
-    const email = `${emailFirstName}.${emailLastName || 'nolastname'}@solidpayroll.com`;
+    const email = `${emailFirstName}.${emailLastName || 'nolastname'}@solid-metals.com`;
     
     // Use default values instead of trying to extract position from random numbers
     const position = 'Employee'; // Default position for all uploaded employees
@@ -112,7 +112,7 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
           
           if (!emailFirstName) continue;
           
-          const email = `${emailFirstName}.${emailLastName || 'nolastname'}@solidpayroll.com`;
+          const email = `${emailFirstName}.${emailLastName || 'nolastname'}@solid-metals.com`;
           
           // Use default values instead of generating dummy positions
           const position = 'Employee'; // Default position for all uploaded employees

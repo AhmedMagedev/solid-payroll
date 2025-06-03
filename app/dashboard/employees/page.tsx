@@ -2,13 +2,12 @@
 
 // import { prisma } from '@/app/lib/prisma'; // Removed unused import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileUpload } from "@/app/components/FileUpload";
 import { Button } from "@/components/ui/button"; // For pagination buttons
 import { Input } from "@/components/ui/input"; // Added for Search
 import { useState, useEffect, useMemo } from 'react'; // For pagination state and search optimization
 import Link from 'next/link'; // Added for navigation to profile page
 import { useRouter } from "next/navigation";
-import { Edit } from 'lucide-react';
+import { Edit, Upload } from 'lucide-react';
 import { QuickDeleteButton } from "../../../components/QuickDeleteButton";
 
 // Define the Employee interface
@@ -105,7 +104,13 @@ export default function EmployeesPage() {
             <Button onClick={() => router.push('/dashboard/employees/create')}>
               Add Employee
             </Button>
-            <FileUpload />
+            <Button 
+              variant="outline" 
+              onClick={() => router.push('/dashboard/employees/upload')}
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Upload Employees
+            </Button>
             <Button onClick={() => router.push('/dashboard/attendance/upload')}>
               Upload Attendance
             </Button>

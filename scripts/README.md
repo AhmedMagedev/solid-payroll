@@ -156,4 +156,122 @@ If you need to recover data after accidental deletion:
 
 - **Development**: Test the script thoroughly
 - **Staging**: Verify behavior with production-like data
-- **Production**: Use with extreme caution, ensure backups exist 
+- **Production**: Use with extreme caution, ensure backups exist
+
+# Solid Payroll Scripts
+
+This directory contains utility scripts for managing the solid-payroll system.
+
+## Available Scripts
+
+### 🧹 Attendance Cleanup Script
+
+**File:** `clean-attendance.js`
+
+A comprehensive script for cleaning up attendance records from the database. This is particularly useful for:
+- Removing incorrectly imported data
+- Testing attendance upload functionality
+- Cleaning up development/test data
+
+#### Prerequisites
+
+Make sure you're in the root directory of the project and have the necessary dependencies installed:
+
+```bash
+cd /path/to/solid-payroll
+npm install
+```
+
+#### Usage
+
+From the **project root directory**, run:
+
+```bash
+node scripts/clean-attendance.js <command> [options]
+```
+
+#### Available Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `all` | Delete ALL attendance and payout records | `node scripts/clean-attendance.js all` |
+| `date <YYYY-MM-DD>` | Delete records for a specific date | `node scripts/clean-attendance.js date 2025-01-14` |
+| `range <start> <end>` | Delete records in date range | `node scripts/clean-attendance.js range 2025-01-14 2025-01-20` |
+| `employee <employeeId>` | Delete all records for an employee | `node scripts/clean-attendance.js employee 12345` |
+| `recent [days]` | Delete records from last N days (default: 7) | `node scripts/clean-attendance.js recent 3` |
+| `help` | Show help message | `node scripts/clean-attendance.js help` |
+
+#### Examples
+
+**Clean all attendance data:**
+```bash
+node scripts/clean-attendance.js all
+```
+
+**Remove today's data:**
+```bash
+node scripts/clean-attendance.js date 2025-01-14
+```
+
+**Remove this week's data:**
+```bash
+node scripts/clean-attendance.js recent 7
+```
+
+**Remove specific employee's data:**
+```bash
+node scripts/clean-attendance.js employee cm123abc456
+```
+
+**Remove date range:**
+```bash
+node scripts/clean-attendance.js range 2025-01-10 2025-01-15
+```
+
+#### Features
+
+✅ **Safe Operations** - Always shows counts before deletion  
+✅ **Automatic Payout Recalculation** - Updates payouts when attendance changes  
+✅ **Smart Cleanup** - Removes orphaned payout records  
+✅ **Detailed Logging** - Shows exactly what was deleted/updated  
+✅ **Error Handling** - Continues processing even if individual operations fail  
+
+#### Important Notes
+
+⚠️ **Warning:** These operations cannot be undone. Always backup your database before running cleanup scripts!
+
+🔄 **Automatic Recalculation:** When you delete attendance records, the script automatically:
+- Recalculates payouts for affected employees
+- Updates existing payouts with new amounts
+- Removes payouts for months with no attendance
+- Maintains data consistency
+
+🗂️ **Database Impact:** The script affects these tables:
+- `attendance` - Direct deletions
+- `payout` - Automatic updates and deletions based on remaining attendance
+
+#### Troubleshooting
+
+**Permission Issues:**
+```bash
+# Make sure you have the right permissions
+chmod +x scripts/clean-attendance.js
+```
+
+**Module Import Issues:**
+Make sure you're running from the project root directory, not from within the scripts folder.
+
+**Database Connection Issues:**
+Ensure your `.env` file has the correct database connection string and the database is running.
+
+---
+
+## Adding New Scripts
+
+When creating new scripts in this directory:
+
+1. Use ES modules (import/export syntax)
+2. Follow the naming pattern: `action-description.js`
+3. Add documentation to this README
+4. Include proper error handling and logging
+5. Test thoroughly before committing 

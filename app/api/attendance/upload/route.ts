@@ -58,7 +58,8 @@ export async function POST(request: NextRequest) {
     for (const line of lines) {
       const parts = line.trim().split(/\s+/);
       
-      if (parts.length < 2) {
+      if (parts.length < 3) {
+        console.log(`[Parse] Skipping invalid line (insufficient parts): ${line}`);
         continue; // Skip invalid lines
       }
       
@@ -66,9 +67,22 @@ export async function POST(request: NextRequest) {
       if (!deviceId) continue;
       
       const timestampStr = `${parts[1]} ${parts[2]}`;
-      const timestamp = new Date(timestampStr);
       
-      if (isNaN(timestamp.getTime())) continue;
+      // Parse timestamp correctly to avoid timezone issues
+      // Split the timestamp into components
+      const [datePart, timePart] = timestampStr.split(' ');
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hours, minutes, seconds] = timePart.split(':').map(Number);
+      
+      // Create date object with explicit local time components
+      const timestamp = new Date(year, month - 1, day, hours, minutes, seconds || 0);
+      
+      if (isNaN(timestamp.getTime())) {
+        console.log(`[Parse] Invalid timestamp: ${timestampStr} from line: ${line}`);
+        continue;
+      }
+      
+      console.log(`[Parse] Device ID: ${deviceId}, Original: ${timestampStr} -> Parsed: ${timestamp.toLocaleString()}`);
       
       const dateStr = timestamp.toISOString().split('T')[0];
       const key = `${deviceId}-${dateStr}`;
@@ -81,7 +95,8 @@ export async function POST(request: NextRequest) {
         });
       }
       
-      recordsByEmployeeAndDay.get(key)!.records.push(timestampStr);
+      // Store the actual timestamp object instead of string
+      recordsByEmployeeAndDay.get(key)!.records.push(timestamp.toISOString());
     }
 
     // Helper function to check if check-in is beyond grace period
@@ -90,16 +105,18 @@ export async function POST(request: NextRequest) {
         // Parse working hours start time
         const [hours, minutes] = workingHoursStart.split(':');
         
-        // Create grace end time in local timezone (UTC+3)
-        // Convert checkInTime to local time for comparison
-        const localCheckIn = new Date(checkInTime.getTime() + (3 * 60 * 60 * 1000)); // Add 3 hours for UTC+3
+        // Get the check-in date in local time
+        const checkInDate = new Date(checkInTime);
         
-        // Create grace end time for the same day in local timezone
-        const graceEndTime = new Date(localCheckIn);
-        graceEndTime.setUTCHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
+        // Create the grace end time for the same day as check-in
+        const graceEndTime = new Date(checkInDate);
+        graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
         
-        return localCheckIn > graceEndTime;
-      } catch {
+        console.log(`[Grace Period Check] CheckIn: ${checkInDate.toLocaleString()}, GraceEnd: ${graceEndTime.toLocaleString()}, Late: ${checkInDate > graceEndTime}`);
+        
+        return checkInDate > graceEndTime;
+      } catch (error) {
+        console.error('Error in grace period calculation:', error);
         return false;
       }
     }
@@ -110,20 +127,26 @@ export async function POST(request: NextRequest) {
     for (const { records, deviceId, date } of recordsByEmployeeAndDay.values()) {
       if (records.length === 0) continue;
       
-      // Sort records by timestamp
+      console.log(`[Process] Processing ${records.length} records for device ${deviceId} on ${date}`);
+      
+      // Sort records by timestamp (they're now ISO strings)
       records.sort();
       
       const checkIn = new Date(records[0]);
       const checkOut = records.length > 1 ? new Date(records[records.length - 1]) : null;
       
+      console.log(`[Process] Device ${deviceId}: CheckIn=${checkIn.toLocaleString()}, CheckOut=${checkOut ? checkOut.toLocaleString() : 'None'}`);
+      
       let hoursWorked = null;
       if (checkOut) {
         const diffMs = checkOut.getTime() - checkIn.getTime();
         hoursWorked = diffMs / (1000 * 60 * 60); // Convert ms to hours
+        console.log(`[Process] Device ${deviceId}: Hours worked = ${hoursWorked.toFixed(2)}`);
       }
 
       // Determine if this day should be paid (false if late beyond grace period)
       const isPaidDay = !isCheckInBeyondGracePeriod(checkIn);
+      console.log(`[Process] Device ${deviceId}: isPaidDay = ${isPaidDay}`);
 
       // Check if the employee exists by fingerprint ID
       const employee = await prisma.employee.findFirst({
@@ -134,6 +157,8 @@ export async function POST(request: NextRequest) {
         console.log(`[API Upload] Employee with device ID '${deviceId}' not found, skipping record`);
         continue; // Skip if employee doesn't exist
       }
+
+      console.log(`[Process] Found employee: ${employee.name} (ID: ${employee.id}) for device ${deviceId}`);
 
       // Create or update attendance record
       try {
@@ -160,6 +185,7 @@ export async function POST(request: NextRequest) {
           }
         });
 
+        console.log(`[Process] Saved attendance for ${employee.name}: CheckIn=${attendance.checkIn?.toLocaleString()}, CheckOut=${attendance.checkOut?.toLocaleString()}`);
         attendanceRecords.push(attendance);
       } catch (err) {
         console.error(`Error processing record for employee ${deviceId} on ${date}:`, err);
