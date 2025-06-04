@@ -94,8 +94,11 @@ export async function GET(request: NextRequest) {
     const formattedRecords = attendanceRecords.map(record => ({
       id: record.id,
       employeeId: record.employeeId,
-      employeeName: record.employee.name,
-      date: record.date,
+      employee: {
+        id: record.employee.id,
+        name: record.employee.name,
+      },
+      date: record.date.toISOString().split('T')[0], // Format as YYYY-MM-DD
       checkIn: record.checkIn,
       checkOut: record.checkOut,
       hoursWorked: record.hoursWorked,

@@ -263,8 +263,17 @@ export default function EmployeePayoutsPage() {
   const calculatePeriodPayout = (periodStart: Date, periodEnd: Date) => {
     // Filter attendance records for this period
     const periodAttendance = attendance.filter(record => {
-      const recordDate = parseISO(record.date);
-      return isWithinInterval(recordDate, { start: periodStart, end: periodEnd });
+      if (!record.date || typeof record.date !== 'string') {
+        console.warn('[EmployeePayoutsPage] Invalid or missing date in attendance record, skipping:', record);
+        return false;
+      }
+      try {
+        const recordDate = parseISO(record.date);
+        return isWithinInterval(recordDate, { start: periodStart, end: periodEnd });
+      } catch (e) {
+        console.warn('[EmployeePayoutsPage] Error parsing record.date, skipping record:', record.date, e);
+        return false;
+      }
     });
     
     // Calculate days worked - only count days where isPaidDay is true (or undefined for backward compatibility)
@@ -446,27 +455,24 @@ export default function EmployeePayoutsPage() {
   };
   
   // Find existing payout for a period
-  const findExistingPayout = (periodStart: Date, periodEnd: Date) => {
+  const findExistingPayout = (periodStartSearch: Date, periodEndSearch: Date) => {
+    const searchStartDateStr = periodStartSearch.toISOString().split('T')[0];
+    const searchEndDateStr = periodEndSearch.toISOString().split('T')[0];
+
     return existingPayouts.find(payout => {
-      const payoutStart = new Date(payout.periodStart);
-      const payoutEnd = new Date(payout.periodEnd);
-      
-      // Compare dates by converting to ISO date strings (YYYY-MM-DD) to avoid time zone and millisecond issues
-      const startMatches = payoutStart.toISOString().split('T')[0] === periodStart.toISOString().split('T')[0];
-      const endMatches = payoutEnd.toISOString().split('T')[0] === periodEnd.toISOString().split('T')[0];
-      
-      console.log('Comparing payout periods:', {
-        payoutId: payout.id,
-        dbStart: payoutStart.toISOString(),
-        dbEnd: payoutEnd.toISOString(),
-        searchStart: periodStart.toISOString(),
-        searchEnd: periodEnd.toISOString(),
-        startMatches,
-        endMatches,
-        matches: startMatches && endMatches
-      });
-      
-      return startMatches && endMatches;
+      try {
+        if (!payout.periodStart || !payout.periodEnd) {
+            console.warn('[EmployeePayoutsPage] Payout record missing periodStart or periodEnd, skipping in findExistingPayout:', payout);
+            return false;
+        }
+        const payoutStartDateStr = parseISO(payout.periodStart).toISOString().split('T')[0];
+        const payoutEndDateStr = parseISO(payout.periodEnd).toISOString().split('T')[0];
+        
+        return payoutStartDateStr === searchStartDateStr && payoutEndDateStr === searchEndDateStr;
+      } catch (e) {
+        console.warn('[EmployeePayoutsPage] Error parsing payout period dates, skipping payout in findExistingPayout:', payout, e);
+        return false;
+      }
     });
   };
 
@@ -587,6 +593,17 @@ export default function EmployeePayoutsPage() {
       toast.error('An error occurred while saving the payout');
     } finally {
       setIsUpdating(prev => ({ ...prev, [periodKey]: false }));
+    }
+  };
+
+  // Helper function to safely format date strings
+  const safeFormatDate = (dateString: string | null | undefined, formatStr: string = 'MMM d, yyyy') => {
+    if (!dateString) return 'N/A';
+    try {
+      return format(parseISO(dateString), formatStr);
+    } catch (e) {
+      console.warn('[EmployeePayoutsPage] Error formatting date:', dateString, e);
+      return 'Invalid Date';
     }
   };
 
@@ -958,10 +975,17 @@ export default function EmployeePayoutsPage() {
                     </thead>
                     <tbody>
                       {attendance
-                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .sort((a, b) => {
+                          // Handle potentially invalid dates during sort
+                          try {
+                            return parseISO(b.date).getTime() - parseISO(a.date).getTime();
+                          } catch {
+                            return 0; // Keep order if dates are invalid
+                          }
+                        })
                         .map((record) => (
                         <tr key={record.id} className="border-b last:border-0">
-                          <td className="p-1.5">{format(parseISO(record.date), 'MMM d, yyyy')}</td>
+                          <td className="p-1.5">{safeFormatDate(record.date)}</td>
                           <td className="p-1.5">{record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}</td>
                           <td className="p-1.5">
                             {record.checkOut 

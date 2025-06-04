@@ -34,7 +34,13 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(attendance);
+    // Format the response with consistent date formatting
+    const formattedAttendance = attendance.map(record => ({
+      ...record,
+      date: record.date.toISOString().split('T')[0], // Format as YYYY-MM-DD
+    }));
+
+    return NextResponse.json(formattedAttendance);
   } catch (error) {
     console.error('Error fetching employee attendance:', error);
     return NextResponse.json(

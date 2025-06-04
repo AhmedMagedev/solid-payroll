@@ -96,8 +96,25 @@ export default function AttendancePage() {
 
   // Format date as MM/DD/YYYY
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('en-US');
+    try {
+      // Handle different date formats
+      if (!dateString) return 'Invalid Date';
+      
+      // If it's already in YYYY-MM-DD format, parse it directly
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        const date = new Date(dateString + 'T00:00:00');
+        if (isNaN(date.getTime())) return 'Invalid Date';
+        return date.toLocaleDateString('en-US');
+      }
+      
+      // Try parsing as ISO string
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid Date';
+      return date.toLocaleDateString('en-US');
+    } catch (error) {
+      console.error('Error formatting date:', dateString, error);
+      return 'Invalid Date';
+    }
   };
 
   const PaginationControls = () => {
@@ -284,7 +301,7 @@ export default function AttendancePage() {
                     <tr key={record.id} className="border-b border-border/50 hover:bg-muted/30">
                       <td className="py-4 px-6">
                         <div className="font-medium">
-                          {record.employee.name || `Employee #${record.employeeId}`}
+                          {record.employee?.name || `Employee #${record.employeeId}`}
                         </div>
                       </td>
                       <td className="py-4 px-6">{formatDate(record.date)}</td>

@@ -9,6 +9,7 @@ import EmployeeActions from './employee-actions';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { formatEgyptTime } from '@/lib/timezone';
 
 interface Employee {
   id: number;
@@ -207,7 +208,7 @@ export default function EmployeeProfilePage() {
                   <Calendar className="h-4 w-4 mr-2" />
                   Joined Date
                 </dt>
-                <dd className="mt-1 text-base">{new Date(employee.createdAt).toLocaleDateString()}</dd>
+                <dd className="mt-1 text-base">{employee.createdAt ? formatEgyptTime(employee.createdAt, 'MMM d, yyyy') : 'N/A'}</dd>
               </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">

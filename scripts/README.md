@@ -156,7 +156,7 @@ If you need to recover data after accidental deletion:
 
 - **Development**: Test the script thoroughly
 - **Staging**: Verify behavior with production-like data
-- **Production**: Use with extreme caution, ensure backups exist
+- **Production**: Use with extreme caution, ensure backups exist 
 
 # Solid Payroll Scripts
 
