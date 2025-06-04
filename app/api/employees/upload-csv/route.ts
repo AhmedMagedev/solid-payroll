@@ -4,6 +4,11 @@ import { verifyToken } from '@/app/lib/auth';
 
 const prisma = new PrismaClient();
 
+// Configuration for batch processing
+const BATCH_SIZE = 10; // Process 10 employees at a time
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB max file size
+const MAX_EMPLOYEES = 1000; // Maximum number of employees per upload
+
 // Function to parse CSV content
 function parseCSV(content: string): string[][] {
   const lines = content.split('\n').filter(line => line.trim());
@@ -83,6 +88,10 @@ function parseEmployeesFromCSV(content: string) {
     throw new Error('No employee data found after header row');
   }
   
+  if (dataRows.length > MAX_EMPLOYEES) {
+    throw new Error(`Too many employees in file. Maximum allowed: ${MAX_EMPLOYEES}, found: ${dataRows.length}`);
+  }
+  
   const employees = [];
   
   for (let i = 0; i < dataRows.length; i++) {
@@ -136,6 +145,83 @@ function parseEmployeesFromCSV(content: string) {
   return employees;
 }
 
+// Function to process employees in batches
+async function processEmployeesInBatches(employees: Array<{
+  name: string;
+  email: string;
+  position: string;
+  fingerprintId: string;
+  dailyRate: number;
+  paymentBasis: string;
+}>) {
+  const results = [];
+  let createdCount = 0;
+  let errorCount = 0;
+  
+  console.log(`[API] Processing ${employees.length} employees in batches of ${BATCH_SIZE}`);
+  
+  for (let i = 0; i < employees.length; i += BATCH_SIZE) {
+    const batch = employees.slice(i, i + BATCH_SIZE);
+    console.log(`[API] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(employees.length / BATCH_SIZE)}`);
+    
+    for (const employeeData of batch) {
+      try {
+        console.log(`[API] Checking if employee exists: ${employeeData.email} (Device ID: ${employeeData.fingerprintId})`);
+        
+        // Check if employee with this email or fingerprint ID already exists
+        const existingEmployee = await prisma.employee.findFirst({
+          where: {
+            OR: [
+              { email: employeeData.email },
+              { fingerprintId: employeeData.fingerprintId }
+            ]
+          }
+        });
+        
+        if (!existingEmployee) {
+          console.log(`[API] Creating new employee: ${employeeData.name} (${employeeData.email})`);
+          
+          // Create new employee
+          const employee = await prisma.employee.create({
+            data: employeeData
+          });
+          
+          console.log(`[API] Successfully created employee with ID: ${employee.id}`);
+          results.push({ success: true, employee });
+          createdCount++;
+        } else {
+          const conflictField = existingEmployee.email === employeeData.email ? 'email' : 'device ID';
+          const conflictValue = existingEmployee.email === employeeData.email ? employeeData.email : employeeData.fingerprintId;
+          
+          console.log(`[API] Employee conflict: ${conflictField} ${conflictValue} already exists`);
+          results.push({ 
+            success: false, 
+            error: `Employee with ${conflictField} ${conflictValue} already exists`,
+            employeeData 
+          });
+          errorCount++;
+        }
+      } catch (error) {
+        console.error(`[API] Error creating employee ${employeeData.email}:`, error);
+        results.push({ 
+          success: false, 
+          error: 'Database error',
+          employeeData,
+          details: error instanceof Error ? error.message : 'Unknown error'
+        });
+        errorCount++;
+      }
+    }
+    
+    // Small delay between batches to prevent overwhelming the database
+    if (i + BATCH_SIZE < employees.length) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+  
+  return { results, createdCount, errorCount };
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check for authentication
@@ -169,6 +255,14 @@ export async function POST(request: NextRequest) {
     if (!file) {
       return NextResponse.json(
         { error: 'No file uploaded' },
+        { status: 400 }
+      );
+    }
+
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: `File too large. Maximum size allowed: ${MAX_FILE_SIZE / (1024 * 1024)}MB` },
         { status: 400 }
       );
     }
@@ -228,61 +322,8 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Save employees to the database
-    const results = [];
-    let createdCount = 0;
-    let errorCount = 0;
-
-    console.log(`[API] Starting to save ${employees.length} employees to database...`);
-
-    for (const employeeData of employees) {
-      try {
-        console.log(`[API] Checking if employee exists: ${employeeData.email} (Device ID: ${employeeData.fingerprintId})`);
-        
-        // Check if employee with this email or fingerprint ID already exists
-        const existingEmployee = await prisma.employee.findFirst({
-          where: {
-            OR: [
-              { email: employeeData.email },
-              { fingerprintId: employeeData.fingerprintId }
-            ]
-          }
-        });
-        
-        if (!existingEmployee) {
-          console.log(`[API] Creating new employee: ${employeeData.name} (${employeeData.email})`);
-          
-          // Create new employee
-          const employee = await prisma.employee.create({
-            data: employeeData
-          });
-          
-          console.log(`[API] Successfully created employee with ID: ${employee.id}`);
-          results.push({ success: true, employee });
-          createdCount++;
-        } else {
-          const conflictField = existingEmployee.email === employeeData.email ? 'email' : 'device ID';
-          const conflictValue = existingEmployee.email === employeeData.email ? employeeData.email : employeeData.fingerprintId;
-          
-          console.log(`[API] Employee conflict: ${conflictField} ${conflictValue} already exists`);
-          results.push({ 
-            success: false, 
-            error: `Employee with ${conflictField} ${conflictValue} already exists`,
-            employeeData 
-          });
-          errorCount++;
-        }
-      } catch (error) {
-        console.error(`[API] Error creating employee ${employeeData.email}:`, error);
-        results.push({ 
-          success: false, 
-          error: 'Database error',
-          employeeData,
-          details: error instanceof Error ? error.message : 'Unknown error'
-        });
-        errorCount++;
-      }
-    }
+    // Process employees in batches
+    const { results, createdCount, errorCount } = await processEmployeesInBatches(employees);
 
     console.log(`[API] Database save completed. Created: ${createdCount}, Errors: ${errorCount}, Total: ${employees.length}`);
     

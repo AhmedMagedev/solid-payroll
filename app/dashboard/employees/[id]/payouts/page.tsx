@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
+import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Calendar, DollarSign, Clock, CalendarCheck, CalendarX } from 'lucide-react';
@@ -635,7 +636,7 @@ export default function EmployeePayoutsPage() {
                       {/* Payment status on the right */}
                       {currentState.isPaid && (
                         <Badge variant="outline" className="bg-green-500 text-white text-xs">
-                          Paid{existingPayout?.paymentDate ? ` on ${new Date(existingPayout.paymentDate).toLocaleDateString()}` : ''}
+                          Paid{existingPayout?.paymentDate ? ` on ${formatEgyptTime(existingPayout.paymentDate, 'MMM d, yyyy')}` : ''}
                         </Badge>
                       )}
                       <div className="flex items-center">
@@ -961,10 +962,10 @@ export default function EmployeePayoutsPage() {
                         .map((record) => (
                         <tr key={record.id} className="border-b last:border-0">
                           <td className="p-1.5">{format(parseISO(record.date), 'MMM d, yyyy')}</td>
-                          <td className="p-1.5">{format(parseISO(record.checkIn), 'h:mm a')}</td>
+                          <td className="p-1.5">{record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}</td>
                           <td className="p-1.5">
                             {record.checkOut 
-                              ? format(parseISO(record.checkOut), 'h:mm a') 
+                              ? formatEgyptTime(record.checkOut, 'h:mm a') 
                               : '—'}
                           </td>
                           <td className="p-1.5">{record.hoursWorked?.toFixed(1) || '—'}</td>

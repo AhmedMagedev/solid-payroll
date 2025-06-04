@@ -5,18 +5,21 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { format } from 'date-fns';
 import { Upload, AlertCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatEgyptTime } from '@/lib/timezone';
 
 interface Attendance {
   id: number;
   employeeId: number;
+  employee: {
+    id: number;
+    name: string;
+  };
   date: string;
-  checkIn: string;
+  checkIn: string | null;
   checkOut: string | null;
   hoursWorked: number | null;
-  employeeName?: string;
-  isPaidDay?: boolean; // Optional for backward compatibility
+  isPaidDay: boolean;
 }
 
 interface PaginationInfo {
@@ -35,12 +38,6 @@ interface AttendanceResponse {
   pagination: PaginationInfo;
 }
 
-interface SystemSettings {
-  workingHoursStart: string;
-  workingHoursEnd: string;
-  lateAllowanceMinutes: number;
-}
-
 export default function AttendancePage() {
   const router = useRouter();
   const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
@@ -49,7 +46,6 @@ export default function AttendancePage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
 
   const fetchAttendance = useCallback(async (page: number, search: string) => {
     try {
@@ -87,26 +83,6 @@ export default function AttendancePage() {
     fetchAttendance(currentPage, searchTerm);
   }, [currentPage, fetchAttendance]);
 
-  // Fetch system settings
-  useEffect(() => {
-    async function fetchSystemSettings() {
-      try {
-        const response = await fetch('/api/settings', {
-          credentials: 'include',
-        });
-        
-        if (response.ok) {
-          const settings = await response.json();
-          setSystemSettings(settings);
-        }
-      } catch (err) {
-        console.error('Error fetching system settings:', err);
-      }
-    }
-    
-    fetchSystemSettings();
-  }, []);
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
@@ -118,74 +94,11 @@ export default function AttendancePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  function formatTime(timeString: string | null) {
-    if (!timeString) return 'N/A';
-    try {
-      const date = new Date(timeString);
-      return format(date, 'h:mm a');
-    } catch {
-      return 'Invalid time';
-    }
-  }
-
-  function formatDate(dateString: string) {
-    try {
-      const date = new Date(dateString);
-      return format(date, 'MMM d, yyyy');
-    } catch {
-      return 'Invalid date';
-    }
-  }
-
-  // Check if check-in is late (past working hours start + grace period)
-  function isCheckInLate(checkInTime: string, recordDate: string): boolean {
-    if (!systemSettings || !checkInTime) return false;
-    
-    try {
-      const checkIn = new Date(checkInTime);
-      const recordDateObj = new Date(recordDate);
-      
-      // Parse working hours start time
-      const [hours, minutes] = systemSettings.workingHoursStart.split(':');
-      const expectedStartTime = new Date(recordDateObj);
-      expectedStartTime.setHours(parseInt(hours), parseInt(minutes) + systemSettings.lateAllowanceMinutes, 0, 0);
-      
-      return checkIn > expectedStartTime;
-    } catch {
-      return false;
-    }
-  }
-
-  // Check if check-out is early (before working hours end)
-  function isCheckOutEarly(checkOutTime: string | null, recordDate: string): boolean {
-    if (!systemSettings || !checkOutTime) return false;
-    
-    try {
-      const checkOut = new Date(checkOutTime);
-      const recordDateObj = new Date(recordDate);
-      
-      // Parse working hours end time
-      const [hours, minutes] = systemSettings.workingHoursEnd.split(':');
-      const expectedEndTime = new Date(recordDateObj);
-      expectedEndTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-      
-      return checkOut < expectedEndTime;
-    } catch {
-      return false;
-    }
-  }
-
-  // Format time with conditional styling
-  function formatTimeWithStyling(
-    timeString: string | null, 
-    isLate: boolean, 
-    isEarly: boolean
-  ): React.ReactNode {
-    const timeText = formatTime(timeString);
-    const className = (isLate || isEarly) ? 'text-red-600 font-medium' : '';
-    
-    return <span className={className}>{timeText}</span>;
-  }
+  // Format date as MM/DD/YYYY
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US');
+  };
 
   const PaginationControls = () => {
     if (!pagination || pagination.totalPages <= 1) return null;
@@ -371,12 +284,16 @@ export default function AttendancePage() {
                     <tr key={record.id} className="border-b border-border/50 hover:bg-muted/30">
                       <td className="py-4 px-6">
                         <div className="font-medium">
-                          {record.employeeName || `Employee #${record.employeeId}`}
+                          {record.employee.name || `Employee #${record.employeeId}`}
                         </div>
                       </td>
                       <td className="py-4 px-6">{formatDate(record.date)}</td>
-                      <td className="py-4 px-6">{formatTimeWithStyling(record.checkIn, isCheckInLate(record.checkIn, record.date), false)}</td>
-                      <td className="py-4 px-6">{formatTimeWithStyling(record.checkOut, false, isCheckOutEarly(record.checkOut, record.date))}</td>
+                      <td className="py-4 px-6">
+                        {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : '-'}
+                      </td>
+                      <td className="py-4 px-6">
+                        {record.checkOut ? formatEgyptTime(record.checkOut, 'h:mm a') : '-'}
+                      </td>
                       <td className="py-4 px-6">
                         {record.hoursWorked !== null 
                           ? <span className="font-medium">{record.hoursWorked.toFixed(2)}h</span> 

@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
 import { verifyToken } from '@/app/lib/auth';
+import { parseEgyptTimeToUtc, isCheckInBeyondGracePeriod } from '@/lib/timezone';
 
 const prisma = new PrismaClient();
+
+// Configuration for batch processing
+const BATCH_SIZE = 20; // Process 20 attendance records at a time
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB max file size
+const MAX_RECORDS = 5000; // Maximum number of attendance records per upload
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,6 +43,8 @@ export async function POST(request: NextRequest) {
     const lateAllowanceMinutes = systemSettings?.lateAllowanceMinutes || 15;
     const workingHoursStart = systemSettings?.workingHoursStart || "09:00";
 
+    console.log(`[API] Grace period settings: Start: ${workingHoursStart}, Allowance: ${lateAllowanceMinutes} minutes`);
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -47,268 +55,332 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: `File too large. Maximum size allowed: ${MAX_FILE_SIZE / (1024 * 1024)}MB` },
+        { status: 400 }
+      );
+    }
+
     // Read file content
     const fileContent = await file.text();
     const lines = fileContent.split('\n').filter(line => line.trim());
 
-    // Process attendance records
-    const recordsByEmployeeAndDay = new Map<string, { records: string[], deviceId: string, date: string }>();
+    if (lines.length === 0) {
+      return NextResponse.json(
+        { error: 'File is empty or contains no valid data' },
+        { status: 400 }
+      );
+    }
 
-    // Parse each line of the file
+    if (lines.length > MAX_RECORDS) {
+      return NextResponse.json(
+        { error: `Too many records in file. Maximum allowed: ${MAX_RECORDS}, found: ${lines.length}` },
+        { status: 400 }
+      );
+    }
+
+    // Process attendance records
+    const recordsByEmployeeAndDay = new Map<string, { records: string[], deviceId: string, date: string, employeeId: number, isPaidDay: boolean }>();
+
+    console.log(`[API] Processing ${lines.length} lines from uploaded file`);
+
     for (const line of lines) {
       const parts = line.trim().split(/\s+/);
-      
-      if (parts.length < 3) {
-        console.log(`[Parse] Skipping invalid line (insufficient parts): ${line}`);
-        continue; // Skip invalid lines
-      }
-      
-      const deviceId = parts[0]; // This is the fingerprint/device ID, not employee ID
-      if (!deviceId) continue;
-      
-      const timestampStr = `${parts[1]} ${parts[2]}`;
-      
-      // Parse timestamp correctly to avoid timezone issues
-      // Split the timestamp into components
-      const [datePart, timePart] = timestampStr.split(' ');
-      const [year, month, day] = datePart.split('-').map(Number);
-      const [hours, minutes, seconds] = timePart.split(':').map(Number);
-      
-      // Create date object with explicit local time components
-      const timestamp = new Date(year, month - 1, day, hours, minutes, seconds || 0);
-      
-      if (isNaN(timestamp.getTime())) {
-        console.log(`[Parse] Invalid timestamp: ${timestampStr} from line: ${line}`);
+      if (parts.length < 2) {
+        console.warn(`[API] Skipping invalid line: ${line}`);
         continue;
       }
-      
-      console.log(`[Parse] Device ID: ${deviceId}, Original: ${timestampStr} -> Parsed: ${timestamp.toLocaleString()}`);
-      
-      const dateStr = timestamp.toISOString().split('T')[0];
-      const key = `${deviceId}-${dateStr}`;
-      
-      if (!recordsByEmployeeAndDay.has(key)) {
-        recordsByEmployeeAndDay.set(key, {
-          records: [],
-          deviceId,
-          date: dateStr
-        });
-      }
-      
-      // Store the actual timestamp object instead of string
-      recordsByEmployeeAndDay.get(key)!.records.push(timestamp.toISOString());
-    }
 
-    // Helper function to check if check-in is beyond grace period
-    function isCheckInBeyondGracePeriod(checkInTime: Date): boolean {
-      try {
-        // Parse working hours start time
-        const [hours, minutes] = workingHoursStart.split(':');
-        
-        // Get the check-in date in local time
-        const checkInDate = new Date(checkInTime);
-        
-        // Create the grace end time for the same day as check-in
-        const graceEndTime = new Date(checkInDate);
-        graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
-        
-        console.log(`[Grace Period Check] CheckIn: ${checkInDate.toLocaleString()}, GraceEnd: ${graceEndTime.toLocaleString()}, Late: ${checkInDate > graceEndTime}`);
-        
-        return checkInDate > graceEndTime;
-      } catch (error) {
-        console.error('Error in grace period calculation:', error);
-        return false;
-      }
-    }
+      const employeeId = parseInt(parts[0], 10);
+      const deviceId = parseInt(parts[1], 10);
+      const timeString = parts[2] + ' ' + parts[3];
 
-    const attendanceRecords = [];
-
-    // Process each employee's daily records
-    for (const { records, deviceId, date } of recordsByEmployeeAndDay.values()) {
-      if (records.length === 0) continue;
-      
-      console.log(`[Process] Processing ${records.length} records for device ${deviceId} on ${date}`);
-      
-      // Sort records by timestamp (they're now ISO strings)
-      records.sort();
-      
-      const checkIn = new Date(records[0]);
-      const checkOut = records.length > 1 ? new Date(records[records.length - 1]) : null;
-      
-      console.log(`[Process] Device ${deviceId}: CheckIn=${checkIn.toLocaleString()}, CheckOut=${checkOut ? checkOut.toLocaleString() : 'None'}`);
-      
-      let hoursWorked = null;
-      if (checkOut) {
-        const diffMs = checkOut.getTime() - checkIn.getTime();
-        hoursWorked = diffMs / (1000 * 60 * 60); // Convert ms to hours
-        console.log(`[Process] Device ${deviceId}: Hours worked = ${hoursWorked.toFixed(2)}`);
+      // Use the Egypt timezone parser
+      const checkInDateTime = parseEgyptTimeToUtc(timeString);
+      if (!checkInDateTime) {
+        console.log(`Skipping record ${line}: Invalid timestamp "${timeString}"`);
+        continue;
       }
 
-      // Determine if this day should be paid (false if late beyond grace period)
-      const isPaidDay = !isCheckInBeyondGracePeriod(checkIn);
-      console.log(`[Process] Device ${deviceId}: isPaidDay = ${isPaidDay}`);
-
-      // Check if the employee exists by fingerprint ID
-      const employee = await prisma.employee.findFirst({
-        where: { fingerprintId: deviceId }
+      // Check employee
+      const employee = await prisma.employee.findUnique({
+        where: { id: employeeId }
       });
 
       if (!employee) {
-        console.log(`[API Upload] Employee with device ID '${deviceId}' not found, skipping record`);
-        continue; // Skip if employee doesn't exist
+        console.log(`Skipping record ${line}: Employee ID ${employeeId} not found`);
+        continue;
       }
 
-      console.log(`[Process] Found employee: ${employee.name} (ID: ${employee.id}) for device ${deviceId}`);
+      // Calculate if this should be a paid day based on grace period
+      const isPaidDay = !isCheckInBeyondGracePeriod(
+        checkInDateTime,
+        workingHoursStart,
+        lateAllowanceMinutes
+      );
 
-      // Create or update attendance record
-      try {
-        const attendance = await prisma.attendance.upsert({
-          where: {
-            employeeId_date: {
-              employeeId: employee.id,
-              date: new Date(date)
-            }
-          },
-          update: {
-            checkIn,
-            checkOut,
-            hoursWorked,
-            isPaidDay
-          },
-          create: {
-            employeeId: employee.id,
-            date: new Date(date),
-            checkIn,
-            checkOut,
-            hoursWorked,
-            isPaidDay
-          }
+      const dateKey = checkInDateTime.toISOString().split('T')[0]; // YYYY-MM-DD format
+      const employeeKey = `${deviceId}-${dateKey}`;
+
+      // Create employee entry if not exists
+      if (!recordsByEmployeeAndDay.has(employeeKey)) {
+        recordsByEmployeeAndDay.set(employeeKey, {
+          employeeId: employee.id,
+          deviceId: deviceId.toString(), // Convert to string for consistency
+          date: dateKey,
+          records: [],
+          isPaidDay: isPaidDay // Store calculated isPaidDay
         });
-
-        console.log(`[Process] Saved attendance for ${employee.name}: CheckIn=${attendance.checkIn?.toLocaleString()}, CheckOut=${attendance.checkOut?.toLocaleString()}`);
-        attendanceRecords.push(attendance);
-      } catch (err) {
-        console.error(`Error processing record for employee ${deviceId} on ${date}:`, err);
       }
+
+      recordsByEmployeeAndDay.get(employeeKey)!.records.push(timeString);
     }
 
-    // Auto-calculate payouts for affected employees
-    console.log('[API Upload] Starting automatic payout calculation...');
+    console.log(`[API] Grouped records into ${recordsByEmployeeAndDay.size} employee-day combinations`);
+
+    // Process records in batches
+    const attendanceRecords = [];
+    const entries = Array.from(recordsByEmployeeAndDay.entries());
     
-    // Get unique employee IDs from processed attendance records
-    const affectedEmployeeIds = [...new Set(attendanceRecords.map(record => record.employeeId))];
-    console.log(`[API Upload] Auto-calculating payouts for ${affectedEmployeeIds.length} employees`);
-    
-    let payoutsCreated = 0;
-    let payoutsUpdated = 0;
-    
-    for (const employeeId of affectedEmployeeIds) {
-      try {
-        // Get employee details
+    for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+      const batch = entries.slice(i, i + BATCH_SIZE);
+      console.log(`[API] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(entries.length / BATCH_SIZE)}`);
+      
+      for (const [, data] of batch) {
+        const { records, deviceId, date, employeeId, isPaidDay } = data;
+
+        // Find employee by ID
         const employee = await prisma.employee.findUnique({
           where: { id: employeeId }
         });
-        
-        if (!employee) continue;
-        
-        // Get all attendance records for this employee
-        const allAttendance = await prisma.attendance.findMany({
-          where: { employeeId },
-          orderBy: { date: 'asc' }
-        });
-        
-        if (allAttendance.length === 0) continue;
-        
-        // Group attendance by month (for monthly payment basis)
-        const attendanceByMonth = new Map<string, typeof allAttendance>();
-        
-        allAttendance.forEach(record => {
-          const date = new Date(record.date);
-          const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-          
-          if (!attendanceByMonth.has(monthKey)) {
-            attendanceByMonth.set(monthKey, []);
-          }
-          attendanceByMonth.get(monthKey)!.push(record);
-        });
-        
-        // Process each month
-        for (const [monthKey, monthAttendance] of attendanceByMonth) {
-          const [year, month] = monthKey.split('-').map(Number);
-          const periodStart = new Date(year, month - 1, 1);
-          const periodEnd = new Date(year, month, 0); // Last day of month
-          
-          // Check if payout already exists
-          const existingPayout = await prisma.payout.findUnique({
-            where: {
-              employeeId_periodStart_periodEnd: {
-                employeeId,
-                periodStart,
-                periodEnd
-              }
-            }
-          });
-          
-          // Calculate payout - only count days where isPaidDay is true
-          const paidDays = monthAttendance.filter(record => record.isPaidDay);
-          const daysWorked = paidDays.length;
-          const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
-          const calculatedAmount = daysWorked * employee.dailyRate;
-          
-          if (existingPayout) {
-            // Update existing payout if amount changed
-            if (existingPayout.amount !== calculatedAmount) {
-              await prisma.payout.update({
-                where: { id: existingPayout.id },
-                data: { 
-                  amount: calculatedAmount,
-                  comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours (${monthAttendance.length - daysWorked} unpaid days)`,
-                  updatedAt: new Date()
-                }
-              });
-              payoutsUpdated++;
-              console.log(`[API Upload] Updated payout for ${employee.name} (${monthKey}): ${calculatedAmount}`);
-            }
-          } else {
-            // Create new payout
-            await prisma.payout.create({
-              data: {
-                employeeId,
-                periodStart,
-                periodEnd,
-                amount: calculatedAmount,
-                isPaid: false,
-                comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours (${monthAttendance.length - daysWorked} unpaid days)`
-              }
-            });
-            payoutsCreated++;
-            console.log(`[API Upload] Created payout for ${employee.name} (${monthKey}): ${calculatedAmount}`);
-          }
+
+        if (!employee) {
+          console.log(`Employee with ID ${employeeId} not found during processing`);
+          continue;
         }
-      } catch (payoutError) {
-        console.error(`[API Upload] Error calculating payouts for employee ${employeeId}:`, payoutError);
-        // Continue processing other employees even if one fails
+
+        console.log(`[API] Found employee: ${employee.name} (ID: ${employee.id}) for device ID: ${deviceId}`);
+
+        // Sort records by time to get first (check-in) and last (check-out)
+        const sortedRecords = records.sort();
+        const firstRecord = sortedRecords[0];
+        const lastRecord = sortedRecords[sortedRecords.length - 1];
+
+        console.log(`[API] Employee ${employee.name} on ${date}: First record: ${firstRecord}, Last record: ${lastRecord}`);
+
+        // Parse check-in and check-out times
+        const parseTime = (timeStr: string) => {
+          const match = timeStr.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/);
+          if (!match) return null;
+          const [, year, month, day, hours, minutes, seconds] = match;
+          
+          // Create date in local time (UTC+3 for production)
+          // This ensures the time is stored as intended regardless of server timezone
+          const localDate = new Date(
+            parseInt(year), 
+            parseInt(month) - 1, 
+            parseInt(day), 
+            parseInt(hours), 
+            parseInt(minutes), 
+            parseInt(seconds)
+          );
+          
+          // For production, adjust for UTC+3 timezone
+          // This ensures times are stored correctly for the business timezone
+          const timezoneOffset = 3 * 60; // UTC+3 in minutes
+          const utcTime = new Date(localDate.getTime() - (timezoneOffset * 60 * 1000));
+          
+          return utcTime;
+        };
+
+        const checkIn = parseTime(firstRecord);
+        const checkOut = parseTime(lastRecord);
+
+        if (!checkIn) {
+          console.warn(`[API] Invalid check-in time for employee ${employee.name}: ${firstRecord}`);
+          continue;
+        }
+
+        // Calculate hours worked
+        let hoursWorked = 0;
+        if (checkOut && checkOut > checkIn) {
+          hoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
+        }
+
+        console.log(`[API] Employee ${employee.name}: Check-in: ${checkIn.toLocaleString()}, Check-out: ${checkOut?.toLocaleString() || 'N/A'}, Hours: ${hoursWorked.toFixed(2)}, Paid: ${isPaidDay}`);
+
+        const attendanceData = {
+          employeeId: employee.id,
+          date: new Date(date),
+          checkIn,
+          checkOut,
+          hoursWorked: hoursWorked > 0 ? hoursWorked : null,
+          isPaidDay,
+        };
+
+        attendanceRecords.push(attendanceData);
+      }
+      
+      // Small delay between batches to prevent overwhelming the database
+      if (i + BATCH_SIZE < entries.length) {
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
     }
-    
-    console.log(`[API Upload] Payout calculation completed. Created: ${payoutsCreated}, Updated: ${payoutsUpdated}`);
+
+    console.log(`[API] Prepared ${attendanceRecords.length} attendance records for database insertion`);
+
+    // Insert attendance records using upsert to handle duplicates
+    let processedCount = 0;
+    for (let i = 0; i < attendanceRecords.length; i += BATCH_SIZE) {
+      const batch = attendanceRecords.slice(i, i + BATCH_SIZE);
+      
+      for (const record of batch) {
+        try {
+          await prisma.attendance.upsert({
+            where: {
+              employeeId_date: {
+                employeeId: record.employeeId,
+                date: record.date,
+              },
+            },
+            update: {
+              checkIn: record.checkIn,
+              checkOut: record.checkOut,
+              hoursWorked: record.hoursWorked,
+              isPaidDay: record.isPaidDay,
+              updatedAt: new Date(),
+            },
+            create: record,
+          });
+          processedCount++;
+        } catch (error) {
+          console.error(`[API] Error upserting attendance record:`, error);
+        }
+      }
+      
+      // Small delay between database batches
+      if (i + BATCH_SIZE < attendanceRecords.length) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+    }
+
+    console.log(`[API] Successfully processed ${processedCount} attendance records`);
+
+    // Calculate payouts for affected employees
+    const affectedEmployeeIds = [...new Set(attendanceRecords.map(r => r.employeeId))];
+    console.log(`[API] Calculating payouts for ${affectedEmployeeIds.length} affected employees`);
+
+    const payoutResults = { created: 0, updated: 0, total: 0 };
+
+    // Process payouts in smaller batches
+    for (let i = 0; i < affectedEmployeeIds.length; i += 5) {
+      const employeeBatch = affectedEmployeeIds.slice(i, i + 5);
+      
+      for (const employeeId of employeeBatch) {
+        try {
+          const employee = await prisma.employee.findUnique({
+            where: { id: employeeId },
+            include: { attendance: true }
+          });
+
+          if (!employee) continue;
+
+          // Group attendance by month for payout calculation
+          const attendanceByMonth = new Map<string, Array<{
+            id: number;
+            employeeId: number;
+            date: Date;
+            checkIn: Date;
+            checkOut: Date | null;
+            hoursWorked: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            isPaidDay: boolean;
+          }>>();
+          
+          for (const attendance of employee.attendance) {
+            const monthKey = `${attendance.date.getFullYear()}-${String(attendance.date.getMonth() + 1).padStart(2, '0')}`;
+            if (!attendanceByMonth.has(monthKey)) {
+              attendanceByMonth.set(monthKey, []);
+            }
+            attendanceByMonth.get(monthKey)!.push(attendance);
+          }
+
+          // Calculate payouts for each month
+          for (const [monthKey, monthAttendance] of attendanceByMonth) {
+            const [year, month] = monthKey.split('-').map(Number);
+            const periodStart = new Date(year, month - 1, 1);
+            const periodEnd = new Date(year, month, 0); // Last day of month
+
+            // Only count days where isPaidDay is true
+            const paidDays = monthAttendance.filter(a => a.isPaidDay && a.hoursWorked && a.hoursWorked > 0);
+            const daysWorked = paidDays.length;
+            const totalHours = paidDays.reduce((sum, a) => sum + (a.hoursWorked || 0), 0);
+            const amount = daysWorked * employee.dailyRate;
+
+            // Count unpaid days for reporting
+            const unpaidDays = monthAttendance.filter(a => !a.isPaidDay).length;
+
+            const existingPayout = await prisma.payout.findFirst({
+              where: {
+                employeeId: employee.id,
+                periodStart: periodStart,
+                periodEnd: periodEnd
+              }
+            });
+
+            if (existingPayout) {
+              if (existingPayout.amount !== amount) {
+                await prisma.payout.update({
+                  where: { id: existingPayout.id },
+                  data: {
+                    amount,
+                    comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`,
+                    updatedAt: new Date()
+                  }
+                });
+                payoutResults.updated++;
+              }
+            } else {
+              await prisma.payout.create({
+                data: {
+                  employeeId: employee.id,
+                  periodStart,
+                  periodEnd,
+                  amount,
+                  comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`
+                }
+              });
+              payoutResults.created++;
+            }
+            payoutResults.total++;
+          }
+        } catch (error) {
+          console.error(`[API] Error calculating payout for employee ${employeeId}:`, error);
+        }
+      }
+      
+      // Small delay between payout batches
+      if (i + 5 < affectedEmployeeIds.length) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
+
+    console.log(`[API] Payout calculation completed: Created ${payoutResults.created}, Updated ${payoutResults.updated}, Total ${payoutResults.total}`);
 
     return NextResponse.json({
-      success: true,
-      message: `Successfully processed ${attendanceRecords.length} attendance records and updated payouts.`,
-      recordsCount: attendanceRecords.length,
-      payouts: {
-        created: payoutsCreated,
-        updated: payoutsUpdated,
-        total: payoutsCreated + payoutsUpdated
-      }
-    });
-  } catch (error: unknown) {
+      message: 'Attendance log processed successfully',
+      recordsCount: processedCount,
+      payouts: payoutResults
+    }, { status: 200 });
+
+  } catch (error) {
     console.error('Error processing attendance upload:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json(
-      { error: 'Failed to process attendance log', details: errorMessage },
-      { status: 500 }
-    );
+    return NextResponse.json({ 
+      error: 'Failed to process attendance log',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 } 

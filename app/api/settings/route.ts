@@ -175,13 +175,15 @@ async function recalculateAttendancePaidStatus(systemSettings: {
       // Parse working hours start time
       const [hours, minutes] = workingHoursStart.split(':');
       
-      // Create grace end time in local timezone (UTC+3)
-      // Convert checkInTime to local time for comparison
-      const localCheckIn = new Date(checkInTime.getTime() + (3 * 60 * 60 * 1000)); // Add 3 hours for UTC+3
+      // Convert stored UTC time back to local time (UTC+3) for comparison
+      const timezoneOffset = 3 * 60; // UTC+3 in minutes
+      const localCheckIn = new Date(checkInTime.getTime() + (timezoneOffset * 60 * 1000));
       
-      // Create grace end time for the same day in local timezone
+      // Create the grace end time for the same day as check-in in local time
       const graceEndTime = new Date(localCheckIn);
-      graceEndTime.setUTCHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
+      graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
+      
+      console.log(`[Recalc Grace Check] CheckIn (Local): ${localCheckIn.toISOString()}, GraceEnd (Local): ${graceEndTime.toISOString()}, Late: ${localCheckIn > graceEndTime}`);
       
       return localCheckIn > graceEndTime;
     } catch {

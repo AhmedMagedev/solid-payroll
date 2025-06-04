@@ -6,12 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, CheckCircle2, Upload, Info, Clock } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Upload, Info, Clock, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { Progress } from '@/components/ui/progress';
 
 export default function AttendanceUploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState('');
   const [uploadResult, setUploadResult] = useState<{ 
     success?: boolean; 
     message?: string; 
@@ -27,7 +30,35 @@ export default function AttendanceUploadPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setUploadResult(null);
+      setUploadProgress(0);
+      setProgressMessage('');
     }
+  };
+
+  const simulateProgress = () => {
+    setUploadProgress(15);
+    setProgressMessage('Reading attendance file...');
+    
+    setTimeout(() => {
+      setUploadProgress(35);
+      setProgressMessage('Parsing attendance records...');
+    }, 600);
+    
+    setTimeout(() => {
+      setUploadProgress(55);
+      setProgressMessage('Processing employee check-ins...');
+    }, 1200);
+    
+    setTimeout(() => {
+      setUploadProgress(75);
+      setProgressMessage('Calculating hours worked...');
+    }, 1800);
+    
+    setTimeout(() => {
+      setUploadProgress(90);
+      setProgressMessage('Updating payroll calculations...');
+    }, 2400);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,6 +74,11 @@ export default function AttendanceUploadPage() {
     
     setIsUploading(true);
     setUploadResult(null);
+    setUploadProgress(0);
+    setProgressMessage('');
+    
+    // Start progress simulation
+    simulateProgress();
     
     try {
       const formData = new FormData();
@@ -55,6 +91,10 @@ export default function AttendanceUploadPage() {
       });
       
       const data = await response.json();
+      
+      // Complete progress
+      setUploadProgress(100);
+      setProgressMessage('Processing complete!');
       
       if (response.ok) {
         setUploadResult({
@@ -81,6 +121,11 @@ export default function AttendanceUploadPage() {
       });
     } finally {
       setIsUploading(false);
+      // Keep progress visible for a moment
+      setTimeout(() => {
+        setUploadProgress(0);
+        setProgressMessage('');
+      }, 2000);
     }
   };
 
@@ -122,6 +167,7 @@ export default function AttendanceUploadPage() {
                     accept=".txt,.dat"
                     onChange={handleFileChange}
                     className="cursor-pointer"
+                    disabled={isUploading}
                   />
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
@@ -129,12 +175,36 @@ export default function AttendanceUploadPage() {
                 </p>
               </div>
               
+              {/* Progress Bar */}
+              {isUploading && (
+                <div className="mb-6 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Processing...</span>
+                    <span className="font-medium">{uploadProgress}%</span>
+                  </div>
+                  <Progress value={uploadProgress} className="h-2" />
+                  {progressMessage && (
+                    <p className="text-sm text-muted-foreground flex items-center">
+                      <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                      {progressMessage}
+                    </p>
+                  )}
+                </div>
+              )}
+              
               <Button 
                 type="submit" 
                 disabled={isUploading || !file}
                 className="w-full"
               >
-                {isUploading ? 'Processing...' : 'Upload and Process Attendance'}
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Upload and Process Attendance'
+                )}
               </Button>
             </form>
             

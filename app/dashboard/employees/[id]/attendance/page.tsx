@@ -160,7 +160,10 @@ export default function EmployeeAttendancePage() {
     if (!timeString) return 'N/A';
     try {
       const date = new Date(timeString);
-      return format(date, 'h:mm a');
+      // For production, convert UTC stored time back to local time (UTC+3)
+      const timezoneOffset = 3 * 60; // UTC+3 in minutes
+      const localTime = new Date(date.getTime() + (timezoneOffset * 60 * 1000));
+      return format(localTime, 'h:mm a');
     } catch {
       return 'Invalid time';
     }
@@ -180,7 +183,11 @@ export default function EmployeeAttendancePage() {
     if (!systemSettings || !checkInTime) return false;
     
     try {
-      const checkIn = new Date(checkInTime);
+      const checkInDate = new Date(checkInTime);
+      // Convert UTC stored time back to local time (UTC+3) for comparison
+      const timezoneOffset = 3 * 60; // UTC+3 in minutes
+      const localCheckIn = new Date(checkInDate.getTime() + (timezoneOffset * 60 * 1000));
+      
       const recordDateObj = new Date(recordDate);
       
       // Parse working hours start time
@@ -188,7 +195,7 @@ export default function EmployeeAttendancePage() {
       const expectedStartTime = new Date(recordDateObj);
       expectedStartTime.setHours(parseInt(hours), parseInt(minutes) + systemSettings.lateAllowanceMinutes, 0, 0);
       
-      return checkIn > expectedStartTime;
+      return localCheckIn > expectedStartTime;
     } catch {
       return false;
     }
@@ -199,7 +206,11 @@ export default function EmployeeAttendancePage() {
     if (!systemSettings || !checkOutTime) return false;
     
     try {
-      const checkOut = new Date(checkOutTime);
+      const checkOutDate = new Date(checkOutTime);
+      // Convert UTC stored time back to local time (UTC+3) for comparison
+      const timezoneOffset = 3 * 60; // UTC+3 in minutes
+      const localCheckOut = new Date(checkOutDate.getTime() + (timezoneOffset * 60 * 1000));
+      
       const recordDateObj = new Date(recordDate);
       
       // Parse working hours end time
@@ -207,7 +218,7 @@ export default function EmployeeAttendancePage() {
       const expectedEndTime = new Date(recordDateObj);
       expectedEndTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
       
-      return checkOut < expectedEndTime;
+      return localCheckOut < expectedEndTime;
     } catch {
       return false;
     }

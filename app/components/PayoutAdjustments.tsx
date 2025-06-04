@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Trash2, DollarSign } from 'lucide-react';
-import { format } from 'date-fns';
+import { formatEgyptTime } from '@/lib/timezone';
 
 interface PayoutAdjustment {
   id: number;
@@ -353,7 +353,7 @@ export default function PayoutAdjustments({
                         {adjustment.reason}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {format(new Date(adjustment.createdAt), 'MMM dd, yyyy hh:mm a')}
+                        {formatEgyptTime(adjustment.createdAt, 'MMM dd, yyyy hh:mm a')}
                       </div>
                     </div>
                   </div>
