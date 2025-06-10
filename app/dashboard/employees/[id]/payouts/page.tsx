@@ -3,19 +3,19 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval } from 'date-fns';
 import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Calendar, DollarSign, Clock, CalendarCheck, CalendarX } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '../../../../../components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from "sonner";
-import { Textarea } from "../../../../../components/ui/textarea";
-import { Switch } from "../../../../../components/ui/switch";
-import { Toaster } from "../../../../../components/ui/sonner";
-import PayoutAdjustments from '../../../../components/PayoutAdjustments';
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Toaster } from "@/components/ui/sonner";
+import PayoutAdjustments from '@/app/components/PayoutAdjustments';
 
 interface Employee {
   id: number;
@@ -237,47 +237,19 @@ export default function EmployeePayoutsPage() {
     const now = new Date();
     const periods = [];
     
-    // Use the employee's payment basis to determine periods
-    switch(employee.paymentBasis) {
-      case 'Weekly':
-        // Show last 4 weeks
-        for (let i = 0; i < 4; i++) {
-          const weekStart = startOfWeek(addWeeks(now, -i));
-          const weekEnd = endOfWeek(addWeeks(now, -i));
-          periods.push({
-            label: `Week of ${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`,
-            start: weekStart,
-            end: weekEnd
-          });
-        }
-        break;
-        
-      case 'Biweekly':
-        // Show last 4 bi-weekly periods
-        for (let i = 0; i < 4; i++) {
-          const periodStart = startOfWeek(addWeeks(now, -(i*2)));
-          const periodEnd = endOfWeek(addWeeks(periodStart, 1));
-          periods.push({
-            label: `${format(periodStart, 'MMM d')} - ${format(periodEnd, 'MMM d, yyyy')}`,
-            start: periodStart,
-            end: periodEnd
-          });
-        }
-        break;
-        
-      case 'Monthly':
-      default:
-        // Show last 3 months
-        for (let i = 0; i < 3; i++) {
-          const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-          const monthStart = startOfMonth(monthDate);
-          const monthEnd = endOfMonth(monthDate);
-          periods.push({
-            label: format(monthStart, 'MMMM yyyy'),
-            start: monthStart,
-            end: monthEnd
-          });
-        }
+    // IMPORTANT: Always use monthly periods for consistency with backend APIs
+    // regardless of employee payment basis setting
+    
+    // Show last 6 months for better coverage
+    for (let i = 0; i < 6; i++) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthStart = startOfMonth(monthDate);
+      const monthEnd = endOfMonth(monthDate);
+      periods.push({
+        label: format(monthStart, 'MMMM yyyy'),
+        start: monthStart,
+        end: monthEnd
+      });
     }
     
     return periods;
@@ -479,6 +451,7 @@ export default function EmployeePayoutsPage() {
   };
   
   // Find existing payout for a period
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const findExistingPayout = (periodStartSearch: Date, periodEndSearch: Date) => {
     // Safety check: ensure existingPayouts is an array
     if (!Array.isArray(existingPayouts)) {
@@ -486,6 +459,7 @@ export default function EmployeePayoutsPage() {
       return undefined;
     }
 
+    // Use exact date matching since all APIs now create proper calendar month boundaries
     const searchStartDateStr = periodStartSearch.toISOString().split('T')[0];
     const searchEndDateStr = periodEndSearch.toISOString().split('T')[0];
 
@@ -495,6 +469,7 @@ export default function EmployeePayoutsPage() {
             console.warn('[EmployeePayoutsPage] Payout record missing periodStart or periodEnd, skipping in findExistingPayout:', payout);
             return false;
         }
+        
         const payoutStartDateStr = parseISO(payout.periodStart).toISOString().split('T')[0];
         const payoutEndDateStr = parseISO(payout.periodEnd).toISOString().split('T')[0];
         

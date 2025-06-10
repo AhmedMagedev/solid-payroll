@@ -259,9 +259,9 @@ async function recalculateAttendancePaidStatus(systemSettings: {
         // Process each month
         for (const [monthKey, monthAttendance] of attendanceByMonth) {
           const [year, month] = monthKey.split('-').map(Number);
-          // FIXED: Create proper month boundaries - 1st to last day of each month
-          const periodStart = new Date(year, month - 1, 1, 0, 0, 0, 0); // First day at 00:00:00
-          const periodEnd = new Date(year, month, 0, 23, 59, 59, 999); // Last day at 23:59:59
+          // FIXED: Create proper month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
+          const periodStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)); // First day at 00:00:00 UTC
+          const periodEnd = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999)); // Last day at 23:59:59 UTC
           
           console.log(`[Settings Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
           

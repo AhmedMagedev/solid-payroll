@@ -316,10 +316,18 @@ export async function POST(request: NextRequest) {
           // Calculate payouts for each month
           for (const [monthKey, monthAttendance] of attendanceByMonth) {
             const [year, month] = monthKey.split('-').map(Number);
-            // FIXED: Create proper month boundaries - 1st to last day of each month
-            const periodStart = new Date(year, month - 1, 1, 0, 0, 0, 0); // First day at 00:00:00
-            const periodEnd = new Date(year, month, 0, 23, 59, 59, 999); // Last day at 23:59:59
             
+            // DEBUG: Log the parsed values
+            console.log(`[Upload Payout Debug] MonthKey: ${monthKey}, Year: ${year}, Month: ${month}`);
+            
+            // FIXED: Create proper month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
+            // IMPORTANT: month is 1-based from monthKey, but Date constructor expects 0-based month
+            const periodStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)); // First day at 00:00:00 UTC
+            const periodEnd = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999)); // Last day at 23:59:59 UTC
+            
+            console.log(`[Upload Payout Debug] For ${monthKey}:`);
+            console.log(`  - Creating periodStart: new Date(${year}, ${month - 1}, 1) = ${periodStart.toISOString()}`);
+            console.log(`  - Creating periodEnd: new Date(${year}, ${month}, 0) = ${periodEnd.toISOString()}`);
             console.log(`[Upload Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
 
             // Only count days where isPaidDay is true
@@ -419,15 +427,34 @@ export async function POST(request: NextRequest) {
             const existingPayout = await prisma.payout.findFirst({
               where: {
                 employeeId: employee.id,
-                periodStart: periodStart,
-                periodEnd: periodEnd
+                AND: [
+                  {
+                    periodStart: {
+                      gte: new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)), // Start of target month (UTC)
+                      lt: new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))  // Start of next month (UTC)
+                    }
+                  }
+                ]
               }
             });
 
+            console.log(`[Upload Payout Debug] Checking for existing payout:`);
+            console.log(`  - Employee ID: ${employee.id}`);
+            console.log(`  - Period Start: ${periodStart.toISOString()}`);
+            console.log(`  - Period End: ${periodEnd.toISOString()}`);
+            console.log(`  - Existing payout found: ${existingPayout ? `Yes (ID: ${existingPayout.id})` : 'No'}`);
+
             if (existingPayout) {
+              console.log(`[Upload Payout Debug] Updating existing payout ${existingPayout.id}:`);
+              console.log(`  - Current period: ${existingPayout.periodStart} to ${existingPayout.periodEnd}`);
+              console.log(`  - New period: ${periodStart.toISOString()} to ${periodEnd.toISOString()}`);
+              
               await prisma.payout.update({
                 where: { id: existingPayout.id },
                 data: {
+                  // IMPORTANT: Update the period boundaries to correct values
+                  periodStart,
+                  periodEnd,
                   amount: totalAmount,
                   daysWorked,
                   unpaidDays,
@@ -443,8 +470,10 @@ export async function POST(request: NextRequest) {
                 }
               });
               payoutResults.updated++;
+              console.log(`[Upload Payout Debug] Successfully updated payout ${existingPayout.id} with correct periods`);
             } else {
-              await prisma.payout.create({
+              console.log(`[Upload Payout Debug] Creating new payout:`);
+              const newPayout = await prisma.payout.create({
                 data: {
                   employeeId: employee.id,
                   periodStart,
@@ -463,6 +492,7 @@ export async function POST(request: NextRequest) {
                 }
               });
               payoutResults.created++;
+              console.log(`[Upload Payout Debug] Successfully created new payout ${newPayout.id} with correct periods`);
             }
             payoutResults.total++;
           }
