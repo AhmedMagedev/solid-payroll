@@ -459,9 +459,11 @@ export default function EmployeePayoutsPage() {
       return undefined;
     }
 
-    // Use exact date matching since all APIs now create proper calendar month boundaries
-    const searchStartDateStr = periodStartSearch.toISOString().split('T')[0];
-    const searchEndDateStr = periodEndSearch.toISOString().split('T')[0];
+    // Use month-based matching to find payouts within the same month
+    const searchYear = periodStartSearch.getFullYear();
+    const searchMonth = periodStartSearch.getMonth(); // 0-based
+    
+    console.log(`[Frontend Payout Search] Looking for payout in ${searchYear}-${String(searchMonth + 1).padStart(2, '0')}`);
 
     return existingPayouts.find(payout => {
       try {
@@ -470,10 +472,18 @@ export default function EmployeePayoutsPage() {
             return false;
         }
         
-        const payoutStartDateStr = parseISO(payout.periodStart).toISOString().split('T')[0];
-        const payoutEndDateStr = parseISO(payout.periodEnd).toISOString().split('T')[0];
+        const payoutStartDate = parseISO(payout.periodStart);
+        const payoutYear = payoutStartDate.getFullYear();
+        const payoutMonth = payoutStartDate.getMonth(); // 0-based
         
-        return payoutStartDateStr === searchStartDateStr && payoutEndDateStr === searchEndDateStr;
+        // Match by year and month instead of exact dates
+        const matches = payoutYear === searchYear && payoutMonth === searchMonth;
+        
+        if (matches) {
+          console.log(`[Frontend Payout Match] Found payout for ${searchYear}-${String(searchMonth + 1).padStart(2, '0')}: Payout ID ${payout.id}, Base: ${payout.basePayout}`);
+        }
+        
+        return matches;
       } catch (e) {
         console.warn('[EmployeePayoutsPage] Error parsing payout period dates, skipping payout in findExistingPayout:', payout, e);
         return false;
