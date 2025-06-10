@@ -46,9 +46,10 @@ export async function GET(
       return NextResponse.json({ error: 'Payout not found' }, { status: 404 });
     }
     
-    // Calculate total amounts including adjustments
+    // Calculate total amounts including adjustments - use same logic as main payouts API
     const adjustmentsTotal = payout.adjustments.reduce((sum, adj) => sum + adj.amount, 0);
-    const totalAmount = payout.amount + (payout.adjustmentAmount || 0) + adjustmentsTotal;
+    // Use stored finalAmount from database only
+    const totalAmount = payout.finalAmount || payout.amount;
 
     const payoutWithTotals = {
       ...payout,

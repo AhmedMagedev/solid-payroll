@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
+import { formatEgyptTime, isCheckInBeyondGracePeriod } from '@/lib/timezone';
 
 interface Employee {
   id: number;
@@ -55,8 +55,31 @@ export default function EmployeeAttendancePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [monthlyTotal, setMonthlyTotal] = useState<number>(0);
+  const [currentMonthPaidDays, setCurrentMonthPaidDays] = useState<number>(0);
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Get current month date range
+  const getCurrentMonthRange = () => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return { startOfMonth, endOfMonth };
+  };
+
+  // Filter records for current month
+  const getCurrentMonthRecords = (records: AttendanceRecord[]) => {
+    const { startOfMonth, endOfMonth } = getCurrentMonthRange();
+    
+    return records.filter(record => {
+      try {
+        const recordDate = new Date(record.date + 'T00:00:00');
+        return recordDate >= startOfMonth && recordDate <= endOfMonth;
+      } catch {
+        return false;
+      }
+    });
+  };
   
   // Fetch system settings
   useEffect(() => {
@@ -116,26 +139,35 @@ export default function EmployeeAttendancePage() {
       setAttendanceRecords(records);
       setPagination(attendanceData.pagination || null);
       
-      // Calculate total hours (for all records, not just current page)
-      // We'll need to fetch all records for accurate total
-      if (attendanceData.pagination) {
-        // For paginated response, show current page stats only
-        let totalHours = 0;
-        for (const record of records) {
-          if (record.hoursWorked) {
-            totalHours += record.hoursWorked;
-          }
-        }
-        setMonthlyTotal(totalHours);
+      // Calculate current month statistics
+      // We need to fetch all records for the employee to get accurate current month stats
+      const allRecordsResponse = await fetch(`/api/attendance/employee/${params.id}`, {
+        credentials: 'include',
+      });
+      
+      if (allRecordsResponse.ok) {
+        const allRecords = await allRecordsResponse.json();
+        const currentMonthRecords = getCurrentMonthRecords(Array.isArray(allRecords) ? allRecords : []);
+        
+        // Calculate current month hours
+        const currentMonthHours = currentMonthRecords.reduce((total, record) => {
+          return total + (record.hoursWorked || 0);
+        }, 0);
+        setMonthlyTotal(currentMonthHours);
+        
+        // Calculate current month paid days
+        const paidDaysInCurrentMonth = currentMonthRecords.filter(record => record.isPaidDay !== false).length;
+        setCurrentMonthPaidDays(paidDaysInCurrentMonth);
       } else {
-        // Fallback for old format
-        let totalHours = 0;
-        for (const record of records) {
-          if (record.hoursWorked) {
-            totalHours += record.hoursWorked;
-          }
-        }
-        setMonthlyTotal(totalHours);
+        // Fallback: use current page records only
+        const currentMonthRecords = getCurrentMonthRecords(records);
+        const currentMonthHours = currentMonthRecords.reduce((total, record) => {
+          return total + (record.hoursWorked || 0);
+        }, 0);
+        setMonthlyTotal(currentMonthHours);
+        
+        const paidDaysInCurrentMonth = currentMonthRecords.filter(record => record.isPaidDay !== false).length;
+        setCurrentMonthPaidDays(paidDaysInCurrentMonth);
       }
       
       setError(null);
@@ -156,46 +188,36 @@ export default function EmployeeAttendancePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
+  // Format time using Egypt timezone
   function formatTime(timeString: string | null) {
     if (!timeString) return 'N/A';
     try {
-      const date = new Date(timeString);
-      // For production, convert UTC stored time back to local time (UTC+3)
-      const timezoneOffset = 3 * 60; // UTC+3 in minutes
-      const localTime = new Date(date.getTime() + (timezoneOffset * 60 * 1000));
-      return format(localTime, 'h:mm a');
+      return formatEgyptTime(timeString, 'h:mm a');
     } catch {
       return 'Invalid time';
     }
   }
   
+  // Format date using Egypt timezone
   function formatDate(dateString: string) {
     try {
-      const date = new Date(dateString);
-      return format(date, 'MMM d, yyyy');
+      return formatEgyptTime(dateString, 'MMM d, yyyy');
     } catch {
       return 'Invalid date';
     }
   }
   
-  // Check if check-in is late (past working hours start + grace period)
-  function isCheckInLate(checkInTime: string, recordDate: string): boolean {
+  // Check if check-in is late using the timezone library
+  function isCheckInLate(checkInTime: string): boolean {
     if (!systemSettings || !checkInTime) return false;
     
     try {
       const checkInDate = new Date(checkInTime);
-      // Convert UTC stored time back to local time (UTC+3) for comparison
-      const timezoneOffset = 3 * 60; // UTC+3 in minutes
-      const localCheckIn = new Date(checkInDate.getTime() + (timezoneOffset * 60 * 1000));
-      
-      const recordDateObj = new Date(recordDate);
-      
-      // Parse working hours start time
-      const [hours, minutes] = systemSettings.workingHoursStart.split(':');
-      const expectedStartTime = new Date(recordDateObj);
-      expectedStartTime.setHours(parseInt(hours), parseInt(minutes) + systemSettings.lateAllowanceMinutes, 0, 0);
-      
-      return localCheckIn > expectedStartTime;
+      return isCheckInBeyondGracePeriod(
+        checkInDate,
+        systemSettings.workingHoursStart,
+        systemSettings.lateAllowanceMinutes
+      );
     } catch {
       return false;
     }
@@ -206,19 +228,19 @@ export default function EmployeeAttendancePage() {
     if (!systemSettings || !checkOutTime) return false;
     
     try {
-      const checkOutDate = new Date(checkOutTime);
-      // Convert UTC stored time back to local time (UTC+3) for comparison
-      const timezoneOffset = 3 * 60; // UTC+3 in minutes
-      const localCheckOut = new Date(checkOutDate.getTime() + (timezoneOffset * 60 * 1000));
-      
-      const recordDateObj = new Date(recordDate);
+      const checkOutDateTime = new Date(checkOutTime);
+      const recordDateObj = new Date(recordDate + 'T00:00:00');
       
       // Parse working hours end time
       const [hours, minutes] = systemSettings.workingHoursEnd.split(':');
       const expectedEndTime = new Date(recordDateObj);
       expectedEndTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
       
-      return localCheckOut < expectedEndTime;
+      // Convert both times to Egypt timezone for comparison
+      const checkOutEgyptTime = formatEgyptTime(checkOutDateTime.toISOString(), 'HH:mm');
+      const expectedEndEgyptTime = formatEgyptTime(expectedEndTime.toISOString(), 'HH:mm');
+      
+      return checkOutEgyptTime < expectedEndEgyptTime;
     } catch {
       return false;
     }
@@ -238,13 +260,15 @@ export default function EmployeeAttendancePage() {
   
   function calculateExpectedSalary() {
     if (!employee) return 0;
-    // Count only paid days for salary calculation
-    const paidDays = attendanceRecords.filter(record => record.isPaidDay !== false);
-    const paidDaysCount = pagination ? 
-      Math.round((paidDays.length / attendanceRecords.length) * pagination.totalCount) : 
-      paidDays.length;
-    return paidDaysCount * employee.dailyRate;
+    // Use current month paid days for salary calculation
+    return currentMonthPaidDays * employee.dailyRate;
   }
+
+  // Get current month name for display
+  const getCurrentMonthName = () => {
+    const now = new Date();
+    return formatEgyptTime(now.toISOString(), 'MMMM yyyy');
+  };
 
   if (isLoading) {
     return (
@@ -307,15 +331,15 @@ export default function EmployeeAttendancePage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Paid Days
+              Paid Days ({getCurrentMonthName()})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">
-              {attendanceRecords.filter(record => record.isPaidDay !== false).length} days
+              {currentMonthPaidDays} days
             </div>
             <div className="text-xs text-muted-foreground mt-1">
-              Days eligible for salary
+              Days eligible for salary this month
             </div>
           </CardContent>
         </Card>
@@ -323,26 +347,24 @@ export default function EmployeeAttendancePage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              {pagination ? 'Hours (Current Page)' : 'Total Hours'}
+              Hours ({getCurrentMonthName()})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{monthlyTotal.toFixed(2)} hours</div>
-            {pagination && (
-              <div className="text-xs text-muted-foreground mt-1">
-                Page {pagination.currentPage} of {pagination.totalPages}
-              </div>
-            )}
+            <div className="text-xs text-muted-foreground mt-1">
+              Total hours worked this month
+            </div>
           </CardContent>
         </Card>
         
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Expected Salary</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Expected Salary ({getCurrentMonthName()})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">L.E {calculateExpectedSalary().toFixed(2)}</div>
-            <div className="text-xs text-muted-foreground mt-1">Based on paid days only</div>
+            <div className="text-xs text-muted-foreground mt-1">Based on current month paid days</div>
           </CardContent>
         </Card>
       </div>
@@ -384,7 +406,7 @@ export default function EmployeeAttendancePage() {
                       <td className="px-6 py-4">
                         {formatTimeWithStyling(
                           record.checkIn,
-                          isCheckInLate(record.checkIn, record.date),
+                          isCheckInLate(record.checkIn),
                           false
                         )}
                       </td>

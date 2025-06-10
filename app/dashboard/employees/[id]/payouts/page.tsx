@@ -52,6 +52,9 @@ interface Payout {
   periodStart: string;
   periodEnd: string;
   amount: number;
+  totalAmount: number;
+  basePayout: number;
+  finalAmount: number;
   isPaid: boolean;
   comment: string | null;
   paymentDate: string | null;
@@ -59,8 +62,18 @@ interface Payout {
   adjustmentReason?: string;
   adjustments?: PayoutAdjustment[];
   adjustmentsTotal?: number;
-  totalAmount?: number;
   includeOvertime?: boolean;
+  
+  // Detailed breakdown fields from database
+  daysWorked?: number;
+  unpaidDays?: number;
+  totalHours?: number;
+  regularHours?: number;
+  overtimeHours?: number;
+  excessOvertimeHours?: number;
+  overtimePayout?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface SystemSettings {
@@ -129,8 +142,19 @@ export default function EmployeePayoutsPage() {
         
         if (payoutsResponse.ok) {
           const payoutsData = await payoutsResponse.json();
-          setExistingPayouts(payoutsData);
+          // Handle both old format (direct array) and new format (paginated object)
+          if (Array.isArray(payoutsData)) {
+            setExistingPayouts(payoutsData);
+          } else if (payoutsData.data && Array.isArray(payoutsData.data)) {
+            setExistingPayouts(payoutsData.data);
+          } else {
+            console.warn('[EmployeePayoutsPage] Unexpected payouts data format:', payoutsData);
+            setExistingPayouts([]);
+          }
           console.log('Loaded payouts from database:', payoutsData);
+        } else {
+          console.warn('[EmployeePayoutsPage] Failed to fetch payouts, initializing empty array');
+          setExistingPayouts([]);
         }
         
         // Fetch system settings
@@ -288,7 +312,7 @@ export default function EmployeePayoutsPage() {
     
     // Calculate expected hours based on working days in period
     const workingDaysInPeriod = getWorkingDaysInPeriod(periodStart, periodEnd);
-    const hoursPerDay = systemSettings?.workingHoursPerDay || 8; // Use system setting or default to 8
+    const hoursPerDay = systemSettings?.workingHoursPerDay || 9; // Use system setting or default to 9
     const expectedHours = workingDaysInPeriod * hoursPerDay;
     
     // Calculate regular and overtime hours
@@ -456,6 +480,12 @@ export default function EmployeePayoutsPage() {
   
   // Find existing payout for a period
   const findExistingPayout = (periodStartSearch: Date, periodEndSearch: Date) => {
+    // Safety check: ensure existingPayouts is an array
+    if (!Array.isArray(existingPayouts)) {
+      console.warn('[EmployeePayoutsPage] existingPayouts is not an array:', existingPayouts);
+      return undefined;
+    }
+
     const searchStartDateStr = periodStartSearch.toISOString().split('T')[0];
     const searchEndDateStr = periodEndSearch.toISOString().split('T')[0];
 
@@ -634,11 +664,32 @@ export default function EmployeePayoutsPage() {
         
         <TabsContent value="payouts" className="space-y-6">
           {paymentPeriods.map((period, index) => {
-            const { daysWorked, unpaidDays, workingDaysInPeriod, totalHours, expectedHours, regularHours, overtimeHours, excessOvertimeHours, basePayout, overtimePayout } = 
-              calculatePeriodPayout(period.start, period.end);
-            
-            const currentState = getCurrentState(period.start, period.end);
             const existingPayout = findExistingPayout(period.start, period.end);
+            const currentState = getCurrentState(period.start, period.end);
+            
+            // Use stored database values if payout exists, otherwise calculate for new periods
+            let payoutData;
+            if (existingPayout) {
+              // Use stored values from database - NO frontend calculations
+              payoutData = {
+                daysWorked: existingPayout.daysWorked || 0,
+                unpaidDays: existingPayout.unpaidDays || 0,
+                totalHours: existingPayout.totalHours || 0,
+                regularHours: existingPayout.regularHours || 0,
+                overtimeHours: existingPayout.overtimeHours || 0,
+                excessOvertimeHours: existingPayout.excessOvertimeHours || 0,
+                basePayout: existingPayout.basePayout || 0,
+                overtimePayout: existingPayout.overtimePayout || 0,
+                workingDaysInPeriod: getWorkingDaysInPeriod(period.start, period.end),
+                expectedHours: getWorkingDaysInPeriod(period.start, period.end) * (systemSettings?.workingHoursPerDay || 9)
+              };
+            } else {
+              // Calculate for new periods only (fallback)
+              payoutData = calculatePeriodPayout(period.start, period.end);
+            }
+            
+            const { daysWorked, unpaidDays, workingDaysInPeriod, totalHours, regularHours, overtimeHours, excessOvertimeHours, basePayout, overtimePayout, expectedHours } = payoutData;
+            
             const periodKey = getPeriodKey(period.start, period.end);
             
             return (
@@ -720,38 +771,51 @@ export default function EmployeePayoutsPage() {
                             </span>
                             <span className="font-semibold text-sm">L.E {basePayout.toFixed(2)}</span>
                           </div>
-                          {overtimePayout >= 0.1 && (
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-muted-foreground flex items-center text-sm text-orange-600">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    Overtime Hours ({overtimeHours.toFixed(1)} hrs)
-                                  </span>
-                                  <Switch
-                                    id={`overtime-toggle-${index}`}
-                                    checked={currentState.includeOvertime}
-                                    onCheckedChange={(checked) => {
-                                      updateTempState(period.start, period.end, { includeOvertime: checked });
-                                    }}
-                                  />
-                                </div>
-                                <span className={`font-semibold text-sm ${currentState.includeOvertime ? 'text-orange-600' : 'text-muted-foreground line-through'}`}>
-                                  L.E {overtimePayout.toFixed(2)}
+                          
+                          {/* Always show overtime section for control */}
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-2">
+                                <span className="text-muted-foreground flex items-center text-sm text-orange-600">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  Overtime ({overtimeHours.toFixed(1)} hrs)
                                 </span>
+                                <Switch
+                                  id={`overtime-toggle-${index}`}
+                                  checked={currentState.includeOvertime}
+                                  onCheckedChange={(checked) => {
+                                    updateTempState(period.start, period.end, { includeOvertime: checked });
+                                  }}
+                                />
                               </div>
-                              {!currentState.includeOvertime && (
-                                <div className="text-xs text-muted-foreground text-orange-600 ml-4">
-                                  ⚠️ Overtime pay excluded from payout
-                                </div>
-                              )}
-                              {excessOvertimeHours >= 0.1 && (
-                                <div className="text-xs text-muted-foreground text-amber-600 ml-4">
-                                  ℹ️ {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
-                                </div>
-                              )}
+                              <span className={`font-semibold text-sm ${currentState.includeOvertime ? 'text-orange-600' : 'text-muted-foreground line-through'}`}>
+                                L.E {overtimePayout.toFixed(2)}
+                              </span>
                             </div>
-                          )}
+                            
+                            {overtimeHours === 0 && (
+                              <div className="text-xs text-muted-foreground text-orange-600 ml-4">
+                                ℹ️ No overtime hours calculated (all days ≤9 hrs or overtime not eligible)
+                              </div>
+                            )}
+                            
+                            {!currentState.includeOvertime && overtimePayout > 0 && (
+                              <div className="text-xs text-muted-foreground text-orange-600 ml-4">
+                                ⚠️ Overtime pay excluded from payout
+                              </div>
+                            )}
+                            
+                            {excessOvertimeHours >= 0.1 && (
+                              <div className="text-xs text-muted-foreground text-amber-600 ml-4">
+                                ℹ️ {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
+                              </div>
+                            )}
+                            
+                            {/* Debug info for overtime calculation */}
+                            <div className="text-xs text-muted-foreground ml-4">
+                              Regular: {regularHours.toFixed(1)}h | Overtime: {overtimeHours.toFixed(1)}h | Excess: {excessOvertimeHours.toFixed(1)}h
+                            </div>
+                          </div>
                           {currentState.adjustmentAmount !== 0 && (
                             <div className="flex justify-between items-center">
                               <span className={`text-muted-foreground flex items-center text-sm ${currentState.adjustmentAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -780,7 +844,10 @@ export default function EmployeePayoutsPage() {
                               Final Payout
                             </span>
                             <span className="text-lg font-bold">
-                              L.E {(basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount + (existingPayout?.adjustmentsTotal || 0)).toFixed(2)}
+                              L.E {existingPayout 
+                                ? (existingPayout.finalAmount || existingPayout.amount).toFixed(2)
+                                : (basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount).toFixed(2)
+                              }
                             </span>
                           </div>
                         </div>
@@ -835,14 +902,14 @@ export default function EmployeePayoutsPage() {
                         adjustments={existingPayout?.adjustments || []}
                         onAdjustmentsChange={(updatedAdjustments) => {
                           if (existingPayout) {
-                            // Update existing payout
+                            // Update existing payout - use same logic as main payouts API
                             setExistingPayouts(prev => prev.map(payout => 
                               payout.id === existingPayout.id 
                                 ? { 
                                     ...payout, 
                                     adjustments: updatedAdjustments,
                                     adjustmentsTotal: updatedAdjustments.reduce((sum, adj) => sum + adj.amount, 0),
-                                    totalAmount: payout.amount + (payout.adjustmentAmount || 0) + updatedAdjustments.reduce((sum, adj) => sum + adj.amount, 0)
+                                    totalAmount: payout.finalAmount || payout.amount
                                   }
                                 : payout
                             ));
@@ -938,7 +1005,21 @@ export default function EmployeePayoutsPage() {
                           )}
                           <Button 
                             className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
-                            onClick={() => savePayout(period.start, period.end, basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount)}
+                            onClick={() => {
+                              // Calculate the final amount including overtime toggle
+                              let saveAmount;
+                              if (existingPayout) {
+                                // For existing payouts, use base + conditional overtime
+                                const baseAmount = existingPayout.basePayout || existingPayout.amount;
+                                const overtimeAmount = currentState.includeOvertime ? (existingPayout.overtimePayout || 0) : 0;
+                                saveAmount = baseAmount + overtimeAmount;
+                              } else {
+                                // For new payouts, calculate from scratch
+                                const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
+                                saveAmount = basePayout + overtimeAmount;
+                              }
+                              savePayout(period.start, period.end, saveAmount + currentState.adjustmentAmount);
+                            }}
                             disabled={isUpdating[periodKey]}
                           >
                             {isUpdating[periodKey] ? 'Updating...' : 'Update Payout'}

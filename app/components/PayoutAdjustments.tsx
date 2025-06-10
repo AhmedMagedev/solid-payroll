@@ -26,6 +26,9 @@ interface Payout {
   periodStart: string;
   periodEnd: string;
   amount: number;
+  totalAmount: number;
+  basePayout: number;
+  finalAmount: number;
   isPaid: boolean;
   comment: string | null;
   paymentDate: string | null;
@@ -33,7 +36,18 @@ interface Payout {
   adjustmentReason?: string;
   adjustments?: PayoutAdjustment[];
   adjustmentsTotal?: number;
-  totalAmount?: number;
+  includeOvertime?: boolean;
+  
+  // Detailed breakdown fields from database
+  daysWorked?: number;
+  unpaidDays?: number;
+  totalHours?: number;
+  regularHours?: number;
+  overtimeHours?: number;
+  excessOvertimeHours?: number;
+  overtimePayout?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface PayoutAdjustmentsProps {

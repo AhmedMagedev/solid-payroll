@@ -166,7 +166,16 @@ exports.Prisma.PayoutScalarFieldEnum = {
   updatedAt: 'updatedAt',
   adjustmentAmount: 'adjustmentAmount',
   adjustmentReason: 'adjustmentReason',
-  includeOvertime: 'includeOvertime'
+  includeOvertime: 'includeOvertime',
+  daysWorked: 'daysWorked',
+  unpaidDays: 'unpaidDays',
+  totalHours: 'totalHours',
+  regularHours: 'regularHours',
+  overtimeHours: 'overtimeHours',
+  excessOvertimeHours: 'excessOvertimeHours',
+  basePayout: 'basePayout',
+  overtimePayout: 'overtimePayout',
+  finalAmount: 'finalAmount'
 };
 
 exports.Prisma.PayoutAdjustmentScalarFieldEnum = {

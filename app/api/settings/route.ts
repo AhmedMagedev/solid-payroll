@@ -259,8 +259,11 @@ async function recalculateAttendancePaidStatus(systemSettings: {
         // Process each month
         for (const [monthKey, monthAttendance] of attendanceByMonth) {
           const [year, month] = monthKey.split('-').map(Number);
-          const periodStart = new Date(year, month - 1, 1);
-          const periodEnd = new Date(year, month, 0); // Last day of month
+          // FIXED: Create proper month boundaries - 1st to last day of each month
+          const periodStart = new Date(year, month - 1, 1, 0, 0, 0, 0); // First day at 00:00:00
+          const periodEnd = new Date(year, month, 0, 23, 59, 59, 999); // Last day at 23:59:59
+          
+          console.log(`[Settings Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
           
           // Check if payout already exists
           const existingPayout = await prisma.payout.findUnique({
@@ -274,24 +277,102 @@ async function recalculateAttendancePaidStatus(systemSettings: {
           });
           
           if (existingPayout) {
-            // Calculate new payout amount - only count days where isPaidDay is true
+            // Only count days where isPaidDay is true
             const paidDays = monthAttendance.filter(record => record.isPaidDay);
             const daysWorked = paidDays.length;
             const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
-            const calculatedAmount = daysWorked * employee.dailyRate;
             
-            // Update existing payout if amount changed
-            if (existingPayout.amount !== calculatedAmount) {
-              await prisma.payout.update({
-                where: { id: existingPayout.id },
-                data: { 
-                  amount: calculatedAmount,
-                  comment: `Auto-updated after settings change: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours (${monthAttendance.length - daysWorked} unpaid days)`,
-                  updatedAt: new Date()
+            // RESTORED OVERTIME CALCULATION with sophisticated rules
+            const hoursPerDay = 9; // Standard working hours per day
+            const hourlyRate = employee.dailyRate / hoursPerDay;
+            const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
+            
+            let regularHours = 0;
+            let overtimeHours = 0;
+            let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap
+            
+            // Helper to get next working day (simplified - assumes Sun-Thu working days)
+            const getNextWorkingDay = (date: Date) => {
+              const nextDay = new Date(date);
+              nextDay.setDate(nextDay.getDate() + 1);
+              const dayOfWeek = nextDay.getDay();
+              // Working days: Sunday(0), Monday(1), Tuesday(2), Wednesday(3), Thursday(4)
+              // Friday(5) and Saturday(6) are off
+              return (dayOfWeek >= 0 && dayOfWeek <= 4) ? nextDay : null;
+            };
+            
+            // Calculate overtime per day with rules
+            paidDays.forEach((record) => {
+              const dailyHours = record.hoursWorked || 0;
+              const recordDate = new Date(record.date);
+              
+              if (dailyHours > hoursPerDay) {
+                const potentialOvertimeHours = dailyHours - hoursPerDay;
+                
+                // Check if employee must be present next working day for overtime eligibility
+                const nextWorkingDay = getNextWorkingDay(recordDate);
+                let isOvertimeEligible = true;
+                
+                if (nextWorkingDay) {
+                  // Check if employee was present on the next working day
+                  const nextDayAttendance = paidDays.find(a => {
+                    const aDate = new Date(a.date);
+                    return aDate.toDateString() === nextWorkingDay.toDateString();
+                  });
+                  
+                  // If next working day exists and employee was not present, overtime is not eligible
+                  if (!nextDayAttendance) {
+                    isOvertimeEligible = false;
+                  }
                 }
-              });
-              payoutsUpdated++;
-            }
+                
+                if (isOvertimeEligible) {
+                  regularHours += hoursPerDay;
+                  
+                  // Apply 2-hour overtime cap rule
+                  if (potentialOvertimeHours <= 2) {
+                    // All overtime hours within cap - paid at overtime rate
+                    overtimeHours += potentialOvertimeHours;
+                  } else {
+                    // First 2 hours at overtime rate, rest at regular rate
+                    overtimeHours += 2;
+                    excessOvertimeHours += (potentialOvertimeHours - 2);
+                  }
+                } else {
+                  // Overtime not eligible, treat as regular hours up to standard hours
+                  regularHours += Math.min(dailyHours, hoursPerDay);
+                }
+              } else {
+                regularHours += dailyHours;
+              }
+            });
+            
+            // Include excess overtime hours in regular hours for payment calculation
+            regularHours += excessOvertimeHours;
+            
+            // Calculate amounts
+            const basePayout = daysWorked * employee.dailyRate;
+            const overtimePayout = overtimeHours * overtimeRate;
+            const calculatedAmount = basePayout + overtimePayout;
+
+            // Update existing payout if amount changed
+            await prisma.payout.update({
+              where: { id: existingPayout.id },
+              data: {
+                amount: calculatedAmount,
+                daysWorked,
+                unpaidDays: monthAttendance.length - daysWorked,
+                totalHours,
+                regularHours,
+                overtimeHours,
+                excessOvertimeHours,
+                basePayout,
+                overtimePayout,
+                finalAmount: calculatedAmount,
+                updatedAt: new Date()
+              }
+            });
+            payoutsUpdated++;
           }
         }
       } catch (payoutError) {

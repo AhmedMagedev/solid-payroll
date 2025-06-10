@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { verifyToken } from '@/app/lib/auth';
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addWeeks, parseISO, isWithinInterval } from 'date-fns';
+import { parseISO, isWithinInterval, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
 
 export async function POST(request: NextRequest) {
   try {
@@ -73,36 +73,134 @@ export async function POST(request: NextRequest) {
         const paidDays = periodAttendance.filter(record => record.isPaidDay !== false); // Include records where isPaidDay is true or undefined (for backward compatibility)
         const daysWorked = paidDays.length;
         const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
-        const calculatedAmount = daysWorked * employee.dailyRate;
-        const unpaidDays = periodAttendance.length - daysWorked;
+        
+        // RESTORED OVERTIME CALCULATION with sophisticated rules
+        const hoursPerDay = 9; // Standard working hours per day
+        const hourlyRate = employee.dailyRate / hoursPerDay;
+        const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
+        
+        let regularHours = 0;
+        let overtimeHours = 0;
+        let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap
+        
+        console.log(`[Auto-Calc Overtime] Employee ${employee.name}, Period ${label}: Processing ${paidDays.length} paid days`);
+        
+        // Calculate overtime per day with rules
+        paidDays.forEach((record, dayIndex) => {
+          const dailyHours = record.hoursWorked || 0;
+          const recordDate = typeof record.date === 'string' ? parseISO(record.date) : new Date(record.date);
+          
+          console.log(`[Auto-Calc Overtime] Day ${dayIndex + 1}: ${recordDate.toDateString()}, Hours: ${dailyHours}`);
+          
+          if (dailyHours > hoursPerDay) {
+            const potentialOvertimeHours = dailyHours - hoursPerDay;
+            console.log(`[Auto-Calc Overtime] Potential overtime: ${potentialOvertimeHours} hours`);
+            
+            // SIMPLIFIED: Remove next-day presence requirement for now to test
+            const isOvertimeEligible = true;
+            
+            /* DISABLED FOR DEBUGGING
+            // Check if employee must be present next working day for overtime eligibility
+            const nextWorkingDay = getNextWorkingDay(recordDate);
+            let isOvertimeEligible = true;
+            
+            if (nextWorkingDay) {
+              // Check if employee was present on the next working day
+              const nextDayAttendance = paidDays.find(a => {
+                const aDate = typeof a.date === 'string' ? parseISO(a.date) : new Date(a.date);
+                return aDate.toDateString() === nextWorkingDay.toDateString();
+              });
+              
+              // If next working day exists and employee was not present, overtime is not eligible
+              if (!nextDayAttendance) {
+                isOvertimeEligible = false;
+              }
+            }
+            */
+            
+            if (isOvertimeEligible) {
+              regularHours += hoursPerDay;
+              
+              // Apply 2-hour overtime cap rule
+              if (potentialOvertimeHours <= 2) {
+                // All overtime hours within cap - paid at overtime rate
+                overtimeHours += potentialOvertimeHours;
+                console.log(`[Auto-Calc Overtime] Added ${potentialOvertimeHours} overtime hours (within cap)`);
+              } else {
+                // First 2 hours at overtime rate, rest at regular rate
+                overtimeHours += 2;
+                excessOvertimeHours += (potentialOvertimeHours - 2);
+                console.log(`[Auto-Calc Overtime] Added 2 overtime hours + ${potentialOvertimeHours - 2} excess hours`);
+              }
+            } else {
+              // Overtime not eligible, treat as regular hours up to standard hours
+              regularHours += Math.min(dailyHours, hoursPerDay);
+              console.log(`[Auto-Calc Overtime] Overtime not eligible - treating as regular hours`);
+            }
+          } else {
+            regularHours += dailyHours;
+            console.log(`[Auto-Calc Overtime] Regular day: ${dailyHours} hours`);
+          }
+        });
+        
+        // Include excess overtime hours in regular hours for payment calculation
+        regularHours += excessOvertimeHours;
+        
+        console.log(`[Auto-Calc Overtime] Final totals - Regular: ${regularHours}, Overtime: ${overtimeHours}, Excess: ${excessOvertimeHours}`);
+        
+        // Calculate amounts
+        const basePayout = daysWorked * employee.dailyRate;
+        const overtimePayout = overtimeHours * overtimeRate;
+        const calculatedAmount = basePayout + overtimePayout;
+        
+        console.log(`[Auto-Calc Overtime] Amounts - Base: ${basePayout}, Overtime: ${overtimePayout}, Total: ${calculatedAmount}`);
+
+        // Count unpaid days for reporting
+        const unpaidDays = periodAttendance.filter(a => !a.isPaidDay).length;
 
         if (existingPayout) {
-          // Update existing payout if the calculated amount is different
-          if (existingPayout.amount !== calculatedAmount) {
-            await prisma.payout.update({
-              where: { id: existingPayout.id },
-              data: { 
-                amount: calculatedAmount,
-                updatedAt: new Date()
-              }
-            });
-            totalUpdated++;
-            console.log(`[Auto Calculate Payouts] Updated payout ${existingPayout.id} for ${employee.name} (${label}): ${calculatedAmount}`);
-          }
+          // Update existing payout
+          await prisma.payout.update({
+            where: { id: existingPayout.id },
+            data: {
+              amount: calculatedAmount,
+              daysWorked,
+              unpaidDays,
+              totalHours,
+              regularHours,
+              overtimeHours,
+              excessOvertimeHours,
+              basePayout,
+              overtimePayout,
+              finalAmount: calculatedAmount,
+              comment: `Updated: ${daysWorked} paid days (${label})`,
+              updatedAt: new Date()
+            }
+          });
+          totalUpdated++;
+          console.log(`[Auto Calculate Payouts] Updated existing payout for ${employee.name}: ${label}`);
         } else {
           // Create new payout
-          const newPayout = await prisma.payout.create({
+          await prisma.payout.create({
             data: {
               employeeId: employee.id,
               periodStart,
               periodEnd,
               amount: calculatedAmount,
-              isPaid: false,
-              comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`
+              daysWorked,
+              unpaidDays,
+              totalHours,
+              regularHours,
+              overtimeHours,
+              excessOvertimeHours,
+              basePayout,
+              overtimePayout,
+              finalAmount: calculatedAmount,
+              comment: `Auto-calculated: ${daysWorked} paid days (${label})`
             }
           });
           totalCreated++;
-          console.log(`[Auto Calculate Payouts] Created payout ${newPayout.id} for ${employee.name} (${label}): ${calculatedAmount}`);
+          console.log(`[Auto Calculate Payouts] Created new payout for ${employee.name}: ${label}`);
         }
 
         results.push({
@@ -192,15 +290,39 @@ function calculatePaymentPeriods(paymentBasis: string, attendance: AttendanceRec
       
     case 'Monthly':
     default:
-      let monthStart = startOfMonth(startDate);
-      while (monthStart <= endDate) {
-        const monthEnd = endOfMonth(monthStart);
+      // FIXED: Generate proper month periods from start to end date
+      const startYear = startDate.getFullYear();
+      const startMonth = startDate.getMonth(); // 0-based
+      const endYear = endDate.getFullYear();
+      const endMonth = endDate.getMonth(); // 0-based
+      
+      let currentYear = startYear;
+      let currentMonth = startMonth;
+      
+      while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+        // Create PROPER month boundaries - 1st to last day of each month
+        const monthStart = new Date(currentYear, currentMonth, 1, 0, 0, 0, 0);
+        const monthEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59, 999); // Last day of month at 23:59:59
+        
+        // Create human-readable label
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const label = `${monthNames[currentMonth]} ${currentYear}`;
+        
         periods.push({
           periodStart: monthStart,
           periodEnd: monthEnd,
-          label: monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+          label: label
         });
-        monthStart = startOfMonth(new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1));
+        
+        console.log(`[Period Calc] Created period: ${label} = ${monthStart.toISOString().split('T')[0]} to ${monthEnd.toISOString().split('T')[0]}`);
+        
+        // Move to next month
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
       }
   }
   

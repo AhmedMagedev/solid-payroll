@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { verifyToken } from '@/app/lib/auth';
+import { Prisma } from '@/app/generated/prisma';
 
 // Get all payouts or filter by employeeId
 export async function GET(request: NextRequest) {
@@ -19,16 +20,100 @@ export async function GET(request: NextRequest) {
     // Get query parameters
     const { searchParams } = new URL(request.url);
     const employeeId = searchParams.get('employeeId');
+    const search = searchParams.get('search');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const sortField = searchParams.get('sortField') || 'periodEnd';
+    const sortDirection = searchParams.get('sortDirection') as 'asc' | 'desc' || 'desc';
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
     
-    // Build query
-    const query: { employeeId?: number } = {};
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
+    
+    // Build where clause
+    const where: Prisma.PayoutWhereInput = {};
     if (employeeId) {
-      query.employeeId = parseInt(employeeId, 10);
+      where.employeeId = parseInt(employeeId, 10);
     }
+    if (search) {
+      where.OR = [
+        {
+          employee: {
+            name: {
+              contains: search,
+              mode: 'insensitive'
+            }
+          }
+        },
+        {
+          comment: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        }
+      ];
+    }
+    
+    // Add date filtering by periodEnd
+    if (startDate || endDate) {
+      where.periodEnd = {};
+      if (startDate) {
+        where.periodEnd.gte = new Date(startDate);
+      }
+      if (endDate) {
+        where.periodEnd.lte = new Date(endDate);
+      }
+    }
+    
+    // Build order by clause
+    const orderBy: Prisma.PayoutOrderByWithRelationInput = {};
+    if (sortField.includes('.')) {
+      // Handle nested sorting (e.g., employee.name)
+      const [relation, field] = sortField.split('.');
+      if (relation === 'employee' && field === 'name') {
+        orderBy.employee = { name: sortDirection };
+      }
+    } else {
+      // Direct field sorting
+      switch (sortField) {
+        case 'periodEnd':
+          orderBy.periodEnd = sortDirection;
+          break;
+        case 'periodStart':
+          orderBy.periodStart = sortDirection;
+          break;
+        case 'amount':
+          orderBy.amount = sortDirection;
+          break;
+        case 'isPaid':
+          orderBy.isPaid = sortDirection;
+          break;
+        case 'paymentDate':
+          orderBy.paymentDate = sortDirection;
+          break;
+        case 'updatedAt':
+          orderBy.updatedAt = sortDirection;
+          break;
+        case 'createdAt':
+          orderBy.createdAt = sortDirection;
+          break;
+        default:
+          orderBy.periodEnd = sortDirection;
+      }
+    }
+    
+    // Get total count for pagination
+    const totalCount = await prisma.payout.count({ where });
+    
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
     
     // Fetch payouts with adjustments
     const payouts = await prisma.payout.findMany({
-      where: query,
+      where,
       include: {
         employee: {
           select: {
@@ -42,15 +127,16 @@ export async function GET(request: NextRequest) {
           }
         }
       },
-      orderBy: {
-        periodEnd: 'desc'
-      }
+      orderBy,
+      skip: offset,
+      take: limit
     });
     
-    // Calculate total amounts including adjustments
+    // Use stored amounts only - no calculations
     const payoutsWithTotals = payouts.map(payout => {
       const adjustmentsTotal = payout.adjustments.reduce((sum, adj) => sum + adj.amount, 0);
-      const totalAmount = payout.amount + (payout.adjustmentAmount || 0) + adjustmentsTotal;
+      // Use stored finalAmount from database only
+      const totalAmount = payout.finalAmount || payout.amount;
       
       return {
         ...payout,
@@ -59,7 +145,19 @@ export async function GET(request: NextRequest) {
       };
     });
     
-    return NextResponse.json(payoutsWithTotals);
+    return NextResponse.json({
+      data: payoutsWithTotals,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalCount,
+        limit,
+        hasNextPage,
+        hasPrevPage,
+        startIndex: offset + 1,
+        endIndex: Math.min(offset + limit, totalCount)
+      }
+    });
   } catch (error) {
     console.error('Error fetching payouts:', error);
     return NextResponse.json({ error: 'Failed to fetch payouts' }, { status: 500 });

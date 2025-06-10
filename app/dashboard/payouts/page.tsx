@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ArrowUpDown, Eye, Search, AlertCircle, ChevronLeft, ChevronRight, DollarSign } from 'lucide-react';
+import { ArrowUpDown, Eye, Search, AlertCircle, ChevronLeft, ChevronRight, DollarSign, Users, TrendingUp, Calendar } from 'lucide-react';
 import { formatEgyptTime } from '@/lib/timezone';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, startOfMonth, endOfMonth } from 'date-fns';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Payout {
   id: number;
@@ -21,7 +22,9 @@ interface Payout {
   periodStart: string;
   periodEnd: string;
   amount: number;
-  totalAmount: number; // This usually includes adjustments
+  totalAmount: number;
+  basePayout: number;
+  finalAmount: number;
   isPaid: boolean;
   paymentDate: string | null;
   comment: string | null;
@@ -53,19 +56,53 @@ export default function AllPayoutsPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<string | null>('periodEnd');
+  const [sortField, setSortField] = useState<string>('periodEnd');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [selectedMonth, setSelectedMonth] = useState<string>(() => {
+    // Default to current month
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
 
-  const fetchPayouts = useCallback(async (page: number, search: string, field: string | null, direction: 'asc' | 'desc') => {
+  // Generate month options for the last 12 months
+  const getMonthOptions = () => {
+    const options = [];
+    const now = new Date();
+    
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const label = format(date, 'MMMM yyyy');
+      options.push({ value, label });
+    }
+    
+    return options;
+  };
+
+  const monthOptions = getMonthOptions();
+
+  const fetchPayouts = useCallback(async (page: number, search: string, field: string, direction: 'asc' | 'desc', month: string) => {
     setIsLoading(true);
     try {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: '15',
+        sortField: field,
+        sortDirection: direction,
       });
+      
       if (search) params.append('search', search);
-      if (field) params.append('sortField', field);
-      if (direction) params.append('sortDirection', direction);
+      
+      // Add month filtering
+      if (month) {
+        const [year, monthNum] = month.split('-');
+        const startDate = startOfMonth(new Date(parseInt(year), parseInt(monthNum) - 1));
+        const endDate = endOfMonth(new Date(parseInt(year), parseInt(monthNum) - 1));
+        
+        // Filter by periodEnd date to get payouts that end in the selected month
+        params.append('startDate', startDate.toISOString().split('T')[0]);
+        params.append('endDate', endDate.toISOString().split('T')[0]);
+      }
 
       const response = await fetch(`/api/payouts?${params.toString()}`, {
         credentials: 'include',
@@ -86,24 +123,8 @@ export default function AllPayoutsPage() {
   }, []);
 
   useEffect(() => {
-    fetchPayouts(currentPage, searchTerm, sortField, sortDirection);
-  }, [currentPage, searchTerm, sortField, sortDirection, fetchPayouts]);
-
-  const groupedPayouts = useMemo(() => {
-    if (!payouts || payouts.length === 0) return {};
-    return payouts.reduce((acc, payout) => {
-      const monthYearKey = format(parseISO(payout.periodEnd), 'yyyy-MM');
-      if (!acc[monthYearKey]) {
-        acc[monthYearKey] = [];
-      }
-      acc[monthYearKey].push(payout);
-      return acc;
-    }, {} as Record<string, Payout[]>);
-  }, [payouts]);
-
-  const sortedMonthKeys = useMemo(() => {
-    return Object.keys(groupedPayouts).sort().reverse();
-  }, [groupedPayouts]);
+    fetchPayouts(currentPage, searchTerm, sortField, sortDirection, selectedMonth);
+  }, [currentPage, searchTerm, sortField, sortDirection, selectedMonth, fetchPayouts]);
 
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -112,30 +133,62 @@ export default function AllPayoutsPage() {
       setSortField(field);
       setSortDirection('desc');
     }
+    setCurrentPage(1);
   };
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchPayouts(1, searchTerm, sortField, sortDirection);
   };
-  
+
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleMonthChange = (month: string) => {
+    setSelectedMonth(month);
+    setCurrentPage(1);
+  };
+
   const formatDateRange = (start: string, end: string) => {
-    const startDate = parseISO(start);
-    const endDate = parseISO(end);
-    return `${format(startDate, 'MMM d, yyyy')} - ${format(endDate, 'MMM d, yyyy')}`;
+    try {
+      const startDate = parseISO(start);
+      const endDate = parseISO(end);
+      return `${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')}`;
+    } catch {
+      return 'Invalid Date Range';
+    }
   };
 
   const getStatusBadge = (isPaid: boolean, paymentDate: string | null) => {
     if (isPaid) {
-      return <Badge variant="default">Paid{paymentDate ? ` on ${format(parseISO(paymentDate), 'MMM d, yy')}` : ''}</Badge>;
+      const dateText = paymentDate ? ` on ${formatEgyptTime(paymentDate, 'MMM d')}` : '';
+      return <Badge className="bg-green-600 hover:bg-green-700">Paid{dateText}</Badge>;
     }
-    return <Badge variant="secondary">Pending</Badge>;
+    return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Pending</Badge>;
+  };
+
+  const calculateStats = () => {
+    if (!payouts.length) return { totalPaid: 0, totalPending: 0, paidCount: 0, pendingCount: 0 };
+    
+    const paidPayouts = payouts.filter(p => p.isPaid);
+    const pendingPayouts = payouts.filter(p => !p.isPaid);
+    
+    return {
+      totalPaid: paidPayouts.reduce((sum, p) => sum + p.finalAmount, 0),
+      totalPending: pendingPayouts.reduce((sum, p) => sum + p.basePayout, 0),
+      paidCount: paidPayouts.length,
+      pendingCount: pendingPayouts.length
+    };
+  };
+
+  const stats = calculateStats();
+
+  // Get the selected month display name
+  const getSelectedMonthDisplay = () => {
+    const option = monthOptions.find(opt => opt.value === selectedMonth);
+    return option ? option.label : 'Selected Month';
   };
 
   const PaginationControls = () => {
@@ -147,7 +200,7 @@ export default function AllPayoutsPage() {
     for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
 
     return (
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-muted-foreground">
           Showing {pagination.startIndex} to {pagination.endIndex} of {pagination.totalCount} results
         </div>
@@ -165,43 +218,139 @@ export default function AllPayoutsPage() {
       </div>
     );
   };
-  
+
   const SortableTableHeader = ({ field, label }: { field: string; label: string }) => (
-    <TableHead onClick={() => handleSort(field)} className="cursor-pointer hover:bg-muted/50">
+    <TableHead onClick={() => handleSort(field)} className="cursor-pointer hover:bg-muted/50 transition-colors">
       <div className="flex items-center">
         {label}
-        {sortField === field && <ArrowUpDown className="ml-2 h-4 w-4" />}
+        {sortField === field && <ArrowUpDown className={`ml-2 h-4 w-4 ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
       </div>
     </TableHead>
   );
 
   return (
-    <div className="p-4 md:p-6 max-w-full mx-auto">
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center"><DollarSign className="h-6 w-6 mr-2 text-primary" /> All Payouts</CardTitle>
-          <CardDescription>View and manage all employee payouts, grouped by month.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSearch} className="flex gap-4 mb-4">
-            <div className="relative flex-1">
+    <div className="p-4 md:p-6 max-w-full mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight flex items-center">
+          <DollarSign className="h-8 w-8 mr-3 text-primary" />
+          All Payouts - {getSelectedMonthDisplay()}
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          View and manage employee payouts for the selected month.
+        </p>
+      </div>
+
+      {/* Stats Cards */}
+      {!isLoading && !error && payouts.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <TrendingUp className="h-5 w-5 text-green-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-muted-foreground">Total Paid</p>
+                  <p className="text-xl font-bold">L.E {stats.totalPaid.toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <Calendar className="h-5 w-5 text-yellow-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-muted-foreground">Total Pending</p>
+                  <p className="text-xl font-bold">L.E {stats.totalPending.toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Users className="h-5 w-5 text-blue-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-muted-foreground">Paid Payouts</p>
+                  <p className="text-xl font-bold">{stats.paidCount}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <AlertCircle className="h-5 w-5 text-orange-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-muted-foreground">Pending Payouts</p>
+                  <p className="text-xl font-bold">{stats.pendingCount}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Month Filter and Search */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Month Picker */}
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <Select value={selectedMonth} onValueChange={handleMonthChange}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Search */}
+            <form onSubmit={handleSearch} className="flex gap-4 flex-1">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                    type="text"
-                    placeholder="Search by employee name or comment..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                  type="text"
+                  placeholder="Search by employee name or comment..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
                 />
-            </div>
-            <Button type="submit" disabled={isLoading}>Search</Button>
-            {searchTerm && (
-                <Button type="button" variant="outline" onClick={() => { setSearchTerm(''); setCurrentPage(1); fetchPayouts(1, '', sortField, sortDirection); }}>Clear</Button>
-            )}
-          </form>
+              </div>
+              <Button type="submit" disabled={isLoading}>Search</Button>
+              {searchTerm && (
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => { 
+                    setSearchTerm(''); 
+                    setCurrentPage(1); 
+                  }}
+                >
+                  Clear
+                </Button>
+              )}
+            </form>
+          </div>
         </CardContent>
       </Card>
 
+      {/* Loading State */}
       {isLoading && payouts.length === 0 && (
         <div className="flex justify-center items-center min-h-[300px]">
           <div className="text-center">
@@ -211,6 +360,7 @@ export default function AllPayoutsPage() {
         </div>
       )}
 
+      {/* Error State */}
       {error && (
         <Card className="border-red-500/50 bg-red-50/30">
           <CardContent className="p-6">
@@ -218,81 +368,126 @@ export default function AllPayoutsPage() {
               <AlertCircle className="h-5 w-5 mr-2" />
               <span className="font-medium">Error:</span> {error}
             </div>
-            <Button variant="outline" onClick={() => fetchPayouts(currentPage, searchTerm, sortField, sortDirection)} className="mt-4">Try Again</Button>
+            <Button variant="outline" onClick={() => fetchPayouts(currentPage, searchTerm, sortField, sortDirection, selectedMonth)} className="mt-4">
+              Try Again
+            </Button>
           </CardContent>
         </Card>
       )}
 
+      {/* Empty State */}
       {!isLoading && !error && payouts.length === 0 && (
         <Card>
           <CardContent className="p-10 text-center text-muted-foreground">
-            No payouts found. {searchTerm ? 'Try adjusting your search.' : ''}
+            <DollarSign className="h-16 w-16 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg font-medium mb-2">No payouts found</h3>
+            <p>
+              {searchTerm 
+                ? `No payouts found for "${searchTerm}" in ${getSelectedMonthDisplay()}. Try adjusting your search criteria.`
+                : `No payouts have been created for ${getSelectedMonthDisplay()}.`
+              }
+            </p>
           </CardContent>
         </Card>
       )}
 
+      {/* Payouts Table */}
       {!error && payouts.length > 0 && (
-        <div>
-          {sortedMonthKeys.map(monthKey => {
-            const monthlyPayouts = groupedPayouts[monthKey];
-            if (!monthlyPayouts || monthlyPayouts.length === 0) return null;
-            const displayMonth = format(parseISO(monthlyPayouts[0].periodEnd), 'MMMM yyyy');
-
-            return (
-              <Card key={monthKey} className="mb-6">
-                <CardHeader>
-                  <CardTitle>{displayMonth}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <SortableTableHeader field="employee.name" label="Employee" />
-                          <SortableTableHeader field="periodEnd" label="Pay Period" />
-                          <SortableTableHeader field="totalAmount" label="Total Amount" />
-                          <SortableTableHeader field="isPaid" label="Status" />
-                          <SortableTableHeader field="paymentDate" label="Payment Date" />
-                          <SortableTableHeader field="updatedAt" label="Last Updated" />
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {monthlyPayouts.map((payout) => (
-                          <TableRow key={payout.id}>
-                            <TableCell className="font-medium">
-                              <Link href={`/dashboard/employees/${payout.employeeId}/payouts`} className="hover:underline">
-                                  {payout.employee.name}
-                              </Link>
-                              <div className="text-xs text-muted-foreground">{payout.employee.paymentBasis}</div>
-                            </TableCell>
-                            <TableCell>{formatDateRange(payout.periodStart, payout.periodEnd)}</TableCell>
-                            <TableCell>L.E {payout.totalAmount.toFixed(2)}</TableCell>
-                            <TableCell>{getStatusBadge(payout.isPaid, payout.paymentDate)}</TableCell>
-                            <TableCell>{payout.paymentDate ? formatEgyptTime(payout.paymentDate, 'MMM d, yyyy') : '-'}</TableCell>
-                            <TableCell>{formatEgyptTime(payout.updatedAt, 'MMM d, yyyy, h:mm a')}</TableCell>
-                            <TableCell>
-                              <Button asChild variant="ghost" size="sm">
-                                <Link href={`/dashboard/employees/${payout.employeeId}/payouts?periodStart=${payout.periodStart}&periodEnd=${payout.periodEnd}`}>
-                                  <Eye className="h-4 w-4 mr-1" /> View Details
-                                </Link>
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-          {pagination && (
-            <div className="mt-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Payouts Table</CardTitle>
+            <CardDescription>
+              {pagination ? `${pagination.totalCount} total payouts` : 'All payouts'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <SortableTableHeader field="employee.name" label="Employee" />
+                    <SortableTableHeader field="periodEnd" label="Pay Period" />
+                    <TableHead>Payment Basis</TableHead>
+                    <SortableTableHeader field="totalAmount" label="Amount" />
+                    <SortableTableHeader field="isPaid" label="Status" />
+                    <SortableTableHeader field="paymentDate" label="Payment Date" />
+                    <SortableTableHeader field="updatedAt" label="Last Updated" />
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {payouts.map((payout) => (
+                    <TableRow key={payout.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">
+                        <Link 
+                          href={`/dashboard/employees/${payout.employeeId}`} 
+                          className="hover:underline text-primary"
+                        >
+                          {payout.employee.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">
+                        {formatDateRange(payout.periodStart, payout.periodEnd)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-xs">
+                          {payout.employee.paymentBasis}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-semibold">
+                        {payout.isPaid ? (
+                          <>
+                            L.E {payout.finalAmount.toFixed(2)}
+                            <div className="text-xs text-muted-foreground">
+                              Final amount (paid)
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            L.E {payout.basePayout.toFixed(2)}
+                            <div className="text-xs text-muted-foreground">
+                              Base calculation (pending)
+                            </div>
+                          </>
+                        )}
+                        {payout.adjustmentsTotal !== 0 && (
+                          <div className="text-xs text-muted-foreground">
+                            Base: L.E {payout.amount.toFixed(2)}
+                            {payout.adjustmentsTotal && payout.adjustmentsTotal !== 0 && (
+                              <span className={payout.adjustmentsTotal > 0 ? 'text-green-600' : 'text-red-600'}>
+                                {' '}{payout.adjustmentsTotal > 0 ? '+' : ''}L.E {payout.adjustmentsTotal.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {getStatusBadge(payout.isPaid, payout.paymentDate)}
+                      </TableCell>
+                      <TableCell>
+                        {payout.paymentDate ? formatEgyptTime(payout.paymentDate, 'MMM d, yyyy') : '-'}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {formatEgyptTime(payout.updatedAt, 'MMM d, h:mm a')}
+                      </TableCell>
+                      <TableCell>
+                        <Button asChild variant="ghost" size="sm">
+                          <Link href={`/dashboard/employees/${payout.employeeId}/payouts`}>
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </Link>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="p-4">
               <PaginationControls />
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

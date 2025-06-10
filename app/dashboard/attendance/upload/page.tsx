@@ -92,6 +92,10 @@ export default function AttendanceUploadPage() {
       
       const data = await response.json();
       
+      // Debug logging
+      console.log('Upload response status:', response.status);
+      console.log('Upload response data:', data);
+      
       // Complete progress
       setUploadProgress(100);
       setProgressMessage('Processing complete!');
@@ -99,7 +103,9 @@ export default function AttendanceUploadPage() {
       if (response.ok) {
         setUploadResult({
           success: true,
-          message: data.message || 'Attendance log processed successfully.'
+          message: data.message || 'Attendance log processed successfully.',
+          recordsCount: data.recordsCount,
+          payouts: data.payouts
         });
         setFile(null);
         
@@ -266,10 +272,10 @@ export default function AttendanceUploadPage() {
                   Format Specification
                 </h3>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Each line should contain the device ID (fingerprint ID), timestamp, and other optional data separated by spaces:
+                  Each line should contain the device ID (fingerprint ID), date, time, and other optional data separated by spaces or tabs:
                 </p>
                 <pre className="bg-muted p-3 rounded-md text-sm overflow-x-auto border">
-                  &lt;DeviceID&gt; &lt;YYYY-MM-DD HH:MM:SS&gt; [optional data]
+                  &lt;DeviceID&gt; &lt;YYYY-MM-DD&gt; &lt;HH:MM:SS&gt; [optional data]
                 </pre>
               </div>
               
@@ -281,10 +287,10 @@ export default function AttendanceUploadPage() {
                   Note: 1, 2, 3 are device IDs that must match the Fingerprint Device ID field in employee profiles:
                 </p>
                 <pre className="bg-muted p-3 rounded-md text-sm overflow-x-auto border">
-                  1	2025-01-14 10:55:36	2	0	1	0{'\n'}
-                  1	2025-01-14 17:45:27	2	0	1	0{'\n'}
-                  2	2025-01-14 08:30:15	2	0	1	0{'\n'}
-                  2	2025-01-14 16:35:22	2	0	1	0
+                  1	2025-01-14	10:55:36	2	0	1	0{'\n'}
+                  1	2025-01-14	17:45:27	2	0	1	0{'\n'}
+                  2	2025-01-14	08:30:15	2	0	1	0{'\n'}
+                  2	2025-01-14	16:35:22	2	0	1	0
                 </pre>
               </div>
               

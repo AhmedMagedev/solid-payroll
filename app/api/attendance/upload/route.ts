@@ -88,14 +88,17 @@ export async function POST(request: NextRequest) {
 
     for (const line of lines) {
       const parts = line.trim().split(/\s+/);
-      if (parts.length < 2) {
+      if (parts.length < 3) {
         console.warn(`[API] Skipping invalid line: ${line}`);
         continue;
       }
 
-      const employeeId = parseInt(parts[0], 10);
-      const deviceId = parseInt(parts[1], 10);
-      const timeString = parts[2] + ' ' + parts[3];
+      // Correct parsing: parts[0] = deviceId, parts[1] = date, parts[2] = time
+      const deviceId = parseInt(parts[0], 10);
+      const timeString = parts[1] + ' ' + parts[2]; // YYYY-MM-DD HH:MM:SS
+
+      console.log(`[API] Parsing line: ${line}`);
+      console.log(`[API] Extracted - DeviceID: ${deviceId}, Timestamp: ${timeString}`);
 
       // Use the Egypt timezone parser
       const checkInDateTime = parseEgyptTimeToUtc(timeString);
@@ -104,13 +107,15 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Check employee
-      const employee = await prisma.employee.findUnique({
-        where: { id: employeeId }
+      // Find employee by deviceId (fingerprint device ID)
+      const employee = await prisma.employee.findFirst({
+        where: { 
+          fingerprintId: deviceId.toString()
+        }
       });
 
       if (!employee) {
-        console.log(`Skipping record ${line}: Employee ID ${employeeId} not found`);
+        console.log(`Skipping record ${line}: Employee with fingerprint device ID ${deviceId} not found`);
         continue;
       }
 
@@ -122,7 +127,7 @@ export async function POST(request: NextRequest) {
       );
 
       const dateKey = checkInDateTime.toISOString().split('T')[0]; // YYYY-MM-DD format
-      const employeeKey = `${deviceId}-${dateKey}`;
+      const employeeKey = `${employee.id}-${dateKey}`;
 
       // Create employee entry if not exists
       if (!recordsByEmployeeAndDay.has(employeeKey)) {
@@ -311,17 +316,105 @@ export async function POST(request: NextRequest) {
           // Calculate payouts for each month
           for (const [monthKey, monthAttendance] of attendanceByMonth) {
             const [year, month] = monthKey.split('-').map(Number);
-            const periodStart = new Date(year, month - 1, 1);
-            const periodEnd = new Date(year, month, 0); // Last day of month
+            // FIXED: Create proper month boundaries - 1st to last day of each month
+            const periodStart = new Date(year, month - 1, 1, 0, 0, 0, 0); // First day at 00:00:00
+            const periodEnd = new Date(year, month, 0, 23, 59, 59, 999); // Last day at 23:59:59
+            
+            console.log(`[Upload Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
 
             // Only count days where isPaidDay is true
             const paidDays = monthAttendance.filter(a => a.isPaidDay && a.hoursWorked && a.hoursWorked > 0);
             const daysWorked = paidDays.length;
             const totalHours = paidDays.reduce((sum, a) => sum + (a.hoursWorked || 0), 0);
-            const amount = daysWorked * employee.dailyRate;
-
+            
+            // RESTORED OVERTIME CALCULATION with sophisticated rules
+            const hoursPerDay = 9; // Standard working hours per day
+            const hourlyRate = employee.dailyRate / hoursPerDay;
+            const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
+            
+            let regularHours = 0;
+            let overtimeHours = 0;
+            let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap
+            
+            console.log(`[Overtime Calc] Employee ${employee.name}, Month ${monthKey}: Processing ${paidDays.length} paid days`);
+            
+            // Calculate overtime per day with rules
+            paidDays.forEach((attendance, dayIndex) => {
+              const dailyHours = attendance.hoursWorked || 0;
+              const attendanceDate = new Date(attendance.date);
+              
+              console.log(`[Overtime Calc] Day ${dayIndex + 1}: ${attendanceDate.toDateString()}, Hours: ${dailyHours}`);
+              
+              if (dailyHours > hoursPerDay) {
+                const potentialOvertimeHours = dailyHours - hoursPerDay;
+                console.log(`[Overtime Calc] Potential overtime: ${potentialOvertimeHours} hours`);
+                
+                // SIMPLIFIED: Remove next-day presence requirement for now to test
+                // We can add it back later if needed
+                const isOvertimeEligible = true;
+                
+                /* DISABLED FOR DEBUGGING
+                // Check if employee must be present next working day for overtime eligibility
+                const nextWorkingDay = getNextWorkingDay(attendanceDate);
+                
+                if (nextWorkingDay) {
+                  // Check if employee was present on the next working day
+                  const nextDayAttendance = paidDays.find(a => {
+                    const aDate = new Date(a.date);
+                    return aDate.toDateString() === nextWorkingDay.toDateString();
+                  });
+                  
+                  // If next working day exists and employee was not present, overtime is not eligible
+                  if (!nextDayAttendance) {
+                    isOvertimeEligible = false;
+                    console.log(`[Overtime Calc] Overtime not eligible - not present next working day (${nextWorkingDay.toDateString()})`);
+                  } else {
+                    console.log(`[Overtime Calc] Overtime eligible - present next working day`);
+                  }
+                } else {
+                  console.log(`[Overtime Calc] Overtime eligible - no next working day required`);
+                }
+                */
+                
+                if (isOvertimeEligible) {
+                  regularHours += hoursPerDay;
+                  
+                  // Apply 2-hour overtime cap rule
+                  if (potentialOvertimeHours <= 2) {
+                    // All overtime hours within cap - paid at overtime rate
+                    overtimeHours += potentialOvertimeHours;
+                    console.log(`[Overtime Calc] Added ${potentialOvertimeHours} overtime hours (within cap)`);
+                  } else {
+                    // First 2 hours at overtime rate, rest at regular rate
+                    overtimeHours += 2;
+                    excessOvertimeHours += (potentialOvertimeHours - 2);
+                    console.log(`[Overtime Calc] Added 2 overtime hours + ${potentialOvertimeHours - 2} excess hours`);
+                  }
+                } else {
+                  // Overtime not eligible, treat as regular hours up to standard hours
+                  regularHours += Math.min(dailyHours, hoursPerDay);
+                  console.log(`[Overtime Calc] Overtime not eligible - treating as regular hours`);
+                }
+              } else {
+                regularHours += dailyHours;
+                console.log(`[Overtime Calc] Regular day: ${dailyHours} hours`);
+              }
+            });
+            
+            // Include excess overtime hours in regular hours for payment calculation
+            regularHours += excessOvertimeHours;
+            
+            console.log(`[Overtime Calc] Final totals - Regular: ${regularHours}, Overtime: ${overtimeHours}, Excess: ${excessOvertimeHours}`);
+            
+            // Calculate amounts
+            const basePayout = daysWorked * employee.dailyRate;
+            const overtimePayout = overtimeHours * overtimeRate;
+            const totalAmount = basePayout + overtimePayout;
+            
+            console.log(`[Overtime Calc] Amounts - Base: ${basePayout}, Overtime: ${overtimePayout}, Total: ${totalAmount}`);
+            
             // Count unpaid days for reporting
-            const unpaidDays = monthAttendance.filter(a => !a.isPaidDay).length;
+            const unpaidDays = monthAttendance.length - daysWorked;
 
             const existingPayout = await prisma.payout.findFirst({
               where: {
@@ -332,24 +425,40 @@ export async function POST(request: NextRequest) {
             });
 
             if (existingPayout) {
-              if (existingPayout.amount !== amount) {
-                await prisma.payout.update({
-                  where: { id: existingPayout.id },
-                  data: {
-                    amount,
-                    comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`,
-                    updatedAt: new Date()
-                  }
-                });
-                payoutResults.updated++;
-              }
+              await prisma.payout.update({
+                where: { id: existingPayout.id },
+                data: {
+                  amount: totalAmount,
+                  daysWorked,
+                  unpaidDays,
+                  totalHours,
+                  regularHours,
+                  overtimeHours,
+                  excessOvertimeHours,
+                  basePayout,
+                  overtimePayout,
+                  finalAmount: totalAmount,
+                  comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`,
+                  updatedAt: new Date()
+                }
+              });
+              payoutResults.updated++;
             } else {
               await prisma.payout.create({
                 data: {
                   employeeId: employee.id,
                   periodStart,
                   periodEnd,
-                  amount,
+                  amount: totalAmount,
+                  daysWorked,
+                  unpaidDays,
+                  totalHours,
+                  regularHours,
+                  overtimeHours,
+                  excessOvertimeHours,
+                  basePayout,
+                  overtimePayout,
+                  finalAmount: totalAmount,
                   comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`
                 }
               });

@@ -66,6 +66,18 @@ model Payout {
   adjustmentAmount Float?    @default(0) @map("adjustment_amount")
   adjustmentReason String?   @map("adjustment_reason")
   includeOvertime  Boolean   @default(false) @map("include_overtime")
+  
+  // Detailed breakdown fields
+  daysWorked       Int       @default(0) @map("days_worked")
+  unpaidDays       Int       @default(0) @map("unpaid_days")
+  totalHours       Float     @default(0) @map("total_hours")
+  regularHours     Float     @default(0) @map("regular_hours")
+  overtimeHours    Float     @default(0) @map("overtime_hours")
+  excessOvertimeHours Float  @default(0) @map("excess_overtime_hours")
+  basePayout       Float     @default(0) @map("base_payout")
+  overtimePayout   Float     @default(0) @map("overtime_payout")
+  finalAmount      Float     @default(0) @map("final_amount")
+  
   employee         Employee  @relation(fields: [employeeId], references: [id])
   adjustments      PayoutAdjustment[]
 
@@ -88,17 +100,17 @@ model PayoutAdjustment {
 
 model SystemSettings {
   id                        Int      @id @default(autoincrement())
-  lateAllowanceMinutes      Int      @default(15) @map("late_allowance_minutes")
-  workDaySunday             Boolean  @default(false) @map("work_day_sunday")
+  lateAllowanceMinutes      Int      @default(30) @map("late_allowance_minutes")
+  workDaySunday             Boolean  @default(true) @map("work_day_sunday")
   workDayMonday             Boolean  @default(true) @map("work_day_monday")
   workDayTuesday            Boolean  @default(true) @map("work_day_tuesday")
   workDayWednesday          Boolean  @default(true) @map("work_day_wednesday")
   workDayThursday           Boolean  @default(true) @map("work_day_thursday")
-  workDayFriday             Boolean  @default(true) @map("work_day_friday")
-  workDaySaturday           Boolean  @default(false) @map("work_day_saturday")
-  workingHoursPerDay        Float    @default(8) @map("working_hours_per_day")
+  workDayFriday             Boolean  @default(false) @map("work_day_friday")
+  workDaySaturday           Boolean  @default(true) @map("work_day_saturday")
+  workingHoursPerDay        Float    @default(9) @map("working_hours_per_day")
   workingHoursStart         String   @default("09:00") @map("working_hours_start")
-  workingHoursEnd           String   @default("17:00") @map("working_hours_end")
+  workingHoursEnd           String   @default("18:00") @map("working_hours_end")
   overtimeMultiplier        Float    @default(1.5) @map("overtime_multiplier")
   weekendOvertimeMultiplier Float    @default(2) @map("weekend_overtime_multiplier")
   createdAt                 DateTime @default(now()) @map("created_at")
