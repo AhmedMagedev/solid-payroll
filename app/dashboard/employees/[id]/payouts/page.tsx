@@ -376,10 +376,10 @@ export default function EmployeePayoutsPage() {
     const hourlyRate = employee.dailyRate / hoursPerDay;
     const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
     
-    // Calculate payout: base daily rate + overtime pay
+    // Calculate payout: base daily rate (overtime is added conditionally in UI)
     const basePayout = daysWorked * employee.dailyRate;
     const overtimePayout = overtimeHours * overtimeRate;
-    const totalPayout = basePayout + overtimePayout;
+    // Return only base payout - overtime will be added conditionally based on toggle
     
     return {
       daysWorked,
@@ -392,7 +392,7 @@ export default function EmployeePayoutsPage() {
       excessOvertimeHours,
       basePayout,
       overtimePayout,
-      payout: totalPayout
+      payout: basePayout // Only base payout, overtime added conditionally in UI
     };
   };
   
@@ -845,7 +845,7 @@ export default function EmployeePayoutsPage() {
                             </span>
                             <span className="text-lg font-bold">
                               L.E {existingPayout 
-                                ? (existingPayout.finalAmount || existingPayout.amount).toFixed(2)
+                                ? ((existingPayout.basePayout || basePayout) + (currentState.includeOvertime ? (existingPayout.overtimePayout || 0) : 0) + currentState.adjustmentAmount).toFixed(2)
                                 : (basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount).toFixed(2)
                               }
                             </span>
