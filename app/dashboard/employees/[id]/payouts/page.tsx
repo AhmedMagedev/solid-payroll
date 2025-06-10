@@ -655,7 +655,27 @@ export default function EmployeePayoutsPage() {
             // Use stored database values if payout exists, otherwise calculate for new periods
             let payoutData;
             if (existingPayout) {
-              // Use stored values from database - NO frontend calculations
+              // Use stored values from database - prioritize stored amounts
+              // If basePayout is 0 but we have amount/finalAmount, derive basePayout
+              let derivedBasePayout = existingPayout.basePayout || 0;
+              let derivedOvertimePayout = existingPayout.overtimePayout || 0;
+              
+              // If basePayout is 0 but we have a total amount, try to derive the breakdown
+              if (derivedBasePayout === 0 && (existingPayout.finalAmount || existingPayout.amount)) {
+                const totalAmount = existingPayout.finalAmount || existingPayout.amount;
+                const daysWorked = existingPayout.daysWorked || 0;
+                
+                // If we have days worked, calculate basePayout from daily rate
+                if (daysWorked > 0 && employee.dailyRate > 0) {
+                  derivedBasePayout = daysWorked * employee.dailyRate;
+                  derivedOvertimePayout = Math.max(0, totalAmount - derivedBasePayout);
+                } else {
+                  // Fallback: assume all amount is base payout
+                  derivedBasePayout = totalAmount;
+                  derivedOvertimePayout = 0;
+                }
+              }
+              
               payoutData = {
                 daysWorked: existingPayout.daysWorked || 0,
                 unpaidDays: existingPayout.unpaidDays || 0,
@@ -663,11 +683,13 @@ export default function EmployeePayoutsPage() {
                 regularHours: existingPayout.regularHours || 0,
                 overtimeHours: existingPayout.overtimeHours || 0,
                 excessOvertimeHours: existingPayout.excessOvertimeHours || 0,
-                basePayout: existingPayout.basePayout || 0,
-                overtimePayout: existingPayout.overtimePayout || 0,
+                basePayout: derivedBasePayout,
+                overtimePayout: derivedOvertimePayout,
                 workingDaysInPeriod: getWorkingDaysInPeriod(period.start, period.end),
                 expectedHours: getWorkingDaysInPeriod(period.start, period.end) * (systemSettings?.workingHoursPerDay || 9)
               };
+              
+              console.log(`[Payout Display] ${period.label}: BasePayout: ${derivedBasePayout}, OvertimePayout: ${derivedOvertimePayout}, TotalFromDB: ${existingPayout.finalAmount || existingPayout.amount}`);
             } else {
               // Calculate for new periods only (fallback)
               payoutData = calculatePeriodPayout(period.start, period.end);
@@ -829,10 +851,7 @@ export default function EmployeePayoutsPage() {
                               Final Payout
                             </span>
                             <span className="text-lg font-bold">
-                              L.E {existingPayout 
-                                ? ((existingPayout.basePayout || basePayout) + (currentState.includeOvertime ? (existingPayout.overtimePayout || 0) : 0) + currentState.adjustmentAmount).toFixed(2)
-                                : (basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount).toFixed(2)
-                              }
+                              L.E {(basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount).toFixed(2)}
                             </span>
                           </div>
                         </div>
@@ -991,19 +1010,10 @@ export default function EmployeePayoutsPage() {
                           <Button 
                             className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
                             onClick={() => {
-                              // Calculate the final amount including overtime toggle
-                              let saveAmount;
-                              if (existingPayout) {
-                                // For existing payouts, use base + conditional overtime
-                                const baseAmount = existingPayout.basePayout || existingPayout.amount;
-                                const overtimeAmount = currentState.includeOvertime ? (existingPayout.overtimePayout || 0) : 0;
-                                saveAmount = baseAmount + overtimeAmount;
-                              } else {
-                                // For new payouts, calculate from scratch
-                                const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
-                                saveAmount = basePayout + overtimeAmount;
-                              }
-                              savePayout(period.start, period.end, saveAmount + currentState.adjustmentAmount);
+                              // Calculate the final amount including overtime toggle using derived values
+                              const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
+                              const saveAmount = basePayout + overtimeAmount + currentState.adjustmentAmount;
+                              savePayout(period.start, period.end, saveAmount);
                             }}
                             disabled={isUpdating[periodKey]}
                           >

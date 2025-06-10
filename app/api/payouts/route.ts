@@ -55,14 +55,14 @@ export async function GET(request: NextRequest) {
       ];
     }
     
-    // Add date filtering by periodEnd
+    // Add date filtering by periodStart (which month the work period belongs to)
     if (startDate || endDate) {
-      where.periodEnd = {};
+      where.periodStart = {};
       if (startDate) {
-        where.periodEnd.gte = new Date(startDate);
+        where.periodStart.gte = new Date(startDate);
       }
       if (endDate) {
-        where.periodEnd.lte = new Date(endDate);
+        where.periodStart.lte = new Date(endDate);
       }
     }
     

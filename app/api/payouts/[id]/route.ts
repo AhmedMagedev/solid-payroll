@@ -112,6 +112,8 @@ export async function PATCH(
       adjustmentAmount?: number;
       adjustmentReason?: string | null;
       includeOvertime?: boolean;
+      finalAmount?: number;
+      amount?: number;
     } = {};
     
     // Only update fields that are provided
@@ -139,8 +141,27 @@ export async function PATCH(
       updateData.adjustmentReason = data.adjustmentReason;
     }
     
-    if (data.includeOvertime !== undefined) {
-      updateData.includeOvertime = data.includeOvertime;
+    // Recalculate finalAmount if either includeOvertime or adjustmentAmount changes
+    if (data.includeOvertime !== undefined || data.adjustmentAmount !== undefined) {
+      const basePayout = existingPayout.basePayout || 0;
+      const overtimePayout = existingPayout.overtimePayout || 0;
+      const includeOvertime = data.includeOvertime !== undefined ? data.includeOvertime : (existingPayout.includeOvertime || false);
+      const adjustmentAmount = data.adjustmentAmount !== undefined ? data.adjustmentAmount : (existingPayout.adjustmentAmount || 0);
+      
+      // Get total from adjustments table
+      const adjustments = await prisma.payoutAdjustment.findMany({
+        where: { payoutId: payoutId }
+      });
+      const adjustmentsTotal = adjustments.reduce((sum, adj) => sum + adj.amount, 0);
+      
+      // Calculate new finalAmount based on overtime inclusion + legacy adjustment + table adjustments
+      const newFinalAmount = basePayout + (includeOvertime ? overtimePayout : 0) + adjustmentAmount + adjustmentsTotal;
+      
+      updateData.finalAmount = newFinalAmount;
+      updateData.amount = newFinalAmount; // Also update amount field for consistency
+      updateData.includeOvertime = includeOvertime; // Ensure includeOvertime is always set
+      
+      console.log(`[API Payout Update] Recalculating final amount: Base: ${basePayout}, Overtime: ${overtimePayout}, Include Overtime: ${includeOvertime}, Legacy Adjustment: ${adjustmentAmount}, Table Adjustments: ${adjustmentsTotal}, Final: ${newFinalAmount}`);
     }
     
     console.log(`[API Payout Update] Update data:`, updateData);

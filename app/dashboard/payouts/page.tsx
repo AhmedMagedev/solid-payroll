@@ -52,7 +52,15 @@ interface PayoutsResponse {
 export default function AllPayoutsPage() {
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [monthlyStats, setMonthlyStats] = useState<{
+    totalPaid: number;
+    totalPending: number;
+    paidCount: number;
+    pendingCount: number;
+    totalCount: number;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,6 +89,36 @@ export default function AllPayoutsPage() {
 
   const monthOptions = getMonthOptions();
 
+  const fetchMonthlyStats = useCallback(async (month: string, search: string) => {
+    setIsStatsLoading(true);
+    try {
+      const params = new URLSearchParams({
+        month: month
+      });
+      
+      if (search) {
+        params.append('search', search);
+      }
+
+      const response = await fetch(`/api/payouts/stats?${params.toString()}`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch monthly stats');
+      }
+      
+      const stats = await response.json();
+      setMonthlyStats(stats);
+    } catch (err) {
+      console.error('Error fetching monthly stats:', err);
+      // If stats fail, we can still show the paginated data
+      setMonthlyStats(null);
+    } finally {
+      setIsStatsLoading(false);
+    }
+  }, []);
+
   const fetchPayouts = useCallback(async (page: number, search: string, field: string, direction: 'asc' | 'desc', month: string) => {
     setIsLoading(true);
     try {
@@ -99,7 +137,7 @@ export default function AllPayoutsPage() {
         const startDate = startOfMonth(new Date(parseInt(year), parseInt(monthNum) - 1));
         const endDate = endOfMonth(new Date(parseInt(year), parseInt(monthNum) - 1));
         
-        // Filter by periodEnd date to get payouts that end in the selected month
+        // Filter by periodStart date to get payouts for the selected month's work period
         params.append('startDate', startDate.toISOString().split('T')[0]);
         params.append('endDate', endDate.toISOString().split('T')[0]);
       }
@@ -124,7 +162,8 @@ export default function AllPayoutsPage() {
 
   useEffect(() => {
     fetchPayouts(currentPage, searchTerm, sortField, sortDirection, selectedMonth);
-  }, [currentPage, searchTerm, sortField, sortDirection, selectedMonth, fetchPayouts]);
+    fetchMonthlyStats(selectedMonth, searchTerm);
+  }, [currentPage, searchTerm, sortField, sortDirection, selectedMonth, fetchPayouts, fetchMonthlyStats]);
 
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -169,21 +208,7 @@ export default function AllPayoutsPage() {
     return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Pending</Badge>;
   };
 
-  const calculateStats = () => {
-    if (!payouts.length) return { totalPaid: 0, totalPending: 0, paidCount: 0, pendingCount: 0 };
-    
-    const paidPayouts = payouts.filter(p => p.isPaid);
-    const pendingPayouts = payouts.filter(p => !p.isPaid);
-    
-    return {
-      totalPaid: paidPayouts.reduce((sum, p) => sum + p.finalAmount, 0),
-      totalPending: pendingPayouts.reduce((sum, p) => sum + p.basePayout, 0),
-      paidCount: paidPayouts.length,
-      pendingCount: pendingPayouts.length
-    };
-  };
 
-  const stats = calculateStats();
 
   // Get the selected month display name
   const getSelectedMonthDisplay = () => {
@@ -242,7 +267,7 @@ export default function AllPayoutsPage() {
       </div>
 
       {/* Stats Cards */}
-      {!isLoading && !error && payouts.length > 0 && (
+      {!error && (
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardContent className="p-4">
@@ -252,7 +277,13 @@ export default function AllPayoutsPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-muted-foreground">Total Paid</p>
-                  <p className="text-xl font-bold">L.E {stats.totalPaid.toFixed(2)}</p>
+                  <p className="text-xl font-bold">
+                    {isStatsLoading ? (
+                      <span className="animate-pulse bg-gray-300 rounded h-6 w-20 inline-block"></span>
+                    ) : (
+                      `L.E ${(monthlyStats?.totalPaid || 0).toFixed(2)}`
+                    )}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -265,7 +296,13 @@ export default function AllPayoutsPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-muted-foreground">Total Pending</p>
-                  <p className="text-xl font-bold">L.E {stats.totalPending.toFixed(2)}</p>
+                  <p className="text-xl font-bold">
+                    {isStatsLoading ? (
+                      <span className="animate-pulse bg-gray-300 rounded h-6 w-20 inline-block"></span>
+                    ) : (
+                      `L.E ${(monthlyStats?.totalPending || 0).toFixed(2)}`
+                    )}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -278,7 +315,13 @@ export default function AllPayoutsPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-muted-foreground">Paid Payouts</p>
-                  <p className="text-xl font-bold">{stats.paidCount}</p>
+                  <p className="text-xl font-bold">
+                    {isStatsLoading ? (
+                      <span className="animate-pulse bg-gray-300 rounded h-6 w-16 inline-block"></span>
+                    ) : (
+                      monthlyStats?.paidCount || 0
+                    )}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -291,7 +334,13 @@ export default function AllPayoutsPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-muted-foreground">Pending Payouts</p>
-                  <p className="text-xl font-bold">{stats.pendingCount}</p>
+                  <p className="text-xl font-bold">
+                    {isStatsLoading ? (
+                      <span className="animate-pulse bg-gray-300 rounded h-6 w-16 inline-block"></span>
+                    ) : (
+                      monthlyStats?.pendingCount || 0
+                    )}
+                  </p>
                 </div>
               </div>
             </CardContent>

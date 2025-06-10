@@ -153,7 +153,11 @@ export async function POST(request: NextRequest) {
         const overtimePayout = overtimeHours * overtimeRate;
         const calculatedAmount = basePayout + overtimePayout;
         
-        console.log(`[Auto-Calc Overtime] Amounts - Base: ${basePayout}, Overtime: ${overtimePayout}, Total: ${calculatedAmount}`);
+        // Set finalAmount to base payout only by default (overtime excluded unless explicitly enabled)
+        // Users can toggle overtime inclusion later via the UI
+        const finalAmount = basePayout; // Default: exclude overtime, user can enable it later
+        
+        console.log(`[Auto-Calc Overtime] Amounts - Base: ${basePayout}, Overtime: ${overtimePayout}, Total Available: ${calculatedAmount}, Final (default): ${finalAmount}`);
 
         // Count unpaid days for reporting
         const unpaidDays = periodAttendance.filter(a => !a.isPaidDay).length;
@@ -172,7 +176,8 @@ export async function POST(request: NextRequest) {
               excessOvertimeHours,
               basePayout,
               overtimePayout,
-              finalAmount: calculatedAmount,
+              finalAmount: finalAmount,
+              includeOvertime: false, // Default to overtime excluded
               comment: `Updated: ${daysWorked} paid days (${label})`,
               updatedAt: new Date()
             }
@@ -195,7 +200,8 @@ export async function POST(request: NextRequest) {
               excessOvertimeHours,
               basePayout,
               overtimePayout,
-              finalAmount: calculatedAmount,
+              finalAmount: finalAmount,
+              includeOvertime: false, // Default to overtime excluded
               comment: `Auto-calculated: ${daysWorked} paid days (${label})`
             }
           });
@@ -208,7 +214,7 @@ export async function POST(request: NextRequest) {
           period: label,
           daysWorked,
           totalHours: parseFloat(totalHours.toFixed(1)),
-          amount: calculatedAmount,
+          amount: finalAmount, // Report the actual final amount (base only by default)
           action: existingPayout ? 'updated' : 'created'
         });
       }
