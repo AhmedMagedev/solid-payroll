@@ -92,9 +92,12 @@ export async function PATCH(
     
     console.log(`[API Payout Update] Received data for payout ${payoutId}:`, data);
     
-    // Check if payout exists
+    // Check if payout exists and include employee info for rate calculation
     const existingPayout = await prisma.payout.findUnique({
-      where: { id: payoutId }
+      where: { id: payoutId },
+      include: {
+        employee: true
+      }
     });
     
     if (!existingPayout) {
@@ -144,7 +147,7 @@ export async function PATCH(
     // Recalculate finalAmount if either includeOvertime or adjustmentAmount changes
     if (data.includeOvertime !== undefined || data.adjustmentAmount !== undefined) {
       const basePayout = existingPayout.basePayout || 0;
-      const overtimePayout = existingPayout.overtimePayout || 0;
+      const overtimePayout = existingPayout.overtimePayout || 0; // Now includes both 1.5x overtime + excess overtime
       const includeOvertime = data.includeOvertime !== undefined ? data.includeOvertime : (existingPayout.includeOvertime || false);
       const adjustmentAmount = data.adjustmentAmount !== undefined ? data.adjustmentAmount : (existingPayout.adjustmentAmount || 0);
       
@@ -161,7 +164,7 @@ export async function PATCH(
       updateData.amount = newFinalAmount; // Also update amount field for consistency
       updateData.includeOvertime = includeOvertime; // Ensure includeOvertime is always set
       
-      console.log(`[API Payout Update] Recalculating final amount: Base: ${basePayout}, Overtime: ${overtimePayout}, Include Overtime: ${includeOvertime}, Legacy Adjustment: ${adjustmentAmount}, Table Adjustments: ${adjustmentsTotal}, Final: ${newFinalAmount}`);
+      console.log(`[API Payout Update] Recalculating final amount: Base: ${basePayout}, Total Overtime: ${overtimePayout}, Include Overtime: ${includeOvertime}, Legacy Adjustment: ${adjustmentAmount}, Table Adjustments: ${adjustmentsTotal}, Final: ${newFinalAmount}`);
     }
     
     console.log(`[API Payout Update] Update data:`, updateData);

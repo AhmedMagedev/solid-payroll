@@ -352,7 +352,8 @@ async function recalculateAttendancePaidStatus(systemSettings: {
             
             // Calculate amounts
             const basePayout = daysWorked * employee.dailyRate;
-            const overtimePayout = overtimeHours * overtimeRate;
+            const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
+            const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
             const calculatedAmount = basePayout + overtimePayout;
 
             // Update existing payout if amount changed

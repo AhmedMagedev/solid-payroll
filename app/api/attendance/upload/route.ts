@@ -416,10 +416,11 @@ export async function POST(request: NextRequest) {
             
             // Calculate amounts
             const basePayout = daysWorked * employee.dailyRate;
-            const overtimePayout = overtimeHours * overtimeRate;
+            const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
+            const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
             const totalAmount = basePayout + overtimePayout;
             
-            console.log(`[Overtime Calc] Amounts - Base: ${basePayout}, Overtime: ${overtimePayout}, Total: ${totalAmount}`);
+            console.log(`[Overtime Calc] Amounts - Base: ${basePayout}, Overtime (1.5x): ${(overtimeHours * overtimeRate).toFixed(2)}, Excess Overtime (regular): ${excessOvertimePayout.toFixed(2)}, Total Overtime: ${overtimePayout}, Total: ${totalAmount}`);
             
             // Count unpaid days for reporting
             const unpaidDays = monthAttendance.length - daysWorked;

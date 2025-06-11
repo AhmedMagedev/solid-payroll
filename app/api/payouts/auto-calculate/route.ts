@@ -150,14 +150,15 @@ export async function POST(request: NextRequest) {
         
         // Calculate amounts
         const basePayout = daysWorked * employee.dailyRate;
-        const overtimePayout = overtimeHours * overtimeRate;
+        const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
+        const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
         const calculatedAmount = basePayout + overtimePayout;
         
         // Set finalAmount to base payout only by default (overtime excluded unless explicitly enabled)
         // Users can toggle overtime inclusion later via the UI
         const finalAmount = basePayout; // Default: exclude overtime, user can enable it later
         
-        console.log(`[Auto-Calc Overtime] Amounts - Base: ${basePayout}, Overtime: ${overtimePayout}, Total Available: ${calculatedAmount}, Final (default): ${finalAmount}`);
+        console.log(`[Auto-Calc Overtime] Amounts - Base: ${basePayout}, Overtime (1.5x): ${(overtimeHours * overtimeRate).toFixed(2)}, Excess Overtime (regular): ${excessOvertimePayout.toFixed(2)}, Total Overtime: ${overtimePayout}, Total Available: ${calculatedAmount}, Final (default): ${finalAmount}`);
 
         // Count unpaid days for reporting
         const unpaidDays = periodAttendance.filter(a => !a.isPaidDay).length;

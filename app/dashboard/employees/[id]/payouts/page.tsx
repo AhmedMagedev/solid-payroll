@@ -350,7 +350,8 @@ export default function EmployeePayoutsPage() {
     
     // Calculate payout: base daily rate (overtime is added conditionally in UI)
     const basePayout = daysWorked * employee.dailyRate;
-    const overtimePayout = overtimeHours * overtimeRate;
+    const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
+    const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
     // Return only base payout - overtime will be added conditionally based on toggle
     
     return {
@@ -1009,12 +1010,13 @@ export default function EmployeePayoutsPage() {
                           )}
                           <Button 
                             className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
-                            onClick={() => {
-                              // Calculate the final amount including overtime toggle using derived values
-                              const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
-                              const saveAmount = basePayout + overtimeAmount + currentState.adjustmentAmount;
-                              savePayout(period.start, period.end, saveAmount);
-                            }}
+                                        onClick={() => {
+              // Calculate the final amount including overtime toggle using derived values
+              // Note: overtimePayout now includes both 1.5x overtime + excess overtime at regular rate
+              const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
+              const saveAmount = basePayout + overtimeAmount + currentState.adjustmentAmount;
+              savePayout(period.start, period.end, saveAmount);
+            }}
                             disabled={isUpdating[periodKey]}
                           >
                             {isUpdating[periodKey] ? 'Updating...' : 'Update Payout'}
