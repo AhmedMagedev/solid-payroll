@@ -243,27 +243,61 @@ async function recalculateAttendancePaidStatus(systemSettings: {
         
         if (employeeAttendance.length === 0) continue;
         
-        // Group attendance by month (for monthly payment basis)
-        const attendanceByMonth = new Map<string, typeof employeeAttendance>();
+        // Group attendance by payment period based on employee's payment basis
+        const attendanceByPeriod = new Map<string, typeof employeeAttendance>();
         
-        employeeAttendance.forEach(record => {
-          const date = new Date(record.date);
-          const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        if (employee.paymentBasis === 'Weekly') {
+          // Group by week for weekly employees
+          employeeAttendance.forEach(record => {
+            const date = new Date(record.date);
+            const weekStart = new Date(date);
+            weekStart.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
+            const weekKey = `week-${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
+            
+            if (!attendanceByPeriod.has(weekKey)) {
+              attendanceByPeriod.set(weekKey, []);
+            }
+            attendanceByPeriod.get(weekKey)!.push(record);
+          });
+        } else {
+          // Group by month for monthly/daily employees (default)
+          employeeAttendance.forEach(record => {
+            const date = new Date(record.date);
+            const monthKey = `month-${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+            
+            if (!attendanceByPeriod.has(monthKey)) {
+              attendanceByPeriod.set(monthKey, []);
+            }
+            attendanceByPeriod.get(monthKey)!.push(record);
+          });
+        }
+        
+        // Process each period
+        for (const [periodKey, periodAttendance] of attendanceByPeriod) {
+          let periodStart: Date;
+          let periodEnd: Date;
           
-          if (!attendanceByMonth.has(monthKey)) {
-            attendanceByMonth.set(monthKey, []);
+          if (periodKey.startsWith('week-')) {
+            // Parse week period
+            const parts = periodKey.split('-');
+            const year = parseInt(parts[1]);
+            const month = parseInt(parts[2]);
+            const day = parseInt(parts[3]);
+            periodStart = new Date(year, month, day);
+            periodEnd = new Date(periodStart);
+            periodEnd.setDate(periodEnd.getDate() + 6); // End of week (Saturday)
+            periodEnd.setHours(23, 59, 59, 999);
+          } else {
+            // Parse month period
+            const parts = periodKey.split('-');
+            const year = parseInt(parts[1]);
+            const month = parseInt(parts[2]);
+            // Create proper month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
+            periodStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)); // First day at 00:00:00 UTC
+            periodEnd = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999)); // Last day at 23:59:59 UTC
           }
-          attendanceByMonth.get(monthKey)!.push(record);
-        });
-        
-        // Process each month
-        for (const [monthKey, monthAttendance] of attendanceByMonth) {
-          const [year, month] = monthKey.split('-').map(Number);
-          // FIXED: Create proper month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
-          const periodStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)); // First day at 00:00:00 UTC
-          const periodEnd = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999)); // Last day at 23:59:59 UTC
           
-          console.log(`[Settings Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
+          console.log(`[Settings Payout] ${employee.name} (${employee.paymentBasis}) ${periodKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
           
           // Check if payout already exists
           const existingPayout = await prisma.payout.findUnique({
@@ -278,7 +312,7 @@ async function recalculateAttendancePaidStatus(systemSettings: {
           
           if (existingPayout) {
             // Only count days where isPaidDay is true
-            const paidDays = monthAttendance.filter(record => record.isPaidDay);
+            const paidDays = periodAttendance.filter(record => record.isPaidDay);
             const daysWorked = paidDays.length;
             const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
             
@@ -362,7 +396,7 @@ async function recalculateAttendancePaidStatus(systemSettings: {
               data: {
                 amount: calculatedAmount,
                 daysWorked,
-                unpaidDays: monthAttendance.length - daysWorked,
+                unpaidDays: periodAttendance.length - daysWorked,
                 totalHours,
                 regularHours,
                 overtimeHours,

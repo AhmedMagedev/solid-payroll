@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -237,19 +237,31 @@ export default function EmployeePayoutsPage() {
     const now = new Date();
     const periods = [];
     
-    // IMPORTANT: Always use monthly periods for consistency with backend APIs
-    // regardless of employee payment basis setting
+    console.log(`[Frontend Periods] Employee ${employee.name} has payment basis: ${employee.paymentBasis}`);
     
-    // Show last 6 months for better coverage
-    for (let i = 0; i < 6; i++) {
-      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthStart = startOfMonth(monthDate);
-      const monthEnd = endOfMonth(monthDate);
-      periods.push({
-        label: format(monthStart, 'MMMM yyyy'),
-        start: monthStart,
-        end: monthEnd
-      });
+    if (employee.paymentBasis === 'Weekly') {
+      // Show last 12 weeks for weekly employees
+      for (let i = 0; i < 12; i++) {
+        const weekStart = startOfWeek(subWeeks(now, i), { weekStartsOn: 0 }); // Start on Sunday
+        const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 }); // End on Saturday
+        periods.push({
+          label: `Week of ${format(weekStart, 'MMM d, yyyy')}`,
+          start: weekStart,
+          end: weekEnd
+        });
+      }
+    } else {
+      // Show last 6 months for monthly employees (default for Monthly and Daily payment basis)
+      for (let i = 0; i < 6; i++) {
+        const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const monthStart = startOfMonth(monthDate);
+        const monthEnd = endOfMonth(monthDate);
+        periods.push({
+          label: format(monthStart, 'MMMM yyyy'),
+          start: monthStart,
+          end: monthEnd
+        });
+      }
     }
     
     return periods;
@@ -257,6 +269,9 @@ export default function EmployeePayoutsPage() {
   
   // Calculate payout for a period
   const calculatePeriodPayout = (periodStart: Date, periodEnd: Date) => {
+    console.log(`[Period Payout] Calculating for period: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
+    console.log(`[Period Payout] Total attendance records available: ${attendance.length}`);
+    
     // Filter attendance records for this period
     const periodAttendance = attendance.filter(record => {
       if (!record.date || typeof record.date !== 'string') {
@@ -265,17 +280,27 @@ export default function EmployeePayoutsPage() {
       }
       try {
         const recordDate = parseISO(record.date);
-        return isWithinInterval(recordDate, { start: periodStart, end: periodEnd });
+        const isWithin = isWithinInterval(recordDate, { start: periodStart, end: periodEnd });
+        
+        if (isWithin) {
+          console.log(`[Period Payout] Including attendance record: ${record.date} (${recordDate.toDateString()})`);
+        }
+        
+        return isWithin;
       } catch (e) {
         console.warn('[EmployeePayoutsPage] Error parsing record.date, skipping record:', record.date, e);
         return false;
       }
     });
     
+    console.log(`[Period Payout] Filtered attendance records for period: ${periodAttendance.length}`);
+    
     // Calculate days worked - only count days where isPaidDay is true (or undefined for backward compatibility)
     const paidDays = periodAttendance.filter(record => record.isPaidDay !== false);
     const daysWorked = paidDays.length;
     const unpaidDays = periodAttendance.length - daysWorked;
+    
+    console.log(`[Period Payout] Days worked: ${daysWorked}, Unpaid days: ${unpaidDays}, Total period attendance: ${periodAttendance.length}`);
     
     // Calculate total hours worked - only from paid days
     const totalHours = paidDays.reduce((sum, record) => {
@@ -287,13 +312,15 @@ export default function EmployeePayoutsPage() {
     const hoursPerDay = systemSettings?.workingHoursPerDay || 9; // Use system setting or default to 9
     const expectedHours = workingDaysInPeriod * hoursPerDay;
     
+    console.log(`[Period Payout] Working days in period: ${workingDaysInPeriod}, Expected hours: ${expectedHours}, Actual hours: ${totalHours}`);
+    
     // Calculate regular and overtime hours
     // NEW LOGIC: Calculate overtime based on daily hours, not total period hours
     // RULE: Overtime only counts if employee is present the next working day (if it's not a day off)
     // RULE: Only first 2 hours of overtime per day get overtime rate, rest paid at regular rate
     let regularHours = 0;
     let overtimeHours = 0;
-    let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap
+    let excessOvertimeHours = 0;
     
     paidDays.forEach((record) => {
       const dailyHours = record.hoursWorked || 0;
@@ -384,6 +411,7 @@ export default function EmployeePayoutsPage() {
         current.setDate(current.getDate() + 1);
       }
       
+      console.log(`[Working Days] Fallback calculation (Mon-Fri): ${count} working days from ${start.toISOString().split('T')[0]} to ${end.toISOString().split('T')[0]}`);
       return count;
     }
     
@@ -401,13 +429,27 @@ export default function EmployeePayoutsPage() {
       systemSettings.workDaySaturday   // 6 = Saturday
     ];
     
+    console.log(`[Working Days] System work days: ${workDays.map((isWork, day) => isWork ? ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][day] : null).filter(Boolean).join(', ')}`);
+    
+    const debugDays = [];
     while (current <= end) {
       const dayOfWeek = current.getDay();
-      if (workDays[dayOfWeek]) {
+      const isWorkDay = workDays[dayOfWeek];
+      
+      debugDays.push({
+        date: current.toISOString().split('T')[0],
+        day: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dayOfWeek],
+        isWorkDay
+      });
+      
+      if (isWorkDay) {
         count++;
       }
       current.setDate(current.getDate() + 1);
     }
+    
+    console.log(`[Working Days] Detailed calculation from ${start.toISOString().split('T')[0]} to ${end.toISOString().split('T')[0]}:`, debugDays);
+    console.log(`[Working Days] Total working days: ${count}`);
     
     return count;
   };
@@ -460,11 +502,7 @@ export default function EmployeePayoutsPage() {
       return undefined;
     }
 
-    // Use month-based matching to find payouts within the same month
-    const searchYear = periodStartSearch.getFullYear();
-    const searchMonth = periodStartSearch.getMonth(); // 0-based
-    
-    console.log(`[Frontend Payout Search] Looking for payout in ${searchYear}-${String(searchMonth + 1).padStart(2, '0')}`);
+    console.log(`[Frontend Payout Search] Looking for payout with exact period: ${periodStartSearch.toISOString().split('T')[0]} to ${periodEndSearch.toISOString().split('T')[0]}`);
 
     return existingPayouts.find(payout => {
       try {
@@ -474,17 +512,18 @@ export default function EmployeePayoutsPage() {
         }
         
         const payoutStartDate = parseISO(payout.periodStart);
-        const payoutYear = payoutStartDate.getFullYear();
-        const payoutMonth = payoutStartDate.getMonth(); // 0-based
+        const payoutEndDate = parseISO(payout.periodEnd);
         
-        // Match by year and month instead of exact dates
-        const matches = payoutYear === searchYear && payoutMonth === searchMonth;
+        // Use exact period matching for both weekly and monthly periods
+        const startMatches = payoutStartDate.toISOString().split('T')[0] === periodStartSearch.toISOString().split('T')[0];
+        const endMatches = payoutEndDate.toISOString().split('T')[0] === periodEndSearch.toISOString().split('T')[0];
+        const exactMatch = startMatches && endMatches;
         
-        if (matches) {
-          console.log(`[Frontend Payout Match] Found payout for ${searchYear}-${String(searchMonth + 1).padStart(2, '0')}: Payout ID ${payout.id}, Base: ${payout.basePayout}`);
+        if (exactMatch) {
+          console.log(`[Frontend Payout Match] Found exact payout match: Payout ID ${payout.id}, Period: ${payout.periodStart} to ${payout.periodEnd}, Base: ${payout.basePayout}`);
         }
         
-        return matches;
+        return exactMatch;
       } catch (e) {
         console.warn('[EmployeePayoutsPage] Error parsing payout period dates, skipping payout in findExistingPayout:', payout, e);
         return false;
@@ -1010,13 +1049,13 @@ export default function EmployeePayoutsPage() {
                           )}
                           <Button 
                             className={`h-8 text-sm px-8 ${currentState.hasChanges ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
-                                        onClick={() => {
-              // Calculate the final amount including overtime toggle using derived values
-              // Note: overtimePayout now includes both 1.5x overtime + excess overtime at regular rate
-              const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
-              const saveAmount = basePayout + overtimeAmount + currentState.adjustmentAmount;
-              savePayout(period.start, period.end, saveAmount);
-            }}
+                            onClick={() => {
+                              // Calculate the final amount including overtime toggle using derived values
+                              // Note: overtimePayout now includes both 1.5x overtime + excess overtime at regular rate
+                              const overtimeAmount = currentState.includeOvertime ? overtimePayout : 0;
+                              const saveAmount = basePayout + overtimeAmount + currentState.adjustmentAmount;
+                              savePayout(period.start, period.end, saveAmount);
+                            }}
                             disabled={isUpdating[periodKey]}
                           >
                             {isUpdating[periodKey] ? 'Updating...' : 'Update Payout'}

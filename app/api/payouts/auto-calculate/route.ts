@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { verifyToken } from '@/app/lib/auth';
-import { parseISO, isWithinInterval } from 'date-fns';
+import { parseISO, isWithinInterval, startOfWeek, endOfWeek, format, addWeeks } from 'date-fns';
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Calculate periods based on payment basis
-      const periods = calculatePaymentPeriods(attendance);
+      const periods = calculatePaymentPeriods(attendance, employee);
       
       for (const period of periods) {
         const { periodStart, periodEnd, label } = period;
@@ -259,7 +259,14 @@ interface AttendanceRecord {
   date: string | Date;
 }
 
-function calculatePaymentPeriods(attendance: AttendanceRecord[]): PaymentPeriod[] {
+interface EmployeeRecord {
+  id: number;
+  name: string;
+  paymentBasis: string;
+  dailyRate: number;
+}
+
+function calculatePaymentPeriods(attendance: AttendanceRecord[], employee: EmployeeRecord): PaymentPeriod[] {
   const periods: PaymentPeriod[] = [];
   
   if (attendance.length === 0) return periods;
@@ -268,42 +275,78 @@ function calculatePaymentPeriods(attendance: AttendanceRecord[]): PaymentPeriod[
   const startDate = new Date(attendance[0].date);
   const endDate = new Date(attendance[attendance.length - 1].date);
   
-  // IMPORTANT: For consistent payroll management, always use monthly periods
-  // regardless of payment basis. Payment basis affects frequency of payment,
-  // not the calculation period boundaries.
+  console.log(`[Period Calc] Employee ${employee.name} has payment basis: ${employee.paymentBasis}`);
   
-  // Generate proper month periods from start to end date
-  const startYear = startDate.getFullYear();
-  const startMonth = startDate.getMonth(); // 0-based
-  const endYear = endDate.getFullYear();
-  const endMonth = endDate.getMonth(); // 0-based
-  
-  let currentYear = startYear;
-  let currentMonth = startMonth;
-  
-  while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
-    // Create PROPER month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
-    const monthStart = new Date(Date.UTC(currentYear, currentMonth, 1, 0, 0, 0, 0));
-    const monthEnd = new Date(Date.UTC(currentYear, currentMonth + 1, 0, 23, 59, 59, 999)); // Last day of month at 23:59:59
+  if (employee.paymentBasis === 'Weekly') {
+    // Generate weekly periods with UTC dates for consistency
+    const weekStart = startOfWeek(startDate, { weekStartsOn: 0 }); // Start on Sunday
+    let currentWeekStart = weekStart;
     
-    // Create human-readable label
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                       'July', 'August', 'September', 'October', 'November', 'December'];
-    const label = `${monthNames[currentMonth]} ${currentYear}`;
+    while (currentWeekStart <= endDate) {
+      const weekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 0 }); // End on Saturday
+      
+      // Convert to UTC dates for consistency with monthly periods
+      const weekStartUTC = new Date(Date.UTC(
+        currentWeekStart.getFullYear(), 
+        currentWeekStart.getMonth(), 
+        currentWeekStart.getDate(), 
+        0, 0, 0, 0
+      ));
+      const weekEndUTC = new Date(Date.UTC(
+        weekEnd.getFullYear(), 
+        weekEnd.getMonth(), 
+        weekEnd.getDate(), 
+        23, 59, 59, 999
+      ));
+      
+      // Create human-readable label
+      const weekLabel = `Week of ${format(currentWeekStart, 'MMM d, yyyy')}`;
+      
+      periods.push({
+        periodStart: weekStartUTC,
+        periodEnd: weekEndUTC,
+        label: weekLabel
+      });
+      
+      console.log(`[Period Calc] Created weekly period: ${weekLabel} = ${weekStartUTC.toISOString().split('T')[0]} to ${weekEndUTC.toISOString().split('T')[0]}`);
+      
+      // Move to next week
+      currentWeekStart = addWeeks(currentWeekStart, 1);
+    }
+  } else {
+    // Generate monthly periods (default for Monthly and Daily payment basis)
+    const startYear = startDate.getFullYear();
+    const startMonth = startDate.getMonth(); // 0-based
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth(); // 0-based
     
-    periods.push({
-      periodStart: monthStart,
-      periodEnd: monthEnd,
-      label: label
-    });
+    let currentYear = startYear;
+    let currentMonth = startMonth;
     
-    console.log(`[Period Calc] Created period: ${label} = ${monthStart.toISOString().split('T')[0]} to ${monthEnd.toISOString().split('T')[0]}`);
-    
-    // Move to next month
-    currentMonth++;
-    if (currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      // Create PROPER month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
+      const monthStart = new Date(Date.UTC(currentYear, currentMonth, 1, 0, 0, 0, 0));
+      const monthEnd = new Date(Date.UTC(currentYear, currentMonth + 1, 0, 23, 59, 59, 999)); // Last day of month at 23:59:59
+      
+      // Create human-readable label
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+      const label = `${monthNames[currentMonth]} ${currentYear}`;
+      
+      periods.push({
+        periodStart: monthStart,
+        periodEnd: monthEnd,
+        label: label
+      });
+      
+      console.log(`[Period Calc] Created monthly period: ${label} = ${monthStart.toISOString().split('T')[0]} to ${monthEnd.toISOString().split('T')[0]}`);
+      
+      // Move to next month
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
     }
   }
   
