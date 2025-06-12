@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ArrowUpDown, Eye, Search, AlertCircle, ChevronLeft, ChevronRight, DollarSign, Users, TrendingUp, Calendar } from 'lucide-react';
+import { ArrowUpDown, Eye, Search, AlertCircle, ChevronLeft, ChevronRight, DollarSign, Users, TrendingUp, Calendar, EyeOff } from 'lucide-react';
 import { formatEgyptTime } from '@/lib/timezone';
 import { format, parseISO, startOfMonth, endOfMonth } from 'date-fns';
 import { Input } from '@/components/ui/input';
@@ -71,6 +71,8 @@ export default function AllPayoutsPage() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   });
+  // Add state to hide adjustments temporarily
+  const [hideAdjustments, setHideAdjustments] = useState(true);
 
   // Generate month options for the last 12 months
   const getMonthOptions = () => {
@@ -369,6 +371,17 @@ export default function AllPayoutsPage() {
               </Select>
             </div>
             
+            {/* Toggle Adjustments Visibility */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setHideAdjustments(!hideAdjustments)}
+              className="flex items-center gap-2"
+            >
+              {hideAdjustments ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {hideAdjustments ? 'Show' : 'Hide'} Adjustments
+            </Button>
+            
             {/* Search */}
             <form onSubmit={handleSearch} className="flex gap-4 flex-1">
               <div className="relative flex-1">
@@ -499,7 +512,7 @@ export default function AllPayoutsPage() {
                             </div>
                           </>
                         )}
-                        {payout.adjustmentsTotal !== 0 && (
+                        {!hideAdjustments && payout.adjustmentsTotal !== 0 && (
                           <div className="text-xs text-muted-foreground">
                             Base: L.E {payout.amount.toFixed(2)}
                             {payout.adjustmentsTotal && payout.adjustmentsTotal !== 0 && (

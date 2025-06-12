@@ -7,7 +7,7 @@ import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWe
 import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Calendar, DollarSign, Clock, CalendarCheck, CalendarX } from 'lucide-react';
+import { ArrowLeft, Calendar, DollarSign, Clock, CalendarCheck, CalendarX, Eye, EyeOff } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -98,6 +98,8 @@ export default function EmployeePayoutsPage() {
   const [tempChanges, setTempChanges] = useState<Record<string, {isPaid?: boolean, comment?: string, adjustmentAmount?: number, adjustmentReason?: string, includeOvertime?: boolean}>>({});
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
+  // Add state to hide adjustments temporarily
+  const [hideAdjustments, setHideAdjustments] = useState(true);
   
   const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
   const employeeId = parseInt(id, 10);
@@ -673,11 +675,26 @@ export default function EmployeePayoutsPage() {
       </Button>
       
       <div className="mb-3">
-        <h1 className="text-lg font-bold">Payouts for {employee.name}</h1>
-        <div className="text-muted-foreground flex items-center flex-wrap gap-1 text-xs">
-          <span>Payment basis:</span> <Badge variant="outline" className="text-xs py-0 h-5">{employee.paymentBasis}</Badge>
-          <span className="mx-1">•</span>
-          <span>Daily rate:</span> <Badge variant="outline" className="text-xs py-0 h-5">L.E {employee.dailyRate.toFixed(2)}</Badge>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-bold">Payouts for {employee.name}</h1>
+            <div className="text-muted-foreground flex items-center flex-wrap gap-1 text-xs">
+              <span>Payment basis:</span> <Badge variant="outline" className="text-xs py-0 h-5">{employee.paymentBasis}</Badge>
+              <span className="mx-1">•</span>
+              <span>Daily rate:</span> <Badge variant="outline" className="text-xs py-0 h-5">L.E {employee.dailyRate.toFixed(2)}</Badge>
+            </div>
+          </div>
+          
+          {/* Toggle Adjustments Visibility */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setHideAdjustments(!hideAdjustments)}
+            className="flex items-center gap-2"
+          >
+            {hideAdjustments ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {hideAdjustments ? 'Show' : 'Hide'} Adjustments
+          </Button>
         </div>
       </div>
       
@@ -863,7 +880,7 @@ export default function EmployeePayoutsPage() {
                               Regular: {regularHours.toFixed(1)}h | Overtime: {overtimeHours.toFixed(1)}h | Excess: {excessOvertimeHours.toFixed(1)}h
                             </div>
                           </div>
-                          {currentState.adjustmentAmount !== 0 && (
+                          {!hideAdjustments && currentState.adjustmentAmount !== 0 && (
                             <div className="flex justify-between items-center">
                               <span className={`text-muted-foreground flex items-center text-sm ${currentState.adjustmentAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 <DollarSign className="h-3 w-3 mr-1" />
@@ -874,7 +891,7 @@ export default function EmployeePayoutsPage() {
                               </span>
                             </div>
                           )}
-                          {existingPayout && existingPayout.adjustmentsTotal !== undefined && existingPayout.adjustmentsTotal !== 0 && (
+                          {!hideAdjustments && existingPayout && existingPayout.adjustmentsTotal !== undefined && existingPayout.adjustmentsTotal !== 0 && (
                             <div className="flex justify-between items-center">
                               <span className={`text-muted-foreground flex items-center text-sm ${existingPayout.adjustmentsTotal > 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 <DollarSign className="h-3 w-3 mr-1" />
@@ -941,40 +958,42 @@ export default function EmployeePayoutsPage() {
                     {/* Full-width comment and adjustment section */}
                     <div className="pt-2 border-t space-y-4">
                       {/* New Multiple Adjustments Component - Now available for all periods */}
-                      <PayoutAdjustments 
-                        payoutId={existingPayout?.id || null}
-                        adjustments={existingPayout?.adjustments || []}
-                        onAdjustmentsChange={(updatedAdjustments) => {
-                          if (existingPayout) {
-                            // Update existing payout - use same logic as main payouts API
-                            setExistingPayouts(prev => prev.map(payout => 
-                              payout.id === existingPayout.id 
-                                ? { 
-                                    ...payout, 
-                                    adjustments: updatedAdjustments,
-                                    adjustmentsTotal: updatedAdjustments.reduce((sum, adj) => sum + adj.amount, 0),
-                                    totalAmount: payout.finalAmount || payout.amount
-                                  }
-                                : payout
-                            ));
-                          } else {
-                            // Create new payout first, then add adjustments
-                            // This will be handled by the PayoutAdjustments component
-                            console.log('New payout needs to be created with adjustments:', updatedAdjustments);
-                          }
-                        }}
-                        onPayoutCreated={(newPayout: Payout) => {
-                          // Add newly created payout to state
-                          setExistingPayouts(prev => [...prev, newPayout]);
-                        }}
-                        periodStart={period.start}
-                        periodEnd={period.end}
-                        employeeId={employeeId}
-                        calculatedAmount={basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount}
-                      />
+                      {!hideAdjustments && (
+                        <PayoutAdjustments 
+                          payoutId={existingPayout?.id || null}
+                          adjustments={existingPayout?.adjustments || []}
+                          onAdjustmentsChange={(updatedAdjustments) => {
+                            if (existingPayout) {
+                              // Update existing payout - use same logic as main payouts API
+                              setExistingPayouts(prev => prev.map(payout => 
+                                payout.id === existingPayout.id 
+                                  ? { 
+                                      ...payout, 
+                                      adjustments: updatedAdjustments,
+                                      adjustmentsTotal: updatedAdjustments.reduce((sum, adj) => sum + adj.amount, 0),
+                                      totalAmount: payout.finalAmount || payout.amount
+                                    }
+                                  : payout
+                              ));
+                            } else {
+                              // Create new payout first, then add adjustments
+                              // This will be handled by the PayoutAdjustments component
+                              console.log('New payout needs to be created with adjustments:', updatedAdjustments);
+                            }
+                          }}
+                          onPayoutCreated={(newPayout: Payout) => {
+                            // Add newly created payout to state
+                            setExistingPayouts(prev => [...prev, newPayout]);
+                          }}
+                          periodStart={period.start}
+                          periodEnd={period.end}
+                          employeeId={employeeId}
+                          calculatedAmount={basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount}
+                        />
+                      )}
                       
                       {/* Legacy Single Adjustment (for existing adjustmentAmount) */}
-                      {(currentState.adjustmentAmount !== 0 || currentState.adjustmentReason) && (
+                      {!hideAdjustments && (currentState.adjustmentAmount !== 0 || currentState.adjustmentReason) && (
                         <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
                           <h4 className="text-sm font-medium text-amber-800 mb-2">Legacy Adjustment</h4>
                           <div className="grid gap-4 md:grid-cols-2">
