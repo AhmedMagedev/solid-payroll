@@ -4,7 +4,7 @@ interface Employee {
   email: string;
   position: string;
   fingerprintId?: string;
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -57,7 +57,7 @@ export default function EmployeeList({ employees }: EmployeeListProps) {
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               >
-                Daily Rate
+                Hourly Rate
               </th>
               <th
                 scope="col"
@@ -90,12 +90,12 @@ export default function EmployeeList({ employees }: EmployeeListProps) {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">
-                    L.E {employee.dailyRate.toFixed(2)}
+                    L.E {employee.hourlyRate.toFixed(2)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">
-                    L.E {(employee.dailyRate * 22).toFixed(2)}
+                    L.E {(employee.hourlyRate * 9 * 22).toFixed(2)}
                   </div>
                 </td>
               </tr>

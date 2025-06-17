@@ -10,7 +10,7 @@ export default function EmployeeForm() {
     email: '',
     position: '',
     phone: '',
-    dailyRate: '',
+    hourlyRate: '',
     paymentBasis: 'Monthly',
   });
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function EmployeeForm() {
         email: '',
         position: '',
         phone: '',
-        dailyRate: '',
+        hourlyRate: '',
         paymentBasis: 'Monthly',
       });
       
@@ -120,14 +120,14 @@ export default function EmployeeForm() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="dailyRate">
-            Daily Rate
+          <label className="block text-gray-700 mb-2" htmlFor="hourlyRate">
+            Hourly Rate
           </label>
           <input
             type="number"
-            id="dailyRate"
-            name="dailyRate"
-            value={formData.dailyRate}
+            id="hourlyRate"
+            name="hourlyRate"
+            value={formData.hourlyRate}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
             required

@@ -16,7 +16,7 @@ model Employee {
   position     String
   phone        String?
   fingerprintId String?     @map("fingerprint_id")
-  dailyRate    Float        @default(0) @map("daily_rate")
+  hourlyRate   Float        @default(0) @map("hourly_rate")
   paymentBasis String       @default("Daily") @map("payment_basis")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")

@@ -1408,12 +1408,12 @@ export namespace Prisma {
 
   export type EmployeeAvgAggregateOutputType = {
     id: number | null
-    dailyRate: number | null
+    hourlyRate: number | null
   }
 
   export type EmployeeSumAggregateOutputType = {
     id: number | null
-    dailyRate: number | null
+    hourlyRate: number | null
   }
 
   export type EmployeeMinAggregateOutputType = {
@@ -1423,7 +1423,7 @@ export namespace Prisma {
     position: string | null
     phone: string | null
     fingerprintId: string | null
-    dailyRate: number | null
+    hourlyRate: number | null
     paymentBasis: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1436,7 +1436,7 @@ export namespace Prisma {
     position: string | null
     phone: string | null
     fingerprintId: string | null
-    dailyRate: number | null
+    hourlyRate: number | null
     paymentBasis: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1449,7 +1449,7 @@ export namespace Prisma {
     position: number
     phone: number
     fingerprintId: number
-    dailyRate: number
+    hourlyRate: number
     paymentBasis: number
     createdAt: number
     updatedAt: number
@@ -1459,12 +1459,12 @@ export namespace Prisma {
 
   export type EmployeeAvgAggregateInputType = {
     id?: true
-    dailyRate?: true
+    hourlyRate?: true
   }
 
   export type EmployeeSumAggregateInputType = {
     id?: true
-    dailyRate?: true
+    hourlyRate?: true
   }
 
   export type EmployeeMinAggregateInputType = {
@@ -1474,7 +1474,7 @@ export namespace Prisma {
     position?: true
     phone?: true
     fingerprintId?: true
-    dailyRate?: true
+    hourlyRate?: true
     paymentBasis?: true
     createdAt?: true
     updatedAt?: true
@@ -1487,7 +1487,7 @@ export namespace Prisma {
     position?: true
     phone?: true
     fingerprintId?: true
-    dailyRate?: true
+    hourlyRate?: true
     paymentBasis?: true
     createdAt?: true
     updatedAt?: true
@@ -1500,7 +1500,7 @@ export namespace Prisma {
     position?: true
     phone?: true
     fingerprintId?: true
-    dailyRate?: true
+    hourlyRate?: true
     paymentBasis?: true
     createdAt?: true
     updatedAt?: true
@@ -1600,7 +1600,7 @@ export namespace Prisma {
     position: string
     phone: string | null
     fingerprintId: string | null
-    dailyRate: number
+    hourlyRate: number
     paymentBasis: string
     createdAt: Date
     updatedAt: Date
@@ -1632,7 +1632,7 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1648,7 +1648,7 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1661,7 +1661,7 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1674,13 +1674,13 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "fingerprintId" | "dailyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "fingerprintId" | "hourlyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
@@ -1702,7 +1702,7 @@ export namespace Prisma {
       position: string
       phone: string | null
       fingerprintId: string | null
-      dailyRate: number
+      hourlyRate: number
       paymentBasis: string
       createdAt: Date
       updatedAt: Date
@@ -2137,7 +2137,7 @@ export namespace Prisma {
     readonly position: FieldRef<"Employee", 'String'>
     readonly phone: FieldRef<"Employee", 'String'>
     readonly fingerprintId: FieldRef<"Employee", 'String'>
-    readonly dailyRate: FieldRef<"Employee", 'Float'>
+    readonly hourlyRate: FieldRef<"Employee", 'Float'>
     readonly paymentBasis: FieldRef<"Employee", 'String'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
     readonly updatedAt: FieldRef<"Employee", 'DateTime'>
@@ -8502,7 +8502,7 @@ export namespace Prisma {
     position: 'position',
     phone: 'phone',
     fingerprintId: 'fingerprintId',
-    dailyRate: 'dailyRate',
+    hourlyRate: 'hourlyRate',
     paymentBasis: 'paymentBasis',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -8705,7 +8705,7 @@ export namespace Prisma {
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
     fingerprintId?: StringNullableFilter<"Employee"> | string | null
-    dailyRate?: FloatFilter<"Employee"> | number
+    hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
@@ -8720,7 +8720,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
     fingerprintId?: SortOrderInput | SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8738,7 +8738,7 @@ export namespace Prisma {
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
     fingerprintId?: StringNullableFilter<"Employee"> | string | null
-    dailyRate?: FloatFilter<"Employee"> | number
+    hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
@@ -8753,7 +8753,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
     fingerprintId?: SortOrderInput | SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8774,7 +8774,7 @@ export namespace Prisma {
     position?: StringWithAggregatesFilter<"Employee"> | string
     phone?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     fingerprintId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
-    dailyRate?: FloatWithAggregatesFilter<"Employee"> | number
+    hourlyRate?: FloatWithAggregatesFilter<"Employee"> | number
     paymentBasis?: StringWithAggregatesFilter<"Employee"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -9240,7 +9240,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9255,7 +9255,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9269,7 +9269,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9284,7 +9284,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9299,7 +9299,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9311,7 +9311,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9324,7 +9324,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9929,7 +9929,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrder
     fingerprintId?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9937,7 +9937,7 @@ export namespace Prisma {
 
   export type EmployeeAvgOrderByAggregateInput = {
     id?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
   }
 
   export type EmployeeMaxOrderByAggregateInput = {
@@ -9947,7 +9947,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrder
     fingerprintId?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9960,7 +9960,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrder
     fingerprintId?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9968,7 +9968,7 @@ export namespace Prisma {
 
   export type EmployeeSumOrderByAggregateInput = {
     id?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -11051,7 +11051,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11065,7 +11065,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11094,7 +11094,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11108,7 +11108,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11121,7 +11121,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11135,7 +11135,7 @@ export namespace Prisma {
     position: string
     phone?: string | null
     fingerprintId?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11191,7 +11191,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11205,7 +11205,7 @@ export namespace Prisma {
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

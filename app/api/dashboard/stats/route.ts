@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
       include: {
         employee: {
           select: {
-            dailyRate: true
+            hourlyRate: true
           }
         }
       }
@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
     let totalOvertimePayout = 0;
     thisMonthOvertimeData.forEach(attendance => {
       const overtimeHours = (attendance.hoursWorked || 0) - workingHoursPerDay;
-      const hourlyRate = attendance.employee.dailyRate / workingHoursPerDay;
+              const hourlyRate = attendance.employee.hourlyRate;
       // Assuming overtime is paid at 1.5x rate (can be made configurable)
       const overtimeRate = hourlyRate * (systemSettings?.overtimeMultiplier || 1.5);
       totalOvertimePayout += overtimeHours * overtimeRate;

@@ -22,12 +22,12 @@ The employee upload system allows you to bulk import employee data using CSV or 
 Create a CSV file with the following columns in this exact order:
 1. **Employee Name** - Full name as it should appear in the system
 2. **Device ID** - Unique fingerprint device identifier (numbers only)
-3. **Daily Rate** - Numeric value for daily compensation
+3. **Hourly Rate** - Numeric value for daily compensation
 4. **Payment Basis** - Either "Monthly" or "Weekly"
 
 ### Step 2: File Format Example
 ```csv
-Employee Name,Device ID,Daily Rate,Payment Basis
+Employee Name,Device ID,Hourly Rate,Payment Basis
 Hassan Mohamed Hassan,2,250,Monthly
 Mustafa Mohamed,3,270,Weekly
 Ibrahim Ahmed Abdalaal,4,293,Monthly
@@ -57,7 +57,7 @@ The system will show:
 ### Validation Rules
 1. **Employee Name**: Must be provided and non-empty
 2. **Device ID**: Must be unique across all employees in the system
-3. **Daily Rate**: Must be a valid number (positive value)
+3. **Hourly Rate**: Must be a valid number (positive value)
 4. **Payment Basis**: Must be exactly "Monthly" or "Weekly"
 
 ### Duplicate Handling
@@ -76,13 +76,13 @@ The system will show:
 ### Common Issues to Avoid
 - **Missing Values**: Ensure all four columns have values for each employee
 - **Invalid Payment Basis**: Must be exactly "Monthly" or "Weekly" (case-sensitive)
-- **Non-numeric Rates**: Daily rate must be a valid number without currency symbols
+- **Non-numeric Rates**: Hourly Rate must be a valid number without currency symbols
 - **Duplicate Device IDs**: Each device ID must be unique within the file
 
 ### Data Cleaning Checklist
 - [ ] Names are properly formatted and complete
 - [ ] Device IDs are unique numbers
-- [ ] Daily rates are numeric values only
+- [ ] Hourly Rates are numeric values only
 - [ ] Payment basis is either "Monthly" or "Weekly"
 - [ ] No empty rows or incomplete data
 
@@ -117,7 +117,7 @@ The system will show:
 Once employees are uploaded with device IDs:
 - Device IDs link employees to attendance records
 - Attendance uploads will automatically match to employees
-- Payroll calculations use the uploaded daily rates and payment basis
+- Payroll calculations use the uploaded Hourly Rates and payment basis
 
 ## Best Practices
 
@@ -140,7 +140,7 @@ Once employees are uploaded with device IDs:
 ### Required Columns (in order)
 1. Employee Name
 2. Device ID  
-3. Daily Rate
+3. Hourly Rate
 4. Payment Basis
 
 ### Valid Payment Basis Values

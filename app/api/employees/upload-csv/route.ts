@@ -103,7 +103,7 @@ function parseEmployeesFromCSV(content: string) {
       continue;
     }
     
-    const [name, deviceId, dailyRate, paymentBasis] = row;
+    const [name, deviceId, hourlyRate, paymentBasis] = row;
     
     // Validate required fields
     if (!name || !name.trim()) {
@@ -116,8 +116,8 @@ function parseEmployeesFromCSV(content: string) {
       continue;
     }
     
-    if (!dailyRate || isNaN(Number(dailyRate))) {
-      console.warn(`Row ${rowNumber}: Invalid daily rate: ${dailyRate}`);
+    if (!hourlyRate || isNaN(Number(hourlyRate))) {
+      console.warn(`Row ${rowNumber}: Invalid hourly rate: ${hourlyRate}`);
       continue;
     }
     
@@ -129,7 +129,7 @@ function parseEmployeesFromCSV(content: string) {
     // Clean and prepare data
     const cleanName = name.trim();
     const cleanDeviceId = deviceId.trim();
-    const cleanDailyRate = parseFloat(dailyRate);
+    const cleanHourlyRate = parseFloat(hourlyRate);
     const cleanPaymentBasis = paymentBasis.trim();
     
     employees.push({
@@ -137,7 +137,7 @@ function parseEmployeesFromCSV(content: string) {
       email: generateEmail(cleanName),
       position: 'Employee', // Default position
       fingerprintId: cleanDeviceId,
-      dailyRate: cleanDailyRate,
+              hourlyRate: cleanHourlyRate,
       paymentBasis: cleanPaymentBasis
     });
   }
@@ -151,7 +151,7 @@ async function processEmployeesInBatches(employees: Array<{
   email: string;
   position: string;
   fingerprintId: string;
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis: string;
 }>) {
   const results = [];

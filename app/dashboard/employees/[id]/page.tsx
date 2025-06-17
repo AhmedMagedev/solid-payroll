@@ -18,7 +18,7 @@ interface Employee {
   position: string;
   phone?: string; // Optional phone number
   fingerprintId?: string; // For mapping to attendance device IDs
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
   createdAt: string;
   updatedAt: string;
@@ -213,9 +213,9 @@ export default function EmployeeProfilePage() {
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
                   <DollarSign className="h-4 w-4 mr-2" />
-                  Daily Rate
+                  Hourly Rate
                 </dt>
-                <dd className="mt-1 text-base font-medium">L.E {employee.dailyRate.toFixed(2)}</dd>
+                <dd className="mt-1 text-base font-medium">L.E {employee.hourlyRate.toFixed(2)}</dd>
               </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">

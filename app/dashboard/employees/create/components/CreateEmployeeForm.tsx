@@ -22,7 +22,7 @@ export function CreateEmployeeForm() {
     position: '',
     phone: '',
     fingerprintId: '',
-    dailyRate: '',
+    hourlyRate: '',
     paymentBasis: 'Monthly', // Default to Monthly
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,9 +62,9 @@ export function CreateEmployeeForm() {
         throw new Error('Payment basis is required');
       }
       
-      const dailyRate = parseFloat(formData.dailyRate);
-      if (isNaN(dailyRate) || dailyRate <= 0) {
-        throw new Error('Daily rate must be a positive number');
+      const hourlyRate = parseFloat(formData.hourlyRate);
+      if (isNaN(hourlyRate) || hourlyRate <= 0) {
+        throw new Error('Hourly rate must be a positive number');
       }
 
       // Send data to API
@@ -80,7 +80,7 @@ export function CreateEmployeeForm() {
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
           fingerprintId: formData.fingerprintId, // Required field, no need for null check
-          dailyRate,
+          hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
       });
@@ -236,17 +236,17 @@ export function CreateEmployeeForm() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="dailyRate" className="text-sm font-medium text-gray-700">
-                Daily Rate (L.E) *
+              <Label htmlFor="hourlyRate" className="text-sm font-medium text-gray-700">
+                Hourly Rate (L.E) *
               </Label>
               <Input
-                id="dailyRate"
-                name="dailyRate"
+                id="hourlyRate"
+                name="hourlyRate"
                 type="number"
-                value={formData.dailyRate}
+                value={formData.hourlyRate}
                 onChange={handleChange}
                 disabled={isSubmitting}
-                placeholder="250.00"
+                placeholder="25.00"
                 step="0.01"
                 min="0"
                 inputMode="decimal"

@@ -12,7 +12,7 @@ interface Employee {
   name: string;
   email: string;
   position: string;
-  dailyRate: number;
+  hourlyRate: number;
 }
 
 interface AttendanceRecord {
@@ -261,7 +261,7 @@ export default function EmployeeAttendancePage() {
   function calculateExpectedSalary() {
     if (!employee) return 0;
     // Use current month paid days for salary calculation
-    return currentMonthPaidDays * employee.dailyRate;
+    return currentMonthPaidDays * 9 * employee.hourlyRate;
   }
 
   // Get current month name for display

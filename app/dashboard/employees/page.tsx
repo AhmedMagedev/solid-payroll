@@ -17,7 +17,7 @@ interface Employee {
   email: string; // Keep in interface for data structure, but won't display
   position: string;
   fingerprintId?: string;
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -132,7 +132,7 @@ export default function EmployeesPage() {
                   <th className="h-10 px-4 text-left align-middle font-medium">Name</th>
                   <th className="h-10 px-4 text-left align-middle font-medium">Position</th>
                   <th className="h-10 px-4 text-left align-middle font-medium">Device ID</th>
-                  <th className="h-10 px-4 text-left align-middle font-medium">Daily Rate</th>
+                  <th className="h-10 px-4 text-left align-middle font-medium">Hourly Rate</th>
                   <th className="h-10 px-4 text-right align-middle font-medium">Est. Monthly</th>
                   <th className="h-10 px-4 text-center align-middle font-medium w-[120px]">Actions</th>
                 </tr>
@@ -165,8 +165,8 @@ export default function EmployeesPage() {
                           <span className="text-orange-600 italic">Not set</span>
                         )}
                       </td>
-                      <td className="p-4">L.E {employee.dailyRate.toFixed(2)}</td>
-                      <td className="p-4 text-right">L.E {(employee.dailyRate * 22).toFixed(2)}</td>
+                      <td className="p-4">L.E {employee.hourlyRate.toFixed(2)}</td>
+                      <td className="p-4 text-right">L.E {(employee.hourlyRate * 9 * 22).toFixed(2)}</td>
                       <td className="p-4">
                         <div className="flex items-center justify-center gap-1">
                           <Button

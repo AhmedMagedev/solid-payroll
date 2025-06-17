@@ -326,7 +326,7 @@ async function recalculatePayouts(employeeIds) {
         const paidDays = monthAttendance.filter(record => record.isPaidDay);
         const daysWorked = paidDays.length;
         const totalHours = paidDays.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
-        const calculatedAmount = daysWorked * employee.dailyRate;
+        const calculatedAmount = totalHours * employee.hourlyRate;
         
         const existingPayout = existingPayoutMap.get(monthKey);
         

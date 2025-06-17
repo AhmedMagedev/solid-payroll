@@ -21,7 +21,7 @@ interface Employee {
   position: string;
   phone?: string; // Optional phone number field
   fingerprintId?: string; // For mapping to attendance device IDs
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
 }
 
@@ -37,7 +37,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     position: employee.position,
     phone: employee.phone || '',
     fingerprintId: employee.fingerprintId || '',
-    dailyRate: employee.dailyRate.toString(),
+    hourlyRate: employee.hourlyRate.toString(),
     paymentBasis: employee.paymentBasis || 'Monthly', // Default to Monthly
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,9 +77,9 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         throw new Error('Payment basis is required');
       }
       
-      const dailyRate = parseFloat(formData.dailyRate);
-      if (isNaN(dailyRate) || dailyRate <= 0) {
-        throw new Error('Daily rate must be a positive number');
+      const hourlyRate = parseFloat(formData.hourlyRate);
+      if (isNaN(hourlyRate) || hourlyRate <= 0) {
+        throw new Error('Hourly rate must be a positive number');
       }
 
       // Send data to API
@@ -95,7 +95,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
           fingerprintId: formData.fingerprintId, // Required field, no need for null check
-          dailyRate,
+          hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
       });
@@ -206,12 +206,12 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="dailyRate">Daily Rate (L.E)</Label>
+          <Label htmlFor="hourlyRate">Hourly Rate (L.E)</Label>
           <Input
-            id="dailyRate"
-            name="dailyRate"
+            id="hourlyRate"
+            name="hourlyRate"
             type="number"
-            value={formData.dailyRate}
+            value={formData.hourlyRate}
             onChange={handleChange}
             disabled={isSubmitting}
             placeholder="0.00"

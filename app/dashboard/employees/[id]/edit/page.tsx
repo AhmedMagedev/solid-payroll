@@ -14,7 +14,7 @@ interface Employee {
   email: string;
   position: string;
   salary: number;
-  dailyRate: number;
+  hourlyRate: number;
   phone?: string;
   paymentBasis?: string;
 }

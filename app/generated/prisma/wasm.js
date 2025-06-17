@@ -127,7 +127,7 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   position: 'position',
   phone: 'phone',
   fingerprintId: 'fingerprintId',
-  dailyRate: 'dailyRate',
+  hourlyRate: 'hourlyRate',
   paymentBasis: 'paymentBasis',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

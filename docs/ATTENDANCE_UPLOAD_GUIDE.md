@@ -34,7 +34,7 @@ For each employee with new/updated attendance data:
 - Retrieves all attendance records for the employee
 - Groups attendance by month (based on payment basis)
 - Calculates total days worked and hours
-- Computes payout amount: `days_worked × daily_rate`
+- Computes payout amount: `hours_worked × hourly_rate`
 - Creates new payouts or updates existing ones
 
 ### Step 4: Results Display
@@ -80,7 +80,7 @@ The upload results show:
 ### Monthly Basis (Default)
 - Groups attendance by calendar month
 - Calculates total days worked in each month
-- Amount = `days_worked × employee.dailyRate`
+- Amount = `hours_worked × employee.hourlyRate`
 - Creates period from first to last day of month
 
 ### Weekly/Biweekly Basis
@@ -198,7 +198,7 @@ The system includes built-in validation and error handling. Test your uploads wi
 - Review calculation logic
 
 **Incorrect Amounts**
-- Verify daily rates are current
+- Verify Hourly Rates are current
 - Check attendance record accuracy
 - Review payment basis settings
 

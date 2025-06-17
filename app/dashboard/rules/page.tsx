@@ -323,7 +323,7 @@ export default function RulesAndPoliciesPage() {
           <div className="border rounded-lg p-4">
             <h3 className="font-semibold mb-2">Base Salary Calculation</h3>
             <div className="text-sm text-muted-foreground space-y-1">
-              <p>• Base salary is calculated as: <strong>Days Worked × Daily Rate</strong></p>
+              <p>• Base salary is calculated as: <strong>Days Worked × Hourly Rate</strong></p>
               <p>• Only paid days (arriving within grace period) count toward base salary</p>
               <p>• Unpaid days (late arrivals) are excluded from base salary calculation</p>
             </div>

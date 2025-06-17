@@ -73,8 +73,8 @@ export async function PUT(request: NextRequest) {
     if (!data.fingerprintId) {
       return NextResponse.json({ error: 'Fingerprint Device ID is required' }, { status: 400 });
     }
-    if (typeof data.dailyRate !== 'number' || data.dailyRate <= 0) {
-      return NextResponse.json({ error: 'Daily rate must be a positive number' }, { status: 400 });
+    if (typeof data.hourlyRate !== 'number' || data.hourlyRate <= 0) {
+      return NextResponse.json({ error: 'Hourly rate must be a positive number' }, { status: 400 });
     }
     
     // Validate payment basis if provided
@@ -109,7 +109,7 @@ export async function PUT(request: NextRequest) {
         position: data.position,
         phone: data.phone || null,
         fingerprintId: data.fingerprintId,
-        dailyRate: data.dailyRate,
+                  hourlyRate: data.hourlyRate,
         paymentBasis: data.paymentBasis || 'Monthly', // Default to Monthly if not provided
       },
     });

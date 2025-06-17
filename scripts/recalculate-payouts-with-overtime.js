@@ -60,8 +60,8 @@ async function recalculatePayoutsWithOvertime() {
         });
         
         // Calculate amounts
-        const basePayout = daysWorked * payout.employee.dailyRate;
-        const hourlyRate = payout.employee.dailyRate / hoursPerDay;
+        const hourlyRate = payout.employee.hourlyRate;
+        const basePayout = regularHours * hourlyRate;
         const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
         const overtimePayout = overtimeHours * overtimeRate;
         const newAmount = basePayout + overtimePayout;

@@ -23,7 +23,7 @@ interface Employee {
   email: string;
   position: string;
   fingerprintId?: string;
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis: string;
 }
 
@@ -373,12 +373,12 @@ export default function EmployeePayoutsPage() {
     // Include excess overtime hours in regular hours for payment calculation
     regularHours += excessOvertimeHours;
     
-    // Calculate hourly rate from daily rate
-    const hourlyRate = employee.dailyRate / hoursPerDay;
+    // Calculate hourly rate from Hourly Rate
+            const hourlyRate = employee.hourlyRate;
     const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
     
-    // Calculate payout: base daily rate (overtime is added conditionally in UI)
-    const basePayout = daysWorked * employee.dailyRate;
+    // Calculate payout: base Hourly Rate (overtime is added conditionally in UI)
+          const basePayout = regularHours * hourlyRate;
     const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
     const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
     // Return only base payout - overtime will be added conditionally based on toggle
@@ -681,7 +681,7 @@ export default function EmployeePayoutsPage() {
             <div className="text-muted-foreground flex items-center flex-wrap gap-1 text-xs">
               <span>Payment basis:</span> <Badge variant="outline" className="text-xs py-0 h-5">{employee.paymentBasis}</Badge>
               <span className="mx-1">•</span>
-              <span>Daily rate:</span> <Badge variant="outline" className="text-xs py-0 h-5">L.E {employee.dailyRate.toFixed(2)}</Badge>
+              <span>Hourly rate:</span> <Badge variant="outline" className="text-xs py-0 h-5">L.E {employee.hourlyRate.toFixed(2)}</Badge>
             </div>
           </div>
           
@@ -722,9 +722,9 @@ export default function EmployeePayoutsPage() {
                 const totalAmount = existingPayout.finalAmount || existingPayout.amount;
                 const daysWorked = existingPayout.daysWorked || 0;
                 
-                // If we have days worked, calculate basePayout from daily rate
-                if (daysWorked > 0 && employee.dailyRate > 0) {
-                  derivedBasePayout = daysWorked * employee.dailyRate;
+                // If we have days worked, calculate basePayout from Hourly Rate
+                if (daysWorked > 0 && employee.hourlyRate > 0) {
+                  derivedBasePayout = daysWorked * 9 * employee.hourlyRate;
                   derivedOvertimePayout = Math.max(0, totalAmount - derivedBasePayout);
                 } else {
                   // Fallback: assume all amount is base payout
