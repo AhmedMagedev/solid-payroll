@@ -101,9 +101,9 @@ export async function PUT(request: NextRequest) {
       settings = await prisma.systemSettings.create({
         data: {
           lateAllowanceMinutes: data.lateAllowanceMinutes !== undefined ? 
-            parseInt(data.lateAllowanceMinutes) : 15,
+            parseInt(data.lateAllowanceMinutes) : 30,
           workDaySunday: data.workDaySunday !== undefined ? 
-            Boolean(data.workDaySunday) : false,
+            Boolean(data.workDaySunday) : true,
           workDayMonday: data.workDayMonday !== undefined ? 
             Boolean(data.workDayMonday) : true,
           workDayTuesday: data.workDayTuesday !== undefined ? 
@@ -113,13 +113,13 @@ export async function PUT(request: NextRequest) {
           workDayThursday: data.workDayThursday !== undefined ? 
             Boolean(data.workDayThursday) : true,
           workDayFriday: data.workDayFriday !== undefined ? 
-            Boolean(data.workDayFriday) : true,
+            Boolean(data.workDayFriday) : false,
           workDaySaturday: data.workDaySaturday !== undefined ? 
             Boolean(data.workDaySaturday) : false,
           workingHoursPerDay: data.workingHoursPerDay !== undefined ? 
-            parseFloat(data.workingHoursPerDay) : 8,
+            parseFloat(data.workingHoursPerDay) : 9,
           workingHoursStart: data.workingHoursStart || "09:00",
-          workingHoursEnd: data.workingHoursEnd || "17:00",
+          workingHoursEnd: data.workingHoursEnd || "18:00",
           overtimeMultiplier: data.overtimeMultiplier !== undefined ? 
             parseFloat(data.overtimeMultiplier) : 1.5,
           weekendOvertimeMultiplier: data.weekendOvertimeMultiplier !== undefined ? 

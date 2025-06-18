@@ -46,7 +46,13 @@ model Attendance {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   isPaidDay   Boolean   @default(true) @map("is_paid_day")
-  employee    Employee  @relation(fields: [employeeId], references: [id])
+
+  // Deduction tracking fields
+  actualHoursWorked   Float @default(0) @map("actual_hours_worked")
+  lateDeductionHours  Float @default(0) @map("late_deduction_hours")
+  earlyDeductionHours Float @default(0) @map("early_deduction_hours")
+
+  employee Employee @relation(fields: [employeeId], references: [id])
 
   @@unique([employeeId, date])
   @@map("attendance")
@@ -77,6 +83,15 @@ model Payout {
   basePayout          Float @default(0) @map("base_payout")
   overtimePayout      Float @default(0) @map("overtime_payout")
   finalAmount         Float @default(0) @map("final_amount")
+
+  // Deduction tracking fields
+  grossSalary          Float @default(0) @map("gross_salary") // Total salary before deductions
+  lateDeductions       Float @default(0) @map("late_deductions")
+  earlyDeductions      Float @default(0) @map("early_deductions")
+  unpaidDaysDeductions Float @default(0) @map("unpaid_days_deductions")
+  totalDeductions      Float @default(0) @map("total_deductions")
+  holidayHours         Float @default(0) @map("holiday_hours")
+  holidayPayout        Float @default(0) @map("holiday_payout")
 
   employee    Employee           @relation(fields: [employeeId], references: [id])
   adjustments PayoutAdjustment[]

@@ -1,11 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar } from 'lucide-react';
-import { formatEgyptTime, isCheckInBeyondGracePeriod } from '@/lib/timezone';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, ArrowLeft, CalendarX } from 'lucide-react';
+import { formatEgyptTime } from '@/lib/timezone';
+import { parseISO, differenceInMinutes, format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 
 interface Employee {
   id: number;
@@ -22,260 +26,261 @@ interface AttendanceRecord {
   checkIn: string;
   checkOut: string | null;
   hoursWorked: number | null;
-  isPaidDay?: boolean; // Optional for backward compatibility
+  isPaidDay?: boolean;
 }
 
 interface SystemSettings {
-  workingHoursStart: string;
-  workingHoursEnd: string;
-  lateAllowanceMinutes: number;
+  id: number;
+  workDaySunday: boolean;
+  workDayMonday: boolean;
+  workDayTuesday: boolean;
+  workDayWednesday: boolean;
+  workDayThursday: boolean;
+  workDayFriday: boolean;
+  workDaySaturday: boolean;
+  workingHoursPerDay: number;
 }
 
-interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-  limit: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-  startIndex: number;
-  endIndex: number;
+interface Penalty {
+  type: string;
+  label: string;
+  color: string;
 }
 
-interface AttendanceResponse {
-  data: AttendanceRecord[];
-  pagination: PaginationInfo;
+interface AbsentDay {
+  date: string;
+  dayName: string;
+  isWorkDay: boolean;
 }
 
 export default function EmployeeAttendancePage() {
   const params = useParams();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [monthlyTotal, setMonthlyTotal] = useState<number>(0);
-  const [currentMonthPaidDays, setCurrentMonthPaidDays] = useState<number>(0);
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const monthsPerPage = 1;
   
-  // Get current month date range
-  const getCurrentMonthRange = () => {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    return { startOfMonth, endOfMonth };
-  };
+  const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+  const employeeId = parseInt(id, 10);
 
-  // Filter records for current month
-  const getCurrentMonthRecords = (records: AttendanceRecord[]) => {
-    const { startOfMonth, endOfMonth } = getCurrentMonthRange();
-    
-    return records.filter(record => {
-      try {
-        const recordDate = new Date(record.date + 'T00:00:00');
-        return recordDate >= startOfMonth && recordDate <= endOfMonth;
-      } catch {
-        return false;
-      }
-    });
-  };
-  
-  // Fetch system settings
   useEffect(() => {
-    async function fetchSystemSettings() {
+    async function fetchData() {
+      if (isNaN(employeeId)) {
+        setError('Invalid employee ID');
+        setIsLoading(false);
+        return;
+      }
+      
       try {
-        const response = await fetch('/api/settings', {
+        // Fetch employee data
+        const employeeResponse = await fetch(`/api/employee/${employeeId}`, {
           credentials: 'include',
         });
         
-        if (response.ok) {
-          const settings = await response.json();
-          setSystemSettings(settings);
+        if (!employeeResponse.ok) {
+          throw new Error('Failed to fetch employee');
         }
-      } catch (err) {
-        console.error('Error fetching system settings:', err);
+        
+        const employeeData = await employeeResponse.json();
+        setEmployee(employeeData);
+        
+        // Fetch attendance data
+        const attendanceResponse = await fetch(`/api/attendance/employee/${employeeId}`, {
+          credentials: 'include',
+        });
+        
+        if (!attendanceResponse.ok) {
+          throw new Error('Failed to fetch attendance data');
+        }
+        
+        const attendanceData = await attendanceResponse.json();
+        setAttendanceRecords(attendanceData);
+        
+        // Fetch system settings
+        const settingsResponse = await fetch('/api/settings', {
+          credentials: 'include',
+        });
+        
+        if (settingsResponse.ok) {
+          const settingsData = await settingsResponse.json();
+          setSystemSettings(settingsData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        setError('Could not load employee data');
+      } finally {
+        setIsLoading(false);
       }
     }
     
-    fetchSystemSettings();
-  }, []);
+    fetchData();
+  }, [employeeId]);
 
-  const fetchData = useCallback(async (page: number) => {
-    if (!params.id) return;
+  // Calculate penalties for attendance record
+  const calculatePenalties = (record: AttendanceRecord): Penalty[] => {
+    const penalties: Penalty[] = [];
+    
+    if (!record.checkIn || !record.date) return penalties;
     
     try {
-      setIsLoading(true);
+      const recordDate = parseISO(record.date);
+      const checkInTime = new Date(record.checkIn);
+      const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
       
-      // Fetch employee details
-      const employeeResponse = await fetch(`/api/employee/${params.id}`, {
-        credentials: 'include',
-      });
+      // Working hours: 9:00 AM - 6:00 PM (with 30min grace period)
+      const workStart = new Date(recordDate);
+      workStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace period)
       
-      if (!employeeResponse.ok) {
-        throw new Error('Failed to fetch employee details');
+      const workEnd = new Date(recordDate);
+      workEnd.setHours(18, 0, 0, 0); // 6:00 PM
+      
+      // Check if it's an unpaid day
+      if (record.isPaidDay === false) {
+        penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
+        return penalties;
       }
       
-      const employeeData = await employeeResponse.json();
-      setEmployee(employeeData);
-      
-      // Fetch attendance records with pagination
-      const params2 = new URLSearchParams({
-        employeeId: params.id as string,
-        page: page.toString(),
-        limit: '20'
-      });
-      
-      const attendanceResponse = await fetch(`/api/attendance?${params2.toString()}`, {
-        credentials: 'include',
-      });
-      
-      if (!attendanceResponse.ok) {
-        throw new Error('Failed to fetch attendance records');
+      // Calculate late arrival penalty
+      if (checkInTime > workStart) {
+        const lateMinutes = differenceInMinutes(checkInTime, workStart);
+        const lateHours = lateMinutes / 60;
+        
+        if (lateHours >= 2.5) {
+          penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
+        } else if (lateHours >= 1.5) {
+          penalties.push({ type: 'late-half', label: 'Half Day Penalty', color: 'bg-orange-100 text-orange-800' });
+        } else if (lateHours >= 0.5) {
+          penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
+        }
       }
       
-      const attendanceData: AttendanceResponse = await attendanceResponse.json();
-      const records = attendanceData.data || attendanceData; // Fallback for old format
-      setAttendanceRecords(records);
-      setPagination(attendanceData.pagination || null);
-      
-      // Calculate current month statistics
-      // We need to fetch all records for the employee to get accurate current month stats
-      const allRecordsResponse = await fetch(`/api/attendance/employee/${params.id}`, {
-        credentials: 'include',
-      });
-      
-      if (allRecordsResponse.ok) {
-        const allRecords = await allRecordsResponse.json();
-        const currentMonthRecords = getCurrentMonthRecords(Array.isArray(allRecords) ? allRecords : []);
+      // Calculate early departure penalty
+      if (checkOutTime && checkOutTime < workEnd) {
+        const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
+        const earlyHours = earlyMinutes / 60;
         
-        // Calculate current month hours
-        const currentMonthHours = currentMonthRecords.reduce((total, record) => {
-          return total + (record.hoursWorked || 0);
-        }, 0);
-        setMonthlyTotal(currentMonthHours);
-        
-        // Calculate current month paid days
-        const paidDaysInCurrentMonth = currentMonthRecords.filter(record => record.isPaidDay !== false).length;
-        setCurrentMonthPaidDays(paidDaysInCurrentMonth);
-      } else {
-        // Fallback: use current page records only
-        const currentMonthRecords = getCurrentMonthRecords(records);
-        const currentMonthHours = currentMonthRecords.reduce((total, record) => {
-          return total + (record.hoursWorked || 0);
-        }, 0);
-        setMonthlyTotal(currentMonthHours);
-        
-        const paidDaysInCurrentMonth = currentMonthRecords.filter(record => record.isPaidDay !== false).length;
-        setCurrentMonthPaidDays(paidDaysInCurrentMonth);
+        if (earlyHours >= 2) {
+          penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
+        } else if (earlyHours >= 1) {
+          penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
+        }
       }
       
-      setError(null);
-    } catch (err) {
-      setError('Error loading data. Please try again.');
-      console.error('Error fetching data:', err);
-    } finally {
-      setIsLoading(false);
+    } catch (e) {
+      console.warn('[EmployeeAttendancePage] Error calculating penalties for record:', record, e);
     }
-  }, [params.id]);
-
-  useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage, fetchData]);
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    return penalties;
   };
-  
-  // Format time using Egypt timezone
-  function formatTime(timeString: string | null) {
-    if (!timeString) return 'N/A';
-    try {
-      return formatEgyptTime(timeString, 'h:mm a');
-    } catch {
-      return 'Invalid time';
-    }
-  }
-  
-  // Format date using Egypt timezone
-  function formatDate(dateString: string) {
-    try {
-      return formatEgyptTime(dateString, 'MMM d, yyyy');
-    } catch {
-      return 'Invalid date';
-    }
-  }
-  
-  // Check if check-in is late using the timezone library
-  function isCheckInLate(checkInTime: string): boolean {
-    if (!systemSettings || !checkInTime) return false;
+
+  // Get absent days for a month
+  const getAbsentDays = (monthKey: string, records: AttendanceRecord[]): AbsentDay[] => {
+    if (!systemSettings) return [];
     
     try {
-      const checkInDate = new Date(checkInTime);
-      return isCheckInBeyondGracePeriod(
-        checkInDate,
-        systemSettings.workingHoursStart,
-        systemSettings.lateAllowanceMinutes
-      );
-    } catch {
-      return false;
+      const monthDate = parseISO(monthKey + '-01');
+      const start = startOfMonth(monthDate);
+      const end = endOfMonth(monthDate);
+      
+      // Get all days in the month
+      const allDays = eachDayOfInterval({ start, end });
+      
+      // Get attendance dates for this month
+      const attendanceDates = new Set(records.map(record => record.date));
+      
+      // Map day of week to system settings
+      const workDays = [
+        systemSettings.workDaySunday,    // 0 = Sunday
+        systemSettings.workDayMonday,    // 1 = Monday
+        systemSettings.workDayTuesday,   // 2 = Tuesday
+        systemSettings.workDayWednesday, // 3 = Wednesday
+        systemSettings.workDayThursday,  // 4 = Thursday
+        systemSettings.workDayFriday,    // 5 = Friday
+        systemSettings.workDaySaturday   // 6 = Saturday
+      ];
+      
+      // Find absent days
+      const absentDays: AbsentDay[] = [];
+      
+      for (const day of allDays) {
+        const dateString = format(day, 'yyyy-MM-dd');
+        const dayOfWeek = day.getDay();
+        const isWorkDay = workDays[dayOfWeek];
+        
+        // If it's a work day and employee didn't attend, mark as absent
+        if (isWorkDay && !attendanceDates.has(dateString)) {
+          absentDays.push({
+            date: dateString,
+            dayName: format(day, 'EEEE'),
+            isWorkDay: true
+          });
+        }
+      }
+      
+      return absentDays;
+    } catch (e) {
+      console.warn('[EmployeeAttendancePage] Error calculating absent days:', e);
+      return [];
     }
-  }
+  };
 
-  // Check if check-out is early (before working hours end)
-  function isCheckOutEarly(checkOutTime: string | null, recordDate: string): boolean {
-    if (!systemSettings || !checkOutTime) return false;
+  // Group attendance by month
+  const groupAttendanceByMonth = () => {
+    const grouped: { [key: string]: AttendanceRecord[] } = {};
     
+    attendanceRecords.forEach(record => {
+      try {
+        const date = parseISO(record.date);
+        const monthKey = format(date, 'yyyy-MM');
+        
+        if (!grouped[monthKey]) {
+          grouped[monthKey] = [];
+        }
+        grouped[monthKey].push(record);
+      } catch (e) {
+        console.warn('[EmployeeAttendancePage] Error grouping attendance record:', record, e);
+      }
+    });
+    
+    // Sort groups by month (newest first)
+    const sortedKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+    const sortedGrouped: { [key: string]: AttendanceRecord[] } = {};
+    
+    sortedKeys.forEach(key => {
+      // Sort records within each month (oldest first for chronological order)
+      sortedGrouped[key] = grouped[key].sort((a, b) => {
+        try {
+          return parseISO(a.date).getTime() - parseISO(b.date).getTime();
+        } catch {
+          return 0;
+        }
+      });
+    });
+    
+    return sortedGrouped;
+  };
+
+  // Safe date formatting
+  const safeFormatDate = (dateString: string | null | undefined, formatStr: string = 'MMM d, yyyy') => {
+    if (!dateString) return 'Invalid Date';
     try {
-      const checkOutDateTime = new Date(checkOutTime);
-      const recordDateObj = new Date(recordDate + 'T00:00:00');
-      
-      // Parse working hours end time
-      const [hours, minutes] = systemSettings.workingHoursEnd.split(':');
-      const expectedEndTime = new Date(recordDateObj);
-      expectedEndTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-      
-      // Convert both times to Egypt timezone for comparison
-      const checkOutEgyptTime = formatEgyptTime(checkOutDateTime.toISOString(), 'HH:mm');
-      const expectedEndEgyptTime = formatEgyptTime(expectedEndTime.toISOString(), 'HH:mm');
-      
-      return checkOutEgyptTime < expectedEndEgyptTime;
+      const date = parseISO(dateString);
+      return format(date, formatStr);
     } catch {
-      return false;
+      return 'Invalid Date';
     }
-  }
-
-  // Format time with conditional styling
-  function formatTimeWithStyling(
-    timeString: string | null, 
-    isLate: boolean, 
-    isEarly: boolean
-  ): React.ReactNode {
-    const timeText = formatTime(timeString);
-    const className = (isLate || isEarly) ? 'text-red-600 font-medium' : '';
-    
-    return <span className={className}>{timeText}</span>;
-  }
-  
-  function calculateExpectedSalary() {
-    if (!employee) return 0;
-    // Use current month paid days for salary calculation
-    return currentMonthPaidDays * 9 * employee.hourlyRate;
-  }
-
-  // Get current month name for display
-  const getCurrentMonthName = () => {
-    const now = new Date();
-    return formatEgyptTime(now.toISOString(), 'MMMM yyyy');
   };
 
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8">
-        <div className="flex justify-center items-center min-h-[300px]">
+      <div className="p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="flex justify-center items-center min-h-[400px]">
           <div className="text-center">
-            <p>Loading employee attendance...</p>
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent mb-4"></div>
+            <p className="text-muted-foreground">Loading attendance data...</p>
           </div>
         </div>
       </div>
@@ -284,11 +289,11 @@ export default function EmployeeAttendancePage() {
 
   if (error || !employee) {
     return (
-      <div className="container mx-auto py-8">
+      <div className="p-4 md:p-6 max-w-7xl mx-auto">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-8">
             <div className="text-center text-red-500">
-              <p>{error || 'Employee not found'}</p>
+              <p className="text-lg font-medium">{error || 'Employee not found'}</p>
             </div>
           </CardContent>
         </Card>
@@ -296,209 +301,318 @@ export default function EmployeeAttendancePage() {
     );
   }
 
+  const groupedAttendance = groupAttendanceByMonth();
+  const monthEntries = Object.entries(groupedAttendance);
+  const totalMonths = monthEntries.length;
+  const totalPages = Math.ceil(totalMonths / monthsPerPage);
+  const startIndex = (currentPage - 1) * monthsPerPage;
+  const endIndex = startIndex + monthsPerPage;
+  const currentMonthEntries = monthEntries.slice(startIndex, endIndex);
+
+  // Calculate overall stats
+  const totalRecords = attendanceRecords.length;
+  const totalPaidDays = attendanceRecords.filter(record => record.isPaidDay !== false).length;
+  const totalHours = attendanceRecords.reduce((sum, record) => sum + (record.hoursWorked || 0), 0);
+
+  const AttendancePaginationComponent = () => (
+    <div className="flex justify-center items-center space-x-4 py-4">
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious 
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage > 1) setCurrentPage(currentPage - 1);
+              }}
+              className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
+            />
+          </PaginationItem>
+          
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <PaginationItem key={page}>
+              <PaginationLink
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(page);
+                }}
+                isActive={page === currentPage}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          
+          <PaginationItem>
+            <PaginationNext 
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+              }}
+              className={currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      
+      <div className="text-sm text-muted-foreground">
+        Month {startIndex + 1}-{Math.min(endIndex, totalMonths)} of {totalMonths}
+      </div>
+    </div>
+  );
+
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <div>
-          <h1 className="text-2xl font-bold">{employee.name}&apos;s Attendance</h1>
-          <p className="text-muted-foreground mt-1">{employee.position}</p>
-        </div>
-        <Button variant="outline" className="mt-4 md:mt-0">
-          <Calendar className="mr-2 h-4 w-4" />
-          Filter by Date
+      {/* Header Section */}
+      <div className="mb-6">
+        <Button asChild variant="outline" size="sm" className="mb-4">
+          <Link href={`/dashboard/employees/${employee.id}`}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Employee
+          </Link>
         </Button>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Attendance
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {pagination ? pagination.totalCount : attendanceRecords.length} days
-            </div>
-            {pagination && (
-              <div className="text-xs text-muted-foreground mt-1">
-                Showing {pagination.startIndex} - {pagination.endIndex}
+        
+        <div className="bg-slate-50 rounded-lg p-6 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+                              <h1 className="text-2xl font-bold text-gray-900 mb-2">📅 {employee.name}&apos;s Attendance</h1>
+              <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <span>Position:</span> 
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-medium">
+                    {employee.position}
+                  </Badge>
+                </div>
+                <span className="text-gray-400">•</span>
+                <div className="flex items-center gap-2">
+                  <span>Hourly Rate:</span> 
+                  <Badge variant="secondary" className="bg-green-100 text-green-800 font-medium">
+                    L.E {employee.hourlyRate.toFixed(2)}
+                  </Badge>
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Paid Days ({getCurrentMonthName()})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-green-600">
-              {currentMonthPaidDays} days
             </div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Days eligible for salary this month
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Hours ({getCurrentMonthName()})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{monthlyTotal.toFixed(2)} hours</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Total hours worked this month
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Expected Salary ({getCurrentMonthName()})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">L.E {calculateExpectedSalary().toFixed(2)}</div>
-            <div className="text-xs text-muted-foreground mt-1">Based on current month paid days</div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {attendanceRecords.length === 0 ? (
-        <Card className="shadow-sm">
-          <CardContent className="p-8">
-            <div className="text-center">
-              <p className="text-lg">No attendance records found for this employee.</p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="shadow-sm">
-          <CardHeader className="border-b">
-            <CardTitle>Attendance History</CardTitle>
-            {pagination && (
-              <div className="text-sm text-muted-foreground">
-                Showing {pagination.startIndex} - {pagination.endIndex} of {pagination.totalCount} records
-              </div>
-            )}
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="h-12 px-6 text-left align-middle font-medium">Date</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium">Check In</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium">Check Out</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium">Hours</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {attendanceRecords.map((record) => (
-                    <tr key={record.id} className="border-b border-border/50 hover:bg-muted/30">
-                      <td className="px-6 py-4 font-medium">{formatDate(record.date)}</td>
-                      <td className="px-6 py-4">
-                        {formatTimeWithStyling(
-                          record.checkIn,
-                          isCheckInLate(record.checkIn),
-                          false
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        {formatTimeWithStyling(
-                          record.checkOut,
-                          false,
-                          isCheckOutEarly(record.checkOut, record.date)
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        {record.hoursWorked !== null 
-                          ? `${record.hoursWorked.toFixed(2)}h` 
-                          : 'N/A'}
-                      </td>
-                      <td className="px-6 py-4">
-                        {record.isPaidDay === false ? (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            Unpaid (Late)
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Paid
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      {/* Pagination Controls */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
-          <div className="text-sm text-muted-foreground">
-            Page {pagination.currentPage} of {pagination.totalPages} ({pagination.totalCount} total records)
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={!pagination.hasPrevPage || isLoading}
-            >
-              Previous
-            </Button>
-            
-            {/* Page Numbers */}
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= pagination.totalPages - 2) {
-                  pageNum = pagination.totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
-
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={pageNum === currentPage ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handlePageChange(pageNum)}
-                    disabled={isLoading}
-                    className="w-8 h-8 p-0"
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={!pagination.hasNextPage || isLoading}
-            >
-              Next
-            </Button>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Records</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalRecords}</div>
+            <p className="text-xs text-muted-foreground mt-1">attendance days</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Paid Days</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{totalPaidDays}</div>
+            <p className="text-xs text-muted-foreground mt-1">eligible for salary</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Hours</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{totalHours.toFixed(1)}h</div>
+            <p className="text-xs text-muted-foreground mt-1">worked overall</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Avg</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              {totalMonths > 0 ? (totalRecords / totalMonths).toFixed(1) : '0'}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">days per month</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Attendance Records */}
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div className="bg-slate-100 rounded-t-lg p-4 border-b border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center">
+                📊 Attendance Records by Month
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Showing {totalRecords} total records • Including absent days tracking
+              </p>
+            </div>
+            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              {totalMonths} months
+            </Badge>
+          </div>
+        </div>
+        
+        <div className="p-6">
+          {totalRecords > 0 ? (
+            <div className="space-y-6">
+              {/* Top Pagination */}
+              {totalMonths > monthsPerPage && <AttendancePaginationComponent />}
+              
+              {/* Current Month Display */}
+              <div className="space-y-6">
+                {currentMonthEntries.map(([monthKey, records]) => {
+                  const monthDate = parseISO(monthKey + '-01');
+                  const monthName = format(monthDate, 'MMMM yyyy');
+                  const absentDays = getAbsentDays(monthKey, records);
+                  
+                  return (
+                    <div key={monthKey} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                      <div className="bg-slate-50 p-4 border-b border-slate-200">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-gray-900 flex items-center">
+                            <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                            {monthName}
+                          </h3>
+                          <div className="flex items-center gap-3">
+                            <Badge variant="outline" className="bg-white border-gray-300">
+                              {records.length} attended
+                            </Badge>
+                            {absentDays.length > 0 && (
+                              <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600">
+                                {absentDays.length} absent
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="bg-gray-50 border-b border-gray-200">
+                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Date</th>
+                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check In</th>
+                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check Out</th>
+                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Hours</th>
+                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalties</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {/* Combine and sort all records chronologically */}
+                            {(() => {
+                              // Create combined array with type indicators
+                              const attendanceItems = records.map(record => ({ type: 'attendance', data: record, date: record.date }));
+                              const absentItems = absentDays.map(day => ({ type: 'absent', data: day, date: day.date }));
+                              const allItems = [...attendanceItems, ...absentItems];
+                              
+                              // Sort all items by date chronologically (oldest first)
+                              allItems.sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime());
+                              
+                              return allItems.map((item) => {
+                                if (item.type === 'attendance') {
+                                  const record = item.data as AttendanceRecord;
+                                  const penalties = calculatePenalties(record);
+                                  
+                                  return (
+                                    <tr key={record.id} className="border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
+                                      <td className="px-4 py-3">
+                                        <div className="flex flex-col">
+                                          <span className="font-semibold text-gray-900">{safeFormatDate(record.date, 'MMM d')}</span>
+                                          <span className="text-xs text-gray-500">
+                                            {safeFormatDate(record.date, 'EEEE')}
+                                          </span>
+                                        </div>
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-700">
+                                        {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-700">
+                                        {record.checkOut 
+                                          ? formatEgyptTime(record.checkOut, 'h:mm a') 
+                                          : '—'}
+                                      </td>
+                                      <td className="px-4 py-3">
+                                        <span className={`font-semibold text-sm ${record.hoursWorked && record.hoursWorked >= 9 ? 'text-green-600' : record.hoursWorked && record.hoursWorked > 0 ? 'text-orange-600' : 'text-red-600'}`}>
+                                          {record.hoursWorked?.toFixed(1) || '0'}h
+                                        </span>
+                                      </td>
+                                      <td className="px-4 py-3">
+                                        <div className="flex flex-wrap gap-1">
+                                          {penalties.length > 0 ? (
+                                            penalties.map((penalty, idx) => (
+                                              <span
+                                                key={idx}
+                                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${penalty.color}`}
+                                              >
+                                                {penalty.label}
+                                              </span>
+                                            ))
+                                          ) : (
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                              No Penalties
+                                            </span>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                } else {
+                                  const absentDay = item.data as AbsentDay;
+                                  
+                                  return (
+                                    <tr key={absentDay.date} className="border-b border-gray-100 last:border-0 bg-gray-50/70 hover:bg-gray-100 transition-colors">
+                                      <td className="px-4 py-3">
+                                        <div className="flex flex-col">
+                                          <span className="font-semibold text-gray-600">{safeFormatDate(absentDay.date, 'MMM d')}</span>
+                                          <span className="text-xs text-gray-500">
+                                            {absentDay.dayName}
+                                          </span>
+                                        </div>
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
+                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
+                                      <td className="px-4 py-3">
+                                        <span className="font-semibold text-sm text-gray-600">0h</span>
+                                      </td>
+                                      <td className="px-4 py-3">
+                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                                          Absent
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  );
+                                }
+                              });
+                            })()}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              {/* Bottom Pagination */}
+              {totalMonths > monthsPerPage && <AttendancePaginationComponent />}
+            </div>
+          ) : (
+            <div className="text-center p-8 text-gray-500">
+              <CalendarX className="h-16 w-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-medium mb-2">No attendance records found</h3>
+              <p className="text-sm">No attendance data is available for this employee yet.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 } 

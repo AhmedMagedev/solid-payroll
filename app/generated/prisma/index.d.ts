@@ -3640,12 +3640,18 @@ export namespace Prisma {
     id: number | null
     employeeId: number | null
     hoursWorked: number | null
+    actualHoursWorked: number | null
+    lateDeductionHours: number | null
+    earlyDeductionHours: number | null
   }
 
   export type AttendanceSumAggregateOutputType = {
     id: number | null
     employeeId: number | null
     hoursWorked: number | null
+    actualHoursWorked: number | null
+    lateDeductionHours: number | null
+    earlyDeductionHours: number | null
   }
 
   export type AttendanceMinAggregateOutputType = {
@@ -3658,6 +3664,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isPaidDay: boolean | null
+    actualHoursWorked: number | null
+    lateDeductionHours: number | null
+    earlyDeductionHours: number | null
   }
 
   export type AttendanceMaxAggregateOutputType = {
@@ -3670,6 +3679,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isPaidDay: boolean | null
+    actualHoursWorked: number | null
+    lateDeductionHours: number | null
+    earlyDeductionHours: number | null
   }
 
   export type AttendanceCountAggregateOutputType = {
@@ -3682,6 +3694,9 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     isPaidDay: number
+    actualHoursWorked: number
+    lateDeductionHours: number
+    earlyDeductionHours: number
     _all: number
   }
 
@@ -3690,12 +3705,18 @@ export namespace Prisma {
     id?: true
     employeeId?: true
     hoursWorked?: true
+    actualHoursWorked?: true
+    lateDeductionHours?: true
+    earlyDeductionHours?: true
   }
 
   export type AttendanceSumAggregateInputType = {
     id?: true
     employeeId?: true
     hoursWorked?: true
+    actualHoursWorked?: true
+    lateDeductionHours?: true
+    earlyDeductionHours?: true
   }
 
   export type AttendanceMinAggregateInputType = {
@@ -3708,6 +3729,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isPaidDay?: true
+    actualHoursWorked?: true
+    lateDeductionHours?: true
+    earlyDeductionHours?: true
   }
 
   export type AttendanceMaxAggregateInputType = {
@@ -3720,6 +3744,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isPaidDay?: true
+    actualHoursWorked?: true
+    lateDeductionHours?: true
+    earlyDeductionHours?: true
   }
 
   export type AttendanceCountAggregateInputType = {
@@ -3732,6 +3759,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isPaidDay?: true
+    actualHoursWorked?: true
+    lateDeductionHours?: true
+    earlyDeductionHours?: true
     _all?: true
   }
 
@@ -3831,6 +3861,9 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     isPaidDay: boolean
+    actualHoursWorked: number
+    lateDeductionHours: number
+    earlyDeductionHours: number
     _count: AttendanceCountAggregateOutputType | null
     _avg: AttendanceAvgAggregateOutputType | null
     _sum: AttendanceSumAggregateOutputType | null
@@ -3862,6 +3895,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    actualHoursWorked?: boolean
+    lateDeductionHours?: boolean
+    earlyDeductionHours?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
@@ -3875,6 +3911,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    actualHoursWorked?: boolean
+    lateDeductionHours?: boolean
+    earlyDeductionHours?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
@@ -3888,6 +3927,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    actualHoursWorked?: boolean
+    lateDeductionHours?: boolean
+    earlyDeductionHours?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
@@ -3901,9 +3943,12 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    actualHoursWorked?: boolean
+    lateDeductionHours?: boolean
+    earlyDeductionHours?: boolean
   }
 
-  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "date" | "checkIn" | "checkOut" | "hoursWorked" | "createdAt" | "updatedAt" | "isPaidDay", ExtArgs["result"]["attendance"]>
+  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "date" | "checkIn" | "checkOut" | "hoursWorked" | "createdAt" | "updatedAt" | "isPaidDay" | "actualHoursWorked" | "lateDeductionHours" | "earlyDeductionHours", ExtArgs["result"]["attendance"]>
   export type AttendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }
@@ -3929,6 +3974,9 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       isPaidDay: boolean
+      actualHoursWorked: number
+      lateDeductionHours: number
+      earlyDeductionHours: number
     }, ExtArgs["result"]["attendance"]>
     composites: {}
   }
@@ -4362,6 +4410,9 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Attendance", 'DateTime'>
     readonly updatedAt: FieldRef<"Attendance", 'DateTime'>
     readonly isPaidDay: FieldRef<"Attendance", 'Boolean'>
+    readonly actualHoursWorked: FieldRef<"Attendance", 'Float'>
+    readonly lateDeductionHours: FieldRef<"Attendance", 'Float'>
+    readonly earlyDeductionHours: FieldRef<"Attendance", 'Float'>
   }
     
 
@@ -4802,6 +4853,13 @@ export namespace Prisma {
     basePayout: number | null
     overtimePayout: number | null
     finalAmount: number | null
+    grossSalary: number | null
+    lateDeductions: number | null
+    earlyDeductions: number | null
+    unpaidDaysDeductions: number | null
+    totalDeductions: number | null
+    holidayHours: number | null
+    holidayPayout: number | null
   }
 
   export type PayoutSumAggregateOutputType = {
@@ -4818,6 +4876,13 @@ export namespace Prisma {
     basePayout: number | null
     overtimePayout: number | null
     finalAmount: number | null
+    grossSalary: number | null
+    lateDeductions: number | null
+    earlyDeductions: number | null
+    unpaidDaysDeductions: number | null
+    totalDeductions: number | null
+    holidayHours: number | null
+    holidayPayout: number | null
   }
 
   export type PayoutMinAggregateOutputType = {
@@ -4843,6 +4908,13 @@ export namespace Prisma {
     basePayout: number | null
     overtimePayout: number | null
     finalAmount: number | null
+    grossSalary: number | null
+    lateDeductions: number | null
+    earlyDeductions: number | null
+    unpaidDaysDeductions: number | null
+    totalDeductions: number | null
+    holidayHours: number | null
+    holidayPayout: number | null
   }
 
   export type PayoutMaxAggregateOutputType = {
@@ -4868,6 +4940,13 @@ export namespace Prisma {
     basePayout: number | null
     overtimePayout: number | null
     finalAmount: number | null
+    grossSalary: number | null
+    lateDeductions: number | null
+    earlyDeductions: number | null
+    unpaidDaysDeductions: number | null
+    totalDeductions: number | null
+    holidayHours: number | null
+    holidayPayout: number | null
   }
 
   export type PayoutCountAggregateOutputType = {
@@ -4893,6 +4972,13 @@ export namespace Prisma {
     basePayout: number
     overtimePayout: number
     finalAmount: number
+    grossSalary: number
+    lateDeductions: number
+    earlyDeductions: number
+    unpaidDaysDeductions: number
+    totalDeductions: number
+    holidayHours: number
+    holidayPayout: number
     _all: number
   }
 
@@ -4911,6 +4997,13 @@ export namespace Prisma {
     basePayout?: true
     overtimePayout?: true
     finalAmount?: true
+    grossSalary?: true
+    lateDeductions?: true
+    earlyDeductions?: true
+    unpaidDaysDeductions?: true
+    totalDeductions?: true
+    holidayHours?: true
+    holidayPayout?: true
   }
 
   export type PayoutSumAggregateInputType = {
@@ -4927,6 +5020,13 @@ export namespace Prisma {
     basePayout?: true
     overtimePayout?: true
     finalAmount?: true
+    grossSalary?: true
+    lateDeductions?: true
+    earlyDeductions?: true
+    unpaidDaysDeductions?: true
+    totalDeductions?: true
+    holidayHours?: true
+    holidayPayout?: true
   }
 
   export type PayoutMinAggregateInputType = {
@@ -4952,6 +5052,13 @@ export namespace Prisma {
     basePayout?: true
     overtimePayout?: true
     finalAmount?: true
+    grossSalary?: true
+    lateDeductions?: true
+    earlyDeductions?: true
+    unpaidDaysDeductions?: true
+    totalDeductions?: true
+    holidayHours?: true
+    holidayPayout?: true
   }
 
   export type PayoutMaxAggregateInputType = {
@@ -4977,6 +5084,13 @@ export namespace Prisma {
     basePayout?: true
     overtimePayout?: true
     finalAmount?: true
+    grossSalary?: true
+    lateDeductions?: true
+    earlyDeductions?: true
+    unpaidDaysDeductions?: true
+    totalDeductions?: true
+    holidayHours?: true
+    holidayPayout?: true
   }
 
   export type PayoutCountAggregateInputType = {
@@ -5002,6 +5116,13 @@ export namespace Prisma {
     basePayout?: true
     overtimePayout?: true
     finalAmount?: true
+    grossSalary?: true
+    lateDeductions?: true
+    earlyDeductions?: true
+    unpaidDaysDeductions?: true
+    totalDeductions?: true
+    holidayHours?: true
+    holidayPayout?: true
     _all?: true
   }
 
@@ -5114,6 +5235,13 @@ export namespace Prisma {
     basePayout: number
     overtimePayout: number
     finalAmount: number
+    grossSalary: number
+    lateDeductions: number
+    earlyDeductions: number
+    unpaidDaysDeductions: number
+    totalDeductions: number
+    holidayHours: number
+    holidayPayout: number
     _count: PayoutCountAggregateOutputType | null
     _avg: PayoutAvgAggregateOutputType | null
     _sum: PayoutSumAggregateOutputType | null
@@ -5158,6 +5286,13 @@ export namespace Prisma {
     basePayout?: boolean
     overtimePayout?: boolean
     finalAmount?: boolean
+    grossSalary?: boolean
+    lateDeductions?: boolean
+    earlyDeductions?: boolean
+    unpaidDaysDeductions?: boolean
+    totalDeductions?: boolean
+    holidayHours?: boolean
+    holidayPayout?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
     adjustments?: boolean | Payout$adjustmentsArgs<ExtArgs>
     _count?: boolean | PayoutCountOutputTypeDefaultArgs<ExtArgs>
@@ -5186,6 +5321,13 @@ export namespace Prisma {
     basePayout?: boolean
     overtimePayout?: boolean
     finalAmount?: boolean
+    grossSalary?: boolean
+    lateDeductions?: boolean
+    earlyDeductions?: boolean
+    unpaidDaysDeductions?: boolean
+    totalDeductions?: boolean
+    holidayHours?: boolean
+    holidayPayout?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payout"]>
 
@@ -5212,6 +5354,13 @@ export namespace Prisma {
     basePayout?: boolean
     overtimePayout?: boolean
     finalAmount?: boolean
+    grossSalary?: boolean
+    lateDeductions?: boolean
+    earlyDeductions?: boolean
+    unpaidDaysDeductions?: boolean
+    totalDeductions?: boolean
+    holidayHours?: boolean
+    holidayPayout?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payout"]>
 
@@ -5238,9 +5387,16 @@ export namespace Prisma {
     basePayout?: boolean
     overtimePayout?: boolean
     finalAmount?: boolean
+    grossSalary?: boolean
+    lateDeductions?: boolean
+    earlyDeductions?: boolean
+    unpaidDaysDeductions?: boolean
+    totalDeductions?: boolean
+    holidayHours?: boolean
+    holidayPayout?: boolean
   }
 
-  export type PayoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "periodStart" | "periodEnd" | "amount" | "isPaid" | "comment" | "paymentDate" | "createdAt" | "updatedAt" | "adjustmentAmount" | "adjustmentReason" | "includeOvertime" | "daysWorked" | "unpaidDays" | "totalHours" | "regularHours" | "overtimeHours" | "excessOvertimeHours" | "basePayout" | "overtimePayout" | "finalAmount", ExtArgs["result"]["payout"]>
+  export type PayoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "periodStart" | "periodEnd" | "amount" | "isPaid" | "comment" | "paymentDate" | "createdAt" | "updatedAt" | "adjustmentAmount" | "adjustmentReason" | "includeOvertime" | "daysWorked" | "unpaidDays" | "totalHours" | "regularHours" | "overtimeHours" | "excessOvertimeHours" | "basePayout" | "overtimePayout" | "finalAmount" | "grossSalary" | "lateDeductions" | "earlyDeductions" | "unpaidDaysDeductions" | "totalDeductions" | "holidayHours" | "holidayPayout", ExtArgs["result"]["payout"]>
   export type PayoutInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
     adjustments?: boolean | Payout$adjustmentsArgs<ExtArgs>
@@ -5282,6 +5438,13 @@ export namespace Prisma {
       basePayout: number
       overtimePayout: number
       finalAmount: number
+      grossSalary: number
+      lateDeductions: number
+      earlyDeductions: number
+      unpaidDaysDeductions: number
+      totalDeductions: number
+      holidayHours: number
+      holidayPayout: number
     }, ExtArgs["result"]["payout"]>
     composites: {}
   }
@@ -5729,6 +5892,13 @@ export namespace Prisma {
     readonly basePayout: FieldRef<"Payout", 'Float'>
     readonly overtimePayout: FieldRef<"Payout", 'Float'>
     readonly finalAmount: FieldRef<"Payout", 'Float'>
+    readonly grossSalary: FieldRef<"Payout", 'Float'>
+    readonly lateDeductions: FieldRef<"Payout", 'Float'>
+    readonly earlyDeductions: FieldRef<"Payout", 'Float'>
+    readonly unpaidDaysDeductions: FieldRef<"Payout", 'Float'>
+    readonly totalDeductions: FieldRef<"Payout", 'Float'>
+    readonly holidayHours: FieldRef<"Payout", 'Float'>
+    readonly holidayPayout: FieldRef<"Payout", 'Float'>
   }
     
 
@@ -8531,7 +8701,10 @@ export namespace Prisma {
     hoursWorked: 'hoursWorked',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    isPaidDay: 'isPaidDay'
+    isPaidDay: 'isPaidDay',
+    actualHoursWorked: 'actualHoursWorked',
+    lateDeductionHours: 'lateDeductionHours',
+    earlyDeductionHours: 'earlyDeductionHours'
   };
 
   export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
@@ -8559,7 +8732,14 @@ export namespace Prisma {
     excessOvertimeHours: 'excessOvertimeHours',
     basePayout: 'basePayout',
     overtimePayout: 'overtimePayout',
-    finalAmount: 'finalAmount'
+    finalAmount: 'finalAmount',
+    grossSalary: 'grossSalary',
+    lateDeductions: 'lateDeductions',
+    earlyDeductions: 'earlyDeductions',
+    unpaidDaysDeductions: 'unpaidDaysDeductions',
+    totalDeductions: 'totalDeductions',
+    holidayHours: 'holidayHours',
+    holidayPayout: 'holidayPayout'
   };
 
   export type PayoutScalarFieldEnum = (typeof PayoutScalarFieldEnum)[keyof typeof PayoutScalarFieldEnum]
@@ -8847,6 +9027,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
     isPaidDay?: BoolFilter<"Attendance"> | boolean
+    actualHoursWorked?: FloatFilter<"Attendance"> | number
+    lateDeductionHours?: FloatFilter<"Attendance"> | number
+    earlyDeductionHours?: FloatFilter<"Attendance"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
   }
 
@@ -8860,6 +9043,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
     employee?: EmployeeOrderByWithRelationInput
   }
 
@@ -8877,6 +9063,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
     isPaidDay?: BoolFilter<"Attendance"> | boolean
+    actualHoursWorked?: FloatFilter<"Attendance"> | number
+    lateDeductionHours?: FloatFilter<"Attendance"> | number
+    earlyDeductionHours?: FloatFilter<"Attendance"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
   }, "id" | "employeeId_date">
 
@@ -8890,6 +9079,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
     _count?: AttendanceCountOrderByAggregateInput
     _avg?: AttendanceAvgOrderByAggregateInput
     _max?: AttendanceMaxOrderByAggregateInput
@@ -8910,6 +9102,9 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     isPaidDay?: BoolWithAggregatesFilter<"Attendance"> | boolean
+    actualHoursWorked?: FloatWithAggregatesFilter<"Attendance"> | number
+    lateDeductionHours?: FloatWithAggregatesFilter<"Attendance"> | number
+    earlyDeductionHours?: FloatWithAggregatesFilter<"Attendance"> | number
   }
 
   export type PayoutWhereInput = {
@@ -8938,6 +9133,13 @@ export namespace Prisma {
     basePayout?: FloatFilter<"Payout"> | number
     overtimePayout?: FloatFilter<"Payout"> | number
     finalAmount?: FloatFilter<"Payout"> | number
+    grossSalary?: FloatFilter<"Payout"> | number
+    lateDeductions?: FloatFilter<"Payout"> | number
+    earlyDeductions?: FloatFilter<"Payout"> | number
+    unpaidDaysDeductions?: FloatFilter<"Payout"> | number
+    totalDeductions?: FloatFilter<"Payout"> | number
+    holidayHours?: FloatFilter<"Payout"> | number
+    holidayPayout?: FloatFilter<"Payout"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
     adjustments?: PayoutAdjustmentListRelationFilter
   }
@@ -8965,6 +9167,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
     employee?: EmployeeOrderByWithRelationInput
     adjustments?: PayoutAdjustmentOrderByRelationAggregateInput
   }
@@ -8996,6 +9205,13 @@ export namespace Prisma {
     basePayout?: FloatFilter<"Payout"> | number
     overtimePayout?: FloatFilter<"Payout"> | number
     finalAmount?: FloatFilter<"Payout"> | number
+    grossSalary?: FloatFilter<"Payout"> | number
+    lateDeductions?: FloatFilter<"Payout"> | number
+    earlyDeductions?: FloatFilter<"Payout"> | number
+    unpaidDaysDeductions?: FloatFilter<"Payout"> | number
+    totalDeductions?: FloatFilter<"Payout"> | number
+    holidayHours?: FloatFilter<"Payout"> | number
+    holidayPayout?: FloatFilter<"Payout"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
     adjustments?: PayoutAdjustmentListRelationFilter
   }, "id" | "employeeId_periodStart_periodEnd">
@@ -9023,6 +9239,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
     _count?: PayoutCountOrderByAggregateInput
     _avg?: PayoutAvgOrderByAggregateInput
     _max?: PayoutMaxOrderByAggregateInput
@@ -9056,6 +9279,13 @@ export namespace Prisma {
     basePayout?: FloatWithAggregatesFilter<"Payout"> | number
     overtimePayout?: FloatWithAggregatesFilter<"Payout"> | number
     finalAmount?: FloatWithAggregatesFilter<"Payout"> | number
+    grossSalary?: FloatWithAggregatesFilter<"Payout"> | number
+    lateDeductions?: FloatWithAggregatesFilter<"Payout"> | number
+    earlyDeductions?: FloatWithAggregatesFilter<"Payout"> | number
+    unpaidDaysDeductions?: FloatWithAggregatesFilter<"Payout"> | number
+    totalDeductions?: FloatWithAggregatesFilter<"Payout"> | number
+    holidayHours?: FloatWithAggregatesFilter<"Payout"> | number
+    holidayPayout?: FloatWithAggregatesFilter<"Payout"> | number
   }
 
   export type PayoutAdjustmentWhereInput = {
@@ -9391,6 +9621,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
     employee: EmployeeCreateNestedOneWithoutAttendanceInput
   }
 
@@ -9404,6 +9637,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
   }
 
   export type AttendanceUpdateInput = {
@@ -9414,6 +9650,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
     employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
   }
 
@@ -9427,6 +9666,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
   }
 
   export type AttendanceCreateManyInput = {
@@ -9439,6 +9681,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
   }
 
   export type AttendanceUpdateManyMutationInput = {
@@ -9449,6 +9694,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
   }
 
   export type AttendanceUncheckedUpdateManyInput = {
@@ -9461,6 +9709,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PayoutCreateInput = {
@@ -9484,6 +9735,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
     employee: EmployeeCreateNestedOneWithoutPayoutsInput
     adjustments?: PayoutAdjustmentCreateNestedManyWithoutPayoutInput
   }
@@ -9511,6 +9769,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
     adjustments?: PayoutAdjustmentUncheckedCreateNestedManyWithoutPayoutInput
   }
 
@@ -9535,6 +9800,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
     employee?: EmployeeUpdateOneRequiredWithoutPayoutsNestedInput
     adjustments?: PayoutAdjustmentUpdateManyWithoutPayoutNestedInput
   }
@@ -9562,6 +9834,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
     adjustments?: PayoutAdjustmentUncheckedUpdateManyWithoutPayoutNestedInput
   }
 
@@ -9588,6 +9867,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
   }
 
   export type PayoutUpdateManyMutationInput = {
@@ -9611,6 +9897,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PayoutUncheckedUpdateManyInput = {
@@ -9636,6 +9929,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PayoutAdjustmentCreateInput = {
@@ -10132,12 +10432,18 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
   }
 
   export type AttendanceAvgOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
     hoursWorked?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
   }
 
   export type AttendanceMaxOrderByAggregateInput = {
@@ -10150,6 +10456,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
   }
 
   export type AttendanceMinOrderByAggregateInput = {
@@ -10162,12 +10471,18 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
   }
 
   export type AttendanceSumOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
     hoursWorked?: SortOrder
+    actualHoursWorked?: SortOrder
+    lateDeductionHours?: SortOrder
+    earlyDeductionHours?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10247,6 +10562,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
   }
 
   export type PayoutAvgOrderByAggregateInput = {
@@ -10263,6 +10585,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
   }
 
   export type PayoutMaxOrderByAggregateInput = {
@@ -10288,6 +10617,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
   }
 
   export type PayoutMinOrderByAggregateInput = {
@@ -10313,6 +10649,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
   }
 
   export type PayoutSumOrderByAggregateInput = {
@@ -10329,6 +10672,13 @@ export namespace Prisma {
     basePayout?: SortOrder
     overtimePayout?: SortOrder
     finalAmount?: SortOrder
+    grossSalary?: SortOrder
+    lateDeductions?: SortOrder
+    earlyDeductions?: SortOrder
+    unpaidDaysDeductions?: SortOrder
+    totalDeductions?: SortOrder
+    holidayHours?: SortOrder
+    holidayPayout?: SortOrder
   }
 
   export type PayoutScalarRelationFilter = {
@@ -10888,6 +11238,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
   }
 
   export type AttendanceUncheckedCreateWithoutEmployeeInput = {
@@ -10899,6 +11252,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
   }
 
   export type AttendanceCreateOrConnectWithoutEmployeeInput = {
@@ -10932,6 +11288,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
     adjustments?: PayoutAdjustmentCreateNestedManyWithoutPayoutInput
   }
 
@@ -10957,6 +11320,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
     adjustments?: PayoutAdjustmentUncheckedCreateNestedManyWithoutPayoutInput
   }
 
@@ -10999,6 +11369,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
     isPaidDay?: BoolFilter<"Attendance"> | boolean
+    actualHoursWorked?: FloatFilter<"Attendance"> | number
+    lateDeductionHours?: FloatFilter<"Attendance"> | number
+    earlyDeductionHours?: FloatFilter<"Attendance"> | number
   }
 
   export type PayoutUpsertWithWhereUniqueWithoutEmployeeInput = {
@@ -11043,6 +11416,13 @@ export namespace Prisma {
     basePayout?: FloatFilter<"Payout"> | number
     overtimePayout?: FloatFilter<"Payout"> | number
     finalAmount?: FloatFilter<"Payout"> | number
+    grossSalary?: FloatFilter<"Payout"> | number
+    lateDeductions?: FloatFilter<"Payout"> | number
+    earlyDeductions?: FloatFilter<"Payout"> | number
+    unpaidDaysDeductions?: FloatFilter<"Payout"> | number
+    totalDeductions?: FloatFilter<"Payout"> | number
+    holidayHours?: FloatFilter<"Payout"> | number
+    holidayPayout?: FloatFilter<"Payout"> | number
   }
 
   export type EmployeeCreateWithoutAttendanceInput = {
@@ -11262,6 +11642,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
     employee: EmployeeCreateNestedOneWithoutPayoutsInput
   }
 
@@ -11288,6 +11675,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
   }
 
   export type PayoutCreateOrConnectWithoutAdjustmentsInput = {
@@ -11327,6 +11721,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
     employee?: EmployeeUpdateOneRequiredWithoutPayoutsNestedInput
   }
 
@@ -11353,6 +11754,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type AttendanceCreateManyEmployeeInput = {
@@ -11364,6 +11772,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
   }
 
   export type PayoutCreateManyEmployeeInput = {
@@ -11388,6 +11799,13 @@ export namespace Prisma {
     basePayout?: number
     overtimePayout?: number
     finalAmount?: number
+    grossSalary?: number
+    lateDeductions?: number
+    earlyDeductions?: number
+    unpaidDaysDeductions?: number
+    totalDeductions?: number
+    holidayHours?: number
+    holidayPayout?: number
   }
 
   export type AttendanceUpdateWithoutEmployeeInput = {
@@ -11398,6 +11816,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
   }
 
   export type AttendanceUncheckedUpdateWithoutEmployeeInput = {
@@ -11409,6 +11830,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
   }
 
   export type AttendanceUncheckedUpdateManyWithoutEmployeeInput = {
@@ -11420,6 +11844,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PayoutUpdateWithoutEmployeeInput = {
@@ -11443,6 +11870,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
     adjustments?: PayoutAdjustmentUpdateManyWithoutPayoutNestedInput
   }
 
@@ -11468,6 +11902,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
     adjustments?: PayoutAdjustmentUncheckedUpdateManyWithoutPayoutNestedInput
   }
 
@@ -11493,6 +11934,13 @@ export namespace Prisma {
     basePayout?: FloatFieldUpdateOperationsInput | number
     overtimePayout?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    grossSalary?: FloatFieldUpdateOperationsInput | number
+    lateDeductions?: FloatFieldUpdateOperationsInput | number
+    earlyDeductions?: FloatFieldUpdateOperationsInput | number
+    unpaidDaysDeductions?: FloatFieldUpdateOperationsInput | number
+    totalDeductions?: FloatFieldUpdateOperationsInput | number
+    holidayHours?: FloatFieldUpdateOperationsInput | number
+    holidayPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PayoutAdjustmentCreateManyPayoutInput = {

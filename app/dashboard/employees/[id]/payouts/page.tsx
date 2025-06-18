@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWeek, endOfWeek, subWeeks, differenceInMinutes, eachDayOfInterval } from 'date-fns';
 import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Calendar, DollarSign, Clock, CalendarCheck, CalendarX, Eye, EyeOff } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Calendar, Clock, CalendarCheck, CalendarX } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Toaster } from "@/components/ui/sonner";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import PayoutAdjustments from '@/app/components/PayoutAdjustments';
 
 interface Employee {
@@ -88,6 +89,12 @@ interface SystemSettings {
   workingHoursPerDay: number;
 }
 
+interface Penalty {
+  type: string;
+  label: string;
+  color: string;
+}
+
 export default function EmployeePayoutsPage() {
   const params = useParams();
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -99,7 +106,15 @@ export default function EmployeePayoutsPage() {
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   // Add state to hide adjustments temporarily
-  const [hideAdjustments, setHideAdjustments] = useState(true);
+  const [hideAdjustments] = useState(true);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const payoutsPerPage = 3;
+  
+  // Attendance pagination state
+  const [attendanceCurrentPage, setAttendanceCurrentPage] = useState(1);
+  const monthsPerPage = 1; // One month per page
   
   const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
   const employeeId = parseInt(id, 10);
@@ -664,48 +679,273 @@ export default function EmployeePayoutsPage() {
     }
   };
 
-  return (
-    <div className="p-2 md:p-3 max-w-7xl mx-auto">
-      <Toaster richColors />
-      <Button asChild variant="outline" size="sm" className="mb-2">
-        <Link href={`/dashboard/employees/${employee.id}`}>
-          <ArrowLeft className="mr-1 h-3 w-3" />
-          Back
-        </Link>
-      </Button>
+  // Function to calculate penalties for an attendance record
+  const calculatePenalties = (record: Attendance): Penalty[] => {
+    const penalties: Penalty[] = [];
+    
+    if (!record.checkIn || !record.date) return penalties;
+    
+    try {
+      const recordDate = parseISO(record.date);
+      const checkInTime = new Date(record.checkIn);
+      const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
       
-      <div className="mb-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold">Payouts for {employee.name}</h1>
-            <div className="text-muted-foreground flex items-center flex-wrap gap-1 text-xs">
-              <span>Payment basis:</span> <Badge variant="outline" className="text-xs py-0 h-5">{employee.paymentBasis}</Badge>
-              <span className="mx-1">•</span>
-              <span>Hourly rate:</span> <Badge variant="outline" className="text-xs py-0 h-5">L.E {employee.hourlyRate.toFixed(2)}</Badge>
+      // Working hours: 9:00 AM - 6:00 PM (with 30min grace period)
+      const workStart = new Date(recordDate);
+      workStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace period)
+      
+      const workEnd = new Date(recordDate);
+      workEnd.setHours(18, 0, 0, 0); // 6:00 PM
+      
+      // Check if it's an unpaid day
+      if (record.isPaidDay === false) {
+        penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
+        return penalties;
+      }
+      
+      // Calculate late arrival penalty
+      if (checkInTime > workStart) {
+        const lateMinutes = differenceInMinutes(checkInTime, workStart);
+        const lateHours = lateMinutes / 60;
+        
+        if (lateHours >= 2.5) {
+          penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
+        } else if (lateHours >= 1.5) {
+          penalties.push({ type: 'late-half', label: 'Half Day Penalty', color: 'bg-orange-100 text-orange-800' });
+        } else if (lateHours >= 0.5) {
+          penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
+        }
+      }
+      
+      // Calculate early departure penalty
+      if (checkOutTime && checkOutTime < workEnd) {
+        const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
+        const earlyHours = earlyMinutes / 60;
+        
+        if (earlyHours >= 2) {
+          penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
+        } else if (earlyHours >= 1) {
+          penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
+        }
+      }
+      
+    } catch (e) {
+      console.warn('[EmployeePayoutsPage] Error calculating penalties for record:', record, e);
+    }
+    
+    return penalties;
+  };
+
+  // Get absent days for a month (reused from the attendance page)
+  const getAbsentDays = (monthKey: string, records: Attendance[]): { date: string; dayName: string; isWorkDay: boolean; }[] => {
+    if (!systemSettings) return [];
+    
+    try {
+      const monthDate = parseISO(monthKey + '-01');
+      const start = startOfMonth(monthDate);
+      const end = endOfMonth(monthDate);
+      
+      // Get all days in the month
+      const allDays = eachDayOfInterval({ start, end });
+      
+      // Get attendance dates for this month
+      const attendanceDates = new Set(records.map(record => record.date));
+      
+      // Map day of week to system settings
+      const workDays = [
+        systemSettings.workDaySunday,    // 0 = Sunday
+        systemSettings.workDayMonday,    // 1 = Monday
+        systemSettings.workDayTuesday,   // 2 = Tuesday
+        systemSettings.workDayWednesday, // 3 = Wednesday
+        systemSettings.workDayThursday,  // 4 = Thursday
+        systemSettings.workDayFriday,    // 5 = Friday
+        systemSettings.workDaySaturday   // 6 = Saturday
+      ];
+      
+      // Find absent days
+      const absentDays: { date: string; dayName: string; isWorkDay: boolean; }[] = [];
+      
+      for (const day of allDays) {
+        const dateString = format(day, 'yyyy-MM-dd');
+        const dayOfWeek = day.getDay();
+        const isWorkDay = workDays[dayOfWeek];
+        
+        // If it's a work day and employee didn't attend, mark as absent
+        if (isWorkDay && !attendanceDates.has(dateString)) {
+          absentDays.push({
+            date: dateString,
+            dayName: format(day, 'EEEE'),
+            isWorkDay: true
+          });
+        }
+      }
+      
+      return absentDays;
+    } catch (e) {
+      console.warn('[EmployeePayoutsPage] Error calculating absent days:', e);
+      return [];
+    }
+  };
+
+  // Group attendance by month
+  const groupAttendanceByMonth = () => {
+    const grouped: { [key: string]: Attendance[] } = {};
+    
+    attendance.forEach(record => {
+      try {
+        const date = parseISO(record.date);
+        const monthKey = format(date, 'yyyy-MM');
+        
+        if (!grouped[monthKey]) {
+          grouped[monthKey] = [];
+        }
+        grouped[monthKey].push(record);
+      } catch (e) {
+        console.warn('[EmployeePayoutsPage] Error grouping attendance record:', record, e);
+      }
+    });
+    
+    // Sort groups by month (newest first)
+    const sortedKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+    const sortedGrouped: { [key: string]: Attendance[] } = {};
+    
+    sortedKeys.forEach(key => {
+      // Sort records within each month (oldest first for chronological order)
+      sortedGrouped[key] = grouped[key].sort((a, b) => {
+        try {
+          return parseISO(a.date).getTime() - parseISO(b.date).getTime();
+        } catch {
+          return 0;
+        }
+      });
+    });
+    
+    return sortedGrouped;
+  };
+
+  return (
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      <Toaster richColors />
+      
+      {/* Header Section */}
+      <div className="mb-6">
+        <Button asChild variant="outline" size="sm" className="mb-4">
+          <Link href={`/dashboard/employees/${employee.id}`}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Employee
+          </Link>
+        </Button>
+        
+        <div className="bg-slate-50 rounded-lg p-6 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Payouts for {employee.name}</h1>
+              <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <span>Payment Basis:</span> 
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-medium">
+                    {employee.paymentBasis}
+                  </Badge>
+                </div>
+                <span className="text-gray-400">•</span>
+                <div className="flex items-center gap-2">
+                  <span>Hourly Rate:</span> 
+                  <Badge variant="secondary" className="bg-green-100 text-green-800 font-medium">
+                    L.E {employee.hourlyRate.toFixed(2)}
+                  </Badge>
+                </div>
+              </div>
             </div>
           </div>
-          
-          {/* Toggle Adjustments Visibility */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setHideAdjustments(!hideAdjustments)}
-            className="flex items-center gap-2"
-          >
-            {hideAdjustments ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            {hideAdjustments ? 'Show' : 'Hide'} Adjustments
-          </Button>
         </div>
       </div>
       
+      {/* Enhanced Tabs */}
       <Tabs defaultValue="payouts" className="w-full">
-        <TabsList className="mb-2 h-8">
-          <TabsTrigger value="payouts" className="text-xs h-6 px-2">Payouts</TabsTrigger>
-          <TabsTrigger value="attendance" className="text-xs h-6 px-2">Attendance</TabsTrigger>
-        </TabsList>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+          <TabsList className="w-full h-12 bg-gray-50 rounded-lg p-1">
+            <TabsTrigger 
+              value="payouts" 
+              className="flex-1 h-10 text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm transition-all"
+            >
+              💰 Payouts Overview
+            </TabsTrigger>
+            <TabsTrigger 
+              value="attendance" 
+              className="flex-1 h-10 text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm transition-all"
+            >
+              📅 Attendance Records
+            </TabsTrigger>
+          </TabsList>
+        </div>
         
         <TabsContent value="payouts" className="space-y-6">
-          {paymentPeriods.map((period, index) => {
+          {/* Pagination Logic */}
+          {(() => {
+            const totalPayouts = paymentPeriods.length;
+            const totalPages = Math.ceil(totalPayouts / payoutsPerPage);
+            const startIndex = (currentPage - 1) * payoutsPerPage;
+            const endIndex = startIndex + payoutsPerPage;
+            const currentPayouts = paymentPeriods.slice(startIndex, endIndex);
+
+            const PaginationComponent = () => (
+              <div className="flex justify-center items-center space-x-4 py-4">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage > 1) setCurrentPage(currentPage - 1);
+                        }}
+                        className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(page);
+                          }}
+                          isActive={page === currentPage}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                        }}
+                        className={currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+                
+                <div className="text-sm text-muted-foreground">
+                  Showing {startIndex + 1}-{Math.min(endIndex, totalPayouts)} of {totalPayouts} payouts
+                </div>
+              </div>
+            );
+
+            return (
+              <>
+                {/* Top Pagination */}
+                {totalPayouts > payoutsPerPage && <PaginationComponent />}
+                
+                {/* Payouts List */}
+                <div className="space-y-6">
+                  {currentPayouts.map((period, localIndex) => {
+                    const index = startIndex + localIndex; // Adjust index for proper form IDs
             const existingPayout = findExistingPayout(period.start, period.end);
             const currentState = getCurrentState(period.start, period.end);
             
@@ -790,133 +1030,141 @@ export default function EmployeePayoutsPage() {
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-3">
                         <div>
-                          <h3 className="text-md font-medium mb-2">{period.label}</h3>
-                          <div className="space-y-1">
-                            <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground flex items-center text-sm">
-                                <CalendarCheck className="h-3 w-3 mr-1" />
-                                Days Worked
-                              </span>
-                              <span className="font-semibold text-sm">{daysWorked} / {workingDaysInPeriod}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground flex items-center text-sm">
-                                <Clock className="h-3 w-3 mr-1" />
-                                Regular Hours
-                              </span>
-                              <span className="font-semibold text-sm">{regularHours.toFixed(1)} / {expectedHours}</span>
-                            </div>
-                            {overtimeHours >= 0.1 && (
-                              <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground flex items-center text-sm text-orange-600">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  Overtime Hours
-                                </span>
-                                <span className="font-semibold text-sm text-orange-600">{overtimeHours.toFixed(1)} hrs</span>
-                              </div>
-                            )}
-                            {excessOvertimeHours >= 0.1 && (
-                              <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground flex items-center text-sm text-amber-600">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  Excess Overtime (Regular Rate)
-                                </span>
-                                <span className="font-semibold text-sm text-amber-600">{excessOvertimeHours.toFixed(1)} hrs</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div className="pt-2 border-t space-y-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-muted-foreground flex items-center text-sm">
-                              <DollarSign className="h-3 w-3 mr-1" />
-                              Base Payout
-                            </span>
-                            <span className="font-semibold text-sm">L.E {basePayout.toFixed(2)}</span>
-                          </div>
+                          <h3 className="text-md font-medium mb-3">💰 {period.label} - Payout Breakdown</h3>
                           
-                          {/* Always show overtime section for control */}
-                          <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                              <div className="flex items-center gap-2">
-                                <span className="text-muted-foreground flex items-center text-sm text-orange-600">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  Overtime ({overtimeHours.toFixed(1)} hrs)
-                                </span>
-                                <Switch
-                                  id={`overtime-toggle-${index}`}
-                                  checked={currentState.includeOvertime}
-                                  onCheckedChange={(checked) => {
-                                    updateTempState(period.start, period.end, { includeOvertime: checked });
-                                  }}
-                                />
-                              </div>
-                              <span className={`font-semibold text-sm ${currentState.includeOvertime ? 'text-orange-600' : 'text-muted-foreground line-through'}`}>
-                                L.E {overtimePayout.toFixed(2)}
-                              </span>
-                            </div>
+                          {/* Calculate deductions for display */}
+                          {(() => {
+                            // Calculate deductions from attendance data for existing payouts
+                            const periodAttendance = attendance.filter(record => {
+                              const recordDate = parseISO(record.date);
+                              return isWithinInterval(recordDate, { start: period.start, end: period.end });
+                            });
                             
-                            {overtimeHours === 0 && (
-                              <div className="text-xs text-muted-foreground text-orange-600 ml-4">
-                                ℹ️ No overtime hours calculated (all days ≤9 hrs or overtime not eligible)
-                              </div>
-                            )}
+                            const hoursPerDay = systemSettings?.workingHoursPerDay || 9;
+                            const hourlyRate = employee.hourlyRate;
                             
-                            {!currentState.includeOvertime && overtimePayout > 0 && (
-                              <div className="text-xs text-muted-foreground text-orange-600 ml-4">
-                                ⚠️ Overtime pay excluded from payout
-                              </div>
-                            )}
+                            // Calculate gross salary (perfect attendance)
+                            const grossSalary = workingDaysInPeriod * hoursPerDay * hourlyRate;
                             
-                            {excessOvertimeHours >= 0.1 && (
-                              <div className="text-xs text-muted-foreground text-amber-600 ml-4">
-                                ℹ️ {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
-                              </div>
-                            )}
+                            // Calculate deductions
+                            const unpaidDaysCount = periodAttendance.filter(record => record.isPaidDay === false).length;
+                            const unpaidDaysDeductions = unpaidDaysCount * hoursPerDay * hourlyRate;
                             
-                            {/* Debug info for overtime calculation */}
-                            <div className="text-xs text-muted-foreground ml-4">
-                              Regular: {regularHours.toFixed(1)}h | Overtime: {overtimeHours.toFixed(1)}h | Excess: {excessOvertimeHours.toFixed(1)}h
-                            </div>
-                          </div>
-                          {!hideAdjustments && currentState.adjustmentAmount !== 0 && (
-                            <div className="flex justify-between items-center">
-                              <span className={`text-muted-foreground flex items-center text-sm ${currentState.adjustmentAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                <DollarSign className="h-3 w-3 mr-1" />
-                                {currentState.adjustmentAmount > 0 ? 'Bonus/Addition' : 'Deduction/Penalty'}
-                              </span>
-                              <span className={`font-semibold text-sm ${currentState.adjustmentAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {currentState.adjustmentAmount > 0 ? '+' : ''}L.E {currentState.adjustmentAmount.toFixed(2)}
-                              </span>
-                            </div>
-                          )}
-                          {!hideAdjustments && existingPayout && existingPayout.adjustmentsTotal !== undefined && existingPayout.adjustmentsTotal !== 0 && (
-                            <div className="flex justify-between items-center">
-                              <span className={`text-muted-foreground flex items-center text-sm ${existingPayout.adjustmentsTotal > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                <DollarSign className="h-3 w-3 mr-1" />
-                                Multiple Adjustments
-                              </span>
-                              <span className={`font-semibold text-sm ${existingPayout.adjustmentsTotal > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {existingPayout.adjustmentsTotal > 0 ? '+' : ''}L.E {existingPayout.adjustmentsTotal.toFixed(2)}
-                              </span>
-                            </div>
-                          )}
-                          <div className="flex justify-between items-center pt-1 border-t">
-                            <span className="text-muted-foreground flex items-center font-medium">
-                              <DollarSign className="h-4 w-4 mr-1" />
-                              Final Payout
-                            </span>
-                            <span className="text-lg font-bold">
-                              L.E {(basePayout + (currentState.includeOvertime ? overtimePayout : 0) + currentState.adjustmentAmount).toFixed(2)}
-                            </span>
-                          </div>
+                            // Calculate penalty deductions from hours difference
+                            const expectedWorkHours = daysWorked * hoursPerDay;
+                            const actualWorkHours = totalHours;
+                            const hoursPenalized = Math.max(0, expectedWorkHours - actualWorkHours);
+                            const penaltyDeductions = hoursPenalized * hourlyRate;
+                            
+                            const totalDeductions = unpaidDaysDeductions + penaltyDeductions;
+                            const actualPayout = existingPayout ? (existingPayout.finalAmount || existingPayout.amount) : (basePayout + (currentState.includeOvertime ? overtimePayout : 0));
+                            
+                            return (
+                              <div className="space-y-2">
+                                {/* Gross Salary */}
+                                <div className="flex justify-between items-center p-2 bg-green-50 rounded">
+                                  <span className="text-green-700 font-medium">💰 Complete Salary (No Deductions)</span>
+                                  <span className="font-bold text-green-800">L.E {grossSalary.toFixed(2)}</span>
+                                </div>
+                                
+                                {/* Deductions Section */}
+                                {totalDeductions > 0 && (
+                                  <div className="p-2 bg-red-50 rounded">
+                                    <div className="font-medium text-red-700 mb-2">📉 Deductions:</div>
+                                    <div className="space-y-1 ml-2">
+                                      {unpaidDaysDeductions > 0 && (
+                                        <div className="flex justify-between items-center text-sm">
+                                          <span className="text-red-600">📅 Unpaid Days ({unpaidDaysCount} days)</span>
+                                          <span className="font-semibold text-red-700">-L.E {unpaidDaysDeductions.toFixed(2)}</span>
+                                        </div>
+                                      )}
+                                      {penaltyDeductions > 0 && (
+                                        <div className="flex justify-between items-center text-sm">
+                                          <span className="text-red-600">⏰ Time Penalties ({hoursPenalized.toFixed(1)} hrs)</span>
+                                          <span className="font-semibold text-red-700">-L.E {penaltyDeductions.toFixed(2)}</span>
+                                        </div>
+                                      )}
+                                      <div className="flex justify-between items-center text-sm border-t border-red-300 pt-1">
+                                        <span className="font-medium text-red-700">Total Deductions</span>
+                                        <span className="font-bold text-red-800">-L.E {totalDeductions.toFixed(2)}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {/* Base Amount After Deductions */}
+                                <div className="flex justify-between items-center p-2 bg-blue-50 rounded">
+                                  <span className="text-blue-700 font-medium">💼 Base Payout (After Deductions)</span>
+                                  <span className="font-bold text-blue-800">L.E {basePayout.toFixed(2)}</span>
+                                </div>
+                                
+                                {/* Overtime Section */}
+                                <div className="p-2 bg-orange-50 rounded">
+                                  <div className="flex justify-between items-center mb-2">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-medium text-orange-700">🕐 Overtime ({overtimeHours.toFixed(1)} hrs)</span>
+                                      <Switch
+                                        id={`overtime-toggle-${index}`}
+                                        checked={currentState.includeOvertime}
+                                        onCheckedChange={(checked) => {
+                                          updateTempState(period.start, period.end, { includeOvertime: checked });
+                                        }}
+                                      />
+                                    </div>
+                                    <span className={`font-bold ${currentState.includeOvertime ? 'text-orange-800' : 'text-muted-foreground line-through'}`}>
+                                      L.E {overtimePayout.toFixed(2)}
+                                    </span>
+                                  </div>
+                                  {!currentState.includeOvertime && overtimePayout > 0 && (
+                                    <div className="text-xs text-orange-600">
+                                      ⚠️ Overtime pay excluded from payout
+                                    </div>
+                                  )}
+                                  {excessOvertimeHours >= 0.1 && (
+                                    <div className="text-xs text-amber-600">
+                                      ℹ️ {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
+                                    </div>
+                                  )}
+                                  {overtimeHours === 0 && (
+                                    <div className="text-xs text-orange-600">
+                                      ℹ️ No overtime hours calculated
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                {/* Adjustments if any */}
+                                {!hideAdjustments && currentState.adjustmentAmount !== 0 && (
+                                  <div className={`flex justify-between items-center p-2 rounded ${currentState.adjustmentAmount > 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+                                    <span className={`font-medium ${currentState.adjustmentAmount > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                                      {currentState.adjustmentAmount > 0 ? '💰 Bonus/Addition' : '📉 Deduction/Penalty'}
+                                    </span>
+                                    <span className={`font-bold ${currentState.adjustmentAmount > 0 ? 'text-green-800' : 'text-red-800'}`}>
+                                      {currentState.adjustmentAmount > 0 ? '+' : ''}L.E {currentState.adjustmentAmount.toFixed(2)}
+                                    </span>
+                                  </div>
+                                )}
+                                
+                                {/* Final Payout */}
+                                <div className="flex justify-between items-center p-3 bg-gray-100 rounded-lg border-2 border-gray-300">
+                                  <span className="text-gray-800 font-bold text-lg">💳 Final Payout</span>
+                                  <span className="font-bold text-gray-900 text-xl">L.E {actualPayout.toFixed(2)}</span>
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
                       
                       <div className="bg-muted/10 p-3 rounded-md">
-                        <h4 className="font-medium mb-2 text-sm">Attendance Summary</h4>
+                        <h4 className="font-medium mb-2 text-sm">📊 Attendance Summary</h4>
                         <div className="space-y-1">
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="flex items-center">
+                              <CalendarCheck className="h-3 w-3 mr-1" />
+                              Days Worked
+                            </span>
+                            <span className="font-medium">{daysWorked} / {workingDaysInPeriod}</span>
+                          </div>
                           <div className="flex justify-between items-center text-sm">
                             <span>Attendance Rate</span>
                             <span className="font-medium">
@@ -942,6 +1190,13 @@ export default function EmployeePayoutsPage() {
                             </span>
                           </div>
                           <div className="flex justify-between items-center text-sm">
+                            <span className="flex items-center">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Regular Hours
+                            </span>
+                            <span className="font-medium">{regularHours.toFixed(1)} / {expectedHours}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
                             <span>Total Hours</span>
                             <span className="font-medium">{totalHours.toFixed(1)} hrs</span>
                           </div>
@@ -951,6 +1206,18 @@ export default function EmployeePayoutsPage() {
                               {daysWorked > 0 ? (totalHours / daysWorked).toFixed(1) : 0}
                             </span>
                           </div>
+                          {overtimeHours >= 0.1 && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-orange-600">Overtime Hours</span>
+                              <span className="font-medium text-orange-600">{overtimeHours.toFixed(1)} hrs</span>
+                            </div>
+                          )}
+                          {excessOvertimeHours >= 0.1 && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-amber-600">Excess Overtime (Regular Rate)</span>
+                              <span className="font-medium text-amber-600">{excessOvertimeHours.toFixed(1)} hrs</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1086,62 +1353,248 @@ export default function EmployeePayoutsPage() {
                 </CardContent>
               </Card>
             );
-          })}
+                  })}
+                </div>
+                
+                {/* Bottom Pagination */}
+                {totalPayouts > payoutsPerPage && <PaginationComponent />}
+              </>
+            );
+          })()}
         </TabsContent>
         
-        <TabsContent value="attendance" className="space-y-4">
-          <Card>
-            <CardHeader className="py-2 px-3">
-              <CardTitle className="text-md">Attendance Records</CardTitle>
-              <CardDescription className="text-xs">
-                Showing {attendance.length} records for {employee.name}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-2">
+        <TabsContent value="attendance" className="space-y-6">
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-slate-100 rounded-t-lg p-4 border-b border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 flex items-center">
+                    📅 Attendance Records
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Showing {attendance.length} total records for {employee.name} • Organized by month
+                  </p>
+                </div>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  {Object.keys(groupAttendanceByMonth()).length} months
+                </Badge>
+              </div>
+            </div>
+            <div className="p-6">
               {attendance.length > 0 ? (
-                <div className="border rounded-md">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="text-left p-2 font-medium">Date</th>
-                        <th className="text-left p-2 font-medium">Check In</th>
-                        <th className="text-left p-2 font-medium">Check Out</th>
-                        <th className="text-left p-2 font-medium">Hours</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {attendance
-                        .sort((a, b) => {
-                          // Handle potentially invalid dates during sort
-                          try {
-                            return parseISO(b.date).getTime() - parseISO(a.date).getTime();
-                          } catch {
-                            return 0; // Keep order if dates are invalid
-                          }
-                        })
-                        .map((record) => (
-                        <tr key={record.id} className="border-b last:border-0">
-                          <td className="p-1.5">{safeFormatDate(record.date)}</td>
-                          <td className="p-1.5">{record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}</td>
-                          <td className="p-1.5">
-                            {record.checkOut 
-                              ? formatEgyptTime(record.checkOut, 'h:mm a') 
-                              : '—'}
-                          </td>
-                          <td className="p-1.5">{record.hoursWorked?.toFixed(1) || '—'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="space-y-4">
+                  {(() => {
+                    const groupedAttendance = groupAttendanceByMonth();
+                    const monthEntries = Object.entries(groupedAttendance);
+                    const totalMonths = monthEntries.length;
+                    const totalAttendancePages = Math.ceil(totalMonths / monthsPerPage);
+                    const attendanceStartIndex = (attendanceCurrentPage - 1) * monthsPerPage;
+                    const attendanceEndIndex = attendanceStartIndex + monthsPerPage;
+                    const currentMonthEntries = monthEntries.slice(attendanceStartIndex, attendanceEndIndex);
+
+                    const AttendancePaginationComponent = () => (
+                      <div className="flex justify-center items-center space-x-4 py-4">
+                        <Pagination>
+                          <PaginationContent>
+                            <PaginationItem>
+                              <PaginationPrevious 
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (attendanceCurrentPage > 1) setAttendanceCurrentPage(attendanceCurrentPage - 1);
+                                }}
+                                className={attendanceCurrentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
+                              />
+                            </PaginationItem>
+                            
+                            {Array.from({ length: totalAttendancePages }, (_, i) => i + 1).map((page) => (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setAttendanceCurrentPage(page);
+                                  }}
+                                  isActive={page === attendanceCurrentPage}
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))}
+                            
+                            <PaginationItem>
+                              <PaginationNext 
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (attendanceCurrentPage < totalAttendancePages) setAttendanceCurrentPage(attendanceCurrentPage + 1);
+                                }}
+                                className={attendanceCurrentPage >= totalAttendancePages ? 'pointer-events-none opacity-50' : ''}
+                              />
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                        
+                        <div className="text-sm text-muted-foreground">
+                          Month {attendanceStartIndex + 1}-{Math.min(attendanceEndIndex, totalMonths)} of {totalMonths}
+                        </div>
+                      </div>
+                    );
+                    
+                    return (
+                      <>
+                        {/* Top Pagination */}
+                        {totalMonths > monthsPerPage && <AttendancePaginationComponent />}
+                        
+                        {/* Current Month Display */}
+                        <div className="space-y-4">
+                          {currentMonthEntries.map(([monthKey, records]) => {
+                            const monthDate = parseISO(monthKey + '-01');
+                            const monthName = format(monthDate, 'MMMM yyyy');
+                            const absentDays = getAbsentDays(monthKey, records);
+                            
+                            return (
+                              <div key={monthKey} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                                <div className="bg-slate-50 p-4 border-b border-slate-200">
+                                  <div className="flex items-center justify-between">
+                                    <h3 className="font-semibold text-gray-900 flex items-center">
+                                      <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                                      {monthName}
+                                    </h3>
+                                    <div className="flex items-center gap-3">
+                                      <Badge variant="outline" className="bg-white border-gray-300">
+                                        {records.length} attended
+                                      </Badge>
+                                                                             {absentDays.length > 0 && (
+                                         <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600">
+                                           {absentDays.length} absent
+                                         </Badge>
+                                       )}
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <div className="overflow-x-auto">
+                                  <table className="w-full">
+                                    <thead>
+                                      <tr className="bg-gray-50 border-b border-gray-200">
+                                        <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Date</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check In</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check Out</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Hours</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalties</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {/* Combine and sort all records chronologically */}
+                                      {(() => {
+                                        // Create combined array with type indicators
+                                        const attendanceItems = records.map(record => ({ type: 'attendance', data: record, date: record.date }));
+                                        const absentItems = absentDays.map(day => ({ type: 'absent', data: day, date: day.date }));
+                                        const allItems = [...attendanceItems, ...absentItems];
+                                        
+                                        // Sort all items by date chronologically (oldest first)
+                                        allItems.sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime());
+                                        
+                                        return allItems.map((item) => {
+                                          if (item.type === 'attendance') {
+                                            const record = item.data as Attendance;
+                                            const penalties = calculatePenalties(record);
+                                            
+                                            return (
+                                              <tr key={record.id} className="border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
+                                                <td className="px-4 py-3">
+                                                  <div className="flex flex-col">
+                                                    <span className="font-semibold text-gray-900">{safeFormatDate(record.date, 'MMM d')}</span>
+                                                    <span className="text-xs text-gray-500">
+                                                      {safeFormatDate(record.date, 'EEEE')}
+                                                    </span>
+                                                  </div>
+                                                </td>
+                                                <td className="px-4 py-3 text-sm text-gray-700">
+                                                  {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}
+                                                </td>
+                                                <td className="px-4 py-3 text-sm text-gray-700">
+                                                  {record.checkOut 
+                                                    ? formatEgyptTime(record.checkOut, 'h:mm a') 
+                                                    : '—'}
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                  <span className={`font-semibold text-sm ${record.hoursWorked && record.hoursWorked >= 9 ? 'text-green-600' : record.hoursWorked && record.hoursWorked > 0 ? 'text-orange-600' : 'text-red-600'}`}>
+                                                    {record.hoursWorked?.toFixed(1) || '0'}h
+                                                  </span>
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                  <div className="flex flex-wrap gap-1">
+                                                    {penalties.length > 0 ? (
+                                                      penalties.map((penalty, idx) => (
+                                                        <span
+                                                          key={idx}
+                                                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${penalty.color}`}
+                                                        >
+                                                          {penalty.label}
+                                                        </span>
+                                                      ))
+                                                    ) : (
+                                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                        No Penalties
+                                                      </span>
+                                                    )}
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            );
+                                          } else {
+                                            const absentDay = item.data as { date: string; dayName: string; isWorkDay: boolean; };
+                                            
+                                            return (
+                                              <tr key={absentDay.date} className="border-b border-gray-100 last:border-0 bg-gray-50/70 hover:bg-gray-100 transition-colors">
+                                                <td className="px-4 py-3">
+                                                  <div className="flex flex-col">
+                                                    <span className="font-semibold text-gray-600">{safeFormatDate(absentDay.date, 'MMM d')}</span>
+                                                    <span className="text-xs text-gray-500">
+                                                      {absentDay.dayName}
+                                                    </span>
+                                                  </div>
+                                                </td>
+                                                <td className="px-4 py-3 text-sm text-gray-500">—</td>
+                                                <td className="px-4 py-3 text-sm text-gray-500">—</td>
+                                                <td className="px-4 py-3">
+                                                  <span className="font-semibold text-sm text-gray-600">0h</span>
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                                                    Absent
+                                                  </span>
+                                                </td>
+                                              </tr>
+                                            );
+                                          }
+                                        });
+                                      })()}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        
+                        {/* Bottom Pagination */}
+                        {totalMonths > monthsPerPage && <AttendancePaginationComponent />}
+                      </>
+                    );
+                  })()}
                 </div>
               ) : (
-                <div className="text-center p-6 text-muted-foreground">
-                  <CalendarX className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>No attendance records found</p>
+                <div className="text-center p-8 text-gray-500">
+                  <CalendarX className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-medium mb-2">No attendance records found</h3>
+                  <p className="text-sm">No attendance data is available for this employee yet.</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

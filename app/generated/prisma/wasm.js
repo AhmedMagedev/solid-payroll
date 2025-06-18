@@ -150,7 +150,10 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   hoursWorked: 'hoursWorked',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  isPaidDay: 'isPaidDay'
+  isPaidDay: 'isPaidDay',
+  actualHoursWorked: 'actualHoursWorked',
+  lateDeductionHours: 'lateDeductionHours',
+  earlyDeductionHours: 'earlyDeductionHours'
 };
 
 exports.Prisma.PayoutScalarFieldEnum = {
@@ -175,7 +178,14 @@ exports.Prisma.PayoutScalarFieldEnum = {
   excessOvertimeHours: 'excessOvertimeHours',
   basePayout: 'basePayout',
   overtimePayout: 'overtimePayout',
-  finalAmount: 'finalAmount'
+  finalAmount: 'finalAmount',
+  grossSalary: 'grossSalary',
+  lateDeductions: 'lateDeductions',
+  earlyDeductions: 'earlyDeductions',
+  unpaidDaysDeductions: 'unpaidDaysDeductions',
+  totalDeductions: 'totalDeductions',
+  holidayHours: 'holidayHours',
+  holidayPayout: 'holidayPayout'
 };
 
 exports.Prisma.PayoutAdjustmentScalarFieldEnum = {

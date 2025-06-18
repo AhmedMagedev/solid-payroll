@@ -208,10 +208,71 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // Calculate hours worked
+        // Calculate hours worked with new penalty rules and track deductions
         let hoursWorked = 0;
+        let actualHoursWorked = 0;
+        let lateDeductionHours = 0;
+        let earlyDeductionHours = 0;
+        
         if (checkOut && checkOut > checkIn) {
-          hoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
+          actualHoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
+          hoursWorked = actualHoursWorked;
+          
+          // Apply new penalty rules (9:00-18:00 with 30min grace = 9:30-18:30)
+          const standardWorkStart = new Date(checkIn);
+          standardWorkStart.setHours(9, 0, 0, 0); // 9:00 AM
+          
+          const standardWorkEnd = new Date(checkIn);
+          standardWorkEnd.setHours(18, 0, 0, 0); // 6:00 PM
+          
+          const graceWorkStart = new Date(checkIn);
+          graceWorkStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace)
+          
+          const compensationWorkEnd = new Date(checkIn);
+          compensationWorkEnd.setHours(18, 30, 0, 0); // 6:30 PM (compensation for grace)
+          
+          // Check for late arrival penalties
+          const minutesLate = Math.max(0, (checkIn.getTime() - graceWorkStart.getTime()) / (1000 * 60));
+          
+          // Check for early departure penalties  
+          const expectedWorkEnd = checkIn <= graceWorkStart ? standardWorkEnd : compensationWorkEnd;
+          const minutesEarly = Math.max(0, (expectedWorkEnd.getTime() - checkOut.getTime()) / (1000 * 60));
+          
+          console.log(`[Hours Calc] ${employee.name}: CheckIn: ${checkIn.toLocaleString()}, CheckOut: ${checkOut.toLocaleString()}`);
+          console.log(`[Hours Calc] Grace Start: ${graceWorkStart.toLocaleString()}, Expected End: ${expectedWorkEnd.toLocaleString()}`);
+          console.log(`[Hours Calc] Minutes Late: ${minutesLate.toFixed(1)}, Minutes Early: ${minutesEarly.toFixed(1)}, Actual Hours: ${actualHoursWorked.toFixed(2)}`);
+          
+          // Apply late penalties and track deductions
+          if (minutesLate > 0) {
+            if (minutesLate >= 150) { // More than 2.5 hours late (2h + 30min grace)
+              lateDeductionHours = actualHoursWorked; // Whole day deducted
+              hoursWorked = 0; // Whole day unpaid
+              console.log(`[Hours Calc] Penalty: Whole day unpaid (${minutesLate.toFixed(1)} minutes late) - ${lateDeductionHours.toFixed(2)} hours deducted`);
+            } else if (minutesLate >= 90) { // 1.5-2.5 hours late (1h + 30min grace to 2h + 30min grace)
+              lateDeductionHours = 4.5; // Half day deduction
+              hoursWorked = Math.max(0, actualHoursWorked - 4.5); // Deduct half day (4.5 hours)
+              console.log(`[Hours Calc] Penalty: Half day deducted (${minutesLate.toFixed(1)} minutes late) - ${lateDeductionHours} hours deducted`);
+            } else if (minutesLate >= 30) { // 30min-1.5h late (30min grace to 1h + 30min grace)
+              lateDeductionHours = 2; // 2 hours deduction
+              hoursWorked = Math.max(0, actualHoursWorked - 2); // Deduct 2 hours
+              console.log(`[Hours Calc] Penalty: 2 hours deducted (${minutesLate.toFixed(1)} minutes late) - ${lateDeductionHours} hours deducted`);
+            }
+          }
+          
+          // Apply early departure penalties and track deductions (can be combined with late penalties)
+          if (minutesEarly > 0) {
+            if (minutesEarly >= 120) { // Left 2+ hours early
+              earlyDeductionHours = 4.5; // Half day deduction
+              hoursWorked = Math.max(0, hoursWorked - 4.5); // Deduct half day
+              console.log(`[Hours Calc] Penalty: Half day deducted for early departure (${minutesEarly.toFixed(1)} minutes early) - ${earlyDeductionHours} hours deducted`);
+            } else if (minutesEarly >= 60) { // Left 1-2 hours early  
+              earlyDeductionHours = 2; // 2 hours deduction
+              hoursWorked = Math.max(0, hoursWorked - 2); // Deduct 2 hours
+              console.log(`[Hours Calc] Penalty: 2 hours deducted for early departure (${minutesEarly.toFixed(1)} minutes early) - ${earlyDeductionHours} hours deducted`);
+            }
+          }
+          
+          console.log(`[Hours Calc] Final hours after penalties: ${hoursWorked.toFixed(2)} (Late deductions: ${lateDeductionHours}h, Early deductions: ${earlyDeductionHours}h)`);
         }
 
         console.log(`[API] Employee ${employee.name}: Check-in: ${checkIn.toLocaleString()}, Check-out: ${checkOut?.toLocaleString() || 'N/A'}, Hours: ${hoursWorked.toFixed(2)}, Paid: ${isPaidDay}`);
@@ -223,6 +284,9 @@ export async function POST(request: NextRequest) {
           checkOut,
           hoursWorked: hoursWorked > 0 ? hoursWorked : null,
           isPaidDay,
+          actualHoursWorked,
+          lateDeductionHours,
+          earlyDeductionHours,
         };
 
         attendanceRecords.push(attendanceData);
@@ -255,6 +319,9 @@ export async function POST(request: NextRequest) {
               checkOut: record.checkOut,
               hoursWorked: record.hoursWorked,
               isPaidDay: record.isPaidDay,
+              actualHoursWorked: record.actualHoursWorked,
+              lateDeductionHours: record.lateDeductionHours,
+              earlyDeductionHours: record.earlyDeductionHours,
               updatedAt: new Date(),
             },
             create: record,
@@ -330,97 +397,129 @@ export async function POST(request: NextRequest) {
             console.log(`  - Creating periodEnd: new Date(${year}, ${month}, 0) = ${periodEnd.toISOString()}`);
             console.log(`[Upload Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
 
-            // Only count days where isPaidDay is true
+            // Calculate various totals from attendance data
             const paidDays = monthAttendance.filter(a => a.isPaidDay && a.hoursWorked && a.hoursWorked > 0);
             const daysWorked = paidDays.length;
             const totalHours = paidDays.reduce((sum, a) => sum + (a.hoursWorked || 0), 0);
             
-            // RESTORED OVERTIME CALCULATION with sophisticated rules
+            // NEW OVERTIME CALCULATION with updated rules
             const hoursPerDay = 9; // Standard working hours per day
             const hourlyRate = employee.hourlyRate;
             const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
+            const holidayRate = hourlyRate * 2; // 2x holiday rate
             
             let regularHours = 0;
             let overtimeHours = 0;
-            let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap
+            let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap (paid at regular rate)
+            let holidayHours = 0; // Holiday hours (paid at 2x rate)
             
-            console.log(`[Overtime Calc] Employee ${employee.name}, Month ${monthKey}: Processing ${paidDays.length} paid days`);
+            console.log(`[New Overtime Calc] Employee ${employee.name}, Month ${monthKey}: Processing ${paidDays.length} paid days`);
             
-            // Calculate overtime per day with rules
+            // Helper function to check if next working day exists and employee was present
+            const getNextWorkingDay = (date: Date) => {
+              const nextDay = new Date(date);
+              nextDay.setDate(nextDay.getDate() + 1);
+              const dayOfWeek = nextDay.getDay();
+              // Working days: Sunday(0), Monday(1), Tuesday(2), Wednesday(3), Thursday(4)
+              // Friday(5) and Saturday(6) are off
+              return (dayOfWeek >= 0 && dayOfWeek <= 4) ? nextDay : null;
+            };
+            
+            const isHoliday = (date: Date) => {
+              const dayOfWeek = date.getDay();
+              // Friday(5) and Saturday(6) are holidays
+              return dayOfWeek === 5 || dayOfWeek === 6;
+            };
+            
+            // Calculate overtime per day with new rules
             paidDays.forEach((attendance, dayIndex) => {
               const dailyHours = attendance.hoursWorked || 0;
               const attendanceDate = new Date(attendance.date);
               
-              console.log(`[Overtime Calc] Day ${dayIndex + 1}: ${attendanceDate.toDateString()}, Hours: ${dailyHours}`);
+              console.log(`[New Overtime Calc] Day ${dayIndex + 1}: ${attendanceDate.toDateString()}, Hours: ${dailyHours}, Holiday: ${isHoliday(attendanceDate)}`);
               
+              // Check if this is a holiday
+              if (isHoliday(attendanceDate)) {
+                holidayHours += dailyHours;
+                console.log(`[New Overtime Calc] Holiday work: ${dailyHours} hours at 2x rate`);
+                return;
+              }
+              
+              // Regular workday processing
               if (dailyHours > hoursPerDay) {
                 const potentialOvertimeHours = dailyHours - hoursPerDay;
-                console.log(`[Overtime Calc] Potential overtime: ${potentialOvertimeHours} hours`);
+                console.log(`[New Overtime Calc] Potential overtime: ${potentialOvertimeHours} hours`);
                 
-                // SIMPLIFIED: Remove next-day presence requirement for now to test
-                // We can add it back later if needed
-                const isOvertimeEligible = true;
-                
-                /* DISABLED FOR DEBUGGING
                 // Check if employee must be present next working day for overtime eligibility
                 const nextWorkingDay = getNextWorkingDay(attendanceDate);
+                let isOvertimeEligible = true;
                 
                 if (nextWorkingDay) {
                   // Check if employee was present on the next working day
                   const nextDayAttendance = paidDays.find(a => {
                     const aDate = new Date(a.date);
-                    return aDate.toDateString() === nextWorkingDay.toDateString();
+                    return aDate.toDateString() === nextWorkingDay.toDateString() && !isHoliday(aDate);
                   });
                   
                   // If next working day exists and employee was not present, overtime is not eligible
                   if (!nextDayAttendance) {
                     isOvertimeEligible = false;
-                    console.log(`[Overtime Calc] Overtime not eligible - not present next working day (${nextWorkingDay.toDateString()})`);
+                    console.log(`[New Overtime Calc] Overtime not eligible - not present next working day (${nextWorkingDay.toDateString()})`);
                   } else {
-                    console.log(`[Overtime Calc] Overtime eligible - present next working day`);
+                    console.log(`[New Overtime Calc] Overtime eligible - present next working day`);
                   }
                 } else {
-                  console.log(`[Overtime Calc] Overtime eligible - no next working day required`);
+                  console.log(`[New Overtime Calc] Overtime eligible - no next working day required`);
                 }
-                */
                 
                 if (isOvertimeEligible) {
                   regularHours += hoursPerDay;
                   
                   // Apply 2-hour overtime cap rule
                   if (potentialOvertimeHours <= 2) {
-                    // All overtime hours within cap - paid at overtime rate
+                    // All overtime hours within cap - paid at overtime rate (1.5x)
                     overtimeHours += potentialOvertimeHours;
-                    console.log(`[Overtime Calc] Added ${potentialOvertimeHours} overtime hours (within cap)`);
+                    console.log(`[New Overtime Calc] Added ${potentialOvertimeHours} overtime hours at 1.5x rate`);
                   } else {
                     // First 2 hours at overtime rate, rest at regular rate
                     overtimeHours += 2;
                     excessOvertimeHours += (potentialOvertimeHours - 2);
-                    console.log(`[Overtime Calc] Added 2 overtime hours + ${potentialOvertimeHours - 2} excess hours`);
+                    console.log(`[New Overtime Calc] Added 2 overtime hours at 1.5x + ${potentialOvertimeHours - 2} excess hours at regular rate`);
                   }
                 } else {
                   // Overtime not eligible, treat as regular hours up to standard hours
                   regularHours += Math.min(dailyHours, hoursPerDay);
-                  console.log(`[Overtime Calc] Overtime not eligible - treating as regular hours`);
+                  console.log(`[New Overtime Calc] Overtime not eligible - treating as regular hours: ${Math.min(dailyHours, hoursPerDay)}`);
                 }
               } else {
                 regularHours += dailyHours;
-                console.log(`[Overtime Calc] Regular day: ${dailyHours} hours`);
+                console.log(`[New Overtime Calc] Regular day: ${dailyHours} hours`);
               }
             });
             
             // Include excess overtime hours in regular hours for payment calculation
             regularHours += excessOvertimeHours;
             
-            console.log(`[Overtime Calc] Final totals - Regular: ${regularHours}, Overtime: ${overtimeHours}, Excess: ${excessOvertimeHours}`);
+            console.log(`[New Overtime Calc] Final totals - Regular: ${regularHours}, Overtime: ${overtimeHours}, Excess: ${excessOvertimeHours}, Holiday: ${holidayHours}`);
             
-            // Calculate amounts
-                          const basePayout = regularHours * hourlyRate;
+            // Calculate deductions and gross salary
+            const unpaidDaysCount = monthAttendance.length - daysWorked;
+            const grossSalary = monthAttendance.length * hoursPerDay * hourlyRate; // What they would earn without deductions
+            const unpaidDaysDeductions = unpaidDaysCount * hoursPerDay * hourlyRate;
+            
+            // We'll calculate late/early deductions from the difference between gross and actual paid
+            const lateDeductions = 0; // Will be calculated from attendance penalties  
+            const earlyDeductions = 0; // Will be calculated from attendance penalties
+            const totalDeductions = unpaidDaysDeductions + lateDeductions + earlyDeductions;
+            
+            // Calculate amounts with new structure
+            const basePayout = regularHours * hourlyRate;
+            const overtimePayout = overtimeHours * overtimeRate; // 1.5x overtime rate
             const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
-            const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
-            const totalAmount = basePayout + overtimePayout;
+            const holidayPayout = holidayHours * holidayRate; // 2x holiday rate
+            const totalAmount = basePayout + overtimePayout + excessOvertimePayout + holidayPayout;
             
-            console.log(`[Overtime Calc] Amounts - Base: ${basePayout}, Overtime (1.5x): ${(overtimeHours * overtimeRate).toFixed(2)}, Excess Overtime (regular): ${excessOvertimePayout.toFixed(2)}, Total Overtime: ${overtimePayout}, Total: ${totalAmount}`);
+            console.log(`[New Overtime Calc] Amounts - Base: ${basePayout.toFixed(2)}, Overtime (1.5x): ${overtimePayout.toFixed(2)}, Excess Overtime (regular): ${excessOvertimePayout.toFixed(2)}, Holiday (2x): ${holidayPayout.toFixed(2)}, Total: ${totalAmount.toFixed(2)}`);
             
             // Count unpaid days for reporting
             const unpaidDays = monthAttendance.length - daysWorked;
@@ -464,9 +563,16 @@ export async function POST(request: NextRequest) {
                   overtimeHours,
                   excessOvertimeHours,
                   basePayout,
-                  overtimePayout,
+                  overtimePayout: overtimePayout + excessOvertimePayout, // Combined overtime payment
                   finalAmount: totalAmount,
-                  comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`,
+                  grossSalary: grossSalary,
+                  lateDeductions: lateDeductions,
+                  earlyDeductions: earlyDeductions,
+                  unpaidDaysDeductions: unpaidDaysDeductions,
+                  totalDeductions: totalDeductions,
+                  holidayHours: holidayHours,
+                  holidayPayout: holidayPayout,
+                  comment: `Auto-updated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}${holidayHours > 0 ? ` (${holidayHours.toFixed(1)} holiday hours)` : ''}`,
                   updatedAt: new Date()
                 }
               });
@@ -487,9 +593,16 @@ export async function POST(request: NextRequest) {
                   overtimeHours,
                   excessOvertimeHours,
                   basePayout,
-                  overtimePayout,
+                  overtimePayout: overtimePayout + excessOvertimePayout, // Combined overtime payment
                   finalAmount: totalAmount,
-                  comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}`
+                  grossSalary: grossSalary,
+                  lateDeductions: lateDeductions,
+                  earlyDeductions: earlyDeductions,
+                  unpaidDaysDeductions: unpaidDaysDeductions,
+                  totalDeductions: totalDeductions,
+                  holidayHours: holidayHours,
+                  holidayPayout: holidayPayout,
+                  comment: `Auto-calculated: ${daysWorked} paid days, ${totalHours.toFixed(1)} hours${unpaidDays > 0 ? ` (${unpaidDays} unpaid days)` : ''}${holidayHours > 0 ? ` (${holidayHours.toFixed(1)} holiday hours)` : ''}`
                 }
               });
               payoutResults.created++;

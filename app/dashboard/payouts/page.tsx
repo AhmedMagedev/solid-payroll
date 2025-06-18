@@ -371,16 +371,6 @@ export default function AllPayoutsPage() {
               </Select>
             </div>
             
-            {/* Toggle Adjustments Visibility */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setHideAdjustments(!hideAdjustments)}
-              className="flex items-center gap-2"
-            >
-              {hideAdjustments ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              {hideAdjustments ? 'Show' : 'Hide'} Adjustments
-            </Button>
             
             {/* Search */}
             <form onSubmit={handleSearch} className="flex gap-4 flex-1">

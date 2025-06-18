@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, AlertCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatEgyptTime } from '@/lib/timezone';
+import { parseISO, differenceInMinutes } from 'date-fns';
 
 interface Attendance {
   id: number;
@@ -36,6 +37,12 @@ interface PaginationInfo {
 interface AttendanceResponse {
   data: Attendance[];
   pagination: PaginationInfo;
+}
+
+interface Penalty {
+  type: string;
+  label: string;
+  color: string;
 }
 
 export default function AttendancePage() {
@@ -115,6 +122,63 @@ export default function AttendancePage() {
       console.error('Error formatting date:', dateString, error);
       return 'Invalid Date';
     }
+  };
+
+  // Calculate penalties for attendance record
+  const calculatePenalties = (record: Attendance): Penalty[] => {
+    const penalties: Penalty[] = [];
+    
+    if (!record.checkIn || !record.date) return penalties;
+    
+    try {
+      const recordDate = parseISO(record.date);
+      const checkInTime = new Date(record.checkIn);
+      const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
+      
+      // Working hours: 9:00 AM - 6:00 PM (with 30min grace period)
+      const workStart = new Date(recordDate);
+      workStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace period)
+      
+      const workEnd = new Date(recordDate);
+      workEnd.setHours(18, 0, 0, 0); // 6:00 PM
+      
+      // Check if it's an unpaid day
+      if (record.isPaidDay === false) {
+        penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
+        return penalties;
+      }
+      
+      // Calculate late arrival penalty
+      if (checkInTime > workStart) {
+        const lateMinutes = differenceInMinutes(checkInTime, workStart);
+        const lateHours = lateMinutes / 60;
+        
+        if (lateHours >= 2.5) {
+          penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
+        } else if (lateHours >= 1.5) {
+          penalties.push({ type: 'late-half', label: 'Half Day Penalty', color: 'bg-orange-100 text-orange-800' });
+        } else if (lateHours >= 0.5) {
+          penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
+        }
+      }
+      
+      // Calculate early departure penalty
+      if (checkOutTime && checkOutTime < workEnd) {
+        const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
+        const earlyHours = earlyMinutes / 60;
+        
+        if (earlyHours >= 2) {
+          penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
+        } else if (earlyHours >= 1) {
+          penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
+        }
+      }
+      
+    } catch (e) {
+      console.warn('[AttendancePage] Error calculating penalties for record:', record, e);
+    }
+    
+    return penalties;
   };
 
   const PaginationControls = () => {
@@ -293,7 +357,7 @@ export default function AttendancePage() {
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check In</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check Out</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Hours</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Status</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Penalties</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -317,15 +381,25 @@ export default function AttendancePage() {
                           : <span className="text-muted-foreground">N/A</span>}
                       </td>
                       <td className="py-4 px-6">
-                        {record.isPaidDay === false ? (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            Unpaid (Late)
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Paid
-                          </span>
-                        )}
+                        {(() => {
+                          const penalties = calculatePenalties(record);
+                          if (penalties.length === 0) {
+                            return (
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                No Penalties
+                              </span>
+                            );
+                          }
+                          return (
+                            <div className="flex flex-wrap gap-1">
+                              {penalties.map((penalty, index) => (
+                                <span key={index} className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${penalty.color}`}>
+                                  {penalty.label}
+                                </span>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </td>
                     </tr>
                   ))}
