@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { verifyToken } from '@/app/lib/auth';
-import { parseISO, isWithinInterval, startOfWeek, endOfWeek, format, addWeeks } from 'date-fns';
+import { parseISO, isWithinInterval, startOfWeek, endOfWeek, format, addWeeks, isBefore, startOfMonth, endOfMonth, addMonths } from 'date-fns';
 
 export async function POST(request: NextRequest) {
   try {
@@ -268,86 +268,124 @@ interface EmployeeRecord {
 
 function calculatePaymentPeriods(attendance: AttendanceRecord[], employee: EmployeeRecord): PaymentPeriod[] {
   const periods: PaymentPeriod[] = [];
-  
-  if (attendance.length === 0) return periods;
-
-  // Get date range from attendance data
-  const startDate = new Date(attendance[0].date);
-  const endDate = new Date(attendance[attendance.length - 1].date);
+  const now = new Date();
   
   console.log(`[Period Calc] Employee ${employee.name} has payment basis: ${employee.paymentBasis}`);
   
   if (employee.paymentBasis === 'Weekly') {
-    // Generate weekly periods with UTC dates for consistency
+    // For weekly employees, create payouts for all weeks that have passed
+    // Start from the earliest attendance date or 6 months ago, whichever is earlier
+    let startDate: Date;
+    if (attendance.length > 0) {
+      const earliestAttendance = new Date(attendance[0].date);
+      const sixMonthsAgo = new Date(now);
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      startDate = earliestAttendance < sixMonthsAgo ? earliestAttendance : sixMonthsAgo;
+    } else {
+      // If no attendance data, start from 3 months ago
+      startDate = new Date(now);
+      startDate.setMonth(startDate.getMonth() - 3);
+    }
+    
+    // Generate weekly periods from start date to current date
     const weekStart = startOfWeek(startDate, { weekStartsOn: 0 }); // Start on Sunday
     let currentWeekStart = weekStart;
     
-    while (currentWeekStart <= endDate) {
+    while (currentWeekStart < now) {
       const weekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 0 }); // End on Saturday
       
-      // Convert to UTC dates for consistency with monthly periods
-      const weekStartUTC = new Date(Date.UTC(
-        currentWeekStart.getFullYear(), 
-        currentWeekStart.getMonth(), 
-        currentWeekStart.getDate(), 
-        0, 0, 0, 0
-      ));
-      const weekEndUTC = new Date(Date.UTC(
-        weekEnd.getFullYear(), 
-        weekEnd.getMonth(), 
-        weekEnd.getDate(), 
-        23, 59, 59, 999
-      ));
-      
-      // Create human-readable label
-      const weekLabel = `Week of ${format(currentWeekStart, 'MMM d, yyyy')}`;
-      
-      periods.push({
-        periodStart: weekStartUTC,
-        periodEnd: weekEndUTC,
-        label: weekLabel
-      });
-      
-      console.log(`[Period Calc] Created weekly period: ${weekLabel} = ${weekStartUTC.toISOString().split('T')[0]} to ${weekEndUTC.toISOString().split('T')[0]}`);
+      // Only include weeks where the period has completely passed
+      if (isBefore(weekEnd, now)) {
+        // Convert to UTC dates for consistency
+        const weekStartUTC = new Date(Date.UTC(
+          currentWeekStart.getFullYear(), 
+          currentWeekStart.getMonth(), 
+          currentWeekStart.getDate(), 
+          0, 0, 0, 0
+        ));
+        const weekEndUTC = new Date(Date.UTC(
+          weekEnd.getFullYear(), 
+          weekEnd.getMonth(), 
+          weekEnd.getDate(), 
+          23, 59, 59, 999
+        ));
+        
+        // Create human-readable label
+        const weekLabel = `Week of ${format(currentWeekStart, 'MMM d, yyyy')}`;
+        
+        periods.push({
+          periodStart: weekStartUTC,
+          periodEnd: weekEndUTC,
+          label: weekLabel
+        });
+        
+        console.log(`[Period Calc] Created eligible weekly period: ${weekLabel} = ${weekStartUTC.toISOString().split('T')[0]} to ${weekEndUTC.toISOString().split('T')[0]}`);
+      } else {
+        console.log(`[Period Calc] Skipping current/future week: ${format(currentWeekStart, 'MMM d, yyyy')} (period not yet complete)`);
+      }
       
       // Move to next week
       currentWeekStart = addWeeks(currentWeekStart, 1);
     }
+    
+    console.log(`[Period Calc] Generated ${periods.length} eligible weekly periods for ${employee.name}`);
   } else {
     // Generate monthly periods (default for Monthly and Daily payment basis)
-    const startYear = startDate.getFullYear();
-    const startMonth = startDate.getMonth(); // 0-based
-    const endYear = endDate.getFullYear();
-    const endMonth = endDate.getMonth(); // 0-based
+    // For monthly employees, also base on eligibility rather than just attendance data
+    let startDate: Date;
+    if (attendance.length > 0) {
+      const earliestAttendance = new Date(attendance[0].date);
+      const sixMonthsAgo = new Date(now);
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      startDate = earliestAttendance < sixMonthsAgo ? earliestAttendance : sixMonthsAgo;
+    } else {
+      // If no attendance data, start from 6 months ago
+      startDate = new Date(now);
+      startDate.setMonth(startDate.getMonth() - 6);
+    }
     
-    let currentYear = startYear;
-    let currentMonth = startMonth;
+    // Start from the beginning of the start month
+    let currentMonth = startOfMonth(startDate);
     
-    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
-      // Create PROPER month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
-      const monthStart = new Date(Date.UTC(currentYear, currentMonth, 1, 0, 0, 0, 0));
-      const monthEnd = new Date(Date.UTC(currentYear, currentMonth + 1, 0, 23, 59, 59, 999)); // Last day of month at 23:59:59
+    while (currentMonth < now) {
+      const monthEnd = endOfMonth(currentMonth);
       
-      // Create human-readable label
-      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                         'July', 'August', 'September', 'October', 'November', 'December'];
-      const label = `${monthNames[currentMonth]} ${currentYear}`;
-      
-      periods.push({
-        periodStart: monthStart,
-        periodEnd: monthEnd,
-        label: label
-      });
-      
-      console.log(`[Period Calc] Created monthly period: ${label} = ${monthStart.toISOString().split('T')[0]} to ${monthEnd.toISOString().split('T')[0]}`);
+      // Only include months where the period has completely passed
+      if (isBefore(monthEnd, now)) {
+        // Convert to UTC dates for consistency
+        const monthStartUTC = new Date(Date.UTC(
+          currentMonth.getFullYear(), 
+          currentMonth.getMonth(), 
+          1, 0, 0, 0, 0
+        ));
+        const monthEndUTC = new Date(Date.UTC(
+          monthEnd.getFullYear(), 
+          monthEnd.getMonth(), 
+          monthEnd.getDate(), 
+          23, 59, 59, 999
+        ));
+        
+        // Create human-readable label
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const label = `${monthNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`;
+        
+        periods.push({
+          periodStart: monthStartUTC,
+          periodEnd: monthEndUTC,
+          label: label
+        });
+        
+        console.log(`[Period Calc] Created eligible monthly period: ${label} = ${monthStartUTC.toISOString().split('T')[0]} to ${monthEndUTC.toISOString().split('T')[0]}`);
+      } else {
+        console.log(`[Period Calc] Skipping current/future month: ${format(currentMonth, 'MMM yyyy')} (period not yet complete)`);
+      }
       
       // Move to next month
-      currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
+      currentMonth = addMonths(currentMonth, 1);
     }
+    
+    console.log(`[Period Calc] Generated ${periods.length} eligible monthly periods for ${employee.name}`);
   }
   
   return periods;

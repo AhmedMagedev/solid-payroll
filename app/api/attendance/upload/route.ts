@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
 import { verifyToken } from '@/app/lib/auth';
 import { parseEgyptTimeToUtc, isCheckInBeyondGracePeriod } from '@/lib/timezone';
+import { startOfWeek, endOfWeek, format } from 'date-fns';
 
 const prisma = new PrismaClient();
 
@@ -359,46 +360,144 @@ export async function POST(request: NextRequest) {
 
           if (!employee) continue;
 
-          // Group attendance by month for payout calculation
-          const attendanceByMonth = new Map<string, Array<{
-            id: number;
-            employeeId: number;
-            date: Date;
-            checkIn: Date;
-            checkOut: Date | null;
-            hoursWorked: number | null;
-            createdAt: Date;
-            updatedAt: Date;
-            isPaidDay: boolean;
-          }>>();
+          // Group attendance by payment period based on employee's payment basis
+          console.log(`[Upload Payout] Employee ${employee.name} has payment basis: ${employee.paymentBasis}`);
           
-          for (const attendance of employee.attendance) {
-            const monthKey = `${attendance.date.getFullYear()}-${String(attendance.date.getMonth() + 1).padStart(2, '0')}`;
-            if (!attendanceByMonth.has(monthKey)) {
-              attendanceByMonth.set(monthKey, []);
+          const attendanceByPeriod = new Map<string, {
+            attendance: Array<{
+              id: number;
+              employeeId: number;
+              date: Date;
+              checkIn: Date;
+              checkOut: Date | null;
+              hoursWorked: number | null;
+              createdAt: Date;
+              updatedAt: Date;
+              isPaidDay: boolean;
+            }>,
+            periodStart: Date;
+            periodEnd: Date;
+            label: string;
+          }>();
+          
+          if (employee.paymentBasis === 'Weekly') {
+            // Group by weekly periods for weekly employees (Saturday to Friday weeks since Friday is day off)
+            
+            // First, determine the date range for generating weeks
+            const now = new Date();
+            let earliestDate: Date;
+                         const latestDate: Date = now;
+            
+            if (employee.attendance.length > 0) {
+              const attendanceDates = employee.attendance.map(a => new Date(a.date));
+              earliestDate = new Date(Math.min(...attendanceDates.map(d => d.getTime())));
+              // Extend range to cover more periods - go back at least 3 months
+              const threeMonthsAgo = new Date(now);
+              threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+              earliestDate = earliestDate < threeMonthsAgo ? earliestDate : threeMonthsAgo;
+            } else {
+              // No attendance data, start from 3 months ago
+              earliestDate = new Date(now);
+              earliestDate.setMonth(earliestDate.getMonth() - 3);
             }
-            attendanceByMonth.get(monthKey)!.push(attendance);
+            
+            console.log(`[Weekly Periods] Generating weeks from ${earliestDate.toISOString().split('T')[0]} to ${latestDate.toISOString().split('T')[0]}`);
+            
+            // Generate all week periods in the range (Saturday to Friday)
+            let currentWeekStart = startOfWeek(earliestDate, { weekStartsOn: 6 }); // Start on Saturday
+            
+            while (currentWeekStart < now) {
+              const weekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 6 }); // End on Friday
+              
+              // Only create periods for weeks that have completely finished
+              if (weekEnd < now) {
+                // Create week key and period boundaries
+                const weekKey = `week-${format(currentWeekStart, 'yyyy-MM-dd')}`;
+                const weekLabel = `Week ${format(currentWeekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
+                
+                // Convert to UTC dates for consistency
+                const weekStartUTC = new Date(Date.UTC(
+                  currentWeekStart.getFullYear(), 
+                  currentWeekStart.getMonth(), 
+                  currentWeekStart.getDate(), 
+                  0, 0, 0, 0
+                ));
+                const weekEndUTC = new Date(Date.UTC(
+                  weekEnd.getFullYear(), 
+                  weekEnd.getMonth(), 
+                  weekEnd.getDate(), 
+                  23, 59, 59, 999
+                ));
+                
+                // Initialize the week period
+                if (!attendanceByPeriod.has(weekKey)) {
+                  attendanceByPeriod.set(weekKey, {
+                    attendance: [],
+                    periodStart: weekStartUTC,
+                    periodEnd: weekEndUTC,
+                    label: weekLabel
+                  });
+                }
+                
+                console.log(`[Weekly Periods] Created week: ${weekLabel} (${weekStartUTC.toISOString().split('T')[0]} to ${weekEndUTC.toISOString().split('T')[0]})`);
+              } else {
+                console.log(`[Weekly Periods] Skipping incomplete week: ${format(currentWeekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`);
+              }
+              
+              // Move to next week
+              currentWeekStart = new Date(currentWeekStart);
+              currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            }
+            
+            // Now assign attendance records to their appropriate weeks
+            for (const attendance of employee.attendance) {
+              const attendanceDate = new Date(attendance.date);
+              const weekStart = startOfWeek(attendanceDate, { weekStartsOn: 6 }); // Saturday start
+              const weekKey = `week-${format(weekStart, 'yyyy-MM-dd')}`;
+              
+              if (attendanceByPeriod.has(weekKey)) {
+                attendanceByPeriod.get(weekKey)!.attendance.push(attendance);
+                console.log(`[Upload Payout] Added attendance for ${employee.name} on ${format(attendanceDate, 'MMM d, yyyy')} to week ${weekKey}`);
+              }
+            }
+          } else {
+            // Group by monthly periods for monthly employees (default)
+            for (const attendance of employee.attendance) {
+              const monthKey = `${attendance.date.getFullYear()}-${String(attendance.date.getMonth() + 1).padStart(2, '0')}`;
+              const [year, month] = monthKey.split('-').map(Number);
+              
+              // Create proper month boundaries
+              const monthStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0));
+              const monthEnd = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+              const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+              const monthLabel = `${monthNames[month - 1]} ${year}`;
+              
+              if (!attendanceByPeriod.has(monthKey)) {
+                attendanceByPeriod.set(monthKey, {
+                  attendance: [],
+                  periodStart: monthStart,
+                  periodEnd: monthEnd,
+                  label: monthLabel
+                });
+              }
+              attendanceByPeriod.get(monthKey)!.attendance.push(attendance);
+              
+              console.log(`[Upload Payout] Added attendance for ${employee.name} to ${monthLabel} (${monthStart.toISOString().split('T')[0]} to ${monthEnd.toISOString().split('T')[0]})`);
+            }
           }
 
-          // Calculate payouts for each month
-          for (const [monthKey, monthAttendance] of attendanceByMonth) {
-            const [year, month] = monthKey.split('-').map(Number);
+          // Calculate payouts for each period
+          for (const [, periodData] of attendanceByPeriod) {
+            const { attendance: periodAttendance, periodStart, periodEnd, label } = periodData;
             
-            // DEBUG: Log the parsed values
-            console.log(`[Upload Payout Debug] MonthKey: ${monthKey}, Year: ${year}, Month: ${month}`);
-            
-            // FIXED: Create proper month boundaries - 1st to last day of each month (UTC to avoid timezone issues)
-            // IMPORTANT: month is 1-based from monthKey, but Date constructor expects 0-based month
-            const periodStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)); // First day at 00:00:00 UTC
-            const periodEnd = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999)); // Last day at 23:59:59 UTC
-            
-            console.log(`[Upload Payout Debug] For ${monthKey}:`);
-            console.log(`  - Creating periodStart: new Date(${year}, ${month - 1}, 1) = ${periodStart.toISOString()}`);
-            console.log(`  - Creating periodEnd: new Date(${year}, ${month}, 0) = ${periodEnd.toISOString()}`);
-            console.log(`[Upload Payout] ${monthKey}: ${periodStart.toISOString().split('T')[0]} to ${periodEnd.toISOString().split('T')[0]}`);
+            console.log(`[Upload Payout Debug] Processing ${label}:`);
+            console.log(`  - Period Start: ${periodStart.toISOString()}`);
+            console.log(`  - Period End: ${periodEnd.toISOString()}`);
+            console.log(`  - Attendance records: ${periodAttendance.length}`);
 
             // Calculate various totals from attendance data
-            const paidDays = monthAttendance.filter(a => a.isPaidDay && a.hoursWorked && a.hoursWorked > 0);
+            const paidDays = periodAttendance.filter((a) => a.isPaidDay && a.hoursWorked && a.hoursWorked > 0);
             const daysWorked = paidDays.length;
             const totalHours = paidDays.reduce((sum, a) => sum + (a.hoursWorked || 0), 0);
             
@@ -413,7 +512,7 @@ export async function POST(request: NextRequest) {
             let excessOvertimeHours = 0; // Hours beyond 2-hour overtime cap (paid at regular rate)
             let holidayHours = 0; // Holiday hours (paid at 2x rate)
             
-            console.log(`[New Overtime Calc] Employee ${employee.name}, Month ${monthKey}: Processing ${paidDays.length} paid days`);
+            console.log(`[New Overtime Calc] Employee ${employee.name}, Period ${label}: Processing ${paidDays.length} paid days`);
             
             // Helper function to check if next working day exists and employee was present
             const getNextWorkingDay = (date: Date) => {
@@ -503,8 +602,8 @@ export async function POST(request: NextRequest) {
             console.log(`[New Overtime Calc] Final totals - Regular: ${regularHours}, Overtime: ${overtimeHours}, Excess: ${excessOvertimeHours}, Holiday: ${holidayHours}`);
             
             // Calculate deductions and gross salary
-            const unpaidDaysCount = monthAttendance.length - daysWorked;
-            const grossSalary = monthAttendance.length * hoursPerDay * hourlyRate; // What they would earn without deductions
+            const unpaidDaysCount = periodAttendance.length - daysWorked;
+            const grossSalary = periodAttendance.length * hoursPerDay * hourlyRate; // What they would earn without deductions
             const unpaidDaysDeductions = unpaidDaysCount * hoursPerDay * hourlyRate;
             
             // We'll calculate late/early deductions from the difference between gross and actual paid
@@ -522,19 +621,13 @@ export async function POST(request: NextRequest) {
             console.log(`[New Overtime Calc] Amounts - Base: ${basePayout.toFixed(2)}, Overtime (1.5x): ${overtimePayout.toFixed(2)}, Excess Overtime (regular): ${excessOvertimePayout.toFixed(2)}, Holiday (2x): ${holidayPayout.toFixed(2)}, Total: ${totalAmount.toFixed(2)}`);
             
             // Count unpaid days for reporting
-            const unpaidDays = monthAttendance.length - daysWorked;
+            const unpaidDays = periodAttendance.length - daysWorked;
 
             const existingPayout = await prisma.payout.findFirst({
               where: {
                 employeeId: employee.id,
-                AND: [
-                  {
-                    periodStart: {
-                      gte: new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0)), // Start of target month (UTC)
-                      lt: new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))  // Start of next month (UTC)
-                    }
-                  }
-                ]
+                periodStart: periodStart,
+                periodEnd: periodEnd
               }
             });
 

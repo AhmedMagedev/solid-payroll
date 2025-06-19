@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, startOfWeek, endOfWeek, subWeeks, differenceInMinutes, eachDayOfInterval } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, differenceInMinutes, eachDayOfInterval } from 'date-fns';
 import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -93,6 +93,13 @@ interface Penalty {
   type: string;
   label: string;
   color: string;
+}
+
+interface PayoutPeriod {
+  label: string;
+  start: Date;
+  end: Date;
+  existingPayout?: Payout;
 }
 
 export default function EmployeePayoutsPage() {
@@ -249,39 +256,40 @@ export default function EmployeePayoutsPage() {
     );
   }
 
-  // Get payment periods based on payment basis
-  const getPaymentPeriods = () => {
-    const now = new Date();
-    const periods = [];
+  // Get actual payouts from database with their proper periods
+  const getPayoutsFromDatabase = () => {
+    console.log(`[Database Payouts] Employee ${employee.name} has ${existingPayouts.length} payouts in database`);
     
-    console.log(`[Frontend Periods] Employee ${employee.name} has payment basis: ${employee.paymentBasis}`);
+    // Convert database payouts to the format expected by the UI
+    const payoutPeriods = existingPayouts.map(payout => ({
+      label: formatPayoutPeriodLabel(payout),
+      start: new Date(payout.periodStart),
+      end: new Date(payout.periodEnd),
+      existingPayout: payout
+    }));
     
-    if (employee.paymentBasis === 'Weekly') {
-      // Show last 12 weeks for weekly employees
-      for (let i = 0; i < 12; i++) {
-        const weekStart = startOfWeek(subWeeks(now, i), { weekStartsOn: 0 }); // Start on Sunday
-        const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 }); // End on Saturday
-        periods.push({
-          label: `Week of ${format(weekStart, 'MMM d, yyyy')}`,
-          start: weekStart,
-          end: weekEnd
-        });
-      }
+    // Sort by period start date (newest first)
+    payoutPeriods.sort((a, b) => b.start.getTime() - a.start.getTime());
+    
+    console.log(`[Database Payouts] Formatted ${payoutPeriods.length} payout periods`);
+    return payoutPeriods;
+  };
+  
+  // Format payout period label based on the period dates
+  const formatPayoutPeriodLabel = (payout: Payout) => {
+    const start = new Date(payout.periodStart);
+    const end = new Date(payout.periodEnd);
+    
+    // Check if it's a weekly period (6-7 days) or monthly period
+    const diffDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays <= 7) {
+      // Weekly period - show week range
+      return `Week ${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
     } else {
-      // Show last 6 months for monthly employees (default for Monthly and Daily payment basis)
-      for (let i = 0; i < 6; i++) {
-        const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const monthStart = startOfMonth(monthDate);
-        const monthEnd = endOfMonth(monthDate);
-        periods.push({
-          label: format(monthStart, 'MMMM yyyy'),
-          start: monthStart,
-          end: monthEnd
-        });
-      }
+      // Monthly period - show month name
+      return format(start, 'MMMM yyyy');
     }
-    
-    return periods;
   };
   
   // Calculate payout for a period
@@ -500,7 +508,7 @@ export default function EmployeePayoutsPage() {
     return null; // No working day found in the next 7 days
   };
   
-  const paymentPeriods = getPaymentPeriods();
+  const paymentPeriods = getPayoutsFromDatabase();
   
   // Helper function to generate period key
   const getPeriodKey = (periodStart: Date, periodEnd: Date) => {
@@ -944,9 +952,9 @@ export default function EmployeePayoutsPage() {
                 
                 {/* Payouts List */}
                 <div className="space-y-6">
-                  {currentPayouts.map((period, localIndex) => {
+                  {currentPayouts.map((period: PayoutPeriod, localIndex: number) => {
                     const index = startIndex + localIndex; // Adjust index for proper form IDs
-            const existingPayout = findExistingPayout(period.start, period.end);
+            const existingPayout = period.existingPayout || findExistingPayout(period.start, period.end);
             const currentState = getCurrentState(period.start, period.end);
             
             // Use stored database values if payout exists, otherwise calculate for new periods
@@ -1030,7 +1038,7 @@ export default function EmployeePayoutsPage() {
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-3">
                         <div>
-                          <h3 className="text-md font-medium mb-3">💰 {period.label} - Payout Breakdown</h3>
+                          <h3 className="text-md font-medium mb-3"> {period.label} - Payout Breakdown</h3>
                           
                           {/* Calculate deductions for display */}
                           {(() => {
@@ -1063,24 +1071,24 @@ export default function EmployeePayoutsPage() {
                               <div className="space-y-2">
                                 {/* Gross Salary */}
                                 <div className="flex justify-between items-center p-2 bg-green-50 rounded">
-                                  <span className="text-green-700 font-medium">💰 Complete Salary (No Deductions)</span>
+                                  <span className="text-green-700 font-medium">Complete Salary (No Deductions)</span>
                                   <span className="font-bold text-green-800">L.E {grossSalary.toFixed(2)}</span>
                                 </div>
                                 
                                 {/* Deductions Section */}
                                 {totalDeductions > 0 && (
                                   <div className="p-2 bg-red-50 rounded">
-                                    <div className="font-medium text-red-700 mb-2">📉 Deductions:</div>
+                                    <div className="font-medium text-red-700 mb-2">Deductions:</div>
                                     <div className="space-y-1 ml-2">
                                       {unpaidDaysDeductions > 0 && (
                                         <div className="flex justify-between items-center text-sm">
-                                          <span className="text-red-600">📅 Unpaid Days ({unpaidDaysCount} days)</span>
+                                          <span className="text-red-600">Unpaid Days ({unpaidDaysCount} days)</span>
                                           <span className="font-semibold text-red-700">-L.E {unpaidDaysDeductions.toFixed(2)}</span>
                                         </div>
                                       )}
                                       {penaltyDeductions > 0 && (
                                         <div className="flex justify-between items-center text-sm">
-                                          <span className="text-red-600">⏰ Time Penalties ({hoursPenalized.toFixed(1)} hrs)</span>
+                                          <span className="text-red-600">Time Penalties ({hoursPenalized.toFixed(1)} hrs)</span>
                                           <span className="font-semibold text-red-700">-L.E {penaltyDeductions.toFixed(2)}</span>
                                         </div>
                                       )}
@@ -1094,7 +1102,7 @@ export default function EmployeePayoutsPage() {
                                 
                                 {/* Base Amount After Deductions */}
                                 <div className="flex justify-between items-center p-2 bg-blue-50 rounded">
-                                  <span className="text-blue-700 font-medium">💼 Base Payout (After Deductions)</span>
+                                  <span className="text-blue-700 font-medium">Base Payout (After Deductions)</span>
                                   <span className="font-bold text-blue-800">L.E {basePayout.toFixed(2)}</span>
                                 </div>
                                 
@@ -1102,7 +1110,7 @@ export default function EmployeePayoutsPage() {
                                 <div className="p-2 bg-orange-50 rounded">
                                   <div className="flex justify-between items-center mb-2">
                                     <div className="flex items-center gap-2">
-                                      <span className="font-medium text-orange-700">🕐 Overtime ({overtimeHours.toFixed(1)} hrs)</span>
+                                      <span className="font-medium text-orange-700">Overtime ({overtimeHours.toFixed(1)} hrs)</span>
                                       <Switch
                                         id={`overtime-toggle-${index}`}
                                         checked={currentState.includeOvertime}
@@ -1117,17 +1125,17 @@ export default function EmployeePayoutsPage() {
                                   </div>
                                   {!currentState.includeOvertime && overtimePayout > 0 && (
                                     <div className="text-xs text-orange-600">
-                                      ⚠️ Overtime pay excluded from payout
+                                      Overtime pay excluded from payout
                                     </div>
                                   )}
                                   {excessOvertimeHours >= 0.1 && (
                                     <div className="text-xs text-amber-600">
-                                      ℹ️ {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
+                                      {excessOvertimeHours.toFixed(1)} hrs beyond 2-hour overtime cap paid at regular rate
                                     </div>
                                   )}
                                   {overtimeHours === 0 && (
                                     <div className="text-xs text-orange-600">
-                                      ℹ️ No overtime hours calculated
+                                      No overtime hours calculated
                                     </div>
                                   )}
                                 </div>
@@ -1146,7 +1154,7 @@ export default function EmployeePayoutsPage() {
                                 
                                 {/* Final Payout */}
                                 <div className="flex justify-between items-center p-3 bg-gray-100 rounded-lg border-2 border-gray-300">
-                                  <span className="text-gray-800 font-bold text-lg">💳 Final Payout</span>
+                                  <span className="text-gray-800 font-bold text-lg">Final Payout</span>
                                   <span className="font-bold text-gray-900 text-xl">L.E {actualPayout.toFixed(2)}</span>
                                 </div>
                               </div>
@@ -1191,7 +1199,6 @@ export default function EmployeePayoutsPage() {
                           </div>
                           <div className="flex justify-between items-center text-sm">
                             <span className="flex items-center">
-                              <Clock className="h-3 w-3 mr-1" />
                               Regular Hours
                             </span>
                             <span className="font-medium">{regularHours.toFixed(1)} / {expectedHours}</span>
