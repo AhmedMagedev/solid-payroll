@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
 import { verifyToken } from '@/app/lib/auth';
-import { parseEgyptTimeToUtc, isCheckInBeyondGracePeriod } from '@/lib/timezone';
+// Removed timezone conversion imports - keeping dates/times as-is
 import { startOfWeek, endOfWeek, format } from 'date-fns';
 
 const prisma = new PrismaClient();
@@ -101,9 +101,9 @@ export async function POST(request: NextRequest) {
       console.log(`[API] Parsing line: ${line}`);
       console.log(`[API] Extracted - DeviceID: ${deviceId}, Timestamp: ${timeString}`);
 
-      // Use the Egypt timezone parser
-      const checkInDateTime = parseEgyptTimeToUtc(timeString);
-      if (!checkInDateTime) {
+      // Parse the timestamp as-is without timezone conversion
+      const checkInDateTime = new Date(timeString);
+      if (isNaN(checkInDateTime.getTime())) {
         console.log(`Skipping record ${line}: Invalid timestamp "${timeString}"`);
         continue;
       }
@@ -121,13 +121,13 @@ export async function POST(request: NextRequest) {
       }
 
       // Calculate if this should be a paid day based on grace period
-      const isPaidDay = !isCheckInBeyondGracePeriod(
-        checkInDateTime,
-        workingHoursStart,
-        lateAllowanceMinutes
-      );
+      // Simple grace period check without timezone conversion
+      const [hours, minutes] = workingHoursStart.split(':');
+      const graceEndTime = new Date(checkInDateTime);
+      graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
+      const isPaidDay = checkInDateTime <= graceEndTime;
 
-      const dateKey = checkInDateTime.toISOString().split('T')[0]; // YYYY-MM-DD format
+      const dateKey = parts[1]; // Use the original date string YYYY-MM-DD
       const employeeKey = `${employee.id}-${dateKey}`;
 
       // Create employee entry if not exists
@@ -176,29 +176,9 @@ export async function POST(request: NextRequest) {
 
         console.log(`[API] Employee ${employee.name} on ${date}: First record: ${firstRecord}, Last record: ${lastRecord}`);
 
-        // Parse check-in and check-out times
+        // Parse check-in and check-out times as-is without timezone conversion
         const parseTime = (timeStr: string) => {
-          const match = timeStr.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/);
-          if (!match) return null;
-          const [, year, month, day, hours, minutes, seconds] = match;
-          
-          // Create date in local time (UTC+3 for production)
-          // This ensures the time is stored as intended regardless of server timezone
-          const localDate = new Date(
-            parseInt(year), 
-            parseInt(month) - 1, 
-            parseInt(day), 
-            parseInt(hours), 
-            parseInt(minutes), 
-            parseInt(seconds)
-          );
-          
-          // For production, adjust for UTC+3 timezone
-          // This ensures times are stored correctly for the business timezone
-          const timezoneOffset = 3 * 60; // UTC+3 in minutes
-          const utcTime = new Date(localDate.getTime() - (timezoneOffset * 60 * 1000));
-          
-          return utcTime;
+          return new Date(timeStr);
         };
 
         const checkIn = parseTime(firstRecord);
@@ -219,18 +199,21 @@ export async function POST(request: NextRequest) {
           actualHoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
           hoursWorked = actualHoursWorked;
           
-          // Apply new penalty rules (9:00-18:00 with 30min grace = 9:30-18:30)
+          // Apply penalty rules using dynamic grace period from settings
+          const [startHours, startMinutes] = workingHoursStart.split(':');
+          const [endHours, endMinutes] = systemSettings?.workingHoursEnd?.split(':') || ['18', '0'];
+          
           const standardWorkStart = new Date(checkIn);
-          standardWorkStart.setHours(9, 0, 0, 0); // 9:00 AM
+          standardWorkStart.setHours(parseInt(startHours), parseInt(startMinutes), 0, 0);
           
           const standardWorkEnd = new Date(checkIn);
-          standardWorkEnd.setHours(18, 0, 0, 0); // 6:00 PM
+          standardWorkEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
           
           const graceWorkStart = new Date(checkIn);
-          graceWorkStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace)
+          graceWorkStart.setHours(parseInt(startHours), parseInt(startMinutes) + lateAllowanceMinutes, 0, 0);
           
           const compensationWorkEnd = new Date(checkIn);
-          compensationWorkEnd.setHours(18, 30, 0, 0); // 6:30 PM (compensation for grace)
+          compensationWorkEnd.setHours(parseInt(endHours), parseInt(endMinutes) + lateAllowanceMinutes, 0, 0);
           
           // Check for late arrival penalties
           const minutesLate = Math.max(0, (checkIn.getTime() - graceWorkStart.getTime()) / (1000 * 60));
@@ -245,15 +228,15 @@ export async function POST(request: NextRequest) {
           
           // Apply late penalties and track deductions
           if (minutesLate > 0) {
-            if (minutesLate >= 150) { // More than 2.5 hours late (2h + 30min grace)
+            if (minutesLate >= 150) { // More than 2.5 hours late (2h + grace period)
               lateDeductionHours = actualHoursWorked; // Whole day deducted
               hoursWorked = 0; // Whole day unpaid
               console.log(`[Hours Calc] Penalty: Whole day unpaid (${minutesLate.toFixed(1)} minutes late) - ${lateDeductionHours.toFixed(2)} hours deducted`);
-            } else if (minutesLate >= 90) { // 1.5-2.5 hours late (1h + 30min grace to 2h + 30min grace)
+            } else if (minutesLate >= 90) { // 1.5-2.5 hours late (1h + grace period to 2h + grace period)
               lateDeductionHours = 4.5; // Half day deduction
               hoursWorked = Math.max(0, actualHoursWorked - 4.5); // Deduct half day (4.5 hours)
               console.log(`[Hours Calc] Penalty: Half day deducted (${minutesLate.toFixed(1)} minutes late) - ${lateDeductionHours} hours deducted`);
-            } else if (minutesLate >= 30) { // 30min-1.5h late (30min grace to 1h + 30min grace)
+            } else if (minutesLate >= 30) { // 30min-1.5h late (30min to 1h + grace period)
               lateDeductionHours = 2; // 2 hours deduction
               hoursWorked = Math.max(0, actualHoursWorked - 2); // Deduct 2 hours
               console.log(`[Hours Calc] Penalty: 2 hours deducted (${minutesLate.toFixed(1)} minutes late) - ${lateDeductionHours} hours deducted`);
@@ -280,7 +263,7 @@ export async function POST(request: NextRequest) {
 
         const attendanceData = {
           employeeId: employee.id,
-          date: new Date(date),
+          date: new Date(date + 'T00:00:00'), // Convert YYYY-MM-DD string to Date
           checkIn,
           checkOut,
           hoursWorked: hoursWorked > 0 ? hoursWorked : null,

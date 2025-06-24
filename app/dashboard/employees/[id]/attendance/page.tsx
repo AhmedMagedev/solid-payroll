@@ -39,6 +39,9 @@ interface SystemSettings {
   workDayFriday: boolean;
   workDaySaturday: boolean;
   workingHoursPerDay: number;
+  lateAllowanceMinutes: number;
+  workingHoursStart: string;
+  workingHoursEnd: string;
 }
 
 interface Penalty {
@@ -123,19 +126,22 @@ export default function EmployeeAttendancePage() {
   const calculatePenalties = (record: AttendanceRecord): Penalty[] => {
     const penalties: Penalty[] = [];
     
-    if (!record.checkIn || !record.date) return penalties;
+    if (!record.checkIn || !record.date || !systemSettings) return penalties;
     
     try {
       const recordDate = parseISO(record.date);
       const checkInTime = new Date(record.checkIn);
       const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
       
-      // Working hours: 9:00 AM - 6:00 PM (with 30min grace period)
+      // Working hours with dynamic grace period from settings
+      const [startHours, startMinutes] = systemSettings.workingHoursStart.split(':');
+      const [endHours, endMinutes] = systemSettings.workingHoursEnd.split(':');
+      
       const workStart = new Date(recordDate);
-      workStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace period)
+      workStart.setHours(parseInt(startHours), parseInt(startMinutes) + systemSettings.lateAllowanceMinutes, 0, 0);
       
       const workEnd = new Date(recordDate);
-      workEnd.setHours(18, 0, 0, 0); // 6:00 PM
+      workEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
       
       // Check if it's an unpaid day
       if (record.isPaidDay === false) {

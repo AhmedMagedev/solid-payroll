@@ -45,6 +45,14 @@ interface Penalty {
   color: string;
 }
 
+interface SystemSettings {
+  id: number;
+  lateAllowanceMinutes: number;
+  workingHoursStart: string;
+  workingHoursEnd: string;
+  workingHoursPerDay: number;
+}
+
 export default function AttendancePage() {
   const router = useRouter();
   const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
@@ -53,6 +61,7 @@ export default function AttendancePage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
 
   const fetchAttendance = useCallback(async (page: number, search: string) => {
     try {
@@ -86,9 +95,25 @@ export default function AttendancePage() {
     }
   }, []);
 
+  const fetchSystemSettings = async () => {
+    try {
+      const response = await fetch('/api/settings', {
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const settings = await response.json();
+        setSystemSettings(settings);
+      }
+    } catch (error) {
+      console.error('Failed to fetch system settings:', error);
+    }
+  };
+
   useEffect(() => {
     fetchAttendance(currentPage, searchTerm);
-  }, [currentPage, fetchAttendance]);
+    fetchSystemSettings();
+  }, [currentPage, searchTerm, fetchAttendance]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,19 +153,22 @@ export default function AttendancePage() {
   const calculatePenalties = (record: Attendance): Penalty[] => {
     const penalties: Penalty[] = [];
     
-    if (!record.checkIn || !record.date) return penalties;
+    if (!record.checkIn || !record.date || !systemSettings) return penalties;
     
     try {
       const recordDate = parseISO(record.date);
       const checkInTime = new Date(record.checkIn);
       const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
       
-      // Working hours: 9:00 AM - 6:00 PM (with 30min grace period)
+      // Working hours with dynamic grace period from settings
+      const [startHours, startMinutes] = systemSettings.workingHoursStart.split(':');
+      const [endHours, endMinutes] = systemSettings.workingHoursEnd.split(':');
+      
       const workStart = new Date(recordDate);
-      workStart.setHours(9, 30, 0, 0); // 9:30 AM (with grace period)
+      workStart.setHours(parseInt(startHours), parseInt(startMinutes) + systemSettings.lateAllowanceMinutes, 0, 0);
       
       const workEnd = new Date(recordDate);
-      workEnd.setHours(18, 0, 0, 0); // 6:00 PM
+      workEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
       
       // Check if it's an unpaid day
       if (record.isPaidDay === false) {
