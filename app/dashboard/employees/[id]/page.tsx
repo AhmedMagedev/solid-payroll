@@ -30,11 +30,24 @@ export default function EmployeeProfilePage() {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
   const employeeId = parseInt(id, 10);
 
   useEffect(() => {
+    // Check if user is admin from localStorage token
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setIsAdmin(payload.isAdmin || false);
+      } catch (error) {
+        console.error('Error parsing token:', error);
+        setIsAdmin(false);
+      }
+    }
+
     async function fetchEmployee() {
       if (isNaN(employeeId)) {
         setError('Invalid employee ID');
@@ -240,13 +253,15 @@ export default function EmployeeProfilePage() {
             >
               View Attendance
             </Button>
-            <Button 
-              variant="outline" 
-              className="sm:flex-1"
-              onClick={() => router.push(`/dashboard/employees/${employee.id}/payouts`)}
-            >
-              Payouts
-            </Button>
+            {isAdmin && (
+              <Button 
+                variant="outline" 
+                className="sm:flex-1"
+                onClick={() => router.push(`/dashboard/employees/${employee.id}/payouts`)}
+              >
+                Payouts
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

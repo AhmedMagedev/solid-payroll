@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/app/lib/auth';
 
 const PROTECTED_ROUTES = ['/dashboard', '/dashboard/employees', '/']; // Root is also protected
+const ADMIN_ROUTES = ['/dashboard/admin']; // Routes that require admin access
 const PUBLIC_FILE = /\.(.*)$/;
 
 export async function middleware(request: NextRequest) {
@@ -54,6 +55,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  // Check admin access for admin routes
+  if (session && ADMIN_ROUTES.some(route => pathname.startsWith(route))) {
+    if (!session.isAdmin) {
+      console.log(`[Middleware] Non-admin user trying to access admin route ${pathname}, redirecting to dashboard.`);
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
   // If user has a valid token and tries to access the root path, redirect to dashboard
   if (session && pathname === '/') {
     console.log('[Middleware] User with valid token on root path, redirecting to dashboard.');
@@ -68,6 +77,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Match all request paths except for API routes that handle their own auth
-    '/((?!api/(?!employees|attendance)).*)',
+    '/((?!api/(?!employees|attendance|users)).*)',
   ],
 }; 

@@ -29,6 +29,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Attendance = $Result.DefaultSelection<Prisma.$AttendancePayload>
 /**
+ * Model AttendancePenalty
+ * 
+ */
+export type AttendancePenalty = $Result.DefaultSelection<Prisma.$AttendancePenaltyPayload>
+/**
  * Model Payout
  * 
  */
@@ -198,6 +203,16 @@ export class PrismaClient<
     * ```
     */
   get attendance(): Prisma.AttendanceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.attendancePenalty`: Exposes CRUD operations for the **AttendancePenalty** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AttendancePenalties
+    * const attendancePenalties = await prisma.attendancePenalty.findMany()
+    * ```
+    */
+  get attendancePenalty(): Prisma.AttendancePenaltyDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.payout`: Exposes CRUD operations for the **Payout** model.
@@ -671,6 +686,7 @@ export namespace Prisma {
     Employee: 'Employee',
     User: 'User',
     Attendance: 'Attendance',
+    AttendancePenalty: 'AttendancePenalty',
     Payout: 'Payout',
     PayoutAdjustment: 'PayoutAdjustment',
     SystemSettings: 'SystemSettings'
@@ -692,7 +708,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "employee" | "user" | "attendance" | "payout" | "payoutAdjustment" | "systemSettings"
+      modelProps: "employee" | "user" | "attendance" | "attendancePenalty" | "payout" | "payoutAdjustment" | "systemSettings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -915,6 +931,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AttendanceCountArgs<ExtArgs>
             result: $Utils.Optional<AttendanceCountAggregateOutputType> | number
+          }
+        }
+      }
+      AttendancePenalty: {
+        payload: Prisma.$AttendancePenaltyPayload<ExtArgs>
+        fields: Prisma.AttendancePenaltyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AttendancePenaltyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AttendancePenaltyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>
+          }
+          findFirst: {
+            args: Prisma.AttendancePenaltyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AttendancePenaltyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>
+          }
+          findMany: {
+            args: Prisma.AttendancePenaltyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>[]
+          }
+          create: {
+            args: Prisma.AttendancePenaltyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>
+          }
+          createMany: {
+            args: Prisma.AttendancePenaltyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AttendancePenaltyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>[]
+          }
+          delete: {
+            args: Prisma.AttendancePenaltyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>
+          }
+          update: {
+            args: Prisma.AttendancePenaltyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>
+          }
+          deleteMany: {
+            args: Prisma.AttendancePenaltyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AttendancePenaltyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AttendancePenaltyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>[]
+          }
+          upsert: {
+            args: Prisma.AttendancePenaltyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePenaltyPayload>
+          }
+          aggregate: {
+            args: Prisma.AttendancePenaltyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAttendancePenalty>
+          }
+          groupBy: {
+            args: Prisma.AttendancePenaltyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AttendancePenaltyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AttendancePenaltyCountArgs<ExtArgs>
+            result: $Utils.Optional<AttendancePenaltyCountAggregateOutputType> | number
           }
         }
       }
@@ -1227,6 +1317,7 @@ export namespace Prisma {
     employee?: EmployeeOmit
     user?: UserOmit
     attendance?: AttendanceOmit
+    attendancePenalty?: AttendancePenaltyOmit
     payout?: PayoutOmit
     payoutAdjustment?: PayoutAdjustmentOmit
     systemSettings?: SystemSettingsOmit
@@ -1356,6 +1447,37 @@ export namespace Prisma {
    */
   export type EmployeeCountOutputTypeCountPayoutsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PayoutWhereInput
+  }
+
+
+  /**
+   * Count Type AttendanceCountOutputType
+   */
+
+  export type AttendanceCountOutputType = {
+    penalties: number
+  }
+
+  export type AttendanceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    penalties?: boolean | AttendanceCountOutputTypeCountPenaltiesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AttendanceCountOutputType without action
+   */
+  export type AttendanceCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendanceCountOutputType
+     */
+    select?: AttendanceCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AttendanceCountOutputType without action
+   */
+  export type AttendanceCountOutputTypeCountPenaltiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttendancePenaltyWhereInput
   }
 
 
@@ -2619,6 +2741,7 @@ export namespace Prisma {
     id: number | null
     username: string | null
     password: string | null
+    isAdmin: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2627,6 +2750,7 @@ export namespace Prisma {
     id: number | null
     username: string | null
     password: string | null
+    isAdmin: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2635,6 +2759,7 @@ export namespace Prisma {
     id: number
     username: number
     password: number
+    isAdmin: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2653,6 +2778,7 @@ export namespace Prisma {
     id?: true
     username?: true
     password?: true
+    isAdmin?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2661,6 +2787,7 @@ export namespace Prisma {
     id?: true
     username?: true
     password?: true
+    isAdmin?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2669,6 +2796,7 @@ export namespace Prisma {
     id?: true
     username?: true
     password?: true
+    isAdmin?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2764,6 +2892,7 @@ export namespace Prisma {
     id: number
     username: string
     password: string
+    isAdmin: boolean
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -2791,6 +2920,7 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
+    isAdmin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2799,6 +2929,7 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
+    isAdmin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2807,6 +2938,7 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
+    isAdmin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2815,11 +2947,12 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
+    isAdmin?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "isAdmin" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -2828,6 +2961,7 @@ export namespace Prisma {
       id: number
       username: string
       password: string
+      isAdmin: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -3256,6 +3390,7 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'Int'>
     readonly username: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -3643,6 +3778,11 @@ export namespace Prisma {
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
+    graceMinutesUsed: number | null
+    lateMinutesBeyondGrace: number | null
+    makeupTimeRequired: number | null
+    makeupTimeCompleted: number | null
+    totalPenaltyAmount: number | null
   }
 
   export type AttendanceSumAggregateOutputType = {
@@ -3652,6 +3792,11 @@ export namespace Prisma {
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
+    graceMinutesUsed: number | null
+    lateMinutesBeyondGrace: number | null
+    makeupTimeRequired: number | null
+    makeupTimeCompleted: number | null
+    totalPenaltyAmount: number | null
   }
 
   export type AttendanceMinAggregateOutputType = {
@@ -3667,6 +3812,11 @@ export namespace Prisma {
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
+    graceMinutesUsed: number | null
+    lateMinutesBeyondGrace: number | null
+    makeupTimeRequired: number | null
+    makeupTimeCompleted: number | null
+    totalPenaltyAmount: number | null
   }
 
   export type AttendanceMaxAggregateOutputType = {
@@ -3682,6 +3832,11 @@ export namespace Prisma {
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
+    graceMinutesUsed: number | null
+    lateMinutesBeyondGrace: number | null
+    makeupTimeRequired: number | null
+    makeupTimeCompleted: number | null
+    totalPenaltyAmount: number | null
   }
 
   export type AttendanceCountAggregateOutputType = {
@@ -3697,6 +3852,11 @@ export namespace Prisma {
     actualHoursWorked: number
     lateDeductionHours: number
     earlyDeductionHours: number
+    graceMinutesUsed: number
+    lateMinutesBeyondGrace: number
+    makeupTimeRequired: number
+    makeupTimeCompleted: number
+    totalPenaltyAmount: number
     _all: number
   }
 
@@ -3708,6 +3868,11 @@ export namespace Prisma {
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
+    graceMinutesUsed?: true
+    lateMinutesBeyondGrace?: true
+    makeupTimeRequired?: true
+    makeupTimeCompleted?: true
+    totalPenaltyAmount?: true
   }
 
   export type AttendanceSumAggregateInputType = {
@@ -3717,6 +3882,11 @@ export namespace Prisma {
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
+    graceMinutesUsed?: true
+    lateMinutesBeyondGrace?: true
+    makeupTimeRequired?: true
+    makeupTimeCompleted?: true
+    totalPenaltyAmount?: true
   }
 
   export type AttendanceMinAggregateInputType = {
@@ -3732,6 +3902,11 @@ export namespace Prisma {
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
+    graceMinutesUsed?: true
+    lateMinutesBeyondGrace?: true
+    makeupTimeRequired?: true
+    makeupTimeCompleted?: true
+    totalPenaltyAmount?: true
   }
 
   export type AttendanceMaxAggregateInputType = {
@@ -3747,6 +3922,11 @@ export namespace Prisma {
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
+    graceMinutesUsed?: true
+    lateMinutesBeyondGrace?: true
+    makeupTimeRequired?: true
+    makeupTimeCompleted?: true
+    totalPenaltyAmount?: true
   }
 
   export type AttendanceCountAggregateInputType = {
@@ -3762,6 +3942,11 @@ export namespace Prisma {
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
+    graceMinutesUsed?: true
+    lateMinutesBeyondGrace?: true
+    makeupTimeRequired?: true
+    makeupTimeCompleted?: true
+    totalPenaltyAmount?: true
     _all?: true
   }
 
@@ -3864,6 +4049,11 @@ export namespace Prisma {
     actualHoursWorked: number
     lateDeductionHours: number
     earlyDeductionHours: number
+    graceMinutesUsed: number
+    lateMinutesBeyondGrace: number
+    makeupTimeRequired: number
+    makeupTimeCompleted: number
+    totalPenaltyAmount: number
     _count: AttendanceCountAggregateOutputType | null
     _avg: AttendanceAvgAggregateOutputType | null
     _sum: AttendanceSumAggregateOutputType | null
@@ -3898,7 +4088,14 @@ export namespace Prisma {
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
+    graceMinutesUsed?: boolean
+    lateMinutesBeyondGrace?: boolean
+    makeupTimeRequired?: boolean
+    makeupTimeCompleted?: boolean
+    totalPenaltyAmount?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    penalties?: boolean | Attendance$penaltiesArgs<ExtArgs>
+    _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
   export type AttendanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3914,6 +4111,11 @@ export namespace Prisma {
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
+    graceMinutesUsed?: boolean
+    lateMinutesBeyondGrace?: boolean
+    makeupTimeRequired?: boolean
+    makeupTimeCompleted?: boolean
+    totalPenaltyAmount?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
@@ -3930,6 +4132,11 @@ export namespace Prisma {
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
+    graceMinutesUsed?: boolean
+    lateMinutesBeyondGrace?: boolean
+    makeupTimeRequired?: boolean
+    makeupTimeCompleted?: boolean
+    totalPenaltyAmount?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
@@ -3946,11 +4153,18 @@ export namespace Prisma {
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
+    graceMinutesUsed?: boolean
+    lateMinutesBeyondGrace?: boolean
+    makeupTimeRequired?: boolean
+    makeupTimeCompleted?: boolean
+    totalPenaltyAmount?: boolean
   }
 
-  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "date" | "checkIn" | "checkOut" | "hoursWorked" | "createdAt" | "updatedAt" | "isPaidDay" | "actualHoursWorked" | "lateDeductionHours" | "earlyDeductionHours", ExtArgs["result"]["attendance"]>
+  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "date" | "checkIn" | "checkOut" | "hoursWorked" | "createdAt" | "updatedAt" | "isPaidDay" | "actualHoursWorked" | "lateDeductionHours" | "earlyDeductionHours" | "graceMinutesUsed" | "lateMinutesBeyondGrace" | "makeupTimeRequired" | "makeupTimeCompleted" | "totalPenaltyAmount", ExtArgs["result"]["attendance"]>
   export type AttendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    penalties?: boolean | Attendance$penaltiesArgs<ExtArgs>
+    _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AttendanceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
@@ -3963,6 +4177,7 @@ export namespace Prisma {
     name: "Attendance"
     objects: {
       employee: Prisma.$EmployeePayload<ExtArgs>
+      penalties: Prisma.$AttendancePenaltyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3977,6 +4192,11 @@ export namespace Prisma {
       actualHoursWorked: number
       lateDeductionHours: number
       earlyDeductionHours: number
+      graceMinutesUsed: number
+      lateMinutesBeyondGrace: number
+      makeupTimeRequired: number
+      makeupTimeCompleted: number
+      totalPenaltyAmount: number
     }, ExtArgs["result"]["attendance"]>
     composites: {}
   }
@@ -4372,6 +4592,7 @@ export namespace Prisma {
   export interface Prisma__AttendanceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    penalties<T extends Attendance$penaltiesArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$penaltiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4413,6 +4634,11 @@ export namespace Prisma {
     readonly actualHoursWorked: FieldRef<"Attendance", 'Float'>
     readonly lateDeductionHours: FieldRef<"Attendance", 'Float'>
     readonly earlyDeductionHours: FieldRef<"Attendance", 'Float'>
+    readonly graceMinutesUsed: FieldRef<"Attendance", 'Int'>
+    readonly lateMinutesBeyondGrace: FieldRef<"Attendance", 'Int'>
+    readonly makeupTimeRequired: FieldRef<"Attendance", 'Float'>
+    readonly makeupTimeCompleted: FieldRef<"Attendance", 'Float'>
+    readonly totalPenaltyAmount: FieldRef<"Attendance", 'Float'>
   }
     
 
@@ -4809,6 +5035,30 @@ export namespace Prisma {
   }
 
   /**
+   * Attendance.penalties
+   */
+  export type Attendance$penaltiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    where?: AttendancePenaltyWhereInput
+    orderBy?: AttendancePenaltyOrderByWithRelationInput | AttendancePenaltyOrderByWithRelationInput[]
+    cursor?: AttendancePenaltyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttendancePenaltyScalarFieldEnum | AttendancePenaltyScalarFieldEnum[]
+  }
+
+  /**
    * Attendance without action
    */
   export type AttendanceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4824,6 +5074,1308 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AttendanceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AttendancePenalty
+   */
+
+  export type AggregateAttendancePenalty = {
+    _count: AttendancePenaltyCountAggregateOutputType | null
+    _avg: AttendancePenaltyAvgAggregateOutputType | null
+    _sum: AttendancePenaltySumAggregateOutputType | null
+    _min: AttendancePenaltyMinAggregateOutputType | null
+    _max: AttendancePenaltyMaxAggregateOutputType | null
+  }
+
+  export type AttendancePenaltyAvgAggregateOutputType = {
+    id: number | null
+    attendanceId: number | null
+    lateMinutes: number | null
+    earlyMinutes: number | null
+    missedHours: number | null
+    hoursDeducted: number | null
+    salaryDeducted: number | null
+    makeupHours: number | null
+  }
+
+  export type AttendancePenaltySumAggregateOutputType = {
+    id: number | null
+    attendanceId: number | null
+    lateMinutes: number | null
+    earlyMinutes: number | null
+    missedHours: number | null
+    hoursDeducted: number | null
+    salaryDeducted: number | null
+    makeupHours: number | null
+  }
+
+  export type AttendancePenaltyMinAggregateOutputType = {
+    id: number | null
+    attendanceId: number | null
+    penaltyType: string | null
+    severity: string | null
+    description: string | null
+    lateMinutes: number | null
+    earlyMinutes: number | null
+    missedHours: number | null
+    hoursDeducted: number | null
+    salaryDeducted: number | null
+    makeupRequired: boolean | null
+    makeupHours: number | null
+    isActive: boolean | null
+    isWaived: boolean | null
+    waivedReason: string | null
+    waivedBy: string | null
+    waivedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AttendancePenaltyMaxAggregateOutputType = {
+    id: number | null
+    attendanceId: number | null
+    penaltyType: string | null
+    severity: string | null
+    description: string | null
+    lateMinutes: number | null
+    earlyMinutes: number | null
+    missedHours: number | null
+    hoursDeducted: number | null
+    salaryDeducted: number | null
+    makeupRequired: boolean | null
+    makeupHours: number | null
+    isActive: boolean | null
+    isWaived: boolean | null
+    waivedReason: string | null
+    waivedBy: string | null
+    waivedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AttendancePenaltyCountAggregateOutputType = {
+    id: number
+    attendanceId: number
+    penaltyType: number
+    severity: number
+    description: number
+    lateMinutes: number
+    earlyMinutes: number
+    missedHours: number
+    hoursDeducted: number
+    salaryDeducted: number
+    makeupRequired: number
+    makeupHours: number
+    isActive: number
+    isWaived: number
+    waivedReason: number
+    waivedBy: number
+    waivedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AttendancePenaltyAvgAggregateInputType = {
+    id?: true
+    attendanceId?: true
+    lateMinutes?: true
+    earlyMinutes?: true
+    missedHours?: true
+    hoursDeducted?: true
+    salaryDeducted?: true
+    makeupHours?: true
+  }
+
+  export type AttendancePenaltySumAggregateInputType = {
+    id?: true
+    attendanceId?: true
+    lateMinutes?: true
+    earlyMinutes?: true
+    missedHours?: true
+    hoursDeducted?: true
+    salaryDeducted?: true
+    makeupHours?: true
+  }
+
+  export type AttendancePenaltyMinAggregateInputType = {
+    id?: true
+    attendanceId?: true
+    penaltyType?: true
+    severity?: true
+    description?: true
+    lateMinutes?: true
+    earlyMinutes?: true
+    missedHours?: true
+    hoursDeducted?: true
+    salaryDeducted?: true
+    makeupRequired?: true
+    makeupHours?: true
+    isActive?: true
+    isWaived?: true
+    waivedReason?: true
+    waivedBy?: true
+    waivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AttendancePenaltyMaxAggregateInputType = {
+    id?: true
+    attendanceId?: true
+    penaltyType?: true
+    severity?: true
+    description?: true
+    lateMinutes?: true
+    earlyMinutes?: true
+    missedHours?: true
+    hoursDeducted?: true
+    salaryDeducted?: true
+    makeupRequired?: true
+    makeupHours?: true
+    isActive?: true
+    isWaived?: true
+    waivedReason?: true
+    waivedBy?: true
+    waivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AttendancePenaltyCountAggregateInputType = {
+    id?: true
+    attendanceId?: true
+    penaltyType?: true
+    severity?: true
+    description?: true
+    lateMinutes?: true
+    earlyMinutes?: true
+    missedHours?: true
+    hoursDeducted?: true
+    salaryDeducted?: true
+    makeupRequired?: true
+    makeupHours?: true
+    isActive?: true
+    isWaived?: true
+    waivedReason?: true
+    waivedBy?: true
+    waivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AttendancePenaltyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AttendancePenalty to aggregate.
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AttendancePenalties to fetch.
+     */
+    orderBy?: AttendancePenaltyOrderByWithRelationInput | AttendancePenaltyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AttendancePenaltyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AttendancePenalties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AttendancePenalties.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AttendancePenalties
+    **/
+    _count?: true | AttendancePenaltyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AttendancePenaltyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AttendancePenaltySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AttendancePenaltyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AttendancePenaltyMaxAggregateInputType
+  }
+
+  export type GetAttendancePenaltyAggregateType<T extends AttendancePenaltyAggregateArgs> = {
+        [P in keyof T & keyof AggregateAttendancePenalty]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAttendancePenalty[P]>
+      : GetScalarType<T[P], AggregateAttendancePenalty[P]>
+  }
+
+
+
+
+  export type AttendancePenaltyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttendancePenaltyWhereInput
+    orderBy?: AttendancePenaltyOrderByWithAggregationInput | AttendancePenaltyOrderByWithAggregationInput[]
+    by: AttendancePenaltyScalarFieldEnum[] | AttendancePenaltyScalarFieldEnum
+    having?: AttendancePenaltyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AttendancePenaltyCountAggregateInputType | true
+    _avg?: AttendancePenaltyAvgAggregateInputType
+    _sum?: AttendancePenaltySumAggregateInputType
+    _min?: AttendancePenaltyMinAggregateInputType
+    _max?: AttendancePenaltyMaxAggregateInputType
+  }
+
+  export type AttendancePenaltyGroupByOutputType = {
+    id: number
+    attendanceId: number
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes: number | null
+    earlyMinutes: number | null
+    missedHours: number | null
+    hoursDeducted: number
+    salaryDeducted: number
+    makeupRequired: boolean
+    makeupHours: number
+    isActive: boolean
+    isWaived: boolean
+    waivedReason: string | null
+    waivedBy: string | null
+    waivedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AttendancePenaltyCountAggregateOutputType | null
+    _avg: AttendancePenaltyAvgAggregateOutputType | null
+    _sum: AttendancePenaltySumAggregateOutputType | null
+    _min: AttendancePenaltyMinAggregateOutputType | null
+    _max: AttendancePenaltyMaxAggregateOutputType | null
+  }
+
+  type GetAttendancePenaltyGroupByPayload<T extends AttendancePenaltyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AttendancePenaltyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AttendancePenaltyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AttendancePenaltyGroupByOutputType[P]>
+            : GetScalarType<T[P], AttendancePenaltyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AttendancePenaltySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    attendanceId?: boolean
+    penaltyType?: boolean
+    severity?: boolean
+    description?: boolean
+    lateMinutes?: boolean
+    earlyMinutes?: boolean
+    missedHours?: boolean
+    hoursDeducted?: boolean
+    salaryDeducted?: boolean
+    makeupRequired?: boolean
+    makeupHours?: boolean
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: boolean
+    waivedBy?: boolean
+    waivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attendance?: boolean | AttendanceDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["attendancePenalty"]>
+
+  export type AttendancePenaltySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    attendanceId?: boolean
+    penaltyType?: boolean
+    severity?: boolean
+    description?: boolean
+    lateMinutes?: boolean
+    earlyMinutes?: boolean
+    missedHours?: boolean
+    hoursDeducted?: boolean
+    salaryDeducted?: boolean
+    makeupRequired?: boolean
+    makeupHours?: boolean
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: boolean
+    waivedBy?: boolean
+    waivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attendance?: boolean | AttendanceDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["attendancePenalty"]>
+
+  export type AttendancePenaltySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    attendanceId?: boolean
+    penaltyType?: boolean
+    severity?: boolean
+    description?: boolean
+    lateMinutes?: boolean
+    earlyMinutes?: boolean
+    missedHours?: boolean
+    hoursDeducted?: boolean
+    salaryDeducted?: boolean
+    makeupRequired?: boolean
+    makeupHours?: boolean
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: boolean
+    waivedBy?: boolean
+    waivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attendance?: boolean | AttendanceDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["attendancePenalty"]>
+
+  export type AttendancePenaltySelectScalar = {
+    id?: boolean
+    attendanceId?: boolean
+    penaltyType?: boolean
+    severity?: boolean
+    description?: boolean
+    lateMinutes?: boolean
+    earlyMinutes?: boolean
+    missedHours?: boolean
+    hoursDeducted?: boolean
+    salaryDeducted?: boolean
+    makeupRequired?: boolean
+    makeupHours?: boolean
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: boolean
+    waivedBy?: boolean
+    waivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AttendancePenaltyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "attendanceId" | "penaltyType" | "severity" | "description" | "lateMinutes" | "earlyMinutes" | "missedHours" | "hoursDeducted" | "salaryDeducted" | "makeupRequired" | "makeupHours" | "isActive" | "isWaived" | "waivedReason" | "waivedBy" | "waivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["attendancePenalty"]>
+  export type AttendancePenaltyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attendance?: boolean | AttendanceDefaultArgs<ExtArgs>
+  }
+  export type AttendancePenaltyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attendance?: boolean | AttendanceDefaultArgs<ExtArgs>
+  }
+  export type AttendancePenaltyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attendance?: boolean | AttendanceDefaultArgs<ExtArgs>
+  }
+
+  export type $AttendancePenaltyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AttendancePenalty"
+    objects: {
+      attendance: Prisma.$AttendancePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      attendanceId: number
+      penaltyType: string
+      severity: string
+      description: string
+      lateMinutes: number | null
+      earlyMinutes: number | null
+      missedHours: number | null
+      hoursDeducted: number
+      salaryDeducted: number
+      makeupRequired: boolean
+      makeupHours: number
+      isActive: boolean
+      isWaived: boolean
+      waivedReason: string | null
+      waivedBy: string | null
+      waivedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["attendancePenalty"]>
+    composites: {}
+  }
+
+  type AttendancePenaltyGetPayload<S extends boolean | null | undefined | AttendancePenaltyDefaultArgs> = $Result.GetResult<Prisma.$AttendancePenaltyPayload, S>
+
+  type AttendancePenaltyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AttendancePenaltyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AttendancePenaltyCountAggregateInputType | true
+    }
+
+  export interface AttendancePenaltyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AttendancePenalty'], meta: { name: 'AttendancePenalty' } }
+    /**
+     * Find zero or one AttendancePenalty that matches the filter.
+     * @param {AttendancePenaltyFindUniqueArgs} args - Arguments to find a AttendancePenalty
+     * @example
+     * // Get one AttendancePenalty
+     * const attendancePenalty = await prisma.attendancePenalty.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AttendancePenaltyFindUniqueArgs>(args: SelectSubset<T, AttendancePenaltyFindUniqueArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AttendancePenalty that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AttendancePenaltyFindUniqueOrThrowArgs} args - Arguments to find a AttendancePenalty
+     * @example
+     * // Get one AttendancePenalty
+     * const attendancePenalty = await prisma.attendancePenalty.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AttendancePenaltyFindUniqueOrThrowArgs>(args: SelectSubset<T, AttendancePenaltyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AttendancePenalty that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyFindFirstArgs} args - Arguments to find a AttendancePenalty
+     * @example
+     * // Get one AttendancePenalty
+     * const attendancePenalty = await prisma.attendancePenalty.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AttendancePenaltyFindFirstArgs>(args?: SelectSubset<T, AttendancePenaltyFindFirstArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AttendancePenalty that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyFindFirstOrThrowArgs} args - Arguments to find a AttendancePenalty
+     * @example
+     * // Get one AttendancePenalty
+     * const attendancePenalty = await prisma.attendancePenalty.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AttendancePenaltyFindFirstOrThrowArgs>(args?: SelectSubset<T, AttendancePenaltyFindFirstOrThrowArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AttendancePenalties that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AttendancePenalties
+     * const attendancePenalties = await prisma.attendancePenalty.findMany()
+     * 
+     * // Get first 10 AttendancePenalties
+     * const attendancePenalties = await prisma.attendancePenalty.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const attendancePenaltyWithIdOnly = await prisma.attendancePenalty.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AttendancePenaltyFindManyArgs>(args?: SelectSubset<T, AttendancePenaltyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AttendancePenalty.
+     * @param {AttendancePenaltyCreateArgs} args - Arguments to create a AttendancePenalty.
+     * @example
+     * // Create one AttendancePenalty
+     * const AttendancePenalty = await prisma.attendancePenalty.create({
+     *   data: {
+     *     // ... data to create a AttendancePenalty
+     *   }
+     * })
+     * 
+     */
+    create<T extends AttendancePenaltyCreateArgs>(args: SelectSubset<T, AttendancePenaltyCreateArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AttendancePenalties.
+     * @param {AttendancePenaltyCreateManyArgs} args - Arguments to create many AttendancePenalties.
+     * @example
+     * // Create many AttendancePenalties
+     * const attendancePenalty = await prisma.attendancePenalty.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AttendancePenaltyCreateManyArgs>(args?: SelectSubset<T, AttendancePenaltyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AttendancePenalties and returns the data saved in the database.
+     * @param {AttendancePenaltyCreateManyAndReturnArgs} args - Arguments to create many AttendancePenalties.
+     * @example
+     * // Create many AttendancePenalties
+     * const attendancePenalty = await prisma.attendancePenalty.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AttendancePenalties and only return the `id`
+     * const attendancePenaltyWithIdOnly = await prisma.attendancePenalty.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AttendancePenaltyCreateManyAndReturnArgs>(args?: SelectSubset<T, AttendancePenaltyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AttendancePenalty.
+     * @param {AttendancePenaltyDeleteArgs} args - Arguments to delete one AttendancePenalty.
+     * @example
+     * // Delete one AttendancePenalty
+     * const AttendancePenalty = await prisma.attendancePenalty.delete({
+     *   where: {
+     *     // ... filter to delete one AttendancePenalty
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AttendancePenaltyDeleteArgs>(args: SelectSubset<T, AttendancePenaltyDeleteArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AttendancePenalty.
+     * @param {AttendancePenaltyUpdateArgs} args - Arguments to update one AttendancePenalty.
+     * @example
+     * // Update one AttendancePenalty
+     * const attendancePenalty = await prisma.attendancePenalty.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AttendancePenaltyUpdateArgs>(args: SelectSubset<T, AttendancePenaltyUpdateArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AttendancePenalties.
+     * @param {AttendancePenaltyDeleteManyArgs} args - Arguments to filter AttendancePenalties to delete.
+     * @example
+     * // Delete a few AttendancePenalties
+     * const { count } = await prisma.attendancePenalty.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AttendancePenaltyDeleteManyArgs>(args?: SelectSubset<T, AttendancePenaltyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AttendancePenalties.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AttendancePenalties
+     * const attendancePenalty = await prisma.attendancePenalty.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AttendancePenaltyUpdateManyArgs>(args: SelectSubset<T, AttendancePenaltyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AttendancePenalties and returns the data updated in the database.
+     * @param {AttendancePenaltyUpdateManyAndReturnArgs} args - Arguments to update many AttendancePenalties.
+     * @example
+     * // Update many AttendancePenalties
+     * const attendancePenalty = await prisma.attendancePenalty.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AttendancePenalties and only return the `id`
+     * const attendancePenaltyWithIdOnly = await prisma.attendancePenalty.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AttendancePenaltyUpdateManyAndReturnArgs>(args: SelectSubset<T, AttendancePenaltyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AttendancePenalty.
+     * @param {AttendancePenaltyUpsertArgs} args - Arguments to update or create a AttendancePenalty.
+     * @example
+     * // Update or create a AttendancePenalty
+     * const attendancePenalty = await prisma.attendancePenalty.upsert({
+     *   create: {
+     *     // ... data to create a AttendancePenalty
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AttendancePenalty we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AttendancePenaltyUpsertArgs>(args: SelectSubset<T, AttendancePenaltyUpsertArgs<ExtArgs>>): Prisma__AttendancePenaltyClient<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AttendancePenalties.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyCountArgs} args - Arguments to filter AttendancePenalties to count.
+     * @example
+     * // Count the number of AttendancePenalties
+     * const count = await prisma.attendancePenalty.count({
+     *   where: {
+     *     // ... the filter for the AttendancePenalties we want to count
+     *   }
+     * })
+    **/
+    count<T extends AttendancePenaltyCountArgs>(
+      args?: Subset<T, AttendancePenaltyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AttendancePenaltyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AttendancePenalty.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AttendancePenaltyAggregateArgs>(args: Subset<T, AttendancePenaltyAggregateArgs>): Prisma.PrismaPromise<GetAttendancePenaltyAggregateType<T>>
+
+    /**
+     * Group by AttendancePenalty.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendancePenaltyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AttendancePenaltyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AttendancePenaltyGroupByArgs['orderBy'] }
+        : { orderBy?: AttendancePenaltyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AttendancePenaltyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAttendancePenaltyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AttendancePenalty model
+   */
+  readonly fields: AttendancePenaltyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AttendancePenalty.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AttendancePenaltyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    attendance<T extends AttendanceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AttendanceDefaultArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AttendancePenalty model
+   */
+  interface AttendancePenaltyFieldRefs {
+    readonly id: FieldRef<"AttendancePenalty", 'Int'>
+    readonly attendanceId: FieldRef<"AttendancePenalty", 'Int'>
+    readonly penaltyType: FieldRef<"AttendancePenalty", 'String'>
+    readonly severity: FieldRef<"AttendancePenalty", 'String'>
+    readonly description: FieldRef<"AttendancePenalty", 'String'>
+    readonly lateMinutes: FieldRef<"AttendancePenalty", 'Int'>
+    readonly earlyMinutes: FieldRef<"AttendancePenalty", 'Int'>
+    readonly missedHours: FieldRef<"AttendancePenalty", 'Float'>
+    readonly hoursDeducted: FieldRef<"AttendancePenalty", 'Float'>
+    readonly salaryDeducted: FieldRef<"AttendancePenalty", 'Float'>
+    readonly makeupRequired: FieldRef<"AttendancePenalty", 'Boolean'>
+    readonly makeupHours: FieldRef<"AttendancePenalty", 'Float'>
+    readonly isActive: FieldRef<"AttendancePenalty", 'Boolean'>
+    readonly isWaived: FieldRef<"AttendancePenalty", 'Boolean'>
+    readonly waivedReason: FieldRef<"AttendancePenalty", 'String'>
+    readonly waivedBy: FieldRef<"AttendancePenalty", 'String'>
+    readonly waivedAt: FieldRef<"AttendancePenalty", 'DateTime'>
+    readonly createdAt: FieldRef<"AttendancePenalty", 'DateTime'>
+    readonly updatedAt: FieldRef<"AttendancePenalty", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AttendancePenalty findUnique
+   */
+  export type AttendancePenaltyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * Filter, which AttendancePenalty to fetch.
+     */
+    where: AttendancePenaltyWhereUniqueInput
+  }
+
+  /**
+   * AttendancePenalty findUniqueOrThrow
+   */
+  export type AttendancePenaltyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * Filter, which AttendancePenalty to fetch.
+     */
+    where: AttendancePenaltyWhereUniqueInput
+  }
+
+  /**
+   * AttendancePenalty findFirst
+   */
+  export type AttendancePenaltyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * Filter, which AttendancePenalty to fetch.
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AttendancePenalties to fetch.
+     */
+    orderBy?: AttendancePenaltyOrderByWithRelationInput | AttendancePenaltyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AttendancePenalties.
+     */
+    cursor?: AttendancePenaltyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AttendancePenalties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AttendancePenalties.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AttendancePenalties.
+     */
+    distinct?: AttendancePenaltyScalarFieldEnum | AttendancePenaltyScalarFieldEnum[]
+  }
+
+  /**
+   * AttendancePenalty findFirstOrThrow
+   */
+  export type AttendancePenaltyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * Filter, which AttendancePenalty to fetch.
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AttendancePenalties to fetch.
+     */
+    orderBy?: AttendancePenaltyOrderByWithRelationInput | AttendancePenaltyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AttendancePenalties.
+     */
+    cursor?: AttendancePenaltyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AttendancePenalties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AttendancePenalties.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AttendancePenalties.
+     */
+    distinct?: AttendancePenaltyScalarFieldEnum | AttendancePenaltyScalarFieldEnum[]
+  }
+
+  /**
+   * AttendancePenalty findMany
+   */
+  export type AttendancePenaltyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * Filter, which AttendancePenalties to fetch.
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AttendancePenalties to fetch.
+     */
+    orderBy?: AttendancePenaltyOrderByWithRelationInput | AttendancePenaltyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AttendancePenalties.
+     */
+    cursor?: AttendancePenaltyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AttendancePenalties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AttendancePenalties.
+     */
+    skip?: number
+    distinct?: AttendancePenaltyScalarFieldEnum | AttendancePenaltyScalarFieldEnum[]
+  }
+
+  /**
+   * AttendancePenalty create
+   */
+  export type AttendancePenaltyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AttendancePenalty.
+     */
+    data: XOR<AttendancePenaltyCreateInput, AttendancePenaltyUncheckedCreateInput>
+  }
+
+  /**
+   * AttendancePenalty createMany
+   */
+  export type AttendancePenaltyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AttendancePenalties.
+     */
+    data: AttendancePenaltyCreateManyInput | AttendancePenaltyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AttendancePenalty createManyAndReturn
+   */
+  export type AttendancePenaltyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * The data used to create many AttendancePenalties.
+     */
+    data: AttendancePenaltyCreateManyInput | AttendancePenaltyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AttendancePenalty update
+   */
+  export type AttendancePenaltyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AttendancePenalty.
+     */
+    data: XOR<AttendancePenaltyUpdateInput, AttendancePenaltyUncheckedUpdateInput>
+    /**
+     * Choose, which AttendancePenalty to update.
+     */
+    where: AttendancePenaltyWhereUniqueInput
+  }
+
+  /**
+   * AttendancePenalty updateMany
+   */
+  export type AttendancePenaltyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AttendancePenalties.
+     */
+    data: XOR<AttendancePenaltyUpdateManyMutationInput, AttendancePenaltyUncheckedUpdateManyInput>
+    /**
+     * Filter which AttendancePenalties to update
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * Limit how many AttendancePenalties to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AttendancePenalty updateManyAndReturn
+   */
+  export type AttendancePenaltyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * The data used to update AttendancePenalties.
+     */
+    data: XOR<AttendancePenaltyUpdateManyMutationInput, AttendancePenaltyUncheckedUpdateManyInput>
+    /**
+     * Filter which AttendancePenalties to update
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * Limit how many AttendancePenalties to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AttendancePenalty upsert
+   */
+  export type AttendancePenaltyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AttendancePenalty to update in case it exists.
+     */
+    where: AttendancePenaltyWhereUniqueInput
+    /**
+     * In case the AttendancePenalty found by the `where` argument doesn't exist, create a new AttendancePenalty with this data.
+     */
+    create: XOR<AttendancePenaltyCreateInput, AttendancePenaltyUncheckedCreateInput>
+    /**
+     * In case the AttendancePenalty was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AttendancePenaltyUpdateInput, AttendancePenaltyUncheckedUpdateInput>
+  }
+
+  /**
+   * AttendancePenalty delete
+   */
+  export type AttendancePenaltyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
+    /**
+     * Filter which AttendancePenalty to delete.
+     */
+    where: AttendancePenaltyWhereUniqueInput
+  }
+
+  /**
+   * AttendancePenalty deleteMany
+   */
+  export type AttendancePenaltyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AttendancePenalties to delete
+     */
+    where?: AttendancePenaltyWhereInput
+    /**
+     * Limit how many AttendancePenalties to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AttendancePenalty without action
+   */
+  export type AttendancePenaltyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendancePenalty
+     */
+    select?: AttendancePenaltySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AttendancePenalty
+     */
+    omit?: AttendancePenaltyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendancePenaltyInclude<ExtArgs> | null
   }
 
 
@@ -7481,6 +9033,11 @@ export namespace Prisma {
     workingHoursPerDay: number | null
     overtimeMultiplier: number | null
     weekendOvertimeMultiplier: number | null
+    penaltyMinor30Min: number | null
+    penaltyModerate90Min: number | null
+    penaltyMajor150Min: number | null
+    penaltyFullDay: number | null
+    makeupTimeDeadlineHours: number | null
   }
 
   export type SystemSettingsSumAggregateOutputType = {
@@ -7489,6 +9046,11 @@ export namespace Prisma {
     workingHoursPerDay: number | null
     overtimeMultiplier: number | null
     weekendOvertimeMultiplier: number | null
+    penaltyMinor30Min: number | null
+    penaltyModerate90Min: number | null
+    penaltyMajor150Min: number | null
+    penaltyFullDay: number | null
+    makeupTimeDeadlineHours: number | null
   }
 
   export type SystemSettingsMinAggregateOutputType = {
@@ -7506,6 +9068,12 @@ export namespace Prisma {
     workingHoursEnd: string | null
     overtimeMultiplier: number | null
     weekendOvertimeMultiplier: number | null
+    penaltyMinor30Min: number | null
+    penaltyModerate90Min: number | null
+    penaltyMajor150Min: number | null
+    penaltyFullDay: number | null
+    allowMakeupTime: boolean | null
+    makeupTimeDeadlineHours: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7525,6 +9093,12 @@ export namespace Prisma {
     workingHoursEnd: string | null
     overtimeMultiplier: number | null
     weekendOvertimeMultiplier: number | null
+    penaltyMinor30Min: number | null
+    penaltyModerate90Min: number | null
+    penaltyMajor150Min: number | null
+    penaltyFullDay: number | null
+    allowMakeupTime: boolean | null
+    makeupTimeDeadlineHours: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7544,6 +9118,12 @@ export namespace Prisma {
     workingHoursEnd: number
     overtimeMultiplier: number
     weekendOvertimeMultiplier: number
+    penaltyMinor30Min: number
+    penaltyModerate90Min: number
+    penaltyMajor150Min: number
+    penaltyFullDay: number
+    allowMakeupTime: number
+    makeupTimeDeadlineHours: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7556,6 +9136,11 @@ export namespace Prisma {
     workingHoursPerDay?: true
     overtimeMultiplier?: true
     weekendOvertimeMultiplier?: true
+    penaltyMinor30Min?: true
+    penaltyModerate90Min?: true
+    penaltyMajor150Min?: true
+    penaltyFullDay?: true
+    makeupTimeDeadlineHours?: true
   }
 
   export type SystemSettingsSumAggregateInputType = {
@@ -7564,6 +9149,11 @@ export namespace Prisma {
     workingHoursPerDay?: true
     overtimeMultiplier?: true
     weekendOvertimeMultiplier?: true
+    penaltyMinor30Min?: true
+    penaltyModerate90Min?: true
+    penaltyMajor150Min?: true
+    penaltyFullDay?: true
+    makeupTimeDeadlineHours?: true
   }
 
   export type SystemSettingsMinAggregateInputType = {
@@ -7581,6 +9171,12 @@ export namespace Prisma {
     workingHoursEnd?: true
     overtimeMultiplier?: true
     weekendOvertimeMultiplier?: true
+    penaltyMinor30Min?: true
+    penaltyModerate90Min?: true
+    penaltyMajor150Min?: true
+    penaltyFullDay?: true
+    allowMakeupTime?: true
+    makeupTimeDeadlineHours?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7600,6 +9196,12 @@ export namespace Prisma {
     workingHoursEnd?: true
     overtimeMultiplier?: true
     weekendOvertimeMultiplier?: true
+    penaltyMinor30Min?: true
+    penaltyModerate90Min?: true
+    penaltyMajor150Min?: true
+    penaltyFullDay?: true
+    allowMakeupTime?: true
+    makeupTimeDeadlineHours?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7619,6 +9221,12 @@ export namespace Prisma {
     workingHoursEnd?: true
     overtimeMultiplier?: true
     weekendOvertimeMultiplier?: true
+    penaltyMinor30Min?: true
+    penaltyModerate90Min?: true
+    penaltyMajor150Min?: true
+    penaltyFullDay?: true
+    allowMakeupTime?: true
+    makeupTimeDeadlineHours?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7725,6 +9333,12 @@ export namespace Prisma {
     workingHoursEnd: string
     overtimeMultiplier: number
     weekendOvertimeMultiplier: number
+    penaltyMinor30Min: number
+    penaltyModerate90Min: number
+    penaltyMajor150Min: number
+    penaltyFullDay: number
+    allowMakeupTime: boolean
+    makeupTimeDeadlineHours: number
     createdAt: Date
     updatedAt: Date
     _count: SystemSettingsCountAggregateOutputType | null
@@ -7763,6 +9377,12 @@ export namespace Prisma {
     workingHoursEnd?: boolean
     overtimeMultiplier?: boolean
     weekendOvertimeMultiplier?: boolean
+    penaltyMinor30Min?: boolean
+    penaltyModerate90Min?: boolean
+    penaltyMajor150Min?: boolean
+    penaltyFullDay?: boolean
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSettings"]>
@@ -7782,6 +9402,12 @@ export namespace Prisma {
     workingHoursEnd?: boolean
     overtimeMultiplier?: boolean
     weekendOvertimeMultiplier?: boolean
+    penaltyMinor30Min?: boolean
+    penaltyModerate90Min?: boolean
+    penaltyMajor150Min?: boolean
+    penaltyFullDay?: boolean
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSettings"]>
@@ -7801,6 +9427,12 @@ export namespace Prisma {
     workingHoursEnd?: boolean
     overtimeMultiplier?: boolean
     weekendOvertimeMultiplier?: boolean
+    penaltyMinor30Min?: boolean
+    penaltyModerate90Min?: boolean
+    penaltyMajor150Min?: boolean
+    penaltyFullDay?: boolean
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSettings"]>
@@ -7820,11 +9452,17 @@ export namespace Prisma {
     workingHoursEnd?: boolean
     overtimeMultiplier?: boolean
     weekendOvertimeMultiplier?: boolean
+    penaltyMinor30Min?: boolean
+    penaltyModerate90Min?: boolean
+    penaltyMajor150Min?: boolean
+    penaltyFullDay?: boolean
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lateAllowanceMinutes" | "workDaySunday" | "workDayMonday" | "workDayTuesday" | "workDayWednesday" | "workDayThursday" | "workDayFriday" | "workDaySaturday" | "workingHoursPerDay" | "workingHoursStart" | "workingHoursEnd" | "overtimeMultiplier" | "weekendOvertimeMultiplier" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSettings"]>
+  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lateAllowanceMinutes" | "workDaySunday" | "workDayMonday" | "workDayTuesday" | "workDayWednesday" | "workDayThursday" | "workDayFriday" | "workDaySaturday" | "workingHoursPerDay" | "workingHoursStart" | "workingHoursEnd" | "overtimeMultiplier" | "weekendOvertimeMultiplier" | "penaltyMinor30Min" | "penaltyModerate90Min" | "penaltyMajor150Min" | "penaltyFullDay" | "allowMakeupTime" | "makeupTimeDeadlineHours" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSettings"]>
 
   export type $SystemSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSettings"
@@ -7844,6 +9482,12 @@ export namespace Prisma {
       workingHoursEnd: string
       overtimeMultiplier: number
       weekendOvertimeMultiplier: number
+      penaltyMinor30Min: number
+      penaltyModerate90Min: number
+      penaltyMajor150Min: number
+      penaltyFullDay: number
+      allowMakeupTime: boolean
+      makeupTimeDeadlineHours: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["systemSettings"]>
@@ -8283,6 +9927,12 @@ export namespace Prisma {
     readonly workingHoursEnd: FieldRef<"SystemSettings", 'String'>
     readonly overtimeMultiplier: FieldRef<"SystemSettings", 'Float'>
     readonly weekendOvertimeMultiplier: FieldRef<"SystemSettings", 'Float'>
+    readonly penaltyMinor30Min: FieldRef<"SystemSettings", 'Int'>
+    readonly penaltyModerate90Min: FieldRef<"SystemSettings", 'Int'>
+    readonly penaltyMajor150Min: FieldRef<"SystemSettings", 'Float'>
+    readonly penaltyFullDay: FieldRef<"SystemSettings", 'Float'>
+    readonly allowMakeupTime: FieldRef<"SystemSettings", 'Boolean'>
+    readonly makeupTimeDeadlineHours: FieldRef<"SystemSettings", 'Int'>
     readonly createdAt: FieldRef<"SystemSettings", 'DateTime'>
     readonly updatedAt: FieldRef<"SystemSettings", 'DateTime'>
   }
@@ -8685,6 +10335,7 @@ export namespace Prisma {
     id: 'id',
     username: 'username',
     password: 'password',
+    isAdmin: 'isAdmin',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -8704,10 +10355,40 @@ export namespace Prisma {
     isPaidDay: 'isPaidDay',
     actualHoursWorked: 'actualHoursWorked',
     lateDeductionHours: 'lateDeductionHours',
-    earlyDeductionHours: 'earlyDeductionHours'
+    earlyDeductionHours: 'earlyDeductionHours',
+    graceMinutesUsed: 'graceMinutesUsed',
+    lateMinutesBeyondGrace: 'lateMinutesBeyondGrace',
+    makeupTimeRequired: 'makeupTimeRequired',
+    makeupTimeCompleted: 'makeupTimeCompleted',
+    totalPenaltyAmount: 'totalPenaltyAmount'
   };
 
   export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+  export const AttendancePenaltyScalarFieldEnum: {
+    id: 'id',
+    attendanceId: 'attendanceId',
+    penaltyType: 'penaltyType',
+    severity: 'severity',
+    description: 'description',
+    lateMinutes: 'lateMinutes',
+    earlyMinutes: 'earlyMinutes',
+    missedHours: 'missedHours',
+    hoursDeducted: 'hoursDeducted',
+    salaryDeducted: 'salaryDeducted',
+    makeupRequired: 'makeupRequired',
+    makeupHours: 'makeupHours',
+    isActive: 'isActive',
+    isWaived: 'isWaived',
+    waivedReason: 'waivedReason',
+    waivedBy: 'waivedBy',
+    waivedAt: 'waivedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AttendancePenaltyScalarFieldEnum = (typeof AttendancePenaltyScalarFieldEnum)[keyof typeof AttendancePenaltyScalarFieldEnum]
 
 
   export const PayoutScalarFieldEnum: {
@@ -8773,6 +10454,12 @@ export namespace Prisma {
     workingHoursEnd: 'workingHoursEnd',
     overtimeMultiplier: 'overtimeMultiplier',
     weekendOvertimeMultiplier: 'weekendOvertimeMultiplier',
+    penaltyMinor30Min: 'penaltyMinor30Min',
+    penaltyModerate90Min: 'penaltyModerate90Min',
+    penaltyMajor150Min: 'penaltyMajor150Min',
+    penaltyFullDay: 'penaltyFullDay',
+    allowMakeupTime: 'allowMakeupTime',
+    makeupTimeDeadlineHours: 'makeupTimeDeadlineHours',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -8967,6 +10654,7 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     username?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    isAdmin?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }
@@ -8975,6 +10663,7 @@ export namespace Prisma {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    isAdmin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8986,6 +10675,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
+    isAdmin?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }, "id" | "username">
@@ -8994,6 +10684,7 @@ export namespace Prisma {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    isAdmin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -9010,6 +10701,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"User"> | number
     username?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -9030,7 +10722,13 @@ export namespace Prisma {
     actualHoursWorked?: FloatFilter<"Attendance"> | number
     lateDeductionHours?: FloatFilter<"Attendance"> | number
     earlyDeductionHours?: FloatFilter<"Attendance"> | number
+    graceMinutesUsed?: IntFilter<"Attendance"> | number
+    lateMinutesBeyondGrace?: IntFilter<"Attendance"> | number
+    makeupTimeRequired?: FloatFilter<"Attendance"> | number
+    makeupTimeCompleted?: FloatFilter<"Attendance"> | number
+    totalPenaltyAmount?: FloatFilter<"Attendance"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    penalties?: AttendancePenaltyListRelationFilter
   }
 
   export type AttendanceOrderByWithRelationInput = {
@@ -9046,7 +10744,13 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
     employee?: EmployeeOrderByWithRelationInput
+    penalties?: AttendancePenaltyOrderByRelationAggregateInput
   }
 
   export type AttendanceWhereUniqueInput = Prisma.AtLeast<{
@@ -9066,7 +10770,13 @@ export namespace Prisma {
     actualHoursWorked?: FloatFilter<"Attendance"> | number
     lateDeductionHours?: FloatFilter<"Attendance"> | number
     earlyDeductionHours?: FloatFilter<"Attendance"> | number
+    graceMinutesUsed?: IntFilter<"Attendance"> | number
+    lateMinutesBeyondGrace?: IntFilter<"Attendance"> | number
+    makeupTimeRequired?: FloatFilter<"Attendance"> | number
+    makeupTimeCompleted?: FloatFilter<"Attendance"> | number
+    totalPenaltyAmount?: FloatFilter<"Attendance"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    penalties?: AttendancePenaltyListRelationFilter
   }, "id" | "employeeId_date">
 
   export type AttendanceOrderByWithAggregationInput = {
@@ -9082,6 +10792,11 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
     _count?: AttendanceCountOrderByAggregateInput
     _avg?: AttendanceAvgOrderByAggregateInput
     _max?: AttendanceMaxOrderByAggregateInput
@@ -9105,6 +10820,138 @@ export namespace Prisma {
     actualHoursWorked?: FloatWithAggregatesFilter<"Attendance"> | number
     lateDeductionHours?: FloatWithAggregatesFilter<"Attendance"> | number
     earlyDeductionHours?: FloatWithAggregatesFilter<"Attendance"> | number
+    graceMinutesUsed?: IntWithAggregatesFilter<"Attendance"> | number
+    lateMinutesBeyondGrace?: IntWithAggregatesFilter<"Attendance"> | number
+    makeupTimeRequired?: FloatWithAggregatesFilter<"Attendance"> | number
+    makeupTimeCompleted?: FloatWithAggregatesFilter<"Attendance"> | number
+    totalPenaltyAmount?: FloatWithAggregatesFilter<"Attendance"> | number
+  }
+
+  export type AttendancePenaltyWhereInput = {
+    AND?: AttendancePenaltyWhereInput | AttendancePenaltyWhereInput[]
+    OR?: AttendancePenaltyWhereInput[]
+    NOT?: AttendancePenaltyWhereInput | AttendancePenaltyWhereInput[]
+    id?: IntFilter<"AttendancePenalty"> | number
+    attendanceId?: IntFilter<"AttendancePenalty"> | number
+    penaltyType?: StringFilter<"AttendancePenalty"> | string
+    severity?: StringFilter<"AttendancePenalty"> | string
+    description?: StringFilter<"AttendancePenalty"> | string
+    lateMinutes?: IntNullableFilter<"AttendancePenalty"> | number | null
+    earlyMinutes?: IntNullableFilter<"AttendancePenalty"> | number | null
+    missedHours?: FloatNullableFilter<"AttendancePenalty"> | number | null
+    hoursDeducted?: FloatFilter<"AttendancePenalty"> | number
+    salaryDeducted?: FloatFilter<"AttendancePenalty"> | number
+    makeupRequired?: BoolFilter<"AttendancePenalty"> | boolean
+    makeupHours?: FloatFilter<"AttendancePenalty"> | number
+    isActive?: BoolFilter<"AttendancePenalty"> | boolean
+    isWaived?: BoolFilter<"AttendancePenalty"> | boolean
+    waivedReason?: StringNullableFilter<"AttendancePenalty"> | string | null
+    waivedBy?: StringNullableFilter<"AttendancePenalty"> | string | null
+    waivedAt?: DateTimeNullableFilter<"AttendancePenalty"> | Date | string | null
+    createdAt?: DateTimeFilter<"AttendancePenalty"> | Date | string
+    updatedAt?: DateTimeFilter<"AttendancePenalty"> | Date | string
+    attendance?: XOR<AttendanceScalarRelationFilter, AttendanceWhereInput>
+  }
+
+  export type AttendancePenaltyOrderByWithRelationInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    penaltyType?: SortOrder
+    severity?: SortOrder
+    description?: SortOrder
+    lateMinutes?: SortOrderInput | SortOrder
+    earlyMinutes?: SortOrderInput | SortOrder
+    missedHours?: SortOrderInput | SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupRequired?: SortOrder
+    makeupHours?: SortOrder
+    isActive?: SortOrder
+    isWaived?: SortOrder
+    waivedReason?: SortOrderInput | SortOrder
+    waivedBy?: SortOrderInput | SortOrder
+    waivedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    attendance?: AttendanceOrderByWithRelationInput
+  }
+
+  export type AttendancePenaltyWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: AttendancePenaltyWhereInput | AttendancePenaltyWhereInput[]
+    OR?: AttendancePenaltyWhereInput[]
+    NOT?: AttendancePenaltyWhereInput | AttendancePenaltyWhereInput[]
+    attendanceId?: IntFilter<"AttendancePenalty"> | number
+    penaltyType?: StringFilter<"AttendancePenalty"> | string
+    severity?: StringFilter<"AttendancePenalty"> | string
+    description?: StringFilter<"AttendancePenalty"> | string
+    lateMinutes?: IntNullableFilter<"AttendancePenalty"> | number | null
+    earlyMinutes?: IntNullableFilter<"AttendancePenalty"> | number | null
+    missedHours?: FloatNullableFilter<"AttendancePenalty"> | number | null
+    hoursDeducted?: FloatFilter<"AttendancePenalty"> | number
+    salaryDeducted?: FloatFilter<"AttendancePenalty"> | number
+    makeupRequired?: BoolFilter<"AttendancePenalty"> | boolean
+    makeupHours?: FloatFilter<"AttendancePenalty"> | number
+    isActive?: BoolFilter<"AttendancePenalty"> | boolean
+    isWaived?: BoolFilter<"AttendancePenalty"> | boolean
+    waivedReason?: StringNullableFilter<"AttendancePenalty"> | string | null
+    waivedBy?: StringNullableFilter<"AttendancePenalty"> | string | null
+    waivedAt?: DateTimeNullableFilter<"AttendancePenalty"> | Date | string | null
+    createdAt?: DateTimeFilter<"AttendancePenalty"> | Date | string
+    updatedAt?: DateTimeFilter<"AttendancePenalty"> | Date | string
+    attendance?: XOR<AttendanceScalarRelationFilter, AttendanceWhereInput>
+  }, "id">
+
+  export type AttendancePenaltyOrderByWithAggregationInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    penaltyType?: SortOrder
+    severity?: SortOrder
+    description?: SortOrder
+    lateMinutes?: SortOrderInput | SortOrder
+    earlyMinutes?: SortOrderInput | SortOrder
+    missedHours?: SortOrderInput | SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupRequired?: SortOrder
+    makeupHours?: SortOrder
+    isActive?: SortOrder
+    isWaived?: SortOrder
+    waivedReason?: SortOrderInput | SortOrder
+    waivedBy?: SortOrderInput | SortOrder
+    waivedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AttendancePenaltyCountOrderByAggregateInput
+    _avg?: AttendancePenaltyAvgOrderByAggregateInput
+    _max?: AttendancePenaltyMaxOrderByAggregateInput
+    _min?: AttendancePenaltyMinOrderByAggregateInput
+    _sum?: AttendancePenaltySumOrderByAggregateInput
+  }
+
+  export type AttendancePenaltyScalarWhereWithAggregatesInput = {
+    AND?: AttendancePenaltyScalarWhereWithAggregatesInput | AttendancePenaltyScalarWhereWithAggregatesInput[]
+    OR?: AttendancePenaltyScalarWhereWithAggregatesInput[]
+    NOT?: AttendancePenaltyScalarWhereWithAggregatesInput | AttendancePenaltyScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AttendancePenalty"> | number
+    attendanceId?: IntWithAggregatesFilter<"AttendancePenalty"> | number
+    penaltyType?: StringWithAggregatesFilter<"AttendancePenalty"> | string
+    severity?: StringWithAggregatesFilter<"AttendancePenalty"> | string
+    description?: StringWithAggregatesFilter<"AttendancePenalty"> | string
+    lateMinutes?: IntNullableWithAggregatesFilter<"AttendancePenalty"> | number | null
+    earlyMinutes?: IntNullableWithAggregatesFilter<"AttendancePenalty"> | number | null
+    missedHours?: FloatNullableWithAggregatesFilter<"AttendancePenalty"> | number | null
+    hoursDeducted?: FloatWithAggregatesFilter<"AttendancePenalty"> | number
+    salaryDeducted?: FloatWithAggregatesFilter<"AttendancePenalty"> | number
+    makeupRequired?: BoolWithAggregatesFilter<"AttendancePenalty"> | boolean
+    makeupHours?: FloatWithAggregatesFilter<"AttendancePenalty"> | number
+    isActive?: BoolWithAggregatesFilter<"AttendancePenalty"> | boolean
+    isWaived?: BoolWithAggregatesFilter<"AttendancePenalty"> | boolean
+    waivedReason?: StringNullableWithAggregatesFilter<"AttendancePenalty"> | string | null
+    waivedBy?: StringNullableWithAggregatesFilter<"AttendancePenalty"> | string | null
+    waivedAt?: DateTimeNullableWithAggregatesFilter<"AttendancePenalty"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AttendancePenalty"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AttendancePenalty"> | Date | string
   }
 
   export type PayoutWhereInput = {
@@ -9373,6 +11220,12 @@ export namespace Prisma {
     workingHoursEnd?: StringFilter<"SystemSettings"> | string
     overtimeMultiplier?: FloatFilter<"SystemSettings"> | number
     weekendOvertimeMultiplier?: FloatFilter<"SystemSettings"> | number
+    penaltyMinor30Min?: IntFilter<"SystemSettings"> | number
+    penaltyModerate90Min?: IntFilter<"SystemSettings"> | number
+    penaltyMajor150Min?: FloatFilter<"SystemSettings"> | number
+    penaltyFullDay?: FloatFilter<"SystemSettings"> | number
+    allowMakeupTime?: BoolFilter<"SystemSettings"> | boolean
+    makeupTimeDeadlineHours?: IntFilter<"SystemSettings"> | number
     createdAt?: DateTimeFilter<"SystemSettings"> | Date | string
     updatedAt?: DateTimeFilter<"SystemSettings"> | Date | string
   }
@@ -9392,6 +11245,12 @@ export namespace Prisma {
     workingHoursEnd?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    allowMakeupTime?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -9414,6 +11273,12 @@ export namespace Prisma {
     workingHoursEnd?: StringFilter<"SystemSettings"> | string
     overtimeMultiplier?: FloatFilter<"SystemSettings"> | number
     weekendOvertimeMultiplier?: FloatFilter<"SystemSettings"> | number
+    penaltyMinor30Min?: IntFilter<"SystemSettings"> | number
+    penaltyModerate90Min?: IntFilter<"SystemSettings"> | number
+    penaltyMajor150Min?: FloatFilter<"SystemSettings"> | number
+    penaltyFullDay?: FloatFilter<"SystemSettings"> | number
+    allowMakeupTime?: BoolFilter<"SystemSettings"> | boolean
+    makeupTimeDeadlineHours?: IntFilter<"SystemSettings"> | number
     createdAt?: DateTimeFilter<"SystemSettings"> | Date | string
     updatedAt?: DateTimeFilter<"SystemSettings"> | Date | string
   }, "id">
@@ -9433,6 +11298,12 @@ export namespace Prisma {
     workingHoursEnd?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    allowMakeupTime?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SystemSettingsCountOrderByAggregateInput
@@ -9460,6 +11331,12 @@ export namespace Prisma {
     workingHoursEnd?: StringWithAggregatesFilter<"SystemSettings"> | string
     overtimeMultiplier?: FloatWithAggregatesFilter<"SystemSettings"> | number
     weekendOvertimeMultiplier?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    penaltyMinor30Min?: IntWithAggregatesFilter<"SystemSettings"> | number
+    penaltyModerate90Min?: IntWithAggregatesFilter<"SystemSettings"> | number
+    penaltyMajor150Min?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    penaltyFullDay?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    allowMakeupTime?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    makeupTimeDeadlineHours?: IntWithAggregatesFilter<"SystemSettings"> | number
     createdAt?: DateTimeWithAggregatesFilter<"SystemSettings"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SystemSettings"> | Date | string
   }
@@ -9563,6 +11440,7 @@ export namespace Prisma {
   export type UserCreateInput = {
     username: string
     password: string
+    isAdmin?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9571,6 +11449,7 @@ export namespace Prisma {
     id?: number
     username: string
     password: string
+    isAdmin?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9578,6 +11457,7 @@ export namespace Prisma {
   export type UserUpdateInput = {
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9586,6 +11466,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9594,6 +11475,7 @@ export namespace Prisma {
     id?: number
     username: string
     password: string
+    isAdmin?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9601,6 +11483,7 @@ export namespace Prisma {
   export type UserUpdateManyMutationInput = {
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9609,6 +11492,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9624,7 +11508,13 @@ export namespace Prisma {
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
     employee: EmployeeCreateNestedOneWithoutAttendanceInput
+    penalties?: AttendancePenaltyCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateInput = {
@@ -9640,6 +11530,12 @@ export namespace Prisma {
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+    penalties?: AttendancePenaltyUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUpdateInput = {
@@ -9653,7 +11549,13 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
     employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+    penalties?: AttendancePenaltyUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateInput = {
@@ -9669,6 +11571,12 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    penalties?: AttendancePenaltyUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceCreateManyInput = {
@@ -9684,6 +11592,11 @@ export namespace Prisma {
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
   }
 
   export type AttendanceUpdateManyMutationInput = {
@@ -9697,6 +11610,11 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
   }
 
   export type AttendanceUncheckedUpdateManyInput = {
@@ -9712,6 +11630,161 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type AttendancePenaltyCreateInput = {
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes?: number | null
+    earlyMinutes?: number | null
+    missedHours?: number | null
+    hoursDeducted?: number
+    salaryDeducted?: number
+    makeupRequired?: boolean
+    makeupHours?: number
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: string | null
+    waivedBy?: string | null
+    waivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance: AttendanceCreateNestedOneWithoutPenaltiesInput
+  }
+
+  export type AttendancePenaltyUncheckedCreateInput = {
+    id?: number
+    attendanceId: number
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes?: number | null
+    earlyMinutes?: number | null
+    missedHours?: number | null
+    hoursDeducted?: number
+    salaryDeducted?: number
+    makeupRequired?: boolean
+    makeupHours?: number
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: string | null
+    waivedBy?: string | null
+    waivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttendancePenaltyUpdateInput = {
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateOneRequiredWithoutPenaltiesNestedInput
+  }
+
+  export type AttendancePenaltyUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    attendanceId?: IntFieldUpdateOperationsInput | number
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttendancePenaltyCreateManyInput = {
+    id?: number
+    attendanceId: number
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes?: number | null
+    earlyMinutes?: number | null
+    missedHours?: number | null
+    hoursDeducted?: number
+    salaryDeducted?: number
+    makeupRequired?: boolean
+    makeupHours?: number
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: string | null
+    waivedBy?: string | null
+    waivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttendancePenaltyUpdateManyMutationInput = {
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttendancePenaltyUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    attendanceId?: IntFieldUpdateOperationsInput | number
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PayoutCreateInput = {
@@ -10018,6 +12091,12 @@ export namespace Prisma {
     workingHoursEnd?: string
     overtimeMultiplier?: number
     weekendOvertimeMultiplier?: number
+    penaltyMinor30Min?: number
+    penaltyModerate90Min?: number
+    penaltyMajor150Min?: number
+    penaltyFullDay?: number
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10037,6 +12116,12 @@ export namespace Prisma {
     workingHoursEnd?: string
     overtimeMultiplier?: number
     weekendOvertimeMultiplier?: number
+    penaltyMinor30Min?: number
+    penaltyModerate90Min?: number
+    penaltyMajor150Min?: number
+    penaltyFullDay?: number
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10055,6 +12140,12 @@ export namespace Prisma {
     workingHoursEnd?: StringFieldUpdateOperationsInput | string
     overtimeMultiplier?: FloatFieldUpdateOperationsInput | number
     weekendOvertimeMultiplier?: FloatFieldUpdateOperationsInput | number
+    penaltyMinor30Min?: IntFieldUpdateOperationsInput | number
+    penaltyModerate90Min?: IntFieldUpdateOperationsInput | number
+    penaltyMajor150Min?: FloatFieldUpdateOperationsInput | number
+    penaltyFullDay?: FloatFieldUpdateOperationsInput | number
+    allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
+    makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10074,6 +12165,12 @@ export namespace Prisma {
     workingHoursEnd?: StringFieldUpdateOperationsInput | string
     overtimeMultiplier?: FloatFieldUpdateOperationsInput | number
     weekendOvertimeMultiplier?: FloatFieldUpdateOperationsInput | number
+    penaltyMinor30Min?: IntFieldUpdateOperationsInput | number
+    penaltyModerate90Min?: IntFieldUpdateOperationsInput | number
+    penaltyMajor150Min?: FloatFieldUpdateOperationsInput | number
+    penaltyFullDay?: FloatFieldUpdateOperationsInput | number
+    allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
+    makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10093,6 +12190,12 @@ export namespace Prisma {
     workingHoursEnd?: string
     overtimeMultiplier?: number
     weekendOvertimeMultiplier?: number
+    penaltyMinor30Min?: number
+    penaltyModerate90Min?: number
+    penaltyMajor150Min?: number
+    penaltyFullDay?: number
+    allowMakeupTime?: boolean
+    makeupTimeDeadlineHours?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10111,6 +12214,12 @@ export namespace Prisma {
     workingHoursEnd?: StringFieldUpdateOperationsInput | string
     overtimeMultiplier?: FloatFieldUpdateOperationsInput | number
     weekendOvertimeMultiplier?: FloatFieldUpdateOperationsInput | number
+    penaltyMinor30Min?: IntFieldUpdateOperationsInput | number
+    penaltyModerate90Min?: IntFieldUpdateOperationsInput | number
+    penaltyMajor150Min?: FloatFieldUpdateOperationsInput | number
+    penaltyFullDay?: FloatFieldUpdateOperationsInput | number
+    allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
+    makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10130,6 +12239,12 @@ export namespace Prisma {
     workingHoursEnd?: StringFieldUpdateOperationsInput | string
     overtimeMultiplier?: FloatFieldUpdateOperationsInput | number
     weekendOvertimeMultiplier?: FloatFieldUpdateOperationsInput | number
+    penaltyMinor30Min?: IntFieldUpdateOperationsInput | number
+    penaltyModerate90Min?: IntFieldUpdateOperationsInput | number
+    penaltyMajor150Min?: FloatFieldUpdateOperationsInput | number
+    penaltyFullDay?: FloatFieldUpdateOperationsInput | number
+    allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
+    makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10353,10 +12468,16 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    isAdmin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -10369,6 +12490,7 @@ export namespace Prisma {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    isAdmin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -10377,12 +12499,21 @@ export namespace Prisma {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    isAdmin?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -10407,14 +12538,19 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type EmployeeScalarRelationFilter = {
     is?: EmployeeWhereInput
     isNot?: EmployeeWhereInput
+  }
+
+  export type AttendancePenaltyListRelationFilter = {
+    every?: AttendancePenaltyWhereInput
+    some?: AttendancePenaltyWhereInput
+    none?: AttendancePenaltyWhereInput
+  }
+
+  export type AttendancePenaltyOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type AttendanceEmployeeIdDateCompoundUniqueInput = {
@@ -10435,6 +12571,11 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
   }
 
   export type AttendanceAvgOrderByAggregateInput = {
@@ -10444,6 +12585,11 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
   }
 
   export type AttendanceMaxOrderByAggregateInput = {
@@ -10459,6 +12605,11 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
   }
 
   export type AttendanceMinOrderByAggregateInput = {
@@ -10474,6 +12625,11 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
   }
 
   export type AttendanceSumOrderByAggregateInput = {
@@ -10483,6 +12639,11 @@ export namespace Prisma {
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
+    graceMinutesUsed?: SortOrder
+    lateMinutesBeyondGrace?: SortOrder
+    makeupTimeRequired?: SortOrder
+    makeupTimeCompleted?: SortOrder
+    totalPenaltyAmount?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10515,12 +12676,124 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type AttendanceScalarRelationFilter = {
+    is?: AttendanceWhereInput
+    isNot?: AttendanceWhereInput
+  }
+
+  export type AttendancePenaltyCountOrderByAggregateInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    penaltyType?: SortOrder
+    severity?: SortOrder
+    description?: SortOrder
+    lateMinutes?: SortOrder
+    earlyMinutes?: SortOrder
+    missedHours?: SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupRequired?: SortOrder
+    makeupHours?: SortOrder
+    isActive?: SortOrder
+    isWaived?: SortOrder
+    waivedReason?: SortOrder
+    waivedBy?: SortOrder
+    waivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AttendancePenaltyAvgOrderByAggregateInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    lateMinutes?: SortOrder
+    earlyMinutes?: SortOrder
+    missedHours?: SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupHours?: SortOrder
+  }
+
+  export type AttendancePenaltyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    penaltyType?: SortOrder
+    severity?: SortOrder
+    description?: SortOrder
+    lateMinutes?: SortOrder
+    earlyMinutes?: SortOrder
+    missedHours?: SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupRequired?: SortOrder
+    makeupHours?: SortOrder
+    isActive?: SortOrder
+    isWaived?: SortOrder
+    waivedReason?: SortOrder
+    waivedBy?: SortOrder
+    waivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AttendancePenaltyMinOrderByAggregateInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    penaltyType?: SortOrder
+    severity?: SortOrder
+    description?: SortOrder
+    lateMinutes?: SortOrder
+    earlyMinutes?: SortOrder
+    missedHours?: SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupRequired?: SortOrder
+    makeupHours?: SortOrder
+    isActive?: SortOrder
+    isWaived?: SortOrder
+    waivedReason?: SortOrder
+    waivedBy?: SortOrder
+    waivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AttendancePenaltySumOrderByAggregateInput = {
+    id?: SortOrder
+    attendanceId?: SortOrder
+    lateMinutes?: SortOrder
+    earlyMinutes?: SortOrder
+    missedHours?: SortOrder
+    hoursDeducted?: SortOrder
+    salaryDeducted?: SortOrder
+    makeupHours?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type PayoutAdjustmentListRelationFilter = {
@@ -10743,6 +13016,12 @@ export namespace Prisma {
     workingHoursEnd?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    allowMakeupTime?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -10753,6 +13032,11 @@ export namespace Prisma {
     workingHoursPerDay?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
   }
 
   export type SystemSettingsMaxOrderByAggregateInput = {
@@ -10770,6 +13054,12 @@ export namespace Prisma {
     workingHoursEnd?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    allowMakeupTime?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -10789,6 +13079,12 @@ export namespace Prisma {
     workingHoursEnd?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    allowMakeupTime?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -10799,6 +13095,11 @@ export namespace Prisma {
     workingHoursPerDay?: SortOrder
     overtimeMultiplier?: SortOrder
     weekendOvertimeMultiplier?: SortOrder
+    penaltyMinor30Min?: SortOrder
+    penaltyModerate90Min?: SortOrder
+    penaltyMajor150Min?: SortOrder
+    penaltyFullDay?: SortOrder
+    makeupTimeDeadlineHours?: SortOrder
   }
 
   export type AttendanceCreateNestedManyWithoutEmployeeInput = {
@@ -10913,10 +13214,28 @@ export namespace Prisma {
     deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type EmployeeCreateNestedOneWithoutAttendanceInput = {
     create?: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
     connectOrCreate?: EmployeeCreateOrConnectWithoutAttendanceInput
     connect?: EmployeeWhereUniqueInput
+  }
+
+  export type AttendancePenaltyCreateNestedManyWithoutAttendanceInput = {
+    create?: XOR<AttendancePenaltyCreateWithoutAttendanceInput, AttendancePenaltyUncheckedCreateWithoutAttendanceInput> | AttendancePenaltyCreateWithoutAttendanceInput[] | AttendancePenaltyUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: AttendancePenaltyCreateOrConnectWithoutAttendanceInput | AttendancePenaltyCreateOrConnectWithoutAttendanceInput[]
+    createMany?: AttendancePenaltyCreateManyAttendanceInputEnvelope
+    connect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+  }
+
+  export type AttendancePenaltyUncheckedCreateNestedManyWithoutAttendanceInput = {
+    create?: XOR<AttendancePenaltyCreateWithoutAttendanceInput, AttendancePenaltyUncheckedCreateWithoutAttendanceInput> | AttendancePenaltyCreateWithoutAttendanceInput[] | AttendancePenaltyUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: AttendancePenaltyCreateOrConnectWithoutAttendanceInput | AttendancePenaltyCreateOrConnectWithoutAttendanceInput[]
+    createMany?: AttendancePenaltyCreateManyAttendanceInputEnvelope
+    connect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -10931,16 +13250,62 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type EmployeeUpdateOneRequiredWithoutAttendanceNestedInput = {
     create?: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
     connectOrCreate?: EmployeeCreateOrConnectWithoutAttendanceInput
     upsert?: EmployeeUpsertWithoutAttendanceInput
     connect?: EmployeeWhereUniqueInput
     update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutAttendanceInput, EmployeeUpdateWithoutAttendanceInput>, EmployeeUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type AttendancePenaltyUpdateManyWithoutAttendanceNestedInput = {
+    create?: XOR<AttendancePenaltyCreateWithoutAttendanceInput, AttendancePenaltyUncheckedCreateWithoutAttendanceInput> | AttendancePenaltyCreateWithoutAttendanceInput[] | AttendancePenaltyUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: AttendancePenaltyCreateOrConnectWithoutAttendanceInput | AttendancePenaltyCreateOrConnectWithoutAttendanceInput[]
+    upsert?: AttendancePenaltyUpsertWithWhereUniqueWithoutAttendanceInput | AttendancePenaltyUpsertWithWhereUniqueWithoutAttendanceInput[]
+    createMany?: AttendancePenaltyCreateManyAttendanceInputEnvelope
+    set?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    disconnect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    delete?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    connect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    update?: AttendancePenaltyUpdateWithWhereUniqueWithoutAttendanceInput | AttendancePenaltyUpdateWithWhereUniqueWithoutAttendanceInput[]
+    updateMany?: AttendancePenaltyUpdateManyWithWhereWithoutAttendanceInput | AttendancePenaltyUpdateManyWithWhereWithoutAttendanceInput[]
+    deleteMany?: AttendancePenaltyScalarWhereInput | AttendancePenaltyScalarWhereInput[]
+  }
+
+  export type AttendancePenaltyUncheckedUpdateManyWithoutAttendanceNestedInput = {
+    create?: XOR<AttendancePenaltyCreateWithoutAttendanceInput, AttendancePenaltyUncheckedCreateWithoutAttendanceInput> | AttendancePenaltyCreateWithoutAttendanceInput[] | AttendancePenaltyUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: AttendancePenaltyCreateOrConnectWithoutAttendanceInput | AttendancePenaltyCreateOrConnectWithoutAttendanceInput[]
+    upsert?: AttendancePenaltyUpsertWithWhereUniqueWithoutAttendanceInput | AttendancePenaltyUpsertWithWhereUniqueWithoutAttendanceInput[]
+    createMany?: AttendancePenaltyCreateManyAttendanceInputEnvelope
+    set?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    disconnect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    delete?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    connect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
+    update?: AttendancePenaltyUpdateWithWhereUniqueWithoutAttendanceInput | AttendancePenaltyUpdateWithWhereUniqueWithoutAttendanceInput[]
+    updateMany?: AttendancePenaltyUpdateManyWithWhereWithoutAttendanceInput | AttendancePenaltyUpdateManyWithWhereWithoutAttendanceInput[]
+    deleteMany?: AttendancePenaltyScalarWhereInput | AttendancePenaltyScalarWhereInput[]
+  }
+
+  export type AttendanceCreateNestedOneWithoutPenaltiesInput = {
+    create?: XOR<AttendanceCreateWithoutPenaltiesInput, AttendanceUncheckedCreateWithoutPenaltiesInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutPenaltiesInput
+    connect?: AttendanceWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type AttendanceUpdateOneRequiredWithoutPenaltiesNestedInput = {
+    create?: XOR<AttendanceCreateWithoutPenaltiesInput, AttendanceUncheckedCreateWithoutPenaltiesInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutPenaltiesInput
+    upsert?: AttendanceUpsertWithoutPenaltiesInput
+    connect?: AttendanceWhereUniqueInput
+    update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutPenaltiesInput, AttendanceUpdateWithoutPenaltiesInput>, AttendanceUncheckedUpdateWithoutPenaltiesInput>
   }
 
   export type EmployeeCreateNestedOneWithoutPayoutsInput = {
@@ -11165,6 +13530,19 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -11185,11 +13563,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11222,12 +13595,20 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type AttendanceCreateWithoutEmployeeInput = {
@@ -11241,6 +13622,12 @@ export namespace Prisma {
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+    penalties?: AttendancePenaltyCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutEmployeeInput = {
@@ -11255,6 +13642,12 @@ export namespace Prisma {
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+    penalties?: AttendancePenaltyUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutEmployeeInput = {
@@ -11372,6 +13765,11 @@ export namespace Prisma {
     actualHoursWorked?: FloatFilter<"Attendance"> | number
     lateDeductionHours?: FloatFilter<"Attendance"> | number
     earlyDeductionHours?: FloatFilter<"Attendance"> | number
+    graceMinutesUsed?: IntFilter<"Attendance"> | number
+    lateMinutesBeyondGrace?: IntFilter<"Attendance"> | number
+    makeupTimeRequired?: FloatFilter<"Attendance"> | number
+    makeupTimeCompleted?: FloatFilter<"Attendance"> | number
+    totalPenaltyAmount?: FloatFilter<"Attendance"> | number
   }
 
   export type PayoutUpsertWithWhereUniqueWithoutEmployeeInput = {
@@ -11457,6 +13855,57 @@ export namespace Prisma {
     create: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
   }
 
+  export type AttendancePenaltyCreateWithoutAttendanceInput = {
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes?: number | null
+    earlyMinutes?: number | null
+    missedHours?: number | null
+    hoursDeducted?: number
+    salaryDeducted?: number
+    makeupRequired?: boolean
+    makeupHours?: number
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: string | null
+    waivedBy?: string | null
+    waivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttendancePenaltyUncheckedCreateWithoutAttendanceInput = {
+    id?: number
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes?: number | null
+    earlyMinutes?: number | null
+    missedHours?: number | null
+    hoursDeducted?: number
+    salaryDeducted?: number
+    makeupRequired?: boolean
+    makeupHours?: number
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: string | null
+    waivedBy?: string | null
+    waivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttendancePenaltyCreateOrConnectWithoutAttendanceInput = {
+    where: AttendancePenaltyWhereUniqueInput
+    create: XOR<AttendancePenaltyCreateWithoutAttendanceInput, AttendancePenaltyUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type AttendancePenaltyCreateManyAttendanceInputEnvelope = {
+    data: AttendancePenaltyCreateManyAttendanceInput | AttendancePenaltyCreateManyAttendanceInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmployeeUpsertWithoutAttendanceInput = {
     update: XOR<EmployeeUpdateWithoutAttendanceInput, EmployeeUncheckedUpdateWithoutAttendanceInput>
     create: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
@@ -11493,6 +13942,141 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type AttendancePenaltyUpsertWithWhereUniqueWithoutAttendanceInput = {
+    where: AttendancePenaltyWhereUniqueInput
+    update: XOR<AttendancePenaltyUpdateWithoutAttendanceInput, AttendancePenaltyUncheckedUpdateWithoutAttendanceInput>
+    create: XOR<AttendancePenaltyCreateWithoutAttendanceInput, AttendancePenaltyUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type AttendancePenaltyUpdateWithWhereUniqueWithoutAttendanceInput = {
+    where: AttendancePenaltyWhereUniqueInput
+    data: XOR<AttendancePenaltyUpdateWithoutAttendanceInput, AttendancePenaltyUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type AttendancePenaltyUpdateManyWithWhereWithoutAttendanceInput = {
+    where: AttendancePenaltyScalarWhereInput
+    data: XOR<AttendancePenaltyUpdateManyMutationInput, AttendancePenaltyUncheckedUpdateManyWithoutAttendanceInput>
+  }
+
+  export type AttendancePenaltyScalarWhereInput = {
+    AND?: AttendancePenaltyScalarWhereInput | AttendancePenaltyScalarWhereInput[]
+    OR?: AttendancePenaltyScalarWhereInput[]
+    NOT?: AttendancePenaltyScalarWhereInput | AttendancePenaltyScalarWhereInput[]
+    id?: IntFilter<"AttendancePenalty"> | number
+    attendanceId?: IntFilter<"AttendancePenalty"> | number
+    penaltyType?: StringFilter<"AttendancePenalty"> | string
+    severity?: StringFilter<"AttendancePenalty"> | string
+    description?: StringFilter<"AttendancePenalty"> | string
+    lateMinutes?: IntNullableFilter<"AttendancePenalty"> | number | null
+    earlyMinutes?: IntNullableFilter<"AttendancePenalty"> | number | null
+    missedHours?: FloatNullableFilter<"AttendancePenalty"> | number | null
+    hoursDeducted?: FloatFilter<"AttendancePenalty"> | number
+    salaryDeducted?: FloatFilter<"AttendancePenalty"> | number
+    makeupRequired?: BoolFilter<"AttendancePenalty"> | boolean
+    makeupHours?: FloatFilter<"AttendancePenalty"> | number
+    isActive?: BoolFilter<"AttendancePenalty"> | boolean
+    isWaived?: BoolFilter<"AttendancePenalty"> | boolean
+    waivedReason?: StringNullableFilter<"AttendancePenalty"> | string | null
+    waivedBy?: StringNullableFilter<"AttendancePenalty"> | string | null
+    waivedAt?: DateTimeNullableFilter<"AttendancePenalty"> | Date | string | null
+    createdAt?: DateTimeFilter<"AttendancePenalty"> | Date | string
+    updatedAt?: DateTimeFilter<"AttendancePenalty"> | Date | string
+  }
+
+  export type AttendanceCreateWithoutPenaltiesInput = {
+    date: Date | string
+    checkIn: Date | string
+    checkOut?: Date | string | null
+    hoursWorked?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+    employee: EmployeeCreateNestedOneWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutPenaltiesInput = {
+    id?: number
+    employeeId: number
+    date: Date | string
+    checkIn: Date | string
+    checkOut?: Date | string | null
+    hoursWorked?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPaidDay?: boolean
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+  }
+
+  export type AttendanceCreateOrConnectWithoutPenaltiesInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutPenaltiesInput, AttendanceUncheckedCreateWithoutPenaltiesInput>
+  }
+
+  export type AttendanceUpsertWithoutPenaltiesInput = {
+    update: XOR<AttendanceUpdateWithoutPenaltiesInput, AttendanceUncheckedUpdateWithoutPenaltiesInput>
+    create: XOR<AttendanceCreateWithoutPenaltiesInput, AttendanceUncheckedCreateWithoutPenaltiesInput>
+    where?: AttendanceWhereInput
+  }
+
+  export type AttendanceUpdateToOneWithWhereWithoutPenaltiesInput = {
+    where?: AttendanceWhereInput
+    data: XOR<AttendanceUpdateWithoutPenaltiesInput, AttendanceUncheckedUpdateWithoutPenaltiesInput>
+  }
+
+  export type AttendanceUpdateWithoutPenaltiesInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hoursWorked?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutPenaltiesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hoursWorked?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
   }
 
   export type EmployeeCreateWithoutPayoutsInput = {
@@ -11775,6 +14359,11 @@ export namespace Prisma {
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
   }
 
   export type PayoutCreateManyEmployeeInput = {
@@ -11819,6 +14408,12 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    penalties?: AttendancePenaltyUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutEmployeeInput = {
@@ -11833,6 +14428,12 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    penalties?: AttendancePenaltyUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateManyWithoutEmployeeInput = {
@@ -11847,6 +14448,11 @@ export namespace Prisma {
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PayoutUpdateWithoutEmployeeInput = {
@@ -11941,6 +14547,89 @@ export namespace Prisma {
     totalDeductions?: FloatFieldUpdateOperationsInput | number
     holidayHours?: FloatFieldUpdateOperationsInput | number
     holidayPayout?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type AttendancePenaltyCreateManyAttendanceInput = {
+    id?: number
+    penaltyType: string
+    severity: string
+    description: string
+    lateMinutes?: number | null
+    earlyMinutes?: number | null
+    missedHours?: number | null
+    hoursDeducted?: number
+    salaryDeducted?: number
+    makeupRequired?: boolean
+    makeupHours?: number
+    isActive?: boolean
+    isWaived?: boolean
+    waivedReason?: string | null
+    waivedBy?: string | null
+    waivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttendancePenaltyUpdateWithoutAttendanceInput = {
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttendancePenaltyUncheckedUpdateWithoutAttendanceInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttendancePenaltyUncheckedUpdateManyWithoutAttendanceInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    penaltyType?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    earlyMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    missedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    hoursDeducted?: FloatFieldUpdateOperationsInput | number
+    salaryDeducted?: FloatFieldUpdateOperationsInput | number
+    makeupRequired?: BoolFieldUpdateOperationsInput | boolean
+    makeupHours?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isWaived?: BoolFieldUpdateOperationsInput | boolean
+    waivedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    waivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PayoutAdjustmentCreateManyPayoutInput = {

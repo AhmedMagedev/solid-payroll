@@ -35,7 +35,8 @@ export async function POST(req: Request) {
     // Generate JWT token
     const token = await generateToken({ 
       username: user.username,
-      userId: user.id
+      userId: user.id,
+      isAdmin: user.isAdmin
     });
     
     // Get the cookie store and set token in cookie for SSR support

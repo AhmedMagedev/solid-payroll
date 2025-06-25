@@ -18,12 +18,22 @@ async function main() {
       data: {
         username: 'admin',
         password: hashedPassword,
+        isAdmin: true,
       },
     });
 
     console.log('Default admin user created:', admin.username);
   } else {
-    console.log('Admin user already exists.');
+    // Update existing admin user to ensure isAdmin is true
+    if (!existingAdmin.isAdmin) {
+      const updatedAdmin = await prisma.user.update({
+        where: { username: 'admin' },
+        data: { isAdmin: true },
+      });
+      console.log('Updated admin user with isAdmin flag:', updatedAdmin.username);
+    } else {
+      console.log('Admin user already exists and has admin privileges.');
+    }
   }
 }
 

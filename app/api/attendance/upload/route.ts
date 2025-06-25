@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
 import { verifyToken } from '@/app/lib/auth';
 // Removed timezone conversion imports - keeping dates/times as-is
-import { startOfWeek, endOfWeek, format } from 'date-fns';
+// import { startOfWeek, endOfWeek, format } from 'date-fns'; // Commented out for now
+import { parseEgyptTimeToUtc } from '@/lib/timezone';
+import { processAttendanceWithPenalties } from '@/lib/penalty-calculator';
 
 const prisma = new PrismaClient();
 
@@ -101,9 +103,9 @@ export async function POST(request: NextRequest) {
       console.log(`[API] Parsing line: ${line}`);
       console.log(`[API] Extracted - DeviceID: ${deviceId}, Timestamp: ${timeString}`);
 
-      // Parse the timestamp as-is without timezone conversion
-      const checkInDateTime = new Date(timeString);
-      if (isNaN(checkInDateTime.getTime())) {
+      // Parse the timestamp as Egypt time (local) and convert to UTC for storage
+      const checkInDateTime = parseEgyptTimeToUtc(timeString);
+      if (!checkInDateTime || isNaN(checkInDateTime.getTime())) {
         console.log(`Skipping record ${line}: Invalid timestamp "${timeString}"`);
         continue;
       }
@@ -127,6 +129,12 @@ export async function POST(request: NextRequest) {
       graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
       const isPaidDay = checkInDateTime <= graceEndTime;
 
+      // Use Egypt time for the date boundary
+      const dateObj = parseEgyptTimeToUtc(parts[1] + ' 00:00:00');
+      if (!dateObj) {
+        console.warn(`[API] Invalid date for attendance record: ${parts[1]}`);
+        continue;
+      }
       const dateKey = parts[1]; // Use the original date string YYYY-MM-DD
       const employeeKey = `${employee.id}-${dateKey}`;
 
@@ -176,13 +184,20 @@ export async function POST(request: NextRequest) {
 
         console.log(`[API] Employee ${employee.name} on ${date}: First record: ${firstRecord}, Last record: ${lastRecord}`);
 
-        // Parse check-in and check-out times as-is without timezone conversion
+        // Parse check-in and check-out times as Egypt time (local)
         const parseTime = (timeStr: string) => {
-          return new Date(timeStr);
+          return parseEgyptTimeToUtc(timeStr);
         };
 
         const checkIn = parseTime(firstRecord);
         const checkOut = parseTime(lastRecord);
+
+        // Use Egypt time for the date boundary
+        const dateObj = parseEgyptTimeToUtc(date + ' 00:00:00');
+        if (!dateObj) {
+          console.warn(`[API] Invalid date for attendance record: ${date}`);
+          continue;
+        }
 
         if (!checkIn) {
           console.warn(`[API] Invalid check-in time for employee ${employee.name}: ${firstRecord}`);
@@ -263,7 +278,7 @@ export async function POST(request: NextRequest) {
 
         const attendanceData = {
           employeeId: employee.id,
-          date: new Date(date + 'T00:00:00'), // Convert YYYY-MM-DD string to Date
+          date: dateObj, // Always a Date, never null
           checkIn,
           checkOut,
           hoursWorked: hoursWorked > 0 ? hoursWorked : null,
@@ -324,13 +339,55 @@ export async function POST(request: NextRequest) {
 
     console.log(`[API] Successfully processed ${processedCount} attendance records`);
 
-    // Calculate payouts for affected employees
-    const affectedEmployeeIds = [...new Set(attendanceRecords.map(r => r.employeeId))];
-    console.log(`[API] Calculating payouts for ${affectedEmployeeIds.length} affected employees`);
+    // Process penalties for all uploaded attendance records
+    console.log(`[API] Processing penalties for ${attendanceRecords.length} attendance records`);
+    let penaltyCount = 0;
+    
+    for (let i = 0; i < attendanceRecords.length; i += BATCH_SIZE) {
+      const batch = attendanceRecords.slice(i, i + BATCH_SIZE);
+      
+      for (const record of batch) {
+        try {
+          // Find the attendance record that was just created/updated
+          const attendanceRecord = await prisma.attendance.findUnique({
+            where: {
+              employeeId_date: {
+                employeeId: record.employeeId,
+                date: record.date,
+              },
+            },
+          });
+          
+          if (attendanceRecord && record.checkOut) {
+            // Process penalties for this attendance record
+            await processAttendanceWithPenalties(
+              attendanceRecord.id,
+              record.employeeId,
+              record.checkIn,
+              record.checkOut
+            );
+            penaltyCount++;
+            console.log(`[Penalty] Processed penalties for employee ${record.employeeId} on ${record.date.toISOString().split('T')[0]}`);
+          }
+        } catch (error) {
+          console.error(`[Penalty] Error processing penalties for attendance record:`, error);
+        }
+      }
+      
+      // Small delay between penalty processing batches
+      if (i + BATCH_SIZE < attendanceRecords.length) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+    }
+    
+    console.log(`[API] Successfully processed penalties for ${penaltyCount} attendance records`);
 
-    const payoutResults = { created: 0, updated: 0, total: 0 };
+    // SKIP PAYOUT CALCULATION FOR NOW
+    console.log(`[API] Skipping payout calculation as requested`);
+    const payoutResults = { created: 0, updated: 0, total: 0, message: 'Payout calculation skipped' };
 
-    // Process payouts in smaller batches
+    /* 
+    // PAYOUT CALCULATION DISABLED - Process payouts in smaller batches
     for (let i = 0; i < affectedEmployeeIds.length; i += 5) {
       const employeeBatch = affectedEmployeeIds.slice(i, i + 5);
       
@@ -698,6 +755,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`[API] Payout calculation completed: Created ${payoutResults.created}, Updated ${payoutResults.updated}, Total ${payoutResults.total}`);
+    */
 
     return NextResponse.json({
       message: 'Attendance log processed successfully',

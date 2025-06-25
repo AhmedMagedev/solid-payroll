@@ -1,14 +1,31 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { HelpCircle, LogOut, Settings, Home, Users, Calendar, BookOpen, DollarSign } from 'lucide-react';
+import { HelpCircle, LogOut, Settings, Home, Users, Calendar, BookOpen, DollarSign, UserCog } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check if user is admin from localStorage token
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        console.log('[Sidebar] Token payload:', payload);
+        console.log('[Sidebar] isAdmin value:', payload.isAdmin);
+        setIsAdmin(payload.isAdmin || false);
+      } catch (error) {
+        console.error('Error parsing token:', error);
+        setIsAdmin(false);
+      }
+    }
+  }, []);
   
   const handleLogout = async () => {
     try {
@@ -56,6 +73,7 @@ export default function Sidebar() {
             className="rounded"
           />
           <h1 className="text-xl font-bold">Solid HR</h1>
+          {isAdmin && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Admin</span>}
         </div>
         
         <nav className="space-y-1">
@@ -95,17 +113,19 @@ export default function Sidebar() {
             Attendance
           </Link>
           
-          <Link 
-            href="/dashboard/payouts" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-              isActive('/dashboard/payouts') 
-                ? 'bg-primary text-white' 
-                : 'text-slate-700 hover:bg-gray-100'
-            }`}
-          >
-            <DollarSign size={18} />
-            Payouts
-          </Link>
+          {isAdmin && (
+            <Link 
+              href="/dashboard/payouts" 
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+                isActive('/dashboard/payouts') 
+                  ? 'bg-primary text-white' 
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <DollarSign size={18} />
+              Payouts
+            </Link>
+          )}
           
           <Link 
             href="/dashboard/rules" 
@@ -119,17 +139,33 @@ export default function Sidebar() {
             Rules & Policies
           </Link>
           
-          <Link 
-            href="/dashboard/settings" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-              isActive('/dashboard/settings') 
-                ? 'bg-primary text-white' 
-                : 'text-slate-700 hover:bg-gray-100'
-            }`}
-          >
-            <Settings size={18} />
-            Settings
-          </Link>
+          {isAdmin && (
+            <Link 
+              href="/dashboard/settings" 
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+                isActive('/dashboard/settings') 
+                  ? 'bg-primary text-white' 
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <Settings size={18} />
+              Settings
+            </Link>
+          )}
+          
+          {isAdmin && (
+            <Link 
+              href="/dashboard/admin/users" 
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+                isActive('/dashboard/admin/users') 
+                  ? 'bg-primary text-white' 
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <UserCog size={18} />
+              User Management
+            </Link>
+          )}
         </nav>
       </div>
       

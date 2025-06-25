@@ -13,6 +13,7 @@ const TOKEN_EXPIRATION = 60 * 60 * 24 * 30;
 export interface TokenPayload extends JWTPayload {
   username: string;
   userId?: number;
+  isAdmin?: boolean;
 }
 
 /**
@@ -22,6 +23,7 @@ export async function generateToken(payload: TokenPayload): Promise<string> {
   const token = await new SignJWT({
     username: payload.username,
     userId: payload.userId,
+    isAdmin: payload.isAdmin,
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -95,4 +97,26 @@ export async function validateNextSession(request: { cookies: { get: (name: stri
   if (!token) return null;
   
   return await verifyToken(token);
+}
+
+/**
+ * Validate admin session from request
+ */
+export async function validateAdminSession(request: Request): Promise<TokenPayload | null> {
+  const session = await validateSession(request);
+  if (!session || !session.isAdmin) {
+    return null;
+  }
+  return session;
+}
+
+/**
+ * Validate admin session from NextRequest
+ */
+export async function validateAdminNextSession(request: { cookies: { get: (name: string) => { value: string } | undefined }, headers: Headers }): Promise<TokenPayload | null> {
+  const session = await validateNextSession(request);
+  if (!session || !session.isAdmin) {
+    return null;
+  }
+  return session;
 } 

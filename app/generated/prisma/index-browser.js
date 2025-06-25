@@ -137,6 +137,7 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
   password: 'password',
+  isAdmin: 'isAdmin',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -153,7 +154,34 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   isPaidDay: 'isPaidDay',
   actualHoursWorked: 'actualHoursWorked',
   lateDeductionHours: 'lateDeductionHours',
-  earlyDeductionHours: 'earlyDeductionHours'
+  earlyDeductionHours: 'earlyDeductionHours',
+  graceMinutesUsed: 'graceMinutesUsed',
+  lateMinutesBeyondGrace: 'lateMinutesBeyondGrace',
+  makeupTimeRequired: 'makeupTimeRequired',
+  makeupTimeCompleted: 'makeupTimeCompleted',
+  totalPenaltyAmount: 'totalPenaltyAmount'
+};
+
+exports.Prisma.AttendancePenaltyScalarFieldEnum = {
+  id: 'id',
+  attendanceId: 'attendanceId',
+  penaltyType: 'penaltyType',
+  severity: 'severity',
+  description: 'description',
+  lateMinutes: 'lateMinutes',
+  earlyMinutes: 'earlyMinutes',
+  missedHours: 'missedHours',
+  hoursDeducted: 'hoursDeducted',
+  salaryDeducted: 'salaryDeducted',
+  makeupRequired: 'makeupRequired',
+  makeupHours: 'makeupHours',
+  isActive: 'isActive',
+  isWaived: 'isWaived',
+  waivedReason: 'waivedReason',
+  waivedBy: 'waivedBy',
+  waivedAt: 'waivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.PayoutScalarFieldEnum = {
@@ -213,6 +241,12 @@ exports.Prisma.SystemSettingsScalarFieldEnum = {
   workingHoursEnd: 'workingHoursEnd',
   overtimeMultiplier: 'overtimeMultiplier',
   weekendOvertimeMultiplier: 'weekendOvertimeMultiplier',
+  penaltyMinor30Min: 'penaltyMinor30Min',
+  penaltyModerate90Min: 'penaltyModerate90Min',
+  penaltyMajor150Min: 'penaltyMajor150Min',
+  penaltyFullDay: 'penaltyFullDay',
+  allowMakeupTime: 'allowMakeupTime',
+  makeupTimeDeadlineHours: 'makeupTimeDeadlineHours',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -237,6 +271,7 @@ exports.Prisma.ModelName = {
   Employee: 'Employee',
   User: 'User',
   Attendance: 'Attendance',
+  AttendancePenalty: 'AttendancePenalty',
   Payout: 'Payout',
   PayoutAdjustment: 'PayoutAdjustment',
   SystemSettings: 'SystemSettings'

@@ -30,6 +30,7 @@ model User {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   password  String
+  isAdmin   Boolean  @default(false) @map("is_admin")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -52,10 +53,51 @@ model Attendance {
   lateDeductionHours  Float @default(0) @map("late_deduction_hours")
   earlyDeductionHours Float @default(0) @map("early_deduction_hours")
 
-  employee Employee @relation(fields: [employeeId], references: [id])
+  // New penalty tracking fields
+  graceMinutesUsed       Int   @default(0) @map("grace_minutes_used")
+  lateMinutesBeyondGrace Int   @default(0) @map("late_minutes_beyond_grace")
+  makeupTimeRequired     Float @default(0) @map("makeup_time_required")
+  makeupTimeCompleted    Float @default(0) @map("makeup_time_completed")
+  totalPenaltyAmount     Float @default(0) @map("total_penalty_amount")
+
+  employee  Employee            @relation(fields: [employeeId], references: [id])
+  penalties AttendancePenalty[]
 
   @@unique([employeeId, date])
   @@map("attendance")
+}
+
+model AttendancePenalty {
+  id           Int    @id @default(autoincrement())
+  attendanceId Int    @map("attendance_id")
+  penaltyType  String @map("penalty_type") // "LATE_ARRIVAL", "EARLY_DEPARTURE", "MISSED_HOURS", "UNPAID_DAY"
+  severity     String @map("severity") // "GRACE_PERIOD", "MINOR", "MODERATE", "MAJOR", "FULL_DAY"
+  description  String
+
+  // Time-related fields
+  lateMinutes  Int?   @map("late_minutes")
+  earlyMinutes Int?   @map("early_minutes")
+  missedHours  Float? @map("missed_hours")
+
+  // Penalty calculation fields
+  hoursDeducted  Float   @default(0) @map("hours_deducted")
+  salaryDeducted Float   @default(0) @map("salary_deducted")
+  makeupRequired Boolean @default(false) @map("makeup_required")
+  makeupHours    Float   @default(0) @map("makeup_hours")
+
+  // Status tracking
+  isActive     Boolean   @default(true) @map("is_active")
+  isWaived     Boolean   @default(false) @map("is_waived")
+  waivedReason String?   @map("waived_reason")
+  waivedBy     String?   @map("waived_by")
+  waivedAt     DateTime? @map("waived_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  attendance Attendance @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+
+  @@map("attendance_penalties")
 }
 
 model Payout {
@@ -114,22 +156,31 @@ model PayoutAdjustment {
 }
 
 model SystemSettings {
-  id                        Int      @id @default(autoincrement())
-  lateAllowanceMinutes      Int      @default(30) @map("late_allowance_minutes")
-  workDaySunday             Boolean  @default(true) @map("work_day_sunday")
-  workDayMonday             Boolean  @default(true) @map("work_day_monday")
-  workDayTuesday            Boolean  @default(true) @map("work_day_tuesday")
-  workDayWednesday          Boolean  @default(true) @map("work_day_wednesday")
-  workDayThursday           Boolean  @default(true) @map("work_day_thursday")
-  workDayFriday             Boolean  @default(false) @map("work_day_friday")
-  workDaySaturday           Boolean  @default(true) @map("work_day_saturday")
-  workingHoursPerDay        Float    @default(9) @map("working_hours_per_day")
-  workingHoursStart         String   @default("09:00") @map("working_hours_start")
-  workingHoursEnd           String   @default("18:00") @map("working_hours_end")
-  overtimeMultiplier        Float    @default(1.5) @map("overtime_multiplier")
-  weekendOvertimeMultiplier Float    @default(2) @map("weekend_overtime_multiplier")
-  createdAt                 DateTime @default(now()) @map("created_at")
-  updatedAt                 DateTime @updatedAt @map("updated_at")
+  id                        Int     @id @default(autoincrement())
+  lateAllowanceMinutes      Int     @default(30) @map("late_allowance_minutes")
+  workDaySunday             Boolean @default(true) @map("work_day_sunday")
+  workDayMonday             Boolean @default(true) @map("work_day_monday")
+  workDayTuesday            Boolean @default(true) @map("work_day_tuesday")
+  workDayWednesday          Boolean @default(true) @map("work_day_wednesday")
+  workDayThursday           Boolean @default(true) @map("work_day_thursday")
+  workDayFriday             Boolean @default(false) @map("work_day_friday")
+  workDaySaturday           Boolean @default(true) @map("work_day_saturday")
+  workingHoursPerDay        Float   @default(9) @map("working_hours_per_day")
+  workingHoursStart         String  @default("09:00") @map("working_hours_start")
+  workingHoursEnd           String  @default("18:00") @map("working_hours_end")
+  overtimeMultiplier        Float   @default(1.5) @map("overtime_multiplier")
+  weekendOvertimeMultiplier Float   @default(2) @map("weekend_overtime_multiplier")
+
+  // Penalty Configuration (lateAllowanceMinutes above serves as grace period)
+  penaltyMinor30Min       Int     @default(60) @map("penalty_minor_30min") // 1 hour deduction for up to 30 min beyond grace
+  penaltyModerate90Min    Int     @default(180) @map("penalty_moderate_90min") // 3 hours deduction for up to 90 min beyond grace
+  penaltyMajor150Min      Float   @default(0.5) @map("penalty_major_150min") // Half day for up to 150 min beyond grace
+  penaltyFullDay          Float   @default(1.0) @map("penalty_full_day") // Full day for 150+ min beyond grace
+  allowMakeupTime         Boolean @default(true) @map("allow_makeup_time")
+  makeupTimeDeadlineHours Int     @default(24) @map("makeup_time_deadline_hours")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("system_settings")
 }

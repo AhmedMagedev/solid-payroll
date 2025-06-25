@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowLeft, CalendarX } from 'lucide-react';
 import { formatEgyptTime } from '@/lib/timezone';
-import { parseISO, differenceInMinutes, format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { parseISO, format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 
 interface Employee {
@@ -27,6 +27,13 @@ interface AttendanceRecord {
   checkOut: string | null;
   hoursWorked: number | null;
   isPaidDay?: boolean;
+  penalties?: Penalty[];
+  // New penalty fields
+  graceMinutesUsed?: number;
+  lateMinutesBeyondGrace?: number;
+  makeupTimeRequired?: number;
+  makeupTimeCompleted?: number;
+  totalPenaltyAmount?: number;
 }
 
 interface SystemSettings {
@@ -122,65 +129,7 @@ export default function EmployeeAttendancePage() {
     fetchData();
   }, [employeeId]);
 
-  // Calculate penalties for attendance record
-  const calculatePenalties = (record: AttendanceRecord): Penalty[] => {
-    const penalties: Penalty[] = [];
-    
-    if (!record.checkIn || !record.date || !systemSettings) return penalties;
-    
-    try {
-      const recordDate = parseISO(record.date);
-      const checkInTime = new Date(record.checkIn);
-      const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
-      
-      // Working hours with dynamic grace period from settings
-      const [startHours, startMinutes] = systemSettings.workingHoursStart.split(':');
-      const [endHours, endMinutes] = systemSettings.workingHoursEnd.split(':');
-      
-      const workStart = new Date(recordDate);
-      workStart.setHours(parseInt(startHours), parseInt(startMinutes) + systemSettings.lateAllowanceMinutes, 0, 0);
-      
-      const workEnd = new Date(recordDate);
-      workEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
-      
-      // Check if it's an unpaid day
-      if (record.isPaidDay === false) {
-        penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
-        return penalties;
-      }
-      
-      // Calculate late arrival penalty
-      if (checkInTime > workStart) {
-        const lateMinutes = differenceInMinutes(checkInTime, workStart);
-        const lateHours = lateMinutes / 60;
-        
-        if (lateHours >= 2.5) {
-          penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
-        } else if (lateHours >= 1.5) {
-          penalties.push({ type: 'late-half', label: 'Half Day Penalty', color: 'bg-orange-100 text-orange-800' });
-        } else if (lateHours >= 0.5) {
-          penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
-        }
-      }
-      
-      // Calculate early departure penalty
-      if (checkOutTime && checkOutTime < workEnd) {
-        const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
-        const earlyHours = earlyMinutes / 60;
-        
-        if (earlyHours >= 2) {
-          penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
-        } else if (earlyHours >= 1) {
-          penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
-        }
-      }
-      
-    } catch (e) {
-      console.warn('[EmployeeAttendancePage] Error calculating penalties for record:', record, e);
-    }
-    
-    return penalties;
-  };
+
 
   // Get absent days for a month
   const getAbsentDays = (monthKey: string, records: AttendanceRecord[]): AbsentDay[] => {
@@ -510,6 +459,7 @@ export default function EmployeeAttendancePage() {
                               <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check Out</th>
                               <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Hours</th>
                               <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalties</th>
+                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalty Amount</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -526,7 +476,6 @@ export default function EmployeeAttendancePage() {
                               return allItems.map((item) => {
                                 if (item.type === 'attendance') {
                                   const record = item.data as AttendanceRecord;
-                                  const penalties = calculatePenalties(record);
                                   
                                   return (
                                     <tr key={record.id} className="border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
@@ -553,21 +502,21 @@ export default function EmployeeAttendancePage() {
                                       </td>
                                       <td className="px-4 py-3">
                                         <div className="flex flex-wrap gap-1">
-                                          {penalties.length > 0 ? (
-                                            penalties.map((penalty, idx) => (
-                                              <span
-                                                key={idx}
-                                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${penalty.color}`}
-                                              >
+                                          {record.penalties && record.penalties.length > 0 && (
+                                            record.penalties.map((penalty, index) => (
+                                              <Badge key={index} variant="outline" className={penalty.color + ' text-xs'}>
                                                 {penalty.label}
-                                              </span>
+                                              </Badge>
                                             ))
-                                          ) : (
-                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                              No Penalties
-                                            </span>
                                           )}
                                         </div>
+                                      </td>
+                                      <td className="px-4 py-3">
+                                        {(record.totalPenaltyAmount || 0) > 0 && (
+                                          <span className="font-semibold text-sm text-red-600">
+                                            L.E {(record.totalPenaltyAmount || 0).toFixed(2)}
+                                          </span>
+                                        )}
                                       </td>
                                     </tr>
                                   );
@@ -589,11 +538,8 @@ export default function EmployeeAttendancePage() {
                                       <td className="px-4 py-3">
                                         <span className="font-semibold text-sm text-gray-600">0h</span>
                                       </td>
-                                      <td className="px-4 py-3">
-                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
-                                          Absent
-                                        </span>
-                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
+                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
                                     </tr>
                                   );
                                 }

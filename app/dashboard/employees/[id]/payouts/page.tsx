@@ -1495,7 +1495,6 @@ export default function EmployeePayoutsPage() {
                                         <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check In</th>
                                         <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check Out</th>
                                         <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Hours</th>
-                                        <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalties</th>
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -1512,7 +1511,6 @@ export default function EmployeePayoutsPage() {
                                         return allItems.map((item) => {
                                           if (item.type === 'attendance') {
                                             const record = item.data as Attendance;
-                                            const penalties = calculatePenalties(record);
                                             
                                             return (
                                               <tr key={record.id} className="border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
@@ -1537,24 +1535,6 @@ export default function EmployeePayoutsPage() {
                                                     {record.hoursWorked?.toFixed(1) || '0'}h
                                                   </span>
                                                 </td>
-                                                <td className="px-4 py-3">
-                                                  <div className="flex flex-wrap gap-1">
-                                                    {penalties.length > 0 ? (
-                                                      penalties.map((penalty, idx) => (
-                                                        <span
-                                                          key={idx}
-                                                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${penalty.color}`}
-                                                        >
-                                                          {penalty.label}
-                                                        </span>
-                                                      ))
-                                                    ) : (
-                                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        No Penalties
-                                                      </span>
-                                                    )}
-                                                  </div>
-                                                </td>
                                               </tr>
                                             );
                                           } else {
@@ -1574,11 +1554,6 @@ export default function EmployeePayoutsPage() {
                                                 <td className="px-4 py-3 text-sm text-gray-500">—</td>
                                                 <td className="px-4 py-3">
                                                   <span className="font-semibold text-sm text-gray-600">0h</span>
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
-                                                    Absent
-                                                  </span>
                                                 </td>
                                               </tr>
                                             );

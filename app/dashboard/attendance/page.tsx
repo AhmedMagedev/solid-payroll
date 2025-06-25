@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, AlertCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatEgyptTime } from '@/lib/timezone';
 import { parseISO, differenceInMinutes } from 'date-fns';
+import Link from 'next/link';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 
 interface Attendance {
   id: number;
@@ -151,36 +153,30 @@ export default function AttendancePage() {
 
   // Calculate penalties for attendance record
   const calculatePenalties = (record: Attendance): Penalty[] => {
+    // Use backend penalties if present
+    if ((record as unknown as { penalties?: Penalty[] }).penalties && Array.isArray((record as unknown as { penalties?: Penalty[] }).penalties)) {
+      return (record as unknown as { penalties: Penalty[] }).penalties;
+    }
+    // Fallback to frontend calculation (legacy)
     const penalties: Penalty[] = [];
-    
     if (!record.checkIn || !record.date || !systemSettings) return penalties;
-    
     try {
       const recordDate = parseISO(record.date);
       const checkInTime = new Date(record.checkIn);
       const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
-      
-      // Working hours with dynamic grace period from settings
       const [startHours, startMinutes] = systemSettings.workingHoursStart.split(':');
       const [endHours, endMinutes] = systemSettings.workingHoursEnd.split(':');
-      
       const workStart = new Date(recordDate);
       workStart.setHours(parseInt(startHours), parseInt(startMinutes) + systemSettings.lateAllowanceMinutes, 0, 0);
-      
       const workEnd = new Date(recordDate);
       workEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
-      
-      // Check if it's an unpaid day
       if (record.isPaidDay === false) {
         penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
         return penalties;
       }
-      
-      // Calculate late arrival penalty
       if (checkInTime > workStart) {
         const lateMinutes = differenceInMinutes(checkInTime, workStart);
         const lateHours = lateMinutes / 60;
-        
         if (lateHours >= 2.5) {
           penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
         } else if (lateHours >= 1.5) {
@@ -189,23 +185,18 @@ export default function AttendancePage() {
           penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
         }
       }
-      
-      // Calculate early departure penalty
       if (checkOutTime && checkOutTime < workEnd) {
         const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
         const earlyHours = earlyMinutes / 60;
-        
         if (earlyHours >= 2) {
           penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
         } else if (earlyHours >= 1) {
           penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
         }
       }
-      
-    } catch (e) {
-      console.warn('[AttendancePage] Error calculating penalties for record:', record, e);
+    } catch {
+      // ignore
     }
-    
     return penalties;
   };
 
@@ -377,62 +368,51 @@ export default function AttendancePage() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Employee</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Date</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check In</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check Out</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Hours</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Penalties</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {attendanceData.map((record) => (
-                    <tr key={record.id} className="border-b border-border/50 hover:bg-muted/30">
-                      <td className="py-4 px-6">
-                        <div className="font-medium">
-                          {record.employee?.name || `Employee #${record.employeeId}`}
-                        </div>
-                      </td>
-                      <td className="py-4 px-6">{formatDate(record.date)}</td>
-                      <td className="py-4 px-6">
-                        {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : '-'}
-                      </td>
-                      <td className="py-4 px-6">
-                        {record.checkOut ? formatEgyptTime(record.checkOut, 'h:mm a') : '-'}
-                      </td>
-                      <td className="py-4 px-6">
-                        {record.hoursWorked !== null 
-                          ? <span className="font-medium">{record.hoursWorked.toFixed(2)}h</span> 
-                          : <span className="text-muted-foreground">N/A</span>}
-                      </td>
-                      <td className="py-4 px-6">
-                        {(() => {
-                          const penalties = calculatePenalties(record);
-                          if (penalties.length === 0) {
-                            return (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                No Penalties
-                              </span>
-                            );
-                          }
-                          return (
-                            <div className="flex flex-wrap gap-1">
-                              {penalties.map((penalty, index) => (
-                                <span key={index} className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${penalty.color}`}>
-                                  {penalty.label}
-                                </span>
-                              ))}
-                            </div>
-                          );
-                        })()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Employee</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Check In</TableHead>
+                    <TableHead>Check Out</TableHead>
+                    <TableHead>Hours</TableHead>
+                  </TableRow>
+                </TableHeader>
+                                  <TableBody>
+                    {attendanceData.map((attendance) => {
+                      return (
+                      <TableRow key={attendance.id} className="hover:bg-muted/50">
+                        <TableCell className="font-medium">
+                          <Link 
+                            href={`/dashboard/employees/${attendance.employeeId}`}
+                            className="hover:underline text-primary"
+                          >
+                            {attendance.employee.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>{formatDate(attendance.date)}</TableCell>
+                        <TableCell>
+                          {attendance.checkIn ? formatEgyptTime(attendance.checkIn, 'h:mm a') : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          {attendance.checkOut ? formatEgyptTime(attendance.checkOut, 'h:mm a') : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          <span className={`font-semibold ${
+                            attendance.hoursWorked && attendance.hoursWorked >= 9 
+                              ? 'text-green-600' 
+                              : attendance.hoursWorked && attendance.hoursWorked > 0 
+                                ? 'text-orange-600' 
+                                : 'text-red-600'
+                          }`}>
+                            {attendance.hoursWorked?.toFixed(1) || '0.0'}h
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </div>
             <div className="p-4">
               <PaginationControls />
