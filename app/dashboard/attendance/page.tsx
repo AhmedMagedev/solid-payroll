@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, AlertCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatEgyptTime } from '@/lib/timezone';
-import { parseISO, differenceInMinutes } from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import Link from 'next/link';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 
@@ -41,20 +41,6 @@ interface AttendanceResponse {
   pagination: PaginationInfo;
 }
 
-interface Penalty {
-  type: string;
-  label: string;
-  color: string;
-}
-
-interface SystemSettings {
-  id: number;
-  lateAllowanceMinutes: number;
-  workingHoursStart: string;
-  workingHoursEnd: string;
-  workingHoursPerDay: number;
-}
-
 export default function AttendancePage() {
   const router = useRouter();
   const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
@@ -63,7 +49,6 @@ export default function AttendancePage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
 
   const fetchAttendance = useCallback(async (page: number, search: string) => {
     try {
@@ -97,24 +82,8 @@ export default function AttendancePage() {
     }
   }, []);
 
-  const fetchSystemSettings = async () => {
-    try {
-      const response = await fetch('/api/settings', {
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        const settings = await response.json();
-        setSystemSettings(settings);
-      }
-    } catch (error) {
-      console.error('Failed to fetch system settings:', error);
-    }
-  };
-
   useEffect(() => {
     fetchAttendance(currentPage, searchTerm);
-    fetchSystemSettings();
   }, [currentPage, searchTerm, fetchAttendance]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -128,76 +97,12 @@ export default function AttendancePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Format date as MM/DD/YYYY
   const formatDate = (dateString: string) => {
     try {
-      // Handle different date formats
-      if (!dateString) return 'Invalid Date';
-      
-      // If it's already in YYYY-MM-DD format, parse it directly
-      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-        const date = new Date(dateString + 'T00:00:00');
-        if (isNaN(date.getTime())) return 'Invalid Date';
-        return date.toLocaleDateString('en-US');
-      }
-      
-      // Try parsing as ISO string
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Invalid Date';
-      return date.toLocaleDateString('en-US');
-    } catch (error) {
-      console.error('Error formatting date:', dateString, error);
+      return format(parseISO(dateString), 'MMM d, yyyy');
+    } catch {
       return 'Invalid Date';
     }
-  };
-
-  // Calculate penalties for attendance record
-  const calculatePenalties = (record: Attendance): Penalty[] => {
-    // Use backend penalties if present
-    if ((record as unknown as { penalties?: Penalty[] }).penalties && Array.isArray((record as unknown as { penalties?: Penalty[] }).penalties)) {
-      return (record as unknown as { penalties: Penalty[] }).penalties;
-    }
-    // Fallback to frontend calculation (legacy)
-    const penalties: Penalty[] = [];
-    if (!record.checkIn || !record.date || !systemSettings) return penalties;
-    try {
-      const recordDate = parseISO(record.date);
-      const checkInTime = new Date(record.checkIn);
-      const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
-      const [startHours, startMinutes] = systemSettings.workingHoursStart.split(':');
-      const [endHours, endMinutes] = systemSettings.workingHoursEnd.split(':');
-      const workStart = new Date(recordDate);
-      workStart.setHours(parseInt(startHours), parseInt(startMinutes) + systemSettings.lateAllowanceMinutes, 0, 0);
-      const workEnd = new Date(recordDate);
-      workEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
-      if (record.isPaidDay === false) {
-        penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
-        return penalties;
-      }
-      if (checkInTime > workStart) {
-        const lateMinutes = differenceInMinutes(checkInTime, workStart);
-        const lateHours = lateMinutes / 60;
-        if (lateHours >= 2.5) {
-          penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
-        } else if (lateHours >= 1.5) {
-          penalties.push({ type: 'late-half', label: 'Half Day Penalty', color: 'bg-orange-100 text-orange-800' });
-        } else if (lateHours >= 0.5) {
-          penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
-        }
-      }
-      if (checkOutTime && checkOutTime < workEnd) {
-        const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
-        const earlyHours = earlyMinutes / 60;
-        if (earlyHours >= 2) {
-          penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
-        } else if (earlyHours >= 1) {
-          penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
-        }
-      }
-    } catch {
-      // ignore
-    }
-    return penalties;
   };
 
   const PaginationControls = () => {
@@ -261,7 +166,7 @@ export default function AttendancePage() {
           <p className="text-muted-foreground mt-1">View and manage employee attendance data</p>
         </div>
         <Button onClick={() => router.push('/dashboard/attendance/upload')} className="w-full md:w-auto">
-          <Upload className="h-4 w-4 mr-2" />
+          <Upload className="h-4 w-4 mr-2 cursor-pointer" />
           Upload Attendance Log
         </Button>
       </div>

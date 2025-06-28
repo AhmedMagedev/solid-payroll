@@ -8,6 +8,16 @@ export interface PenaltyRule {
   makeupRequired: boolean;
 }
 
+export interface PenaltyCalculation {
+  penaltyType: 'LATE_ARRIVAL' | 'EARLY_DEPARTURE' | 'MISSING_ATTENDANCE';
+  severity: 'GRACE_PERIOD' | 'MINOR' | 'MODERATE' | 'MAJOR' | 'FULL_DAY';
+  description: string;
+  hoursDeducted: number;
+  salaryDeducted: number;
+  makeupRequired: boolean;
+  makeupHours: number;
+}
+
 export interface PenaltyCalculationResult {
   penalties: Array<{
     penaltyType: string;
@@ -30,6 +40,7 @@ export interface PenaltyCalculationResult {
 interface SystemSettings {
   lateAllowanceMinutes: number;
   workingHoursStart: string;
+  workingHoursEnd: string;
   workingHoursPerDay: number;
   allowMakeupTime: boolean;
   makeupTimeDeadlineHours: number;
@@ -50,6 +61,7 @@ export class PenaltyCalculator {
     checkIn: Date,
     checkOut: Date | null,
     workingHoursStart: string,
+    workingHoursEnd: string,
     workingHoursPerDay: number,
     hourlyRate: number
   ): Promise<PenaltyCalculationResult> {
@@ -61,6 +73,59 @@ export class PenaltyCalculator {
       isPaidDay: true,
     };
 
+    // FUNDAMENTAL RULE: Only missing check-in marks the entire day as unpaid
+    if (!checkIn) {
+      const dailySalary = hourlyRate * workingHoursPerDay;
+      
+      result.penalties.push({
+        penaltyType: 'MISSING_ATTENDANCE',
+        severity: 'FULL_DAY',
+        description: `Missing check-in - UNPAID DAY penalty applied.`,
+        hoursDeducted: workingHoursPerDay,
+        salaryDeducted: dailySalary,
+        makeupRequired: false,
+        makeupHours: 0,
+      });
+      
+      result.totalHoursDeducted = workingHoursPerDay;
+      result.totalSalaryDeducted = dailySalary;
+      result.isPaidDay = false;
+      
+      console.log(`[Penalty] Missing check-in - marking entire day as unpaid`);
+      return result;
+    }
+
+    // CHECK FOR ZERO WORKING HOURS: If check-in and check-out are the same time (0 hours worked)
+    if (checkOut && checkIn.getTime() === checkOut.getTime()) {
+      const dailySalary = hourlyRate * workingHoursPerDay;
+      
+      result.penalties.push({
+        penaltyType: 'MISSING_ATTENDANCE',
+        severity: 'FULL_DAY',
+        description: `Zero working hours (check-in and check-out at same time) - UNPAID DAY penalty applied.`,
+        hoursDeducted: workingHoursPerDay,
+        salaryDeducted: dailySalary,
+        makeupRequired: false,
+        makeupHours: 0,
+      });
+      
+      result.totalHoursDeducted = workingHoursPerDay;
+      result.totalSalaryDeducted = dailySalary;
+      result.isPaidDay = false;
+      
+      console.log(`[Penalty] Zero working hours - marking entire day as unpaid`);
+      return result;
+    }
+
+    // If missing check-out but have check-in, treat as incomplete data but still process
+    if (!checkOut) {
+      console.log(`[Penalty] Missing check-out but have check-in - treating as incomplete data`);
+      // We'll process late arrival penalty if applicable, but skip early departure
+      // The working hours calculation will handle the missing check-out appropriately
+    }
+
+    // If both check-in and check-out exist, proceed with normal penalty calculations
+    
     // Calculate late arrival penalty
     const lateArrivalPenalty = this.calculateLateArrivalPenalty(
       checkIn,
@@ -76,11 +141,12 @@ export class PenaltyCalculator {
       result.totalMakeupHours += lateArrivalPenalty.makeupHours;
     }
 
-    // Calculate early departure penalty (only if not already a full day penalty)
+    // Calculate early departure penalty (only if not already a full day penalty and have check-out)
     if (checkOut && !result.penalties.find(p => p.severity === 'FULL_DAY')) {
       const earlyDeparturePenalty = this.calculateEarlyDeparturePenalty(
         checkOut,
         checkIn,
+        workingHoursEnd,
         workingHoursPerDay,
         hourlyRate
       );
@@ -144,15 +210,16 @@ export class PenaltyCalculator {
     }
 
     const graceMinutes = this.settings.lateAllowanceMinutes || 30;
+    const dailySalary = hourlyRate * workingHoursPerDay;
     
     // Within grace period - requires makeup time
     if (lateMinutes <= graceMinutes) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'GRACE_PERIOD',
-        description: `Arrived ${lateMinutes} minutes late (within ${graceMinutes}-minute grace period). Makeup time required.`,
+        description: `Late arrival by ${lateMinutes} minutes (within ${graceMinutes}-minute grace period). Makeup time required - no salary deduction.`,
         lateMinutes,
-        hoursDeducted: 0,
+        hoursDeducted: 0, // No salary deduction for grace period
         salaryDeducted: 0,
         makeupRequired: true,
         makeupHours: lateMinutes / 60,
@@ -160,57 +227,56 @@ export class PenaltyCalculator {
     }
 
     const minutesBeyondGrace = lateMinutes - graceMinutes;
-    const dailySalary = hourlyRate * workingHoursPerDay;
 
-    // Up to 30 minutes beyond grace - 1 hour deduction
-    if (minutesBeyondGrace <= 30) {
+    // MINOR: 31-90 minutes beyond grace - 1 hour salary penalty
+    if (minutesBeyondGrace <= 90) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MINOR',
-        description: `Arrived ${lateMinutes} minutes late (${minutesBeyondGrace} minutes beyond grace period). 1 hour salary deduction.`,
+        description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). MINOR penalty: 1 hour salary deduction.`,
         lateMinutes,
-        hoursDeducted: 1,
+        hoursDeducted: 1, // Hours worth of salary deducted, not actual hours
         salaryDeducted: hourlyRate * 1,
         makeupRequired: false,
         makeupHours: 0,
       };
     }
 
-    // Up to 90 minutes beyond grace - 3 hours deduction
-    if (minutesBeyondGrace <= 90) {
+    // MODERATE: 91-150 minutes beyond grace - 3 hours salary penalty
+    if (minutesBeyondGrace <= 150) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MODERATE',
-        description: `Arrived ${lateMinutes} minutes late (${minutesBeyondGrace} minutes beyond grace period). 3 hours salary deduction.`,
+        description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). MODERATE penalty: 3 hours salary deduction.`,
         lateMinutes,
-        hoursDeducted: 3,
+        hoursDeducted: 3, // Hours worth of salary deducted, not actual hours
         salaryDeducted: hourlyRate * 3,
         makeupRequired: false,
         makeupHours: 0,
       };
     }
 
-    // Up to 150 minutes beyond grace - half day deduction
-    if (minutesBeyondGrace <= 150) {
+    // MAJOR: 151-210 minutes beyond grace - half day salary penalty
+    if (minutesBeyondGrace <= 210) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MAJOR',
-        description: `Arrived ${lateMinutes} minutes late (${minutesBeyondGrace} minutes beyond grace period). Half day salary deduction.`,
+        description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). MAJOR penalty: Half day salary deduction.`,
         lateMinutes,
-        hoursDeducted: workingHoursPerDay / 2,
+        hoursDeducted: workingHoursPerDay / 2, // Hours worth of salary deducted
         salaryDeducted: dailySalary * 0.5,
         makeupRequired: false,
         makeupHours: 0,
       };
     }
 
-    // Beyond 150 minutes - full day deduction
+    // UNPAID DAY: Beyond 210 minutes - maximum penalty for late arrival
     return {
       penaltyType: 'LATE_ARRIVAL',
       severity: 'FULL_DAY',
-      description: `Arrived ${lateMinutes} minutes late (${minutesBeyondGrace} minutes beyond grace period). Full day considered unpaid.`,
+      description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). UNPAID DAY - maximum penalty for late arrival.`,
       lateMinutes,
-      hoursDeducted: workingHoursPerDay,
+      hoursDeducted: workingHoursPerDay, // Hours worth of salary deducted
       salaryDeducted: dailySalary,
       makeupRequired: false,
       makeupHours: 0,
@@ -218,40 +284,69 @@ export class PenaltyCalculator {
   }
 
   /**
-   * Calculate early departure penalty
+   * Calculate early departure penalty based on business rules
+   * NO GRACE PERIOD - penalties apply from the first minute
    */
   private calculateEarlyDeparturePenalty(
     checkOut: Date,
     checkIn: Date,
+    workingHoursEnd: string,
     workingHoursPerDay: number,
     hourlyRate: number
   ) {
-    const hoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
-    const expectedHours = workingHoursPerDay;
+    const [endHour, endMinute] = workingHoursEnd.split(':').map(Number);
     
-    if (hoursWorked >= expectedHours) {
-      return null; // Worked full hours or more
+    // Set expected end time based on the check-in date (same work day)
+    const expectedEndTime = new Date(checkIn);
+    expectedEndTime.setHours(endHour, endMinute, 0, 0);
+
+    const earlyMinutes = Math.max(0, Math.floor((expectedEndTime.getTime() - checkOut.getTime()) / (1000 * 60)));
+    
+    if (earlyMinutes === 0) {
+      return null; // Left on time or later
     }
 
-    const shortfallHours = expectedHours - hoursWorked;
-    const earlyMinutes = Math.round(shortfallHours * 60);
+    const dailySalary = hourlyRate * workingHoursPerDay;
 
-    // If shortfall is significant (more than 15 minutes), apply penalty
-    if (shortfallHours > 0.25) { // More than 15 minutes
+    // MINOR: 1-30 minutes early - 1 hour salary penalty
+    if (earlyMinutes <= 30) {
       return {
         penaltyType: 'EARLY_DEPARTURE',
         severity: 'MINOR',
-        description: `Left ${earlyMinutes} minutes early. ${shortfallHours.toFixed(2)} hours salary deduction.`,
+        description: `Early departure by ${earlyMinutes} minutes. MINOR penalty: 1 hour salary deduction.`,
         earlyMinutes,
-        missedHours: shortfallHours,
-        hoursDeducted: shortfallHours,
-        salaryDeducted: hourlyRate * shortfallHours,
+        hoursDeducted: 1,
+        salaryDeducted: hourlyRate * 1,
         makeupRequired: false,
         makeupHours: 0,
       };
     }
 
-    return null;
+    // MODERATE: 31-90 minutes early - 3 hours salary penalty
+    if (earlyMinutes <= 90) {
+      return {
+        penaltyType: 'EARLY_DEPARTURE',
+        severity: 'MODERATE',
+        description: `Early departure by ${earlyMinutes} minutes. MODERATE penalty: 3 hours salary deduction.`,
+        earlyMinutes,
+        hoursDeducted: 3,
+        salaryDeducted: hourlyRate * 3,
+        makeupRequired: false,
+        makeupHours: 0,
+      };
+    }
+
+    // MAJOR: 91+ minutes early - half day penalty (maximum for early departure)
+    return {
+      penaltyType: 'EARLY_DEPARTURE',
+      severity: 'MAJOR',
+      description: `Early departure by ${earlyMinutes} minutes. MAJOR penalty: Half day salary deduction.`,
+      earlyMinutes,
+      hoursDeducted: workingHoursPerDay / 2,
+      salaryDeducted: dailySalary * 0.5,
+      makeupRequired: false,
+      makeupHours: 0,
+    };
   }
 
   /**
@@ -339,6 +434,7 @@ export async function processAttendanceWithPenalties(
     checkIn,
     checkOut,
     settings.workingHoursStart,
+    settings.workingHoursEnd,
     settings.workingHoursPerDay,
     employee.hourlyRate
   );
@@ -346,4 +442,42 @@ export async function processAttendanceWithPenalties(
   await calculator.applyPenaltiesToAttendance(attendanceId, result);
 
   return result;
-} 
+}
+
+/**
+ * Format penalty for display in UI
+ */
+export function formatPenaltyLabel(penalty: {
+  penaltyType: string;
+  lateMinutes?: number;
+  earlyMinutes?: number;
+  salaryDeducted?: number;
+  makeupHours?: number;
+} | null): string {
+  if (!penalty) return '';
+  
+  const { penaltyType, lateMinutes, earlyMinutes, salaryDeducted, makeupHours } = penalty;
+  
+  if (penaltyType === 'LATE_ARRIVAL' && lateMinutes) {
+    if (makeupHours && makeupHours > 0) {
+      return `Late ${lateMinutes}min (Makeup: ${makeupHours}h)`;
+    } else {
+      return `Late ${lateMinutes}min (-L.E ${salaryDeducted?.toFixed(2) || '0.00'})`;
+    }
+  }
+  
+  if (penaltyType === 'EARLY_DEPARTURE' && earlyMinutes) {
+    if (makeupHours && makeupHours > 0) {
+      return `Early ${earlyMinutes}min (Makeup: ${makeupHours}h)`;
+    } else {
+      return `Early ${earlyMinutes}min (-L.E ${salaryDeducted?.toFixed(2) || '0.00'})`;
+    }
+  }
+
+  if (penaltyType === 'MISSING_ATTENDANCE') {
+    return `Missing attendance (-L.E ${salaryDeducted?.toFixed(2) || '0.00'})`;
+  }
+  
+  // Fallback for any other penalty types
+  return `Penalty (-L.E ${salaryDeducted?.toFixed(2) || '0.00'})`;
+}

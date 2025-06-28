@@ -111,7 +111,7 @@ export default function EmployeesPage() {
               <Upload className="h-4 w-4 mr-2" />
               Upload Employees
             </Button>
-            <Button onClick={() => router.push('/dashboard/attendance/upload')}>
+            <Button className="cursor-pointer" onClick={() => router.push('/dashboard/attendance/upload')}>
               Upload Attendance
             </Button>
           </div>

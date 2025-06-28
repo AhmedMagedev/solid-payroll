@@ -502,13 +502,30 @@ export default function EmployeeAttendancePage() {
                                       </td>
                                       <td className="px-4 py-3">
                                         <div className="flex flex-wrap gap-1">
-                                          {record.penalties && record.penalties.length > 0 && (
-                                            record.penalties.map((penalty, index) => (
+                                          {record.penalties && record.penalties.length > 0 && (() => {
+                                            // Check if there's an UNPAID DAY penalty
+                                            const isUnpaidDayPenalty = (penalty: Penalty) => {
+                                              const label = penalty.label?.toLowerCase() || '';
+                                              return (
+                                                label.includes('unpaid day') || 
+                                                label.includes('whole day unpaid') ||
+                                                (label.includes('missing') && label.includes('unpaid'))
+                                              );
+                                            };
+                                            
+                                            const hasUnpaidDayPenalty = record.penalties.some(isUnpaidDayPenalty);
+                                            
+                                            // If UNPAID DAY penalty exists, only show that one
+                                            const penaltiesToShow = hasUnpaidDayPenalty 
+                                              ? record.penalties.filter(isUnpaidDayPenalty)
+                                              : record.penalties;
+                                            
+                                            return penaltiesToShow.map((penalty, index) => (
                                               <Badge key={index} variant="outline" className={penalty.color + ' text-xs'}>
                                                 {penalty.label}
                                               </Badge>
-                                            ))
-                                          )}
+                                            ));
+                                          })()}
                                         </div>
                                       </td>
                                       <td className="px-4 py-3">

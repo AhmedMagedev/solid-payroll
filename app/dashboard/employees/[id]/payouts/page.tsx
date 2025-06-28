@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, differenceInMinutes, eachDayOfInterval } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, isWithinInterval, eachDayOfInterval } from 'date-fns';
 import { formatEgyptTime } from '@/lib/timezone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Calendar, Clock, CalendarCheck, CalendarX } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -90,12 +90,6 @@ interface SystemSettings {
   lateAllowanceMinutes: number;
   workingHoursStart: string;
   workingHoursEnd: string;
-}
-
-interface Penalty {
-  type: string;
-  label: string;
-  color: string;
 }
 
 interface PayoutPeriod {
@@ -690,66 +684,6 @@ export default function EmployeePayoutsPage() {
     }
   };
 
-  // Function to calculate penalties for an attendance record
-  const calculatePenalties = (record: Attendance): Penalty[] => {
-    const penalties: Penalty[] = [];
-    
-    if (!record.checkIn || !record.date || !systemSettings) return penalties;
-    
-    try {
-      const recordDate = parseISO(record.date);
-      const checkInTime = new Date(record.checkIn);
-      const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
-      
-      // Working hours with dynamic grace period from settings
-      const [startHours, startMinutes] = systemSettings.workingHoursStart.split(':');
-      const [endHours, endMinutes] = systemSettings.workingHoursEnd.split(':');
-      
-      const workStart = new Date(recordDate);
-      workStart.setHours(parseInt(startHours), parseInt(startMinutes) + systemSettings.lateAllowanceMinutes, 0, 0);
-      
-      const workEnd = new Date(recordDate);
-      workEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
-      
-      // Check if it's an unpaid day
-      if (record.isPaidDay === false) {
-        penalties.push({ type: 'unpaid', label: 'Unpaid Day', color: 'bg-red-100 text-red-800' });
-        return penalties;
-      }
-      
-      // Calculate late arrival penalty
-      if (checkInTime > workStart) {
-        const lateMinutes = differenceInMinutes(checkInTime, workStart);
-        const lateHours = lateMinutes / 60;
-        
-        if (lateHours >= 2.5) {
-          penalties.push({ type: 'late-full', label: 'Whole Day Unpaid', color: 'bg-red-100 text-red-800' });
-        } else if (lateHours >= 1.5) {
-          penalties.push({ type: 'late-half', label: 'Half Day Penalty', color: 'bg-orange-100 text-orange-800' });
-        } else if (lateHours >= 0.5) {
-          penalties.push({ type: 'late-2h', label: '2h Late Penalty', color: 'bg-yellow-100 text-yellow-800' });
-        }
-      }
-      
-      // Calculate early departure penalty
-      if (checkOutTime && checkOutTime < workEnd) {
-        const earlyMinutes = differenceInMinutes(workEnd, checkOutTime);
-        const earlyHours = earlyMinutes / 60;
-        
-        if (earlyHours >= 2) {
-          penalties.push({ type: 'early-half', label: 'Half Day Early Penalty', color: 'bg-purple-100 text-purple-800' });
-        } else if (earlyHours >= 1) {
-          penalties.push({ type: 'early-2h', label: '2h Early Penalty', color: 'bg-blue-100 text-blue-800' });
-        }
-      }
-      
-    } catch (e) {
-      console.warn('[EmployeePayoutsPage] Error calculating penalties for record:', record, e);
-    }
-    
-    return penalties;
-  };
-
   // Get absent days for a month (reused from the attendance page)
   const getAbsentDays = (monthKey: string, records: Attendance[]): { date: string; dayName: string; isWorkDay: boolean; }[] => {
     if (!systemSettings) return [];
@@ -1174,7 +1108,7 @@ export default function EmployeePayoutsPage() {
                         <div className="space-y-1">
                           <div className="flex justify-between items-center text-sm">
                             <span className="flex items-center">
-                              <CalendarCheck className="h-3 w-3 mr-1" />
+                              <Calendar className="h-3 w-3 mr-1" />
                               Days Worked
                             </span>
                             <span className="font-medium">{daysWorked} / {workingDaysInPeriod}</span>
@@ -1576,7 +1510,7 @@ export default function EmployeePayoutsPage() {
                 </div>
               ) : (
                 <div className="text-center p-8 text-gray-500">
-                  <CalendarX className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                  <Calendar className="h-16 w-16 mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-medium mb-2">No attendance records found</h3>
                   <p className="text-sm">No attendance data is available for this employee yet.</p>
                 </div>
