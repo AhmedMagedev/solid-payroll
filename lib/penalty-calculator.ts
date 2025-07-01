@@ -80,7 +80,7 @@ export class PenaltyCalculator {
       result.penalties.push({
         penaltyType: 'MISSING_ATTENDANCE',
         severity: 'FULL_DAY',
-        description: `Missing check-in - UNPAID DAY penalty applied.`,
+        description: `غير مدفوع.`,
         hoursDeducted: workingHoursPerDay,
         salaryDeducted: dailySalary,
         makeupRequired: false,
@@ -102,7 +102,7 @@ export class PenaltyCalculator {
       result.penalties.push({
         penaltyType: 'MISSING_ATTENDANCE',
         severity: 'FULL_DAY',
-        description: `Zero working hours (check-in and check-out at same time) - UNPAID DAY penalty applied.`,
+        description: `غير مدفوع.`,
         hoursDeducted: workingHoursPerDay,
         salaryDeducted: dailySalary,
         makeupRequired: false,
@@ -217,7 +217,7 @@ export class PenaltyCalculator {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'GRACE_PERIOD',
-        description: `Late arrival by ${lateMinutes} minutes (within ${graceMinutes}-minute grace period). Makeup time required - no salary deduction.`,
+        description: `تأخير ب ${lateMinutes} دقيقة (في فترة الموعد المسموح بها). مطلوب التعديل - لا يتم خصم الرواتب.`,
         lateMinutes,
         hoursDeducted: 0, // No salary deduction for grace period
         salaryDeducted: 0,
@@ -233,7 +233,7 @@ export class PenaltyCalculator {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MINOR',
-        description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). MINOR penalty: 1 hour salary deduction.`,
+        description: `تأخير ب ${lateMinutes} دقيقة (${minutesBeyondGrace} دقيقة أكثر من الموعد). عقوبة MINOR: 1 ساعة من الرواتب.`,
         lateMinutes,
         hoursDeducted: 1, // Hours worth of salary deducted, not actual hours
         salaryDeducted: hourlyRate * 1,
@@ -247,7 +247,7 @@ export class PenaltyCalculator {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MODERATE',
-        description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). MODERATE penalty: 3 hours salary deduction.`,
+        description: `تأخير ب ${lateMinutes} دقيقة (${minutesBeyondGrace} دقيقة أكثر من الموعد). عقوبة MODERATE: 3 ساعات من الرواتب.`,
         lateMinutes,
         hoursDeducted: 3, // Hours worth of salary deducted, not actual hours
         salaryDeducted: hourlyRate * 3,
@@ -261,7 +261,7 @@ export class PenaltyCalculator {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MAJOR',
-        description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). MAJOR penalty: Half day salary deduction.`,
+        description: `تأخير ب ${lateMinutes} دقيقة (${minutesBeyondGrace} دقيقة أكثر من الموعد). عقوبة MAJOR: نصف يوم من الرواتب.`,
         lateMinutes,
         hoursDeducted: workingHoursPerDay / 2, // Hours worth of salary deducted
         salaryDeducted: dailySalary * 0.5,
@@ -274,7 +274,7 @@ export class PenaltyCalculator {
     return {
       penaltyType: 'LATE_ARRIVAL',
       severity: 'FULL_DAY',
-      description: `Late arrival by ${lateMinutes} minutes (${minutesBeyondGrace} minutes beyond grace). UNPAID DAY - maximum penalty for late arrival.`,
+      description: `تأخير ب ${lateMinutes} دقيقة (${minutesBeyondGrace} دقيقة أكثر من الموعد). غير مدفوع - عقوبة التأخير الأقصى.`,
       lateMinutes,
       hoursDeducted: workingHoursPerDay, // Hours worth of salary deducted
       salaryDeducted: dailySalary,
@@ -313,7 +313,7 @@ export class PenaltyCalculator {
       return {
         penaltyType: 'EARLY_DEPARTURE',
         severity: 'MINOR',
-        description: `Early departure by ${earlyMinutes} minutes. MINOR penalty: 1 hour salary deduction.`,
+        description: `تأخير ب ${earlyMinutes} دقيقة. عقوبة MINOR: 1 ساعة من الرواتب.`,
         earlyMinutes,
         hoursDeducted: 1,
         salaryDeducted: hourlyRate * 1,
@@ -327,7 +327,7 @@ export class PenaltyCalculator {
       return {
         penaltyType: 'EARLY_DEPARTURE',
         severity: 'MODERATE',
-        description: `Early departure by ${earlyMinutes} minutes. MODERATE penalty: 3 hours salary deduction.`,
+        description: `تأخير ب ${earlyMinutes} دقيقة. عقوبة MODERATE: 3 ساعات من الرواتب.`,
         earlyMinutes,
         hoursDeducted: 3,
         salaryDeducted: hourlyRate * 3,
@@ -340,7 +340,7 @@ export class PenaltyCalculator {
     return {
       penaltyType: 'EARLY_DEPARTURE',
       severity: 'MAJOR',
-      description: `Early departure by ${earlyMinutes} minutes. MAJOR penalty: Half day salary deduction.`,
+      description: `تأخير ب ${earlyMinutes} دقيقة. عقوبة MAJOR: نصف يوم من الرواتب.`,
       earlyMinutes,
       hoursDeducted: workingHoursPerDay / 2,
       salaryDeducted: dailySalary * 0.5,

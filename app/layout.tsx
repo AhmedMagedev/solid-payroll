@@ -5,7 +5,7 @@ import "./globals.css";
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "نظام الرواتب المتقدم",
+  title: "نظام الرواتب ",
   description: "نظام إدارة الرواتب والموظفين",
 };
 
