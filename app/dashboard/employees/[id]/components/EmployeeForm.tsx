@@ -62,24 +62,24 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     try {
       // Basic validation
       if (!formData.name.trim()) {
-        throw new Error('Name is required');
+        throw new Error('الاسم مطلوب');
       }
       if (!formData.email.trim()) {
-        throw new Error('Email is required');
+        throw new Error('البريد الإلكتروني مطلوب');
       }
       if (!formData.position.trim()) {
-        throw new Error('Position is required');
+        throw new Error('المنصب مطلوب');
       }
       if (!formData.fingerprintId.trim()) {
-        throw new Error('Fingerprint Device ID is required');
+        throw new Error('رقم جهاز البصمة مطلوب');
       }
       if (!formData.paymentBasis) {
-        throw new Error('Payment basis is required');
+        throw new Error('أساس الدفع مطلوب');
       }
       
       const hourlyRate = parseFloat(formData.hourlyRate);
       if (isNaN(hourlyRate) || hourlyRate <= 0) {
-        throw new Error('Hourly rate must be a positive number');
+        throw new Error('الأجر بالساعة يجب أن يكون رقماً موجباً');
       }
 
       // Send data to API
@@ -102,7 +102,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to update employee');
+        throw new Error(data.error || 'فشل في تحديث الموظف');
       }
 
       setSuccess(true);
@@ -114,7 +114,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       }, 1500);
       
     } catch (err) {
-      setError((err as Error).message || 'An error occurred while updating employee');
+      setError((err as Error).message || 'حدث خطأ أثناء تحديث الموظف');
       console.error('Update error:', err);
     } finally {
       setIsSubmitting(false);
@@ -124,32 +124,33 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-destructive/10 p-3 rounded-md text-destructive text-sm">
+        <div className="bg-destructive/10 p-3 rounded-md text-destructive text-sm text-right">
           {error}
         </div>
       )}
       
       {success && (
-        <div className="bg-green-100 p-3 rounded-md text-green-700 text-sm">
-          Employee updated successfully! Redirecting...
+        <div className="bg-green-100 p-3 rounded-md text-green-700 text-sm text-right">
+          تم تحديث الموظف بنجاح! جاري التوجيه...
         </div>
       )}
       
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name">الاسم</Label>
         <Input
           id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
           disabled={isSubmitting}
-          placeholder="Full Name"
+          placeholder="الاسم الكامل"
+          className="text-right"
           required
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">البريد الإلكتروني</Label>
         <Input
           id="email"
           name="email"
@@ -158,25 +159,27 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           onChange={handleChange}
           disabled={isSubmitting}
           placeholder="email@example.com"
+          className="text-right"
           required
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="position">Position</Label>
+        <Label htmlFor="position">المنصب</Label>
         <Input
           id="position"
           name="position"
           value={formData.position}
           onChange={handleChange}
           disabled={isSubmitting}
-          placeholder="Job Title"
+          placeholder="المسمى الوظيفي"
+          className="text-right"
           required
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="phone">Phone Number (Optional)</Label>
+        <Label htmlFor="phone">رقم الهاتف (اختياري)</Label>
         <Input
           id="phone"
           name="phone"
@@ -185,28 +188,30 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           onChange={handleChange}
           disabled={isSubmitting}
           placeholder="+20 123 456 7890"
+          className="text-right"
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="fingerprintId">Fingerprint Device ID</Label>
+        <Label htmlFor="fingerprintId">رقم جهاز البصمة</Label>
         <Input
           id="fingerprintId"
           name="fingerprintId"
           value={formData.fingerprintId}
           onChange={handleChange}
           disabled={isSubmitting}
-          placeholder="Device ID from attendance sheets (e.g., EMP001, 12345)"
+          placeholder="رقم الجهاز من ملفات الحضور (مثل: EMP001, 12345)"
+          className="text-right"
           required
         />
-        <p className="text-xs text-muted-foreground">
-          Enter the unique ID used in attendance device exports to map this employee correctly.
+        <p className="text-xs text-muted-foreground text-right">
+          أدخل الرقم الفريد المستخدم في تصدير جهاز الحضور لربط هذا الموظف بصورة صحيحة.
         </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="hourlyRate">Hourly Rate (L.E)</Label>
+          <Label htmlFor="hourlyRate">الأجر بالساعة (ج.م)</Label>
           <Input
             id="hourlyRate"
             name="hourlyRate"
@@ -215,6 +220,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
             onChange={handleChange}
             disabled={isSubmitting}
             placeholder="0.00"
+            className="text-right"
             step="0.01"
             min="0"
             inputMode="decimal"
@@ -223,32 +229,32 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="paymentBasis">Payment Basis</Label>
+          <Label htmlFor="paymentBasis">أساس الدفع</Label>
           <Select
             disabled={isSubmitting}
             value={formData.paymentBasis}
             onValueChange={(value) => handleSelectChange('paymentBasis', value)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select payment basis" />
+            <SelectTrigger className="w-full text-right">
+              <SelectValue placeholder="اختر أساس الدفع" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Weekly">Weekly</SelectItem>
-              <SelectItem value="Biweekly">Biweekly</SelectItem>
-              <SelectItem value="Monthly">Monthly</SelectItem>
+              <SelectItem value="Weekly">أسبوعي</SelectItem>
+              <SelectItem value="Biweekly">كل أسبوعين</SelectItem>
+              <SelectItem value="Monthly">شهري</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
       
-      <div className="flex justify-end gap-4 pt-2">
+      <div className="flex justify-end gap-4 pt-2 flex-row-reverse">
         <Button 
           type="button" 
           variant="outline" 
           disabled={isSubmitting}
           onClick={() => router.back()}
         >
-          Cancel
+          إلغاء
         </Button>
         <Button 
           type="submit" 
@@ -256,11 +262,11 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         >
           {isSubmitting ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
+              <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+              جاري الحفظ...
             </>
           ) : (
-            'Save Changes'
+            'حفظ التغييرات'
           )}
         </Button>
       </div>

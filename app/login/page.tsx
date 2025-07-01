@@ -38,18 +38,18 @@ export default function LoginPage() {
         }
         
         console.log('[Login Page] Login successful, redirecting to /dashboard');
-        toast.success("Login Successful!", { description: "Redirecting to dashboard..." });
+        toast.success("تم تسجيل الدخول بنجاح!", { description: "جاري التوجيه إلى لوحة التحكم..." });
         router.push('/dashboard');
       } else {
         console.log('[Login Page] Login failed:', data.message);
-        toast.error("Login Failed", {
-          description: data.message || 'Login failed. Please try again.',
+        toast.error("فشل تسجيل الدخول", {
+          description: data.message || 'فشل في تسجيل الدخول. يرجى المحاولة مرة أخرى.',
         });
       }
     } catch (err) {
       console.error('[Login Page] Error during login:', err);
-      toast.error("Error", {
-        description: 'An unexpected error occurred. Please try again.',
+      toast.error("خطأ", {
+        description: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       });
     } finally {
       setLoading(false);
@@ -62,48 +62,48 @@ export default function LoginPage() {
       <Card className="w-full max-w-md bg-card text-card-foreground shadow-2xl">
         <CardHeader className="space-y-4 text-center p-6 sm:p-8">
           <div className="flex justify-center">
-            <Image src="/images/solidLogo.webp" alt="Solid Payroll Logo" width={100} height={30} className="rounded-md" />
+            <Image src="/images/solidLogo.webp" alt="شعار نظام الرواتب" width={100} height={30} className="rounded-md" />
           </div>
-          <CardTitle className="text-2xl sm:text-3xl font-bold text-primary">HR Portal</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl font-bold text-primary">بوابة الموارد البشرية</CardTitle>
         </CardHeader>
         <CardContent className="p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username" className="sr-only">Username</Label>
+              <Label htmlFor="username" className="sr-only">اسم المستخدم</Label>
               <Input
                 id="username"
                 name="username"
                 type="text"
                 required
-                placeholder="Username"
+                placeholder="اسم المستخدم"
                 value={username}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                 disabled={loading}
-                className="bg-card"
+                className="bg-card text-right"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="sr-only">Password</Label>
+              <Label htmlFor="password" className="sr-only">كلمة المرور</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                placeholder="Password"
+                placeholder="كلمة المرور"
                 value={password}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 disabled={loading}
-                className="bg-card"
+                className="bg-card text-right"
               />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Logging in...
+                  <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  جاري تسجيل الدخول...
                 </>
               ) : (
-                'Login'
+                'تسجيل الدخول'
               )}
             </Button>
           </form>

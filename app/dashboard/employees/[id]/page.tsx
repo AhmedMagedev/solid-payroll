@@ -50,7 +50,7 @@ export default function EmployeeProfilePage() {
 
     async function fetchEmployee() {
       if (isNaN(employeeId)) {
-        setError('Invalid employee ID');
+        setError('رقم الموظف غير صالح');
         setIsLoading(false);
         return;
       }
@@ -68,7 +68,7 @@ export default function EmployeeProfilePage() {
         setEmployee(data);
       } catch (error) {
         console.error("Failed to fetch employee:", error);
-        setError('Could not load employee data');
+        setError('لا يمكن تحميل بيانات الموظف');
       } finally {
         setIsLoading(false);
       }
@@ -83,7 +83,7 @@ export default function EmployeeProfilePage() {
         <div className="flex justify-center items-center min-h-[300px]">
           <div className="text-center">
             <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-            <p className="mt-2 text-muted-foreground">Loading employee data...</p>
+            <p className="mt-2 text-muted-foreground">جاري تحميل بيانات الموظف...</p>
           </div>
         </div>
       </div>
@@ -95,12 +95,12 @@ export default function EmployeeProfilePage() {
       <div className="p-4 md:p-6 max-w-7xl mx-auto">
         <Card className="mx-auto max-w-2xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-destructive">Error</CardTitle>
+            <CardTitle className="text-destructive">خطأ</CardTitle>
           </CardHeader>
           <CardContent>
             <p>{error}</p>
             <Button asChild className="mt-4">
-              <Link href="/dashboard/employees">Back to Employees</Link>
+              <Link href="/dashboard/employees">العودة إلى الموظفين</Link>
             </Button>
           </CardContent>
         </Card>
@@ -113,12 +113,12 @@ export default function EmployeeProfilePage() {
       <div className="p-4 md:p-6 max-w-7xl mx-auto">
         <Card className="mx-auto max-w-2xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-destructive">Invalid Employee ID</CardTitle>
+            <CardTitle className="text-destructive">رقم موظف غير صالح</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>The employee ID provided is not valid.</p>
+            <p>رقم الموظف المقدم غير صالح.</p>
             <Button asChild className="mt-4">
-              <Link href="/dashboard/employees">Back to Employees</Link>
+              <Link href="/dashboard/employees">العودة إلى الموظفين</Link>
             </Button>
           </CardContent>
         </Card>
@@ -131,12 +131,12 @@ export default function EmployeeProfilePage() {
       <div className="p-4 md:p-6 max-w-7xl mx-auto">
         <Card className="mx-auto max-w-2xl shadow-sm">
           <CardHeader>
-            <CardTitle>Employee Not Found</CardTitle>
+            <CardTitle>الموظف غير موجود</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Sorry, we couldn&apos;t find an employee with the ID: {employeeId}.</p>
+            <p>عذراً، لم نتمكن من العثور على موظف برقم: {employeeId}.</p>
             <Button asChild className="mt-4">
-              <Link href="/dashboard/employees">Back to Employees</Link>
+              <Link href="/dashboard/employees">العودة إلى الموظفين</Link>
             </Button>
           </CardContent>
         </Card>
@@ -152,18 +152,17 @@ export default function EmployeeProfilePage() {
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
-      <Button asChild variant="outline" size="sm" className="mb-6">
-        <Link href="/dashboard/employees">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Employees
-        </Link>
-      </Button>
+      <div className="flex justify-between items-center mb-6">
+        <Button asChild variant="outline" size="sm">
+          <Link href="/dashboard/employees">
+            <ArrowLeft className="ml-2 h-4 w-4" />
+            العودة إلى الموظفين
+          </Link>
+        </Button>
+        <EmployeeActions employeeId={employee.id} />
+      </div>
 
       <Card className="mx-auto shadow-sm overflow-hidden">
-        <div className="absolute top-4 right-4 z-10">
-          <EmployeeActions employeeId={employee.id} />
-        </div>
-
         <CardHeader className="text-center pt-10 pb-6 bg-muted/20">
           <div className="flex justify-center mb-4">
             <Avatar className="h-24 w-24 text-3xl border-4 border-background shadow-md">
@@ -178,80 +177,80 @@ export default function EmployeeProfilePage() {
             <dl className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 md:grid-cols-3">
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                  <Hash className="h-4 w-4 mr-2" />
-                  Employee ID
+                  <Hash className="h-4 w-4 ml-2" />
+                  <span>رقم الموظف</span>
                 </dt>
-                <dd className="mt-1 text-base font-medium">{employee.id}</dd>
+                <dd className="mt-1 text-base font-medium text-left">{employee.id}</dd>
               </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Email
+                  <Mail className="h-4 w-4 ml-2" />
+                  <span>البريد الإلكتروني</span>
                 </dt>
-                <dd className="mt-1 text-base truncate">{employee.email}</dd>
+                <dd className="mt-1 text-base truncate text-left">{employee.email}</dd>
               </div>
               {employee.phone && (
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Phone
+                    <Phone className="h-4 w-4 ml-2" />
+                    <span>الهاتف</span>
                   </dt>
-                  <dd className="mt-1 text-base">{employee.phone}</dd>
+                  <dd className="mt-1 text-base text-left">{employee.phone}</dd>
                 </div>
               )}
               {employee.fingerprintId ? (
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                    <Fingerprint className="h-4 w-4 mr-2" />
-                    Device ID
+                    <Fingerprint className="h-4 w-4 ml-2" />
+                    <span>رقم الجهاز</span>
                   </dt>
-                  <dd className="mt-1 text-base font-mono">{employee.fingerprintId}</dd>
+                  <dd className="mt-1 text-base font-mono text-left">{employee.fingerprintId}</dd>
                 </div>
               ) : (
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                    <Fingerprint className="h-4 w-4 mr-2" />
-                    Device ID
+                    <Fingerprint className="h-4 w-4 ml-2" />
+                    <span>رقم الجهاز</span>
                   </dt>
-                  <dd className="mt-1 text-base text-orange-600 italic">Not set - required for attendance mapping</dd>
+                  <dd className="mt-1 text-base text-orange-600 italic text-left">غير محدد - مطلوب لربط الحضور</dd>
                 </div>
               )}
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Joined Date
+                  <Calendar className="h-4 w-4 ml-2" />
+                  <span>تاريخ الانضمام</span>
                 </dt>
-                <dd className="mt-1 text-base">{employee.createdAt ? formatEgyptTime(employee.createdAt, 'MMM d, yyyy') : 'N/A'}</dd>
+                <dd className="mt-1 text-base text-left">{employee.createdAt ? formatEgyptTime(employee.createdAt, 'MMM d, yyyy') : 'غير متوفر'}</dd>
               </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                  <DollarSign className="h-4 w-4 mr-2" />
-                  Hourly Rate
+                  <DollarSign className="h-4 w-4 ml-2" />
+                  <span>الأجر بالساعة</span>
                 </dt>
-                <dd className="mt-1 text-base font-medium">L.E {employee.hourlyRate.toFixed(2)}</dd>
+                <dd className="mt-1 text-base font-medium text-left">{employee.hourlyRate.toFixed(2)} ج.م</dd>
               </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Payment Basis
+                  <CreditCard className="h-4 w-4 ml-2" />
+                  <span>أساس الدفع</span>
                 </dt>
-                <dd className="mt-1 text-base font-medium">{employee.paymentBasis || 'Monthly'}</dd>
+                <dd className="mt-1 text-base font-medium text-left">{employee.paymentBasis === 'Monthly' ? 'شهري' : employee.paymentBasis || 'شهري'}</dd>
               </div>
             </dl>
           </div>
-          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8">
+          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8 sm:space-x-reverse">
             <Button 
               className="sm:flex-1" 
               onClick={() => router.push(`/dashboard/employees/${employee.id}/edit`)}
             >
-              Edit Profile
+              تعديل الملف الشخصي
             </Button>
             <Button 
               variant="outline" 
               className="sm:flex-1"
               onClick={() => router.push(`/dashboard/employees/${employee.id}/attendance`)}
             >
-              View Attendance
+              عرض الحضور
             </Button>
             {isAdmin && (
               <Button 
@@ -259,7 +258,7 @@ export default function EmployeeProfilePage() {
                 className="sm:flex-1"
                 onClick={() => router.push(`/dashboard/employees/${employee.id}/payouts`)}
               >
-                Payouts
+                المدفوعات
               </Button>
             )}
           </div>

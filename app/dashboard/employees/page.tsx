@@ -92,27 +92,27 @@ export default function EmployeesPage() {
   return (
     <div className="p-6">      
       <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
-        <h1 className="text-3xl font-bold text-primary">Employees</h1>
+        <h1 className="text-3xl font-bold text-primary">الموظفون</h1>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Input
-            placeholder="Search by name or ID..." // Updated placeholder
+            placeholder="البحث بالاسم أو الرقم..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-full sm:max-w-xs bg-white" // Added bg-white class
+            className="max-w-full sm:max-w-xs bg-white text-right"
           />
           <div className="flex flex-row gap-2">
             <Button onClick={() => router.push('/dashboard/employees/create')}>
-              Add Employee
+              إضافة موظف
             </Button>
             <Button 
               variant="outline" 
               onClick={() => router.push('/dashboard/employees/upload')}
             >
-              <Upload className="h-4 w-4 mr-2" />
-              Upload Employees
+              <Upload className="h-4 w-4 ml-2" />
+              رفع الموظفين
             </Button>
             <Button className="cursor-pointer" onClick={() => router.push('/dashboard/attendance/upload')}>
-              Upload Attendance
+              رفع الحضور
             </Button>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function EmployeesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Employee Directory</CardTitle>
+          <CardTitle>دليل الموظفين</CardTitle>
         </CardHeader>
         <CardContent>
           {/* Custom table without whitespace issues */}
@@ -128,45 +128,45 @@ export default function EmployeesPage() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="h-10 px-4 text-left align-middle font-medium w-[100px]">ID</th>
-                  <th className="h-10 px-4 text-left align-middle font-medium">Name</th>
-                  <th className="h-10 px-4 text-left align-middle font-medium">Position</th>
-                  <th className="h-10 px-4 text-left align-middle font-medium">Device ID</th>
-                  <th className="h-10 px-4 text-left align-middle font-medium">Hourly Rate</th>
-                  <th className="h-10 px-4 text-right align-middle font-medium">Est. Monthly</th>
-                  <th className="h-10 px-4 text-center align-middle font-medium w-[120px]">Actions</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium w-[100px]">الرقم</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium">الاسم</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium">المنصب</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium">رقم الجهاز</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium">الأجر بالساعة</th>
+                  <th className="h-10 px-4 text-right align-middle font-medium">المتوقع شهرياً</th>
+                  <th className="h-10 px-4 text-center align-middle font-medium w-[120px]">الإجراءات</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading ? (
                   <tr className="border-b">
-                    <td colSpan={7} className="p-4 text-center">Loading employees...</td>
+                    <td colSpan={7} className="p-4 text-center">جاري تحميل الموظفين...</td>
                   </tr>
                 ) : currentEmployees.length === 0 ? (
                   <tr className="border-b">
                     <td colSpan={7} className="p-4 text-center">
-                      {searchTerm ? `No employees found matching "${searchTerm}".` : 'No employees found. Add or upload employees to get started.'}
+                      {searchTerm ? `لم يتم العثور على موظفين مطابقين لـ "${searchTerm}".` : 'لم يتم العثور على موظفين. أضف أو ارفع موظفين للبدء.'}
                     </td>
                   </tr>
                 ) : (
                   currentEmployees.map((employee) => (
                     <tr key={employee.id} className="border-b hover:bg-muted/50 transition-colors">
-                      <td className="p-4 font-medium">{employee.id}</td>
-                      <td className="p-4">
+                      <td className="p-4 font-medium text-right">{employee.id}</td>
+                      <td className="p-4 text-right">
                         <Link href={`/dashboard/employees/${employee.id}`} className="hover:underline text-primary">
                           {employee.name}
                         </Link>
                       </td>
-                      <td className="p-4">{employee.position}</td>
-                      <td className="p-4 font-mono text-sm">
+                      <td className="p-4 text-right">{employee.position}</td>
+                      <td className="p-4 font-mono text-sm text-right">
                         {employee.fingerprintId ? (
                           employee.fingerprintId
                         ) : (
-                          <span className="text-orange-600 italic">Not set</span>
+                          <span className="text-orange-600 italic">غير محدد</span>
                         )}
                       </td>
-                      <td className="p-4">L.E {employee.hourlyRate.toFixed(2)}</td>
-                      <td className="p-4 text-right">L.E {(employee.hourlyRate * 9 * 22).toFixed(2)}</td>
+                      <td className="p-4 text-right">{employee.hourlyRate.toFixed(2)} ج.م</td>
+                      <td className="p-4 text-right">{(employee.hourlyRate * 9 * 22).toFixed(2)} ج.م</td>
                       <td className="p-4">
                         <div className="flex items-center justify-center gap-1">
                           <Button
@@ -174,7 +174,7 @@ export default function EmployeesPage() {
                             size="sm"
                             onClick={() => router.push(`/dashboard/employees/${employee.id}/edit`)}
                             className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
-                            title="Edit employee"
+                            title="تعديل الموظف"
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -201,10 +201,10 @@ export default function EmployeesPage() {
                 onClick={handlePreviousPage}
                 disabled={currentPage === 1 || isLoading}
               >
-                Previous
+                السابق
               </Button>
               <span className="text-sm text-muted-foreground">
-                Page {currentPage} of {totalPages > 0 ? totalPages : 1} 
+                صفحة {currentPage} من {totalPages > 0 ? totalPages : 1} 
               </span>
               <Button
                 variant="outline"
@@ -212,7 +212,7 @@ export default function EmployeesPage() {
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages || isLoading || totalPages === 0}
               >
-                Next
+                التالي
               </Button>
             </div>
           )}

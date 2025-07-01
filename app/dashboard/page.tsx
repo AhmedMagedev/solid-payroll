@@ -63,8 +63,6 @@ const StatBox = ({
   );
 };
 
-
-
 interface DashboardStats {
   totalEmployees: number;
   unpaidEmployeesCount: number;
@@ -129,7 +127,7 @@ export default function DashboardPage() {
         setStats(data);
       } catch (err) {
         console.error('Error fetching dashboard stats:', err);
-        setError('Failed to load dashboard statistics');
+        setError('فشل في تحميل إحصائيات لوحة التحكم');
       } finally {
         setIsLoading(false);
       }
@@ -151,9 +149,9 @@ export default function DashboardPage() {
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold">لوحة التحكم</h1>
         <p className="text-muted-foreground mt-1 md:mt-0">
-          Overview of your company&apos;s payroll and attendance data
+          نظرة عامة على بيانات الرواتب والحضور في شركتك
         </p>
       </div>
 
@@ -166,15 +164,15 @@ export default function DashboardPage() {
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
             </div>
-            <div className="ml-3">
+            <div className="mr-3">
               <h3 className="text-sm font-medium text-yellow-800">
-                Showing data from previous week
+                عرض البيانات من الأسبوع السابق
               </h3>
               <div className="mt-2 text-sm text-yellow-700">
                 <p>
-                  No attendance data found for the current week. Displaying statistics from{' '}
-                  {new Date(stats.metadata.dataWeekStart).toLocaleDateString()} to{' '}
-                  {new Date(stats.metadata.dataWeekEnd).toLocaleDateString()}.
+                  لا توجد بيانات حضور للأسبوع الحالي. يتم عرض الإحصائيات من{' '}
+                  {new Date(stats.metadata.dataWeekStart).toLocaleDateString('ar-EG')} إلى{' '}
+                  {new Date(stats.metadata.dataWeekEnd).toLocaleDateString('ar-EG')}.
                 </p>
               </div>
             </div>
@@ -185,34 +183,34 @@ export default function DashboardPage() {
       {/* Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatBox
-          title="Total Employees"
+          title="إجمالي الموظفين"
           value={stats ? stats.totalEmployees : '-'}
           icon={<UserIcon className="h-4 w-4 text-muted-foreground" />}
-          description="Registered in the system"
+          description="مسجلين في النظام"
           isLoading={isLoading}
         />
         
         <StatBox
-          title="Unpaid Employees"
+          title="الموظفون غير المدفوعين"
           value={stats ? stats.unpaidEmployeesCount : '-'}
           icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
-          description="Employees with unpaid payouts"
+          description="موظفون لديهم مدفوعات غير مسددة"
           isLoading={isLoading}
         />
         
         <StatBox
-          title="Payroll Paid This Month"
-          value={stats ? `L.E ${stats.totalPayrollPaidThisMonth.toFixed(2)}` : '-'}
+          title="الرواتب المدفوعة هذا الشهر"
+          value={stats ? `${stats.totalPayrollPaidThisMonth.toFixed(2)} ج.م` : '-'}
           icon={<DollarSign className="h-4 w-4 text-green-600" />}
-          description="Total payroll paid out"
+          description="إجمالي الرواتب المدفوعة"
           isLoading={isLoading}
         />
         
         <StatBox
-          title="Overtime Payout This Month"
-          value={stats ? `L.E ${stats.totalOvertimePayout.toFixed(2)}` : '-'}
+          title="مدفوعات الوقت الإضافي هذا الشهر"
+          value={stats ? `${stats.totalOvertimePayout.toFixed(2)} ج.م` : '-'}
           icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
-          description="Total overtime compensation"
+          description="إجمالي تعويضات الوقت الإضافي"
           isLoading={isLoading}
         />
       </div>
@@ -222,11 +220,11 @@ export default function DashboardPage() {
         {/* 1. Attendance Rate by Week */}
         <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center">
-              <CalendarIcon className="h-5 w-5 mr-2 text-primary" />
-              Attendance Rate by Week
+            <CardTitle className="text-lg flex items-center flex-row-reverse">
+              <CalendarIcon className="h-5 w-5 ml-2 text-primary" />
+              معدل الحضور أسبوعياً
             </CardTitle>
-            <CardDescription>Weekly attendance rates for the last 4 weeks</CardDescription>
+            <CardDescription>معدلات الحضور الأسبوعية للأسابيع الأربعة الماضية</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -249,16 +247,16 @@ export default function DashboardPage() {
                     <XAxis dataKey="week" />
                     <YAxis domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
                     <Tooltip 
-                      formatter={(value: number | string) => [`${value}%`, 'Attendance Rate']}
-                      labelFormatter={(label) => `Week of ${label}`}
+                      formatter={(value: number | string) => [`${value}%`, 'معدل الحضور']}
+                      labelFormatter={(label) => `أسبوع ${label}`}
                     />
-                    <Bar dataKey="attendanceRate" fill="#3b82f6" name="Attendance Rate %" />
+                    <Bar dataKey="attendanceRate" fill="#3b82f6" name="معدل الحضور %" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for {stats?.metadata?.isCurrentWeek ? 'this week' : 'the selected period'}
+                لا توجد بيانات حضور متاحة {stats?.metadata?.isCurrentWeek ? 'لهذا الأسبوع' : 'للفترة المحددة'}
               </div>
             )}
           </CardContent>
@@ -267,11 +265,11 @@ export default function DashboardPage() {
         {/* 2. Late Arrivals Percentage (Pie Chart) */}
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center">
-              <ClockAlert className="h-5 w-5 mr-2 text-primary" />
-              Late Arrivals {stats?.metadata?.isCurrentWeek ? 'This Week' : 'Recent Week'}
+            <CardTitle className="text-lg flex items-center flex-row-reverse">
+              <ClockAlert className="h-5 w-5 ml-2 text-primary" />
+              التأخير في الوصول {stats?.metadata?.isCurrentWeek ? 'هذا الأسبوع' : 'الأسبوع السابق'}
             </CardTitle>
-            <CardDescription>Percentage of late vs on-time arrivals</CardDescription>
+            <CardDescription>نسبة التأخير مقابل الوصول في الوقت المحدد</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -291,20 +289,20 @@ export default function DashboardPage() {
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                      label={({ name, percentage }) => `${name === 'Late' ? 'متأخر' : 'في الوقت'}: ${percentage}%`}
                     >
                       {stats.lateArrivalsData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.name === 'Late' ? '#FF8042' : '#00C49F'} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: number | string) => [value, 'Count']} />
+                    <Tooltip formatter={(value: number | string) => [value, 'العدد']} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for {stats?.metadata?.isCurrentWeek ? 'this week' : 'the selected period'}
+                لا توجد بيانات حضور متاحة {stats?.metadata?.isCurrentWeek ? 'لهذا الأسبوع' : 'للفترة المحددة'}
               </div>
             )}
           </CardContent>
@@ -313,11 +311,11 @@ export default function DashboardPage() {
         {/* 3. Absenteeism Rate (Pie Chart) */}
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center">
-              <CalendarX className="h-5 w-5 mr-2 text-primary" />
-              Absenteeism Rate {stats?.metadata?.isCurrentWeek ? 'This Week' : 'Recent Week'}
+            <CardTitle className="text-lg flex items-center flex-row-reverse">
+              <CalendarX className="h-5 w-5 ml-2 text-primary" />
+              معدل الغياب {stats?.metadata?.isCurrentWeek ? 'هذا الأسبوع' : 'الأسبوع السابق'}
             </CardTitle>
-            <CardDescription>Present vs absent employees this week</CardDescription>
+            <CardDescription>الموظفون الحاضرون مقابل الغائبين هذا الأسبوع</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -337,20 +335,20 @@ export default function DashboardPage() {
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                      label={({ name, percentage }) => `${name === 'Present' ? 'حاضر' : 'غائب'}: ${percentage}%`}
                     >
                       {stats.absenteeismData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.name === 'Present' ? '#00C49F' : '#FF8042'} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: number | string) => [value, 'Count']} />
+                    <Tooltip formatter={(value: number | string) => [value, 'العدد']} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             ) : (
               <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                No attendance data available for {stats?.metadata?.isCurrentWeek ? 'this week' : 'the selected period'}
+                لا توجد بيانات حضور متاحة {stats?.metadata?.isCurrentWeek ? 'لهذا الأسبوع' : 'للفترة المحددة'}
               </div>
             )}
           </CardContent>
@@ -360,17 +358,17 @@ export default function DashboardPage() {
       {/* 4. Overtime Hours This Week */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg flex items-center">
-            <ClockIcon className="h-5 w-5 mr-2 text-primary" />
-            Overtime Hours {stats?.metadata?.isCurrentWeek ? 'This Week' : 'Recent Week'}
+          <CardTitle className="text-lg flex items-center flex-row-reverse">
+            <ClockIcon className="h-5 w-5 ml-2 text-primary" />
+            ساعات الوقت الإضافي {stats?.metadata?.isCurrentWeek ? 'هذا الأسبوع' : 'الأسبوع السابق'}
           </CardTitle>
-          <CardDescription>Employees who worked overtime this week</CardDescription>
+          <CardDescription>الموظفون الذين عملوا وقتاً إضافياً هذا الأسبوع</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="space-y-3">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex items-center space-x-4">
+                <div key={i} className="flex items-center space-x-4 space-x-reverse">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[150px]" />
@@ -383,7 +381,7 @@ export default function DashboardPage() {
             <div className="space-y-4">
               {stats.overtimeEmployees.map((overtime, index) => (
                 <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4 space-x-reverse">
                     <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary font-medium">
                       {index + 1}
                     </div>
@@ -392,12 +390,12 @@ export default function DashboardPage() {
                       <div className="text-sm text-muted-foreground">{overtime.employee.position}</div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left">
                     <div className="font-semibold text-lg">
-                      {overtime.totalOvertimeHours.toFixed(1)} hrs
+                      {overtime.totalOvertimeHours.toFixed(1)} ساعة
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {overtime.overtimeDays} day{overtime.overtimeDays !== 1 ? 's' : ''}
+                      {overtime.overtimeDays} {overtime.overtimeDays !== 1 ? 'أيام' : 'يوم'}
                     </div>
                   </div>
                 </div>
@@ -406,7 +404,7 @@ export default function DashboardPage() {
           ) : (
             <div className="py-8 text-center text-muted-foreground">
               <ClockIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No overtime recorded {stats?.metadata?.isCurrentWeek ? 'this week' : 'for the selected period'}</p>
+              <p>لم يتم تسجيل وقت إضافي {stats?.metadata?.isCurrentWeek ? 'هذا الأسبوع' : 'للفترة المحددة'}</p>
             </div>
           )}
         </CardContent>

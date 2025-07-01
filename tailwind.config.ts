@@ -20,7 +20,15 @@ const config = {
     },
     extend: {
       fontFamily: {
-        inter: ['Inter', 'sans-serif'],
+        arabic: ['Noto Sans Arabic', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Noto Sans Arabic', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      spacing: {
+        'rtl-0': 'var(--spacing-rtl-0, 0)',
+        'rtl-1': 'var(--spacing-rtl-1, 0.25rem)',
+        'rtl-2': 'var(--spacing-rtl-2, 0.5rem)',
+        'rtl-3': 'var(--spacing-rtl-3, 0.75rem)',
+        'rtl-4': 'var(--spacing-rtl-4, 1rem)',
       },
       colors: {
         border: "hsl(var(--border))",

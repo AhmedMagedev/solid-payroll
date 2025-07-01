@@ -79,7 +79,7 @@ export default function EmployeeAttendancePage() {
   useEffect(() => {
     async function fetchData() {
       if (isNaN(employeeId)) {
-        setError('Invalid employee ID');
+        setError('رقم الموظف غير صالح');
         setIsLoading(false);
         return;
       }
@@ -120,7 +120,7 @@ export default function EmployeeAttendancePage() {
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        setError('Could not load employee data');
+        setError('لا يمكن تحميل بيانات الموظف');
       } finally {
         setIsLoading(false);
       }
@@ -128,8 +128,6 @@ export default function EmployeeAttendancePage() {
     
     fetchData();
   }, [employeeId]);
-
-
 
   // Get absent days for a month
   const getAbsentDays = (monthKey: string, records: AttendanceRecord[]): AbsentDay[] => {
@@ -148,13 +146,13 @@ export default function EmployeeAttendancePage() {
       
       // Map day of week to system settings
       const workDays = [
-        systemSettings.workDaySunday,    // 0 = Sunday
-        systemSettings.workDayMonday,    // 1 = Monday
-        systemSettings.workDayTuesday,   // 2 = Tuesday
-        systemSettings.workDayWednesday, // 3 = Wednesday
-        systemSettings.workDayThursday,  // 4 = Thursday
-        systemSettings.workDayFriday,    // 5 = Friday
-        systemSettings.workDaySaturday   // 6 = Saturday
+        systemSettings.workDaySunday,
+        systemSettings.workDayMonday,
+        systemSettings.workDayTuesday,
+        systemSettings.workDayWednesday,
+        systemSettings.workDayThursday,
+        systemSettings.workDayFriday,
+        systemSettings.workDaySaturday
       ];
       
       // Find absent days
@@ -165,7 +163,6 @@ export default function EmployeeAttendancePage() {
         const dayOfWeek = day.getDay();
         const isWorkDay = workDays[dayOfWeek];
         
-        // If it's a work day and employee didn't attend, mark as absent
         if (isWorkDay && !attendanceDates.has(dateString)) {
           absentDays.push({
             date: dateString,
@@ -220,12 +217,12 @@ export default function EmployeeAttendancePage() {
 
   // Safe date formatting
   const safeFormatDate = (dateString: string | null | undefined, formatStr: string = 'MMM d, yyyy') => {
-    if (!dateString) return 'Invalid Date';
+    if (!dateString) return 'تاريخ غير صالح';
     try {
       const date = parseISO(dateString);
       return format(date, formatStr);
     } catch {
-      return 'Invalid Date';
+      return 'تاريخ غير صالح';
     }
   };
 
@@ -235,7 +232,7 @@ export default function EmployeeAttendancePage() {
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="text-center">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent mb-4"></div>
-            <p className="text-muted-foreground">Loading attendance data...</p>
+            <p className="text-muted-foreground">جاري تحميل بيانات الحضور...</p>
           </div>
         </div>
       </div>
@@ -248,7 +245,7 @@ export default function EmployeeAttendancePage() {
         <Card>
           <CardContent className="p-8">
             <div className="text-center text-red-500">
-              <p className="text-lg font-medium">{error || 'Employee not found'}</p>
+              <p className="text-lg font-medium">{error || 'الموظف غير موجود'}</p>
             </div>
           </CardContent>
         </Card>
@@ -313,7 +310,7 @@ export default function EmployeeAttendancePage() {
       </Pagination>
       
       <div className="text-sm text-muted-foreground">
-        Month {startIndex + 1}-{Math.min(endIndex, totalMonths)} of {totalMonths}
+        شهر {startIndex + 1}-{Math.min(endIndex, totalMonths)} من {totalMonths}
       </div>
     </div>
   );
@@ -324,27 +321,27 @@ export default function EmployeeAttendancePage() {
       <div className="mb-6">
         <Button asChild variant="outline" size="sm" className="mb-4">
           <Link href={`/dashboard/employees/${employee.id}`}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Employee
+            <ArrowLeft className="ml-2 h-4 w-4" />
+            العودة إلى الموظف
           </Link>
         </Button>
         
         <div className="bg-slate-50 rounded-lg p-6 border border-slate-200">
           <div className="flex items-center justify-between">
             <div>
-                              <h1 className="text-2xl font-bold text-gray-900 mb-2">📅 {employee.name}&apos;s Attendance</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">📅 حضور {employee.name}</h1>
               <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <span>Position:</span> 
+                  <span>المنصب:</span> 
                   <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-medium">
                     {employee.position}
                   </Badge>
                 </div>
                 <span className="text-gray-400">•</span>
                 <div className="flex items-center gap-2">
-                  <span>Hourly Rate:</span> 
+                  <span>الأجر بالساعة:</span> 
                   <Badge variant="secondary" className="bg-green-100 text-green-800 font-medium">
-                    L.E {employee.hourlyRate.toFixed(2)}
+                    {employee.hourlyRate.toFixed(2)} ج.م
                   </Badge>
                 </div>
               </div>
@@ -357,43 +354,43 @@ export default function EmployeeAttendancePage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Records</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">إجمالي السجلات</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalRecords}</div>
-            <p className="text-xs text-muted-foreground mt-1">attendance days</p>
+            <p className="text-xs text-muted-foreground mt-1">أيام الحضور</p>
           </CardContent>
         </Card>
         
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Paid Days</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">الأيام المدفوعة</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{totalPaidDays}</div>
-            <p className="text-xs text-muted-foreground mt-1">eligible for salary</p>
+            <p className="text-xs text-muted-foreground mt-1">مؤهلة للراتب</p>
           </CardContent>
         </Card>
         
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Hours</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">إجمالي الساعات</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{totalHours.toFixed(1)}h</div>
-            <p className="text-xs text-muted-foreground mt-1">worked overall</p>
+            <div className="text-2xl font-bold text-blue-600">{totalHours.toFixed(1)} ساعة</div>
+            <p className="text-xs text-muted-foreground mt-1">مجموع العمل</p>
           </CardContent>
         </Card>
         
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Avg</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">متوسط شهري</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
               {totalMonths > 0 ? (totalRecords / totalMonths).toFixed(1) : '0'}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">days per month</p>
+            <p className="text-xs text-muted-foreground mt-1">أيام في الشهر</p>
           </CardContent>
         </Card>
       </div>
@@ -404,14 +401,14 @@ export default function EmployeeAttendancePage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                📊 Attendance Records by Month
+                📊 سجلات الحضور حسب الشهر
               </h2>
               <p className="text-sm text-gray-600 mt-1">
-                Showing {totalRecords} total records • Including absent days tracking
+                عرض {totalRecords} سجل إجمالي • يشمل تتبع أيام الغياب
               </p>
             </div>
             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-              {totalMonths} months
+              {totalMonths} شهر
             </Badge>
           </div>
         </div>
@@ -434,16 +431,16 @@ export default function EmployeeAttendancePage() {
                       <div className="bg-slate-50 p-4 border-b border-slate-200">
                         <div className="flex items-center justify-between">
                           <h3 className="font-semibold text-gray-900 flex items-center">
-                            <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                            <Calendar className="h-5 w-5 ml-2 text-blue-600" />
                             {monthName}
                           </h3>
                           <div className="flex items-center gap-3">
                             <Badge variant="outline" className="bg-white border-gray-300">
-                              {records.length} attended
+                              {records.length} حاضر
                             </Badge>
                             {absentDays.length > 0 && (
                               <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600">
-                                {absentDays.length} absent
+                                {absentDays.length} غائب
                               </Badge>
                             )}
                           </div>
@@ -454,16 +451,15 @@ export default function EmployeeAttendancePage() {
                         <table className="w-full">
                           <thead>
                             <tr className="bg-gray-50 border-b border-gray-200">
-                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Date</th>
-                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check In</th>
-                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Check Out</th>
-                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Hours</th>
-                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalties</th>
-                              <th className="text-left px-4 py-3 font-semibold text-gray-700 text-sm">Penalty Amount</th>
+                              <th className="text-right px-4 py-3 font-semibold text-gray-700 text-sm">التاريخ</th>
+                              <th className="text-right px-4 py-3 font-semibold text-gray-700 text-sm">وقت الدخول</th>
+                              <th className="text-right px-4 py-3 font-semibold text-gray-700 text-sm">وقت الخروج</th>
+                              <th className="text-right px-4 py-3 font-semibold text-gray-700 text-sm">الساعات</th>
+                              <th className="text-right px-4 py-3 font-semibold text-gray-700 text-sm">الغرامات</th>
+                              <th className="text-right px-4 py-3 font-semibold text-gray-700 text-sm">مبلغ الغرامة</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {/* Combine and sort all records chronologically */}
                             {(() => {
                               // Create combined array with type indicators
                               const attendanceItems = records.map(record => ({ type: 'attendance', data: record, date: record.date }));
@@ -479,7 +475,7 @@ export default function EmployeeAttendancePage() {
                                   
                                   return (
                                     <tr key={record.id} className="border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
-                                      <td className="px-4 py-3">
+                                      <td className="px-4 py-3 text-right">
                                         <div className="flex flex-col">
                                           <span className="font-semibold text-gray-900">{safeFormatDate(record.date, 'MMM d')}</span>
                                           <span className="text-xs text-gray-500">
@@ -487,21 +483,21 @@ export default function EmployeeAttendancePage() {
                                           </span>
                                         </div>
                                       </td>
-                                      <td className="px-4 py-3 text-sm text-gray-700">
-                                        {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}
+                                      <td className="px-4 py-3 text-sm text-gray-700 text-right">
+                                        {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'غير متوفر'}
                                       </td>
-                                      <td className="px-4 py-3 text-sm text-gray-700">
+                                      <td className="px-4 py-3 text-sm text-gray-700 text-right">
                                         {record.checkOut 
                                           ? formatEgyptTime(record.checkOut, 'h:mm a') 
                                           : '—'}
                                       </td>
-                                      <td className="px-4 py-3">
+                                      <td className="px-4 py-3 text-right">
                                         <span className={`font-semibold text-sm ${record.hoursWorked && record.hoursWorked >= 9 ? 'text-green-600' : record.hoursWorked && record.hoursWorked > 0 ? 'text-orange-600' : 'text-red-600'}`}>
-                                          {record.hoursWorked?.toFixed(1) || '0'}h
+                                          {record.hoursWorked?.toFixed(1) || '0'} ساعة
                                         </span>
                                       </td>
-                                      <td className="px-4 py-3">
-                                        <div className="flex flex-wrap gap-1">
+                                      <td className="px-4 py-3 text-right">
+                                        <div className="flex flex-wrap gap-1 justify-end">
                                           {record.penalties && record.penalties.length > 0 && (() => {
                                             // Check if there's an UNPAID DAY penalty
                                             const isUnpaidDayPenalty = (penalty: Penalty) => {
@@ -528,10 +524,10 @@ export default function EmployeeAttendancePage() {
                                           })()}
                                         </div>
                                       </td>
-                                      <td className="px-4 py-3">
+                                      <td className="px-4 py-3 text-right">
                                         {(record.totalPenaltyAmount || 0) > 0 && (
                                           <span className="font-semibold text-sm text-red-600">
-                                            L.E {(record.totalPenaltyAmount || 0).toFixed(2)}
+                                            {(record.totalPenaltyAmount || 0).toFixed(2)} ج.م
                                           </span>
                                         )}
                                       </td>
@@ -542,7 +538,7 @@ export default function EmployeeAttendancePage() {
                                   
                                   return (
                                     <tr key={absentDay.date} className="border-b border-gray-100 last:border-0 bg-gray-50/70 hover:bg-gray-100 transition-colors">
-                                      <td className="px-4 py-3">
+                                      <td className="px-4 py-3 text-right">
                                         <div className="flex flex-col">
                                           <span className="font-semibold text-gray-600">{safeFormatDate(absentDay.date, 'MMM d')}</span>
                                           <span className="text-xs text-gray-500">
@@ -550,13 +546,13 @@ export default function EmployeeAttendancePage() {
                                           </span>
                                         </div>
                                       </td>
-                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
-                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
-                                      <td className="px-4 py-3">
-                                        <span className="font-semibold text-sm text-gray-600">0h</span>
+                                      <td className="px-4 py-3 text-sm text-gray-500 text-right">—</td>
+                                      <td className="px-4 py-3 text-sm text-gray-500 text-right">—</td>
+                                      <td className="px-4 py-3 text-right">
+                                        <span className="font-semibold text-sm text-gray-600">0 ساعة</span>
                                       </td>
-                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
-                                      <td className="px-4 py-3 text-sm text-gray-500">—</td>
+                                      <td className="px-4 py-3 text-sm text-gray-500 text-right">—</td>
+                                      <td className="px-4 py-3 text-sm text-gray-500 text-right">—</td>
                                     </tr>
                                   );
                                 }
@@ -576,8 +572,8 @@ export default function EmployeeAttendancePage() {
           ) : (
             <div className="text-center p-8 text-gray-500">
               <CalendarX className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              <h3 className="text-lg font-medium mb-2">No attendance records found</h3>
-              <p className="text-sm">No attendance data is available for this employee yet.</p>
+              <h3 className="text-lg font-medium mb-2">لم يتم العثور على سجلات حضور</h3>
+              <p className="text-sm">لا توجد بيانات حضور متاحة لهذا الموظف بعد.</p>
             </div>
           )}
         </div>

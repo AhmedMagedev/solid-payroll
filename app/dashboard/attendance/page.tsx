@@ -75,7 +75,7 @@ export default function AttendancePage() {
       setPagination(data.pagination);
       setError(null);
     } catch (err) {
-      setError('Error loading attendance data. Please try again.');
+      setError('خطأ في تحميل بيانات الحضور. يرجى المحاولة مرة أخرى.');
       console.error('Error fetching attendance:', err);
     } finally {
       setIsLoading(false);
@@ -101,7 +101,7 @@ export default function AttendancePage() {
     try {
       return format(parseISO(dateString), 'MMM d, yyyy');
     } catch {
-      return 'Invalid Date';
+      return 'تاريخ غير صالح';
     }
   };
 
@@ -120,17 +120,17 @@ export default function AttendancePage() {
     return (
       <div className="flex items-center justify-between mt-4">
         <div className="text-sm text-muted-foreground">
-          Showing {pagination.startIndex} to {pagination.endIndex} of {pagination.totalCount} results
+          عرض {pagination.startIndex} إلى {pagination.endIndex} من {pagination.totalCount} نتيجة
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 space-x-reverse">
           <Button
             variant="outline"
             size="sm"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={!pagination.hasPrevPage}
           >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
+            <ChevronRight className="h-4 w-4" />
+            السابق
           </Button>
           
           {pageNumbers.map((pageNum) => (
@@ -150,8 +150,8 @@ export default function AttendancePage() {
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={!pagination.hasNextPage}
           >
-            Next
-            <ChevronRight className="h-4 w-4" />
+            التالي
+            <ChevronLeft className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -162,12 +162,12 @@ export default function AttendancePage() {
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Attendance Records</h1>
-          <p className="text-muted-foreground mt-1">View and manage employee attendance data</p>
+          <h1 className="text-2xl font-bold">سجلات الحضور</h1>
+          <p className="text-muted-foreground mt-1">عرض وإدارة بيانات حضور الموظفين</p>
         </div>
         <Button onClick={() => router.push('/dashboard/attendance/upload')} className="w-full md:w-auto">
-          <Upload className="h-4 w-4 mr-2 cursor-pointer" />
-          Upload Attendance Log
+          <Upload className="h-4 w-4 ml-2 cursor-pointer" />
+          رفع سجل الحضور
         </Button>
       </div>
 
@@ -176,17 +176,17 @@ export default function AttendancePage() {
         <CardContent className="p-4">
           <form onSubmit={handleSearch} className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="text"
-                placeholder="Search by employee name..."
+                placeholder="البحث باسم الموظف..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pr-10 text-right"
               />
             </div>
             <Button type="submit" disabled={isLoading}>
-              Search
+              بحث
             </Button>
             {searchTerm && (
               <Button 
@@ -198,133 +198,116 @@ export default function AttendancePage() {
                   fetchAttendance(1, '');
                 }}
               >
-                Clear
+                مسح
               </Button>
             )}
           </form>
         </CardContent>
       </Card>
-      
-      {isLoading ? (
-        <Card className="shadow-sm">
-          <CardContent className="p-8">
-            <div className="flex justify-center items-center min-h-[200px]">
-              <div className="text-center">
-                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent mb-2"></div>
-                <p className="text-muted-foreground">Loading attendance data...</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ) : error ? (
-        <Card className="shadow-sm border-red-100">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-center text-red-500 mb-2">
-              <AlertCircle className="h-5 w-5 mr-2" />
-              <p className="font-medium">{error}</p>
-            </div>
-            <div className="text-center">
-              <Button 
-                variant="outline" 
-                onClick={() => fetchAttendance(currentPage, searchTerm)}
-                size="sm"
-                className="mt-2"
-              >
-                Try Again
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ) : attendanceData.length === 0 ? (
-        <Card className="shadow-sm">
-          <CardContent className="p-10">
-            <div className="text-center max-w-md mx-auto">
-              <div className="bg-muted rounded-full h-12 w-12 flex items-center justify-center mx-auto mb-4">
-                <Upload className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">
-                {searchTerm ? 'No matching attendance records found' : 'No attendance records found'}
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                {searchTerm 
-                  ? 'Try adjusting your search criteria or clear the search to see all records.'
-                  : 'Upload your first attendance log to start tracking employee hours.'
-                }
-              </p>
-              {!searchTerm && (
-                <Button onClick={() => router.push('/dashboard/attendance/upload')}>
-                  Upload Attendance Log
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="shadow-sm">
-          <CardHeader className="bg-muted/20 border-b">
-            <CardTitle className="flex items-center justify-between">
-              <span>Attendance Records</span>
-              {pagination && (
-                <span className="text-sm font-normal text-muted-foreground">
-                  {pagination.totalCount} total records
-                </span>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Check In</TableHead>
-                    <TableHead>Check Out</TableHead>
-                    <TableHead>Hours</TableHead>
-                  </TableRow>
-                </TableHeader>
-                                  <TableBody>
-                    {attendanceData.map((attendance) => {
-                      return (
-                      <TableRow key={attendance.id} className="hover:bg-muted/50">
-                        <TableCell className="font-medium">
-                          <Link 
-                            href={`/dashboard/employees/${attendance.employeeId}`}
-                            className="hover:underline text-primary"
-                          >
-                            {attendance.employee.name}
-                          </Link>
-                        </TableCell>
-                        <TableCell>{formatDate(attendance.date)}</TableCell>
-                        <TableCell>
-                          {attendance.checkIn ? formatEgyptTime(attendance.checkIn, 'h:mm a') : 'N/A'}
-                        </TableCell>
-                        <TableCell>
-                          {attendance.checkOut ? formatEgyptTime(attendance.checkOut, 'h:mm a') : 'N/A'}
-                        </TableCell>
-                        <TableCell>
-                          <span className={`font-semibold ${
-                            attendance.hoursWorked && attendance.hoursWorked >= 9 
-                              ? 'text-green-600' 
-                              : attendance.hoursWorked && attendance.hoursWorked > 0 
-                                ? 'text-orange-600' 
-                                : 'text-red-600'
-                          }`}>
-                            {attendance.hoursWorked?.toFixed(1) || '0.0'}h
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-            <div className="p-4">
-              <PaginationControls />
+
+      {/* Error Message */}
+      {error && (
+        <Card className="mb-6 border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertCircle className="h-4 w-4" />
+              <span>{error}</span>
             </div>
           </CardContent>
         </Card>
       )}
+
+      {/* Attendance Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>بيانات الحضور والانصراف</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-muted-foreground">جاري تحميل بيانات الحضور...</div>
+            </div>
+          ) : attendanceData.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+              <AlertCircle className="h-12 w-12 mb-4 opacity-50" />
+              <p className="text-lg font-medium">لا توجد سجلات حضور</p>
+              <p className="text-sm">
+                {searchTerm 
+                  ? `لم يتم العثور على نتائج لـ "${searchTerm}"`
+                  : 'لم يتم العثور على سجلات حضور. ارفع ملف الحضور للبدء.'
+                }
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-right">اسم الموظف</TableHead>
+                    <TableHead className="text-right">التاريخ</TableHead>
+                    <TableHead className="text-right">وقت الدخول</TableHead>
+                    <TableHead className="text-right">وقت الخروج</TableHead>
+                    <TableHead className="text-right">ساعات العمل</TableHead>
+                    <TableHead className="text-right">حالة الدفع</TableHead>
+                    <TableHead className="text-center">الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {attendanceData.map((record) => (
+                    <TableRow key={record.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium text-right">
+                        <Link 
+                          href={`/dashboard/employees/${record.employee.id}`}
+                          className="text-primary hover:underline"
+                        >
+                          {record.employee.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="text-right">{formatDate(record.date)}</TableCell>
+                      <TableCell className="text-right">
+                        {record.checkIn 
+                          ? formatEgyptTime(record.checkIn)
+                          : <span className="text-muted-foreground">غير مسجل</span>
+                        }
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {record.checkOut 
+                          ? formatEgyptTime(record.checkOut)
+                          : <span className="text-muted-foreground">غير مسجل</span>
+                        }
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {record.hoursWorked 
+                          ? `${record.hoursWorked.toFixed(2)} ساعة`
+                          : <span className="text-muted-foreground">غير محسوب</span>
+                        }
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          record.isPaidDay 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {record.isPaidDay ? 'مدفوع' : 'غير مدفوع'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Link href={`/dashboard/employees/${record.employee.id}/attendance`}>
+                          <Button variant="ghost" size="sm" className="text-xs">
+                            عرض التفاصيل
+                          </Button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+          
+          <PaginationControls />
+        </CardContent>
+      </Card>
     </div>
   );
 } 

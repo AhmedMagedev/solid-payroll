@@ -64,106 +64,106 @@ export default function Sidebar() {
   return (
     <div className="bg-white h-full w-[300px] flex flex-col shadow-md hidden md:flex">
       <div className="p-4">
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex items-center gap-3 mb-8 flex-row-reverse">
           <Image 
             src="/images/solidLogo.webp" 
-            alt="Solid Payroll" 
+            alt="نظام الرواتب " 
             width={40} 
             height={40}
             className="rounded"
           />
-          <h1 className="text-xl font-bold">Solid HR</h1>
-          {isAdmin && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Admin</span>}
+          <h1 className="text-xl font-bold">الموارد البشرية </h1>
+          {isAdmin && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">مدير</span>}
         </div>
         
         <nav className="space-y-1">
           <Link 
             href="/dashboard" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
               isActive('/dashboard') 
                 ? 'bg-primary text-white' 
                 : 'text-slate-700 hover:bg-gray-100'
             }`}
           >
             <Home size={18} />
-            Dashboard
+            لوحة التحكم
           </Link>
           
           <Link 
             href="/dashboard/employees" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
               isActive('/dashboard/employees') 
                 ? 'bg-primary text-white' 
                 : 'text-slate-700 hover:bg-gray-100'
             }`}
           >
             <Users size={18} />
-            Employees
+            الموظفون
           </Link>
           
           <Link 
             href="/dashboard/attendance" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
               isActive('/dashboard/attendance') 
                 ? 'bg-primary text-white' 
                 : 'text-slate-700 hover:bg-gray-100'
             }`}
           >
             <Calendar size={18} />
-            Attendance
+            الحضور والانصراف
           </Link>
           
           {isAdmin && (
             <Link 
               href="/dashboard/payouts" 
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
                 isActive('/dashboard/payouts') 
                   ? 'bg-primary text-white' 
                   : 'text-slate-700 hover:bg-gray-100'
               }`}
             >
               <DollarSign size={18} />
-              Payouts
+              المدفوعات
             </Link>
           )}
           
           <Link 
             href="/dashboard/rules" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
               isActive('/dashboard/rules') 
                 ? 'bg-primary text-white' 
                 : 'text-slate-700 hover:bg-gray-100'
             }`}
           >
             <BookOpen size={18} />
-            Rules & Policies
+            القواعد والسياسات
           </Link>
           
           {isAdmin && (
             <Link 
               href="/dashboard/settings" 
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
                 isActive('/dashboard/settings') 
                   ? 'bg-primary text-white' 
                   : 'text-slate-700 hover:bg-gray-100'
               }`}
             >
               <Settings size={18} />
-              Settings
+              الإعدادات
             </Link>
           )}
           
           {isAdmin && (
             <Link 
               href="/dashboard/admin/users" 
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
                 isActive('/dashboard/admin/users') 
                   ? 'bg-primary text-white' 
                   : 'text-slate-700 hover:bg-gray-100'
               }`}
             >
               <UserCog size={18} />
-              User Management
+              إدارة المستخدمين
             </Link>
           )}
         </nav>
@@ -174,22 +174,22 @@ export default function Sidebar() {
         <div className="space-y-1">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-red-600 hover:bg-red-50"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-red-600 hover:bg-red-50 flex-row-reverse"
           >
             <LogOut size={18} />
-            Logout
+            تسجيل الخروج
           </button>
           
           <Link 
             href="/dashboard/help" 
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
               isActive('/dashboard/help') 
                 ? 'bg-primary text-white' 
                 : 'text-slate-700 hover:bg-gray-100'
             }`}
           >
             <HelpCircle size={18} />
-            Help
+            المساعدة
           </Link>
         </div>
       </div>

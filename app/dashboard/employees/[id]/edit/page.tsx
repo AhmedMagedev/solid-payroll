@@ -31,7 +31,7 @@ export default function EmployeeEditPage() {
   useEffect(() => {
     async function fetchEmployee() {
       if (isNaN(employeeId)) {
-        setError('Invalid employee ID');
+        setError('رقم الموظف غير صالح');
         setIsLoading(false);
         return;
       }
@@ -49,7 +49,7 @@ export default function EmployeeEditPage() {
         setEmployee(data);
       } catch (error) {
         console.error("Failed to fetch employee:", error);
-        setError('Could not load employee data');
+        setError('لا يمكن تحميل بيانات الموظف');
       } finally {
         setIsLoading(false);
       }
@@ -63,7 +63,7 @@ export default function EmployeeEditPage() {
       <div className="p-6">
         <Card className="w-full max-w-md mx-auto text-center">
           <CardContent className="p-6">
-            <p>Loading employee data...</p>
+            <p>جاري تحميل بيانات الموظف...</p>
           </CardContent>
         </Card>
       </div>
@@ -75,10 +75,10 @@ export default function EmployeeEditPage() {
       <div className="p-6">
         <Card className="w-full max-w-md mx-auto text-center">
           <CardHeader>
-            <CardTitle className="text-destructive">{error || 'Employee Not Found'}</CardTitle>
+            <CardTitle className="text-destructive">{error || 'الموظف غير موجود'}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{error ? error : `Could not find employee with ID: ${employeeId}.`}</p>
+            <p>{error ? error : `لا يمكن العثور على موظف برقم: ${employeeId}.`}</p>
           </CardContent>
         </Card>
       </div>
@@ -89,16 +89,16 @@ export default function EmployeeEditPage() {
     <div className="p-4 md:p-6">
       <Button asChild variant="outline" size="sm" className="mb-6">
         <Link href={`/dashboard/employees/${employeeId}`}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Profile
+          <ArrowLeft className="ml-2 h-4 w-4" />
+          العودة إلى الملف الشخصي
         </Link>
       </Button>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Edit Employee: {employee.name}</CardTitle>
+          <CardTitle>تعديل الموظف: {employee.name}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground mb-4">Employee ID: {employee.id}</p>
+          <p className="text-muted-foreground mb-4">رقم الموظف: {employee.id}</p>
           <EmployeeForm employee={employee} />
         </CardContent>
       </Card>

@@ -40,7 +40,7 @@ export default function DashboardLayout({
   }, [router]);
   
   return (
-    <div className="flex h-screen bg-[#d3d3d3]">
+    <div className="flex h-screen bg-[#d3d3d3] flex-row-reverse">
       <Sidebar />
       <main className="flex-1 overflow-y-auto">
         {children}

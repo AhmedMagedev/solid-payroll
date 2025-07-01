@@ -41,7 +41,7 @@ export default function EmployeeActions({ employeeId }: EmployeeActionsProps) {
       router.refresh();
     } catch (error) {
       console.error('Delete error:', error);
-      alert(`Error deleting employee: ${(error as Error).message}`);
+      alert(`خطأ في حذف الموظف: ${(error as Error).message}`);
     } finally {
       setIsDeleting(false);
       setShowDeleteConfirm(false);
@@ -54,15 +54,15 @@ export default function EmployeeActions({ employeeId }: EmployeeActionsProps) {
 
   if (showDeleteConfirm) {
     return (
-      <div className="flex items-center space-x-2 bg-red-50 border border-red-200 rounded-md p-2">
-        <span className="text-sm text-red-800 mr-2">Delete employee?</span>
+      <div className="flex items-center space-x-2 space-x-reverse bg-red-50 border border-red-200 rounded-md p-2">
+        <span className="text-sm text-red-800 ml-2">حذف الموظف؟</span>
         <Button 
           variant="destructive" 
           size="sm" 
           onClick={handleDelete}
           disabled={isDeleting}
         >
-          {isDeleting ? 'Deleting...' : 'Yes'}
+          {isDeleting ? 'جاري الحذف...' : 'نعم'}
         </Button>
         <Button 
           variant="outline" 
@@ -70,22 +70,22 @@ export default function EmployeeActions({ employeeId }: EmployeeActionsProps) {
           onClick={handleCancelDelete}
           disabled={isDeleting}
         >
-          Cancel
+          إلغاء
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center space-x-2">
-      <Button variant="outline" size="icon" onClick={handleEdit} aria-label="Edit employee">
+    <div className="flex items-center space-x-2 space-x-reverse">
+      <Button variant="outline" size="icon" onClick={handleEdit} aria-label="تعديل الموظف">
         <Edit className="h-4 w-4" />
       </Button>
       <Button 
         variant="outline" 
         size="icon" 
         onClick={handleDelete} 
-        aria-label="Delete employee"
+        aria-label="حذف الموظف"
         className="hover:bg-red-50 hover:border-red-200 hover:text-red-600"
       >
         <Trash2 className="h-4 w-4" />
