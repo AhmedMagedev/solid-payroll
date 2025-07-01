@@ -35,6 +35,40 @@ async function main() {
       console.log('Admin user already exists and has admin privileges.');
     }
   }
+
+  // Check if system settings exist
+  const existingSettings = await prisma.systemSettings.findFirst();
+
+  if (!existingSettings) {
+    // Create default system settings
+    const settings = await prisma.systemSettings.create({
+      data: {
+        lateAllowanceMinutes: 30,
+        workDaySunday: true,
+        workDayMonday: true,
+        workDayTuesday: true,
+        workDayWednesday: true,
+        workDayThursday: true,
+        workDayFriday: false,
+        workDaySaturday: true,
+        workingHoursPerDay: 9,
+        workingHoursStart: '09:00', // 9 AM working hours
+        workingHoursEnd: '18:00',   // 6 PM working hours
+        overtimeMultiplier: 1.5,
+        weekendOvertimeMultiplier: 2.0,
+        penaltyMinor30Min: 60,    // 1 hour deduction for minor penalty
+        penaltyModerate90Min: 180, // 3 hours deduction for moderate penalty
+        penaltyMajor150Min: 0.5,   // Half day for major penalty
+        penaltyFullDay: 1.0,       // Full day for severe penalty
+        allowMakeupTime: true,
+        makeupTimeDeadlineHours: 24,
+      },
+    });
+
+    console.log('Default system settings created:', settings.id);
+  } else {
+    console.log('System settings already exist.');
+  }
 }
 
 main()

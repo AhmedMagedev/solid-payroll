@@ -228,8 +228,8 @@ export class PenaltyCalculator {
 
     const minutesBeyondGrace = lateMinutes - graceMinutes;
 
-    // MINOR: 31-90 minutes beyond grace - 1 hour salary penalty
-    if (minutesBeyondGrace <= 90) {
+    // MINOR: 1-30 minutes beyond grace - 1 hour salary penalty
+    if (minutesBeyondGrace <= 30) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MINOR',
@@ -242,8 +242,8 @@ export class PenaltyCalculator {
       };
     }
 
-    // MODERATE: 91-150 minutes beyond grace - 3 hours salary penalty
-    if (minutesBeyondGrace <= 150) {
+    // MODERATE: 31-90 minutes beyond grace - 3 hours salary penalty
+    if (minutesBeyondGrace <= 90) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MODERATE',
@@ -256,8 +256,8 @@ export class PenaltyCalculator {
       };
     }
 
-    // MAJOR: 151-210 minutes beyond grace - half day salary penalty
-    if (minutesBeyondGrace <= 210) {
+    // MAJOR: 91-150 minutes beyond grace - half day salary penalty
+    if (minutesBeyondGrace <= 150) {
       return {
         penaltyType: 'LATE_ARRIVAL',
         severity: 'MAJOR',
@@ -270,7 +270,7 @@ export class PenaltyCalculator {
       };
     }
 
-    // UNPAID DAY: Beyond 210 minutes - maximum penalty for late arrival
+    // UNPAID DAY: Beyond 150 minutes - maximum penalty for late arrival
     return {
       penaltyType: 'LATE_ARRIVAL',
       severity: 'FULL_DAY',
@@ -395,13 +395,42 @@ export class PenaltyCalculator {
   }
 
   /**
-   * Get system settings for penalty calculation
+   * Get system settings from database or create defaults
    */
   static async getSystemSettings() {
-    const settings = await prisma.systemSettings.findFirst();
+    let settings = await prisma.systemSettings.findFirst();
+    
     if (!settings) {
-      throw new Error('System settings not found');
+      console.log('[Settings] No system settings found, creating default settings...');
+      
+      // Create default system settings
+      settings = await prisma.systemSettings.create({
+        data: {
+          lateAllowanceMinutes: 30,
+          workDaySunday: true,
+          workDayMonday: true,
+          workDayTuesday: true,
+          workDayWednesday: true,
+          workDayThursday: true,
+          workDayFriday: false,
+          workDaySaturday: true,
+          workingHoursPerDay: 9,
+          workingHoursStart: '09:00', // 9 AM working hours
+          workingHoursEnd: '18:00',   // 6 PM working hours
+          overtimeMultiplier: 1.5,
+          weekendOvertimeMultiplier: 2.0,
+          penaltyMinor30Min: 60,    // 1 hour deduction for minor penalty
+          penaltyModerate90Min: 180, // 3 hours deduction for moderate penalty
+          penaltyMajor150Min: 0.5,   // Half day for major penalty
+          penaltyFullDay: 1.0,       // Full day for severe penalty
+          allowMakeupTime: true,
+          makeupTimeDeadlineHours: 24,
+        },
+      });
+      
+      console.log('[Settings] Default system settings created successfully');
     }
+    
     return settings;
   }
 }
