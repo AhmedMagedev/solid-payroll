@@ -1,0 +1,148 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@/app/generated/prisma';
+import { verifyToken } from '@/app/lib/auth';
+
+const prisma = new PrismaClient();
+
+// GET system settings
+export async function GET(request: NextRequest) {
+  try {
+    // Check for authentication
+    const token = request.cookies.get('auth_token')?.value;
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
+    if (!session) {
+      return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
+    }
+    // Get the first (and only) settings record, or create it if it doesn't exist
+    let settings = await prisma.systemSettings.findFirst();
+    
+    if (!settings) {
+      // Create default settings if none exist
+      settings = await prisma.systemSettings.create({
+        data: {} // Use schema defaults
+      });
+    }
+    
+    return NextResponse.json(settings);
+  } catch (error: unknown) {
+    console.error('Error fetching settings:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { error: 'Failed to fetch settings', details: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+
+// Update system settings
+export async function PUT(request: NextRequest) {
+  try {
+    // Check for authentication
+    const token = request.cookies.get('auth_token')?.value;
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
+    // Verify token
+    const session = await verifyToken(token);
+    if (!session) {
+      return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
+    }
+    
+    const data = await request.json();
+    
+    // Get existing settings or create default
+    const existingSettings = await prisma.systemSettings.findFirst();
+    
+    // Note: Settings changes will only affect future attendance uploads, not existing payouts
+    
+    let settings;
+    
+    if (existingSettings) {
+      // Update existing settings
+      settings = await prisma.systemSettings.update({
+        where: { id: existingSettings.id },
+        data: {
+          lateAllowanceMinutes: data.lateAllowanceMinutes !== undefined ? 
+            parseInt(data.lateAllowanceMinutes) : undefined,
+          workDaySunday: data.workDaySunday !== undefined ? 
+            Boolean(data.workDaySunday) : undefined,
+          workDayMonday: data.workDayMonday !== undefined ? 
+            Boolean(data.workDayMonday) : undefined,
+          workDayTuesday: data.workDayTuesday !== undefined ? 
+            Boolean(data.workDayTuesday) : undefined,
+          workDayWednesday: data.workDayWednesday !== undefined ? 
+            Boolean(data.workDayWednesday) : undefined,
+          workDayThursday: data.workDayThursday !== undefined ? 
+            Boolean(data.workDayThursday) : undefined,
+          workDayFriday: data.workDayFriday !== undefined ? 
+            Boolean(data.workDayFriday) : undefined,
+          workDaySaturday: data.workDaySaturday !== undefined ? 
+            Boolean(data.workDaySaturday) : undefined,
+          workingHoursPerDay: data.workingHoursPerDay !== undefined ? 
+            parseFloat(data.workingHoursPerDay) : undefined,
+          workingHoursStart: data.workingHoursStart || undefined,
+          workingHoursEnd: data.workingHoursEnd || undefined,
+          overtimeMultiplier: data.overtimeMultiplier !== undefined ? 
+            parseFloat(data.overtimeMultiplier) : undefined,
+          weekendOvertimeMultiplier: data.weekendOvertimeMultiplier !== undefined ? 
+            parseFloat(data.weekendOvertimeMultiplier) : undefined,
+        },
+      });
+    } else {
+      // Create new settings
+      settings = await prisma.systemSettings.create({
+        data: {
+          lateAllowanceMinutes: data.lateAllowanceMinutes !== undefined ? 
+            parseInt(data.lateAllowanceMinutes) : 30,
+          workDaySunday: data.workDaySunday !== undefined ? 
+            Boolean(data.workDaySunday) : true,
+          workDayMonday: data.workDayMonday !== undefined ? 
+            Boolean(data.workDayMonday) : true,
+          workDayTuesday: data.workDayTuesday !== undefined ? 
+            Boolean(data.workDayTuesday) : true,
+          workDayWednesday: data.workDayWednesday !== undefined ? 
+            Boolean(data.workDayWednesday) : true,
+          workDayThursday: data.workDayThursday !== undefined ? 
+            Boolean(data.workDayThursday) : true,
+          workDayFriday: data.workDayFriday !== undefined ? 
+            Boolean(data.workDayFriday) : false,
+          workDaySaturday: data.workDaySaturday !== undefined ? 
+            Boolean(data.workDaySaturday) : false,
+          workingHoursPerDay: data.workingHoursPerDay !== undefined ? 
+            parseFloat(data.workingHoursPerDay) : 9,
+          workingHoursStart: data.workingHoursStart || "09:00",
+          workingHoursEnd: data.workingHoursEnd || "18:00",
+          overtimeMultiplier: data.overtimeMultiplier !== undefined ? 
+            parseFloat(data.overtimeMultiplier) : 1.5,
+          weekendOvertimeMultiplier: data.weekendOvertimeMultiplier !== undefined ? 
+            parseFloat(data.weekendOvertimeMultiplier) : 2,
+        },
+      });
+    }
+
+    // Settings updated - changes will apply to future attendance uploads only
+    // Existing payouts remain unchanged for consistency
+    console.log('[Settings Update] Settings updated successfully. Changes will apply to future attendance uploads only.');
+    
+    return NextResponse.json({
+      message: 'Settings updated successfully. Changes will apply to future attendance uploads only.',
+      settings,
+      note: 'Existing payouts remain unchanged for consistency. New rules will apply to future attendance uploads.'
+    });
+  } catch (error: unknown) {
+    console.error('Error updating settings:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { error: 'Failed to update settings', details: errorMessage },
+      { status: 500 }
+    );
+  }
+} 

@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy Prisma schema
 COPY prisma ./prisma
@@ -56,5 +56,5 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Expose port
 EXPOSE 3000
 
-# Apply database migrations and start the application
-CMD /bin/bash -c "export DATABASE_URL=\${DOCKER_DATABASE_URL:-\${DATABASE_URL}} && npx prisma migrate deploy && npm run start"
+# Apply database migrations, run  script, and start the application
+CMD /bin/bash -c "export DATABASE_URL=\${DOCKER_DATABASE_URL:-\${DATABASE_URL}} && npx prisma db push && npx prisma db seed && npm run start"

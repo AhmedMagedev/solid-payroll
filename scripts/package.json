@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "name": "solid-payroll-scripts",
+  "version": "1.0.0",
+  "description": "Utility scripts for solid-payroll system",
+  "scripts": {
+    "clean-attendance": "node clean-attendance.js"
+  }
+} 

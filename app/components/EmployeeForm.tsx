@@ -9,11 +9,13 @@ export default function EmployeeForm() {
     name: '',
     email: '',
     position: '',
-    salary: '',
+    phone: '',
+    hourlyRate: '',
+    paymentBasis: 'Monthly',
   });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -28,6 +30,7 @@ export default function EmployeeForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -39,7 +42,9 @@ export default function EmployeeForm() {
         name: '',
         email: '',
         position: '',
-        salary: '',
+        phone: '',
+        hourlyRate: '',
+        paymentBasis: 'Monthly',
       });
       
       router.refresh();
@@ -52,7 +57,7 @@ export default function EmployeeForm() {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Add New Employee</h2>
+      <h2 className="text-xl font-semibold mb-4 text-[#003366]">Add New Employee</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="name">
@@ -64,7 +69,7 @@ export default function EmployeeForm() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
             required
           />
         </div>
@@ -79,7 +84,7 @@ export default function EmployeeForm() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
             required
           />
         </div>
@@ -94,31 +99,65 @@ export default function EmployeeForm() {
             name="position"
             value={formData.position}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="salary">
-            Salary
+          <label className="block text-gray-700 mb-2" htmlFor="phone">
+            Phone Number (Optional)
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
+            placeholder="+20 123 456 7890"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="hourlyRate">
+            Hourly Rate
           </label>
           <input
             type="number"
-            id="salary"
-            name="salary"
-            value={formData.salary}
+            id="hourlyRate"
+            name="hourlyRate"
+            value={formData.hourlyRate}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
             required
             min="0"
             step="0.01"
+            inputMode="decimal"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="paymentBasis">
+            Payment Basis
+          </label>
+          <select
+            id="paymentBasis"
+            name="paymentBasis"
+            value={formData.paymentBasis}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
+            required
+          >
+            <option value="Weekly">Weekly</option>
+            <option value="Biweekly">Biweekly</option>
+            <option value="Monthly">Monthly</option>
+          </select>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="w-full bg-[#003366] text-white py-2 px-4 rounded-md hover:bg-[#002244] focus:outline-none focus:ring-2 focus:ring-[#003366] focus:ring-opacity-50"
           disabled={loading}
         >
           {loading ? 'Adding...' : 'Add Employee'}

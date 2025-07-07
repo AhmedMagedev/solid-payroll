@@ -125,7 +125,128 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   name: 'name',
   email: 'email',
   position: 'position',
-  salary: 'salary',
+  phone: 'phone',
+  fingerprintId: 'fingerprintId',
+  hourlyRate: 'hourlyRate',
+  paymentBasis: 'paymentBasis',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  password: 'password',
+  isAdmin: 'isAdmin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AttendanceScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  date: 'date',
+  checkIn: 'checkIn',
+  checkOut: 'checkOut',
+  hoursWorked: 'hoursWorked',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  isPaidDay: 'isPaidDay',
+  actualHoursWorked: 'actualHoursWorked',
+  lateDeductionHours: 'lateDeductionHours',
+  earlyDeductionHours: 'earlyDeductionHours',
+  graceMinutesUsed: 'graceMinutesUsed',
+  lateMinutesBeyondGrace: 'lateMinutesBeyondGrace',
+  makeupTimeRequired: 'makeupTimeRequired',
+  makeupTimeCompleted: 'makeupTimeCompleted',
+  totalPenaltyAmount: 'totalPenaltyAmount'
+};
+
+exports.Prisma.AttendancePenaltyScalarFieldEnum = {
+  id: 'id',
+  attendanceId: 'attendanceId',
+  penaltyType: 'penaltyType',
+  severity: 'severity',
+  description: 'description',
+  lateMinutes: 'lateMinutes',
+  earlyMinutes: 'earlyMinutes',
+  missedHours: 'missedHours',
+  hoursDeducted: 'hoursDeducted',
+  salaryDeducted: 'salaryDeducted',
+  makeupRequired: 'makeupRequired',
+  makeupHours: 'makeupHours',
+  isActive: 'isActive',
+  isWaived: 'isWaived',
+  waivedReason: 'waivedReason',
+  waivedBy: 'waivedBy',
+  waivedAt: 'waivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PayoutScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  amount: 'amount',
+  isPaid: 'isPaid',
+  comment: 'comment',
+  paymentDate: 'paymentDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  adjustmentAmount: 'adjustmentAmount',
+  adjustmentReason: 'adjustmentReason',
+  includeOvertime: 'includeOvertime',
+  daysWorked: 'daysWorked',
+  unpaidDays: 'unpaidDays',
+  totalHours: 'totalHours',
+  regularHours: 'regularHours',
+  overtimeHours: 'overtimeHours',
+  excessOvertimeHours: 'excessOvertimeHours',
+  basePayout: 'basePayout',
+  overtimePayout: 'overtimePayout',
+  finalAmount: 'finalAmount',
+  grossSalary: 'grossSalary',
+  lateDeductions: 'lateDeductions',
+  earlyDeductions: 'earlyDeductions',
+  unpaidDaysDeductions: 'unpaidDaysDeductions',
+  totalDeductions: 'totalDeductions',
+  holidayHours: 'holidayHours',
+  holidayPayout: 'holidayPayout'
+};
+
+exports.Prisma.PayoutAdjustmentScalarFieldEnum = {
+  id: 'id',
+  payoutId: 'payoutId',
+  type: 'type',
+  amount: 'amount',
+  reason: 'reason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemSettingsScalarFieldEnum = {
+  id: 'id',
+  lateAllowanceMinutes: 'lateAllowanceMinutes',
+  workDaySunday: 'workDaySunday',
+  workDayMonday: 'workDayMonday',
+  workDayTuesday: 'workDayTuesday',
+  workDayWednesday: 'workDayWednesday',
+  workDayThursday: 'workDayThursday',
+  workDayFriday: 'workDayFriday',
+  workDaySaturday: 'workDaySaturday',
+  workingHoursPerDay: 'workingHoursPerDay',
+  workingHoursStart: 'workingHoursStart',
+  workingHoursEnd: 'workingHoursEnd',
+  overtimeMultiplier: 'overtimeMultiplier',
+  weekendOvertimeMultiplier: 'weekendOvertimeMultiplier',
+  penaltyMinor30Min: 'penaltyMinor30Min',
+  penaltyModerate90Min: 'penaltyModerate90Min',
+  penaltyMajor150Min: 'penaltyMajor150Min',
+  penaltyFullDay: 'penaltyFullDay',
+  allowMakeupTime: 'allowMakeupTime',
+  makeupTimeDeadlineHours: 'makeupTimeDeadlineHours',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -140,9 +261,20 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-  Employee: 'Employee'
+  Employee: 'Employee',
+  User: 'User',
+  Attendance: 'Attendance',
+  AttendancePenalty: 'AttendancePenalty',
+  Payout: 'Payout',
+  PayoutAdjustment: 'PayoutAdjustment',
+  SystemSettings: 'SystemSettings'
 };
 
 /**
