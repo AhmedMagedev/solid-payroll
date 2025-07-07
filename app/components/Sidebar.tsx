@@ -3,42 +3,53 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { HelpCircle, LogOut, Settings, Home, Users, Calendar, BookOpen, DollarSign, UserCog } from 'lucide-react';
+import { HelpCircle, LogOut, Settings, Home, Users, Calendar, BookOpen, DollarSign, UserCog, MapPin } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [, setUserInfo] = useState<{username: string; isAdmin: boolean} | null>(null);
 
   useEffect(() => {
-    // Check if user is admin from localStorage token
-    const token = localStorage.getItem('auth_token');
-    if (token) {
+    // Check authentication status and get user info via API
+    const checkAuth = async () => {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('[Sidebar] Token payload:', payload);
-        console.log('[Sidebar] isAdmin value:', payload.isAdmin);
-        setIsAdmin(payload.isAdmin || false);
+        const response = await fetch('/api/auth/verify', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data.user);
+          setIsAdmin(data.user.isAdmin || false);
+          console.log('[Sidebar] User info:', data.user);
+        } else {
+          console.log('[Sidebar] Auth verification failed');
+          setIsAdmin(false);
+          setUserInfo(null);
+        }
       } catch (error) {
-        console.error('Error parsing token:', error);
+        console.error('[Sidebar] Error checking auth:', error);
         setIsAdmin(false);
+        setUserInfo(null);
       }
-    }
+    };
+
+    checkAuth();
   }, []);
   
   const handleLogout = async () => {
     try {
-      // Clear token from localStorage first
-      localStorage.removeItem('auth_token');
-      console.log('[Sidebar] Token removed from localStorage');
-      
       // Call logout API to clear server-side session
       await fetch('/api/logout', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies
       });
       console.log('[Sidebar] Logout API called');
       
@@ -124,6 +135,20 @@ export default function Sidebar() {
             >
               <DollarSign size={18} />
               المدفوعات
+            </Link>
+          )}
+          
+          {isAdmin && (
+            <Link 
+              href="/dashboard/locations" 
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
+                isActive('/dashboard/locations') 
+                  ? 'bg-primary text-white' 
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <MapPin size={18} />
+              مواقع العمل
             </Link>
           )}
           

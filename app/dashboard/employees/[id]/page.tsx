@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, DollarSign, Calendar, Mail, Hash, CreditCard, Phone, Fingerprint } from 'lucide-react';
+import { ArrowLeft, DollarSign, Calendar, Mail, Hash, CreditCard, Phone, Fingerprint, MapPin } from 'lucide-react';
 import EmployeeActions from './employee-actions';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -251,6 +251,14 @@ export default function EmployeeProfilePage() {
               onClick={() => router.push(`/dashboard/employees/${employee.id}/attendance`)}
             >
               عرض الحضور
+            </Button>
+            <Button 
+              variant="outline" 
+              className="sm:flex-1"
+              onClick={() => router.push(`/dashboard/employees/${employee.id}/locations`)}
+            >
+              <MapPin className="h-4 w-4 ml-2" />
+              إدارة المواقع
             </Button>
             {isAdmin && (
               <Button 

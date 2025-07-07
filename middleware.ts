@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/app/lib/auth';
 
-const PROTECTED_ROUTES = ['/dashboard', '/dashboard/employees', '/']; // Root is also protected
+// Define route patterns
+const ADMIN_ROUTES = ['/dashboard', '/api/employees', '/api/attendance', '/api/payouts', '/api/users', '/api/settings', '/api/auth/verify', '/api/admin'];
+const EMPLOYEE_ROUTES = ['/employee/dashboard', '/employee/profile', '/employee/attendance'];
+const EMPLOYEE_API_ROUTES = ['/api/employee/profile', '/api/employee/attendance'];
+const PUBLIC_ROUTES = ['/login', '/admin/login', '/employee/login'];
+const PUBLIC_API_ROUTES = ['/api/login', '/api/logout', '/api/employee/auth/login', '/api/employee/auth/logout'];
+const EMPLOYEE_LANDING = '/employee';
 const PUBLIC_FILE = /\.(.*)$/;
 
 export async function middleware(request: NextRequest) {
@@ -19,47 +24,81 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get auth token from cookies or Authorization header
-  let token = request.cookies.get('auth_token')?.value;
-  
-  // Check Authorization header if no cookie token
-  if (!token) {
-    const authHeader = request.headers.get('Authorization');
-    if (authHeader?.startsWith('Bearer ')) {
-      token = authHeader.substring(7);
-    }
-  }
-  
-  // Verify token if present
-  const session = token ? await verifyToken(token) : null;
-  
-  // Log minimal info for debugging
-  if (session) {
-    console.log(`[Middleware] Valid token found for: ${pathname}`);
-  }
-
-  // If trying to access login page
-  if (pathname === '/login') {
-    if (session) {
-      console.log('[Middleware] User with valid token on login page, redirecting to dashboard.');
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-    console.log('[Middleware] Accessing login page (no token), allowing.');
+  // Allow public routes
+  if (PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route))) {
+    console.log(`[Middleware] Allowing public route: ${pathname}`);
     return NextResponse.next();
   }
 
-  // If trying to access a protected route without a valid token, redirect to login
-  if (!session && PROTECTED_ROUTES.some(route => pathname.startsWith(route))) {
-    console.log(`[Middleware] No valid token for protected route ${pathname}, redirecting to login.`);
-    return NextResponse.redirect(new URL('/login', request.url));
+  // Allow public API routes (authentication endpoints)
+  if (PUBLIC_API_ROUTES.some(route => pathname === route || pathname.startsWith(route))) {
+    console.log(`[Middleware] Allowing public API route: ${pathname}`);
+    return NextResponse.next();
   }
 
-  // If user has a valid token and tries to access the root path, redirect to dashboard
-  if (session && pathname === '/') {
-    console.log('[Middleware] User with valid token on root path, redirecting to dashboard.');
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Allow employee landing page
+  if (pathname === EMPLOYEE_LANDING) {
+    console.log(`[Middleware] Allowing employee landing page: ${pathname}`);
+    return NextResponse.next();
   }
-  
+
+  // Handle employee routes - just check if token exists
+  if (EMPLOYEE_ROUTES.some(route => pathname.startsWith(route)) || 
+      EMPLOYEE_API_ROUTES.some(route => pathname.startsWith(route))) {
+    
+    const employeeToken = request.cookies.get('employee_token')?.value;
+    console.log(`[Middleware] Employee route ${pathname}, token exists: ${!!employeeToken}`);
+    
+    if (!employeeToken) {
+      console.log(`[Middleware] No employee token for employee route ${pathname}, redirecting to employee login.`);
+      return NextResponse.redirect(new URL('/employee/login', request.url));
+    }
+    
+    console.log(`[Middleware] Employee token present for: ${pathname}`);
+    return NextResponse.next();
+  }
+
+  // Handle admin routes - just check if token exists
+  if (ADMIN_ROUTES.some(route => pathname.startsWith(route)) || pathname === '/') {
+    const adminToken = request.cookies.get('auth_token')?.value;
+    
+    if (!adminToken) {
+      console.log(`[Middleware] No admin token for admin route ${pathname}, redirecting to login selection.`);
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    
+    // If accessing root with admin token, redirect to dashboard
+    if (pathname === '/') {
+      console.log('[Middleware] Admin with token on root path, redirecting to dashboard.');
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    
+    console.log(`[Middleware] Admin token present for: ${pathname}`);
+    return NextResponse.next();
+  }
+
+  // Handle login page redirects for users with tokens
+  if (pathname === '/admin/login') {
+    const adminToken = request.cookies.get('auth_token')?.value;
+    
+    if (adminToken) {
+      console.log('[Middleware] Admin with token on admin login page, redirecting to dashboard.');
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  if (pathname === '/employee/login') {
+    const employeeToken = request.cookies.get('employee_token')?.value;
+    
+    if (employeeToken) {
+      console.log('[Middleware] Employee with token on employee login page, redirecting to employee dashboard.');
+      return NextResponse.redirect(new URL('/employee/dashboard', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Default: allow the request to proceed
   console.log(`[Middleware] Allowing access to: ${pathname}`);
   return NextResponse.next();
 }
@@ -67,7 +106,7 @@ export async function middleware(request: NextRequest) {
 // Define which paths this middleware should run on
 export const config = {
   matcher: [
-    // Match all request paths except for API routes that handle their own auth
-    '/((?!api/(?!employees|attendance)).*)',
+    // Match all request paths except for the API routes that handle their own auth
+    '/((?!api/login|api/logout).*)',
   ],
 }; 

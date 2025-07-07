@@ -19,6 +19,31 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Employee = $Result.DefaultSelection<Prisma.$EmployeePayload>
 /**
+ * Model EmployeeWorkLocation
+ * 
+ */
+export type EmployeeWorkLocation = $Result.DefaultSelection<Prisma.$EmployeeWorkLocationPayload>
+/**
+ * Model WorkLocation
+ * 
+ */
+export type WorkLocation = $Result.DefaultSelection<Prisma.$WorkLocationPayload>
+/**
+ * Model EmployeeSession
+ * 
+ */
+export type EmployeeSession = $Result.DefaultSelection<Prisma.$EmployeeSessionPayload>
+/**
+ * Model EmployeeDeviceSession
+ * 
+ */
+export type EmployeeDeviceSession = $Result.DefaultSelection<Prisma.$EmployeeDeviceSessionPayload>
+/**
+ * Model CheckInRequest
+ * 
+ */
+export type CheckInRequest = $Result.DefaultSelection<Prisma.$CheckInRequestPayload>
+/**
  * Model User
  * 
  */
@@ -183,6 +208,56 @@ export class PrismaClient<
     * ```
     */
   get employee(): Prisma.EmployeeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employeeWorkLocation`: Exposes CRUD operations for the **EmployeeWorkLocation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployeeWorkLocations
+    * const employeeWorkLocations = await prisma.employeeWorkLocation.findMany()
+    * ```
+    */
+  get employeeWorkLocation(): Prisma.EmployeeWorkLocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workLocation`: Exposes CRUD operations for the **WorkLocation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkLocations
+    * const workLocations = await prisma.workLocation.findMany()
+    * ```
+    */
+  get workLocation(): Prisma.WorkLocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employeeSession`: Exposes CRUD operations for the **EmployeeSession** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployeeSessions
+    * const employeeSessions = await prisma.employeeSession.findMany()
+    * ```
+    */
+  get employeeSession(): Prisma.EmployeeSessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employeeDeviceSession`: Exposes CRUD operations for the **EmployeeDeviceSession** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployeeDeviceSessions
+    * const employeeDeviceSessions = await prisma.employeeDeviceSession.findMany()
+    * ```
+    */
+  get employeeDeviceSession(): Prisma.EmployeeDeviceSessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.checkInRequest`: Exposes CRUD operations for the **CheckInRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CheckInRequests
+    * const checkInRequests = await prisma.checkInRequest.findMany()
+    * ```
+    */
+  get checkInRequest(): Prisma.CheckInRequestDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -684,6 +759,11 @@ export namespace Prisma {
 
   export const ModelName: {
     Employee: 'Employee',
+    EmployeeWorkLocation: 'EmployeeWorkLocation',
+    WorkLocation: 'WorkLocation',
+    EmployeeSession: 'EmployeeSession',
+    EmployeeDeviceSession: 'EmployeeDeviceSession',
+    CheckInRequest: 'CheckInRequest',
     User: 'User',
     Attendance: 'Attendance',
     AttendancePenalty: 'AttendancePenalty',
@@ -708,7 +788,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "employee" | "user" | "attendance" | "attendancePenalty" | "payout" | "payoutAdjustment" | "systemSettings"
+      modelProps: "employee" | "employeeWorkLocation" | "workLocation" | "employeeSession" | "employeeDeviceSession" | "checkInRequest" | "user" | "attendance" | "attendancePenalty" | "payout" | "payoutAdjustment" | "systemSettings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -783,6 +863,376 @@ export namespace Prisma {
           count: {
             args: Prisma.EmployeeCountArgs<ExtArgs>
             result: $Utils.Optional<EmployeeCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmployeeWorkLocation: {
+        payload: Prisma.$EmployeeWorkLocationPayload<ExtArgs>
+        fields: Prisma.EmployeeWorkLocationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployeeWorkLocationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployeeWorkLocationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>
+          }
+          findFirst: {
+            args: Prisma.EmployeeWorkLocationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployeeWorkLocationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>
+          }
+          findMany: {
+            args: Prisma.EmployeeWorkLocationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>[]
+          }
+          create: {
+            args: Prisma.EmployeeWorkLocationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>
+          }
+          createMany: {
+            args: Prisma.EmployeeWorkLocationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployeeWorkLocationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>[]
+          }
+          delete: {
+            args: Prisma.EmployeeWorkLocationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>
+          }
+          update: {
+            args: Prisma.EmployeeWorkLocationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployeeWorkLocationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployeeWorkLocationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployeeWorkLocationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployeeWorkLocationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeWorkLocationPayload>
+          }
+          aggregate: {
+            args: Prisma.EmployeeWorkLocationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployeeWorkLocation>
+          }
+          groupBy: {
+            args: Prisma.EmployeeWorkLocationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeWorkLocationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployeeWorkLocationCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeWorkLocationCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkLocation: {
+        payload: Prisma.$WorkLocationPayload<ExtArgs>
+        fields: Prisma.WorkLocationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkLocationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkLocationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkLocationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkLocationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>
+          }
+          findMany: {
+            args: Prisma.WorkLocationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>[]
+          }
+          create: {
+            args: Prisma.WorkLocationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>
+          }
+          createMany: {
+            args: Prisma.WorkLocationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkLocationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkLocationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>
+          }
+          update: {
+            args: Prisma.WorkLocationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkLocationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkLocationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkLocationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkLocationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLocationPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkLocationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkLocation>
+          }
+          groupBy: {
+            args: Prisma.WorkLocationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkLocationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkLocationCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkLocationCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmployeeSession: {
+        payload: Prisma.$EmployeeSessionPayload<ExtArgs>
+        fields: Prisma.EmployeeSessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployeeSessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployeeSessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+          }
+          findFirst: {
+            args: Prisma.EmployeeSessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployeeSessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+          }
+          findMany: {
+            args: Prisma.EmployeeSessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>[]
+          }
+          create: {
+            args: Prisma.EmployeeSessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+          }
+          createMany: {
+            args: Prisma.EmployeeSessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployeeSessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>[]
+          }
+          delete: {
+            args: Prisma.EmployeeSessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+          }
+          update: {
+            args: Prisma.EmployeeSessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployeeSessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployeeSessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployeeSessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployeeSessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+          }
+          aggregate: {
+            args: Prisma.EmployeeSessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployeeSession>
+          }
+          groupBy: {
+            args: Prisma.EmployeeSessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeSessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployeeSessionCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeSessionCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmployeeDeviceSession: {
+        payload: Prisma.$EmployeeDeviceSessionPayload<ExtArgs>
+        fields: Prisma.EmployeeDeviceSessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployeeDeviceSessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployeeDeviceSessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
+          }
+          findFirst: {
+            args: Prisma.EmployeeDeviceSessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployeeDeviceSessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
+          }
+          findMany: {
+            args: Prisma.EmployeeDeviceSessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>[]
+          }
+          create: {
+            args: Prisma.EmployeeDeviceSessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
+          }
+          createMany: {
+            args: Prisma.EmployeeDeviceSessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployeeDeviceSessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>[]
+          }
+          delete: {
+            args: Prisma.EmployeeDeviceSessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
+          }
+          update: {
+            args: Prisma.EmployeeDeviceSessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployeeDeviceSessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployeeDeviceSessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployeeDeviceSessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployeeDeviceSessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
+          }
+          aggregate: {
+            args: Prisma.EmployeeDeviceSessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployeeDeviceSession>
+          }
+          groupBy: {
+            args: Prisma.EmployeeDeviceSessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeDeviceSessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployeeDeviceSessionCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeDeviceSessionCountAggregateOutputType> | number
+          }
+        }
+      }
+      CheckInRequest: {
+        payload: Prisma.$CheckInRequestPayload<ExtArgs>
+        fields: Prisma.CheckInRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CheckInRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CheckInRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.CheckInRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CheckInRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>
+          }
+          findMany: {
+            args: Prisma.CheckInRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>[]
+          }
+          create: {
+            args: Prisma.CheckInRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>
+          }
+          createMany: {
+            args: Prisma.CheckInRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CheckInRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.CheckInRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>
+          }
+          update: {
+            args: Prisma.CheckInRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.CheckInRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CheckInRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CheckInRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.CheckInRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CheckInRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.CheckInRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCheckInRequest>
+          }
+          groupBy: {
+            args: Prisma.CheckInRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CheckInRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CheckInRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<CheckInRequestCountAggregateOutputType> | number
           }
         }
       }
@@ -1315,6 +1765,11 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     employee?: EmployeeOmit
+    employeeWorkLocation?: EmployeeWorkLocationOmit
+    workLocation?: WorkLocationOmit
+    employeeSession?: EmployeeSessionOmit
+    employeeDeviceSession?: EmployeeDeviceSessionOmit
+    checkInRequest?: CheckInRequestOmit
     user?: UserOmit
     attendance?: AttendanceOmit
     attendancePenalty?: AttendancePenaltyOmit
@@ -1417,11 +1872,19 @@ export namespace Prisma {
   export type EmployeeCountOutputType = {
     attendance: number
     payouts: number
+    sessions: number
+    deviceSessions: number
+    checkInRequests: number
+    allowedWorkLocations: number
   }
 
   export type EmployeeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendance?: boolean | EmployeeCountOutputTypeCountAttendanceArgs
     payouts?: boolean | EmployeeCountOutputTypeCountPayoutsArgs
+    sessions?: boolean | EmployeeCountOutputTypeCountSessionsArgs
+    deviceSessions?: boolean | EmployeeCountOutputTypeCountDeviceSessionsArgs
+    checkInRequests?: boolean | EmployeeCountOutputTypeCountCheckInRequestsArgs
+    allowedWorkLocations?: boolean | EmployeeCountOutputTypeCountAllowedWorkLocationsArgs
   }
 
   // Custom InputTypes
@@ -1447,6 +1910,92 @@ export namespace Prisma {
    */
   export type EmployeeCountOutputTypeCountPayoutsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PayoutWhereInput
+  }
+
+  /**
+   * EmployeeCountOutputType without action
+   */
+  export type EmployeeCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeSessionWhereInput
+  }
+
+  /**
+   * EmployeeCountOutputType without action
+   */
+  export type EmployeeCountOutputTypeCountDeviceSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeDeviceSessionWhereInput
+  }
+
+  /**
+   * EmployeeCountOutputType without action
+   */
+  export type EmployeeCountOutputTypeCountCheckInRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CheckInRequestWhereInput
+  }
+
+  /**
+   * EmployeeCountOutputType without action
+   */
+  export type EmployeeCountOutputTypeCountAllowedWorkLocationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeWorkLocationWhereInput
+  }
+
+
+  /**
+   * Count Type WorkLocationCountOutputType
+   */
+
+  export type WorkLocationCountOutputType = {
+    checkInRequests: number
+    attendanceRecords: number
+    employeeAssignments: number
+    primaryEmployees: number
+  }
+
+  export type WorkLocationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    checkInRequests?: boolean | WorkLocationCountOutputTypeCountCheckInRequestsArgs
+    attendanceRecords?: boolean | WorkLocationCountOutputTypeCountAttendanceRecordsArgs
+    employeeAssignments?: boolean | WorkLocationCountOutputTypeCountEmployeeAssignmentsArgs
+    primaryEmployees?: boolean | WorkLocationCountOutputTypeCountPrimaryEmployeesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WorkLocationCountOutputType without action
+   */
+  export type WorkLocationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocationCountOutputType
+     */
+    select?: WorkLocationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WorkLocationCountOutputType without action
+   */
+  export type WorkLocationCountOutputTypeCountCheckInRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CheckInRequestWhereInput
+  }
+
+  /**
+   * WorkLocationCountOutputType without action
+   */
+  export type WorkLocationCountOutputTypeCountAttendanceRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttendanceWhereInput
+  }
+
+  /**
+   * WorkLocationCountOutputType without action
+   */
+  export type WorkLocationCountOutputTypeCountEmployeeAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeWorkLocationWhereInput
+  }
+
+  /**
+   * WorkLocationCountOutputType without action
+   */
+  export type WorkLocationCountOutputTypeCountPrimaryEmployeesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeWhereInput
   }
 
 
@@ -1531,11 +2080,13 @@ export namespace Prisma {
   export type EmployeeAvgAggregateOutputType = {
     id: number | null
     hourlyRate: number | null
+    primaryWorkLocationId: number | null
   }
 
   export type EmployeeSumAggregateOutputType = {
     id: number | null
     hourlyRate: number | null
+    primaryWorkLocationId: number | null
   }
 
   export type EmployeeMinAggregateOutputType = {
@@ -1544,9 +2095,30 @@ export namespace Prisma {
     email: string | null
     position: string | null
     phone: string | null
-    fingerprintId: string | null
     hourlyRate: number | null
     paymentBasis: string | null
+    password: string | null
+    profilePicture: string | null
+    dateOfBirth: Date | null
+    nationalId: string | null
+    address: string | null
+    emergencyContact: string | null
+    emergencyPhone: string | null
+    hireDate: Date | null
+    department: string | null
+    manager: string | null
+    employeeId: string | null
+    isActive: boolean | null
+    canAccessPortal: boolean | null
+    canWorkRemotely: boolean | null
+    primaryWorkLocationId: number | null
+    lastLoginAt: Date | null
+    lastActiveAt: Date | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
+    preferredLanguage: string | null
+    timezone: string | null
+    emailNotifications: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1557,9 +2129,30 @@ export namespace Prisma {
     email: string | null
     position: string | null
     phone: string | null
-    fingerprintId: string | null
     hourlyRate: number | null
     paymentBasis: string | null
+    password: string | null
+    profilePicture: string | null
+    dateOfBirth: Date | null
+    nationalId: string | null
+    address: string | null
+    emergencyContact: string | null
+    emergencyPhone: string | null
+    hireDate: Date | null
+    department: string | null
+    manager: string | null
+    employeeId: string | null
+    isActive: boolean | null
+    canAccessPortal: boolean | null
+    canWorkRemotely: boolean | null
+    primaryWorkLocationId: number | null
+    lastLoginAt: Date | null
+    lastActiveAt: Date | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
+    preferredLanguage: string | null
+    timezone: string | null
+    emailNotifications: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1570,9 +2163,30 @@ export namespace Prisma {
     email: number
     position: number
     phone: number
-    fingerprintId: number
     hourlyRate: number
     paymentBasis: number
+    password: number
+    profilePicture: number
+    dateOfBirth: number
+    nationalId: number
+    address: number
+    emergencyContact: number
+    emergencyPhone: number
+    hireDate: number
+    department: number
+    manager: number
+    employeeId: number
+    isActive: number
+    canAccessPortal: number
+    canWorkRemotely: number
+    primaryWorkLocationId: number
+    lastLoginAt: number
+    lastActiveAt: number
+    passwordResetToken: number
+    passwordResetExpires: number
+    preferredLanguage: number
+    timezone: number
+    emailNotifications: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1582,11 +2196,13 @@ export namespace Prisma {
   export type EmployeeAvgAggregateInputType = {
     id?: true
     hourlyRate?: true
+    primaryWorkLocationId?: true
   }
 
   export type EmployeeSumAggregateInputType = {
     id?: true
     hourlyRate?: true
+    primaryWorkLocationId?: true
   }
 
   export type EmployeeMinAggregateInputType = {
@@ -1595,9 +2211,30 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
-    fingerprintId?: true
     hourlyRate?: true
     paymentBasis?: true
+    password?: true
+    profilePicture?: true
+    dateOfBirth?: true
+    nationalId?: true
+    address?: true
+    emergencyContact?: true
+    emergencyPhone?: true
+    hireDate?: true
+    department?: true
+    manager?: true
+    employeeId?: true
+    isActive?: true
+    canAccessPortal?: true
+    canWorkRemotely?: true
+    primaryWorkLocationId?: true
+    lastLoginAt?: true
+    lastActiveAt?: true
+    passwordResetToken?: true
+    passwordResetExpires?: true
+    preferredLanguage?: true
+    timezone?: true
+    emailNotifications?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1608,9 +2245,30 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
-    fingerprintId?: true
     hourlyRate?: true
     paymentBasis?: true
+    password?: true
+    profilePicture?: true
+    dateOfBirth?: true
+    nationalId?: true
+    address?: true
+    emergencyContact?: true
+    emergencyPhone?: true
+    hireDate?: true
+    department?: true
+    manager?: true
+    employeeId?: true
+    isActive?: true
+    canAccessPortal?: true
+    canWorkRemotely?: true
+    primaryWorkLocationId?: true
+    lastLoginAt?: true
+    lastActiveAt?: true
+    passwordResetToken?: true
+    passwordResetExpires?: true
+    preferredLanguage?: true
+    timezone?: true
+    emailNotifications?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1621,9 +2279,30 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
-    fingerprintId?: true
     hourlyRate?: true
     paymentBasis?: true
+    password?: true
+    profilePicture?: true
+    dateOfBirth?: true
+    nationalId?: true
+    address?: true
+    emergencyContact?: true
+    emergencyPhone?: true
+    hireDate?: true
+    department?: true
+    manager?: true
+    employeeId?: true
+    isActive?: true
+    canAccessPortal?: true
+    canWorkRemotely?: true
+    primaryWorkLocationId?: true
+    lastLoginAt?: true
+    lastActiveAt?: true
+    passwordResetToken?: true
+    passwordResetExpires?: true
+    preferredLanguage?: true
+    timezone?: true
+    emailNotifications?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1721,9 +2400,30 @@ export namespace Prisma {
     email: string
     position: string
     phone: string | null
-    fingerprintId: string | null
     hourlyRate: number
     paymentBasis: string
+    password: string | null
+    profilePicture: string | null
+    dateOfBirth: Date | null
+    nationalId: string | null
+    address: string | null
+    emergencyContact: string | null
+    emergencyPhone: string | null
+    hireDate: Date | null
+    department: string | null
+    manager: string | null
+    employeeId: string | null
+    isActive: boolean
+    canAccessPortal: boolean
+    canWorkRemotely: boolean
+    primaryWorkLocationId: number | null
+    lastLoginAt: Date | null
+    lastActiveAt: Date | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
+    preferredLanguage: string
+    timezone: string
+    emailNotifications: boolean
     createdAt: Date
     updatedAt: Date
     _count: EmployeeCountAggregateOutputType | null
@@ -1753,13 +2453,39 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    fingerprintId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
+    password?: boolean
+    profilePicture?: boolean
+    dateOfBirth?: boolean
+    nationalId?: boolean
+    address?: boolean
+    emergencyContact?: boolean
+    emergencyPhone?: boolean
+    hireDate?: boolean
+    department?: boolean
+    manager?: boolean
+    employeeId?: boolean
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: boolean
+    lastLoginAt?: boolean
+    lastActiveAt?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
+    preferredLanguage?: boolean
+    timezone?: boolean
+    emailNotifications?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
+    sessions?: boolean | Employee$sessionsArgs<ExtArgs>
+    deviceSessions?: boolean | Employee$deviceSessionsArgs<ExtArgs>
+    checkInRequests?: boolean | Employee$checkInRequestsArgs<ExtArgs>
+    primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
+    allowedWorkLocations?: boolean | Employee$allowedWorkLocationsArgs<ExtArgs>
     _count?: boolean | EmployeeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
@@ -1769,11 +2495,33 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    fingerprintId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
+    password?: boolean
+    profilePicture?: boolean
+    dateOfBirth?: boolean
+    nationalId?: boolean
+    address?: boolean
+    emergencyContact?: boolean
+    emergencyPhone?: boolean
+    hireDate?: boolean
+    department?: boolean
+    manager?: boolean
+    employeeId?: boolean
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: boolean
+    lastLoginAt?: boolean
+    lastActiveAt?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
+    preferredLanguage?: boolean
+    timezone?: boolean
+    emailNotifications?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
   export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1782,11 +2530,33 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    fingerprintId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
+    password?: boolean
+    profilePicture?: boolean
+    dateOfBirth?: boolean
+    nationalId?: boolean
+    address?: boolean
+    emergencyContact?: boolean
+    emergencyPhone?: boolean
+    hireDate?: boolean
+    department?: boolean
+    manager?: boolean
+    employeeId?: boolean
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: boolean
+    lastLoginAt?: boolean
+    lastActiveAt?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
+    preferredLanguage?: boolean
+    timezone?: boolean
+    emailNotifications?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
   export type EmployeeSelectScalar = {
@@ -1795,27 +2565,62 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    fingerprintId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
+    password?: boolean
+    profilePicture?: boolean
+    dateOfBirth?: boolean
+    nationalId?: boolean
+    address?: boolean
+    emergencyContact?: boolean
+    emergencyPhone?: boolean
+    hireDate?: boolean
+    department?: boolean
+    manager?: boolean
+    employeeId?: boolean
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: boolean
+    lastLoginAt?: boolean
+    lastActiveAt?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
+    preferredLanguage?: boolean
+    timezone?: boolean
+    emailNotifications?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "fingerprintId" | "hourlyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "hourlyRate" | "paymentBasis" | "password" | "profilePicture" | "dateOfBirth" | "nationalId" | "address" | "emergencyContact" | "emergencyPhone" | "hireDate" | "department" | "manager" | "employeeId" | "isActive" | "canAccessPortal" | "canWorkRemotely" | "primaryWorkLocationId" | "lastLoginAt" | "lastActiveAt" | "passwordResetToken" | "passwordResetExpires" | "preferredLanguage" | "timezone" | "emailNotifications" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
+    sessions?: boolean | Employee$sessionsArgs<ExtArgs>
+    deviceSessions?: boolean | Employee$deviceSessionsArgs<ExtArgs>
+    checkInRequests?: boolean | Employee$checkInRequestsArgs<ExtArgs>
+    primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
+    allowedWorkLocations?: boolean | Employee$allowedWorkLocationsArgs<ExtArgs>
     _count?: boolean | EmployeeCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type EmployeeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
+  }
+  export type EmployeeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
+  }
 
   export type $EmployeePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Employee"
     objects: {
       attendance: Prisma.$AttendancePayload<ExtArgs>[]
       payouts: Prisma.$PayoutPayload<ExtArgs>[]
+      sessions: Prisma.$EmployeeSessionPayload<ExtArgs>[]
+      deviceSessions: Prisma.$EmployeeDeviceSessionPayload<ExtArgs>[]
+      checkInRequests: Prisma.$CheckInRequestPayload<ExtArgs>[]
+      primaryWorkLocation: Prisma.$WorkLocationPayload<ExtArgs> | null
+      allowedWorkLocations: Prisma.$EmployeeWorkLocationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -1823,9 +2628,30 @@ export namespace Prisma {
       email: string
       position: string
       phone: string | null
-      fingerprintId: string | null
       hourlyRate: number
       paymentBasis: string
+      password: string | null
+      profilePicture: string | null
+      dateOfBirth: Date | null
+      nationalId: string | null
+      address: string | null
+      emergencyContact: string | null
+      emergencyPhone: string | null
+      hireDate: Date | null
+      department: string | null
+      manager: string | null
+      employeeId: string | null
+      isActive: boolean
+      canAccessPortal: boolean
+      canWorkRemotely: boolean
+      primaryWorkLocationId: number | null
+      lastLoginAt: Date | null
+      lastActiveAt: Date | null
+      passwordResetToken: string | null
+      passwordResetExpires: Date | null
+      preferredLanguage: string
+      timezone: string
+      emailNotifications: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["employee"]>
@@ -2224,6 +3050,11 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     attendance<T extends Employee$attendanceArgs<ExtArgs> = {}>(args?: Subset<T, Employee$attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payouts<T extends Employee$payoutsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$payoutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends Employee$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    deviceSessions<T extends Employee$deviceSessionsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$deviceSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    checkInRequests<T extends Employee$checkInRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$checkInRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    primaryWorkLocation<T extends Employee$primaryWorkLocationArgs<ExtArgs> = {}>(args?: Subset<T, Employee$primaryWorkLocationArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    allowedWorkLocations<T extends Employee$allowedWorkLocationsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$allowedWorkLocationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2258,9 +3089,30 @@ export namespace Prisma {
     readonly email: FieldRef<"Employee", 'String'>
     readonly position: FieldRef<"Employee", 'String'>
     readonly phone: FieldRef<"Employee", 'String'>
-    readonly fingerprintId: FieldRef<"Employee", 'String'>
     readonly hourlyRate: FieldRef<"Employee", 'Float'>
     readonly paymentBasis: FieldRef<"Employee", 'String'>
+    readonly password: FieldRef<"Employee", 'String'>
+    readonly profilePicture: FieldRef<"Employee", 'String'>
+    readonly dateOfBirth: FieldRef<"Employee", 'DateTime'>
+    readonly nationalId: FieldRef<"Employee", 'String'>
+    readonly address: FieldRef<"Employee", 'String'>
+    readonly emergencyContact: FieldRef<"Employee", 'String'>
+    readonly emergencyPhone: FieldRef<"Employee", 'String'>
+    readonly hireDate: FieldRef<"Employee", 'DateTime'>
+    readonly department: FieldRef<"Employee", 'String'>
+    readonly manager: FieldRef<"Employee", 'String'>
+    readonly employeeId: FieldRef<"Employee", 'String'>
+    readonly isActive: FieldRef<"Employee", 'Boolean'>
+    readonly canAccessPortal: FieldRef<"Employee", 'Boolean'>
+    readonly canWorkRemotely: FieldRef<"Employee", 'Boolean'>
+    readonly primaryWorkLocationId: FieldRef<"Employee", 'Int'>
+    readonly lastLoginAt: FieldRef<"Employee", 'DateTime'>
+    readonly lastActiveAt: FieldRef<"Employee", 'DateTime'>
+    readonly passwordResetToken: FieldRef<"Employee", 'String'>
+    readonly passwordResetExpires: FieldRef<"Employee", 'DateTime'>
+    readonly preferredLanguage: FieldRef<"Employee", 'String'>
+    readonly timezone: FieldRef<"Employee", 'String'>
+    readonly emailNotifications: FieldRef<"Employee", 'Boolean'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
     readonly updatedAt: FieldRef<"Employee", 'DateTime'>
   }
@@ -2512,6 +3364,10 @@ export namespace Prisma {
      */
     data: EmployeeCreateManyInput | EmployeeCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2582,6 +3438,10 @@ export namespace Prisma {
      * Limit how many Employees to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2699,6 +3559,121 @@ export namespace Prisma {
   }
 
   /**
+   * Employee.sessions
+   */
+  export type Employee$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    where?: EmployeeSessionWhereInput
+    orderBy?: EmployeeSessionOrderByWithRelationInput | EmployeeSessionOrderByWithRelationInput[]
+    cursor?: EmployeeSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeSessionScalarFieldEnum | EmployeeSessionScalarFieldEnum[]
+  }
+
+  /**
+   * Employee.deviceSessions
+   */
+  export type Employee$deviceSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    where?: EmployeeDeviceSessionWhereInput
+    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
+    cursor?: EmployeeDeviceSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
+  }
+
+  /**
+   * Employee.checkInRequests
+   */
+  export type Employee$checkInRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    where?: CheckInRequestWhereInput
+    orderBy?: CheckInRequestOrderByWithRelationInput | CheckInRequestOrderByWithRelationInput[]
+    cursor?: CheckInRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CheckInRequestScalarFieldEnum | CheckInRequestScalarFieldEnum[]
+  }
+
+  /**
+   * Employee.primaryWorkLocation
+   */
+  export type Employee$primaryWorkLocationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    where?: WorkLocationWhereInput
+  }
+
+  /**
+   * Employee.allowedWorkLocations
+   */
+  export type Employee$allowedWorkLocationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    where?: EmployeeWorkLocationWhereInput
+    orderBy?: EmployeeWorkLocationOrderByWithRelationInput | EmployeeWorkLocationOrderByWithRelationInput[]
+    cursor?: EmployeeWorkLocationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeWorkLocationScalarFieldEnum | EmployeeWorkLocationScalarFieldEnum[]
+  }
+
+  /**
    * Employee without action
    */
   export type EmployeeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2714,6 +3689,6161 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: EmployeeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmployeeWorkLocation
+   */
+
+  export type AggregateEmployeeWorkLocation = {
+    _count: EmployeeWorkLocationCountAggregateOutputType | null
+    _avg: EmployeeWorkLocationAvgAggregateOutputType | null
+    _sum: EmployeeWorkLocationSumAggregateOutputType | null
+    _min: EmployeeWorkLocationMinAggregateOutputType | null
+    _max: EmployeeWorkLocationMaxAggregateOutputType | null
+  }
+
+  export type EmployeeWorkLocationAvgAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+  }
+
+  export type EmployeeWorkLocationSumAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+  }
+
+  export type EmployeeWorkLocationMinAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+    canCheckIn: boolean | null
+    canCheckOut: boolean | null
+    isActive: boolean | null
+    assignedAt: Date | null
+    assignedBy: string | null
+  }
+
+  export type EmployeeWorkLocationMaxAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+    canCheckIn: boolean | null
+    canCheckOut: boolean | null
+    isActive: boolean | null
+    assignedAt: Date | null
+    assignedBy: string | null
+  }
+
+  export type EmployeeWorkLocationCountAggregateOutputType = {
+    id: number
+    employeeId: number
+    workLocationId: number
+    canCheckIn: number
+    canCheckOut: number
+    isActive: number
+    assignedAt: number
+    assignedBy: number
+    _all: number
+  }
+
+
+  export type EmployeeWorkLocationAvgAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+  }
+
+  export type EmployeeWorkLocationSumAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+  }
+
+  export type EmployeeWorkLocationMinAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    canCheckIn?: true
+    canCheckOut?: true
+    isActive?: true
+    assignedAt?: true
+    assignedBy?: true
+  }
+
+  export type EmployeeWorkLocationMaxAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    canCheckIn?: true
+    canCheckOut?: true
+    isActive?: true
+    assignedAt?: true
+    assignedBy?: true
+  }
+
+  export type EmployeeWorkLocationCountAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    canCheckIn?: true
+    canCheckOut?: true
+    isActive?: true
+    assignedAt?: true
+    assignedBy?: true
+    _all?: true
+  }
+
+  export type EmployeeWorkLocationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeWorkLocation to aggregate.
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeWorkLocations to fetch.
+     */
+    orderBy?: EmployeeWorkLocationOrderByWithRelationInput | EmployeeWorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmployeeWorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeWorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeWorkLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmployeeWorkLocations
+    **/
+    _count?: true | EmployeeWorkLocationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmployeeWorkLocationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmployeeWorkLocationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployeeWorkLocationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployeeWorkLocationMaxAggregateInputType
+  }
+
+  export type GetEmployeeWorkLocationAggregateType<T extends EmployeeWorkLocationAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployeeWorkLocation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployeeWorkLocation[P]>
+      : GetScalarType<T[P], AggregateEmployeeWorkLocation[P]>
+  }
+
+
+
+
+  export type EmployeeWorkLocationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeWorkLocationWhereInput
+    orderBy?: EmployeeWorkLocationOrderByWithAggregationInput | EmployeeWorkLocationOrderByWithAggregationInput[]
+    by: EmployeeWorkLocationScalarFieldEnum[] | EmployeeWorkLocationScalarFieldEnum
+    having?: EmployeeWorkLocationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployeeWorkLocationCountAggregateInputType | true
+    _avg?: EmployeeWorkLocationAvgAggregateInputType
+    _sum?: EmployeeWorkLocationSumAggregateInputType
+    _min?: EmployeeWorkLocationMinAggregateInputType
+    _max?: EmployeeWorkLocationMaxAggregateInputType
+  }
+
+  export type EmployeeWorkLocationGroupByOutputType = {
+    id: number
+    employeeId: number
+    workLocationId: number
+    canCheckIn: boolean
+    canCheckOut: boolean
+    isActive: boolean
+    assignedAt: Date
+    assignedBy: string | null
+    _count: EmployeeWorkLocationCountAggregateOutputType | null
+    _avg: EmployeeWorkLocationAvgAggregateOutputType | null
+    _sum: EmployeeWorkLocationSumAggregateOutputType | null
+    _min: EmployeeWorkLocationMinAggregateOutputType | null
+    _max: EmployeeWorkLocationMaxAggregateOutputType | null
+  }
+
+  type GetEmployeeWorkLocationGroupByPayload<T extends EmployeeWorkLocationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployeeWorkLocationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployeeWorkLocationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployeeWorkLocationGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployeeWorkLocationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployeeWorkLocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: boolean
+    assignedBy?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | WorkLocationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeWorkLocation"]>
+
+  export type EmployeeWorkLocationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: boolean
+    assignedBy?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | WorkLocationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeWorkLocation"]>
+
+  export type EmployeeWorkLocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: boolean
+    assignedBy?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | WorkLocationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeWorkLocation"]>
+
+  export type EmployeeWorkLocationSelectScalar = {
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: boolean
+    assignedBy?: boolean
+  }
+
+  export type EmployeeWorkLocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "workLocationId" | "canCheckIn" | "canCheckOut" | "isActive" | "assignedAt" | "assignedBy", ExtArgs["result"]["employeeWorkLocation"]>
+  export type EmployeeWorkLocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | WorkLocationDefaultArgs<ExtArgs>
+  }
+  export type EmployeeWorkLocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | WorkLocationDefaultArgs<ExtArgs>
+  }
+  export type EmployeeWorkLocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | WorkLocationDefaultArgs<ExtArgs>
+  }
+
+  export type $EmployeeWorkLocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployeeWorkLocation"
+    objects: {
+      employee: Prisma.$EmployeePayload<ExtArgs>
+      workLocation: Prisma.$WorkLocationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      employeeId: number
+      workLocationId: number
+      canCheckIn: boolean
+      canCheckOut: boolean
+      isActive: boolean
+      assignedAt: Date
+      assignedBy: string | null
+    }, ExtArgs["result"]["employeeWorkLocation"]>
+    composites: {}
+  }
+
+  type EmployeeWorkLocationGetPayload<S extends boolean | null | undefined | EmployeeWorkLocationDefaultArgs> = $Result.GetResult<Prisma.$EmployeeWorkLocationPayload, S>
+
+  type EmployeeWorkLocationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployeeWorkLocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployeeWorkLocationCountAggregateInputType | true
+    }
+
+  export interface EmployeeWorkLocationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployeeWorkLocation'], meta: { name: 'EmployeeWorkLocation' } }
+    /**
+     * Find zero or one EmployeeWorkLocation that matches the filter.
+     * @param {EmployeeWorkLocationFindUniqueArgs} args - Arguments to find a EmployeeWorkLocation
+     * @example
+     * // Get one EmployeeWorkLocation
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployeeWorkLocationFindUniqueArgs>(args: SelectSubset<T, EmployeeWorkLocationFindUniqueArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployeeWorkLocation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployeeWorkLocationFindUniqueOrThrowArgs} args - Arguments to find a EmployeeWorkLocation
+     * @example
+     * // Get one EmployeeWorkLocation
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployeeWorkLocationFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployeeWorkLocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeWorkLocation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationFindFirstArgs} args - Arguments to find a EmployeeWorkLocation
+     * @example
+     * // Get one EmployeeWorkLocation
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployeeWorkLocationFindFirstArgs>(args?: SelectSubset<T, EmployeeWorkLocationFindFirstArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeWorkLocation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationFindFirstOrThrowArgs} args - Arguments to find a EmployeeWorkLocation
+     * @example
+     * // Get one EmployeeWorkLocation
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployeeWorkLocationFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployeeWorkLocationFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployeeWorkLocations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployeeWorkLocations
+     * const employeeWorkLocations = await prisma.employeeWorkLocation.findMany()
+     * 
+     * // Get first 10 EmployeeWorkLocations
+     * const employeeWorkLocations = await prisma.employeeWorkLocation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const employeeWorkLocationWithIdOnly = await prisma.employeeWorkLocation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmployeeWorkLocationFindManyArgs>(args?: SelectSubset<T, EmployeeWorkLocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployeeWorkLocation.
+     * @param {EmployeeWorkLocationCreateArgs} args - Arguments to create a EmployeeWorkLocation.
+     * @example
+     * // Create one EmployeeWorkLocation
+     * const EmployeeWorkLocation = await prisma.employeeWorkLocation.create({
+     *   data: {
+     *     // ... data to create a EmployeeWorkLocation
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmployeeWorkLocationCreateArgs>(args: SelectSubset<T, EmployeeWorkLocationCreateArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployeeWorkLocations.
+     * @param {EmployeeWorkLocationCreateManyArgs} args - Arguments to create many EmployeeWorkLocations.
+     * @example
+     * // Create many EmployeeWorkLocations
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmployeeWorkLocationCreateManyArgs>(args?: SelectSubset<T, EmployeeWorkLocationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployeeWorkLocations and returns the data saved in the database.
+     * @param {EmployeeWorkLocationCreateManyAndReturnArgs} args - Arguments to create many EmployeeWorkLocations.
+     * @example
+     * // Create many EmployeeWorkLocations
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmployeeWorkLocations and only return the `id`
+     * const employeeWorkLocationWithIdOnly = await prisma.employeeWorkLocation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmployeeWorkLocationCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployeeWorkLocationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployeeWorkLocation.
+     * @param {EmployeeWorkLocationDeleteArgs} args - Arguments to delete one EmployeeWorkLocation.
+     * @example
+     * // Delete one EmployeeWorkLocation
+     * const EmployeeWorkLocation = await prisma.employeeWorkLocation.delete({
+     *   where: {
+     *     // ... filter to delete one EmployeeWorkLocation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmployeeWorkLocationDeleteArgs>(args: SelectSubset<T, EmployeeWorkLocationDeleteArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployeeWorkLocation.
+     * @param {EmployeeWorkLocationUpdateArgs} args - Arguments to update one EmployeeWorkLocation.
+     * @example
+     * // Update one EmployeeWorkLocation
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmployeeWorkLocationUpdateArgs>(args: SelectSubset<T, EmployeeWorkLocationUpdateArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployeeWorkLocations.
+     * @param {EmployeeWorkLocationDeleteManyArgs} args - Arguments to filter EmployeeWorkLocations to delete.
+     * @example
+     * // Delete a few EmployeeWorkLocations
+     * const { count } = await prisma.employeeWorkLocation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmployeeWorkLocationDeleteManyArgs>(args?: SelectSubset<T, EmployeeWorkLocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeWorkLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployeeWorkLocations
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmployeeWorkLocationUpdateManyArgs>(args: SelectSubset<T, EmployeeWorkLocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeWorkLocations and returns the data updated in the database.
+     * @param {EmployeeWorkLocationUpdateManyAndReturnArgs} args - Arguments to update many EmployeeWorkLocations.
+     * @example
+     * // Update many EmployeeWorkLocations
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmployeeWorkLocations and only return the `id`
+     * const employeeWorkLocationWithIdOnly = await prisma.employeeWorkLocation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmployeeWorkLocationUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployeeWorkLocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployeeWorkLocation.
+     * @param {EmployeeWorkLocationUpsertArgs} args - Arguments to update or create a EmployeeWorkLocation.
+     * @example
+     * // Update or create a EmployeeWorkLocation
+     * const employeeWorkLocation = await prisma.employeeWorkLocation.upsert({
+     *   create: {
+     *     // ... data to create a EmployeeWorkLocation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployeeWorkLocation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployeeWorkLocationUpsertArgs>(args: SelectSubset<T, EmployeeWorkLocationUpsertArgs<ExtArgs>>): Prisma__EmployeeWorkLocationClient<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployeeWorkLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationCountArgs} args - Arguments to filter EmployeeWorkLocations to count.
+     * @example
+     * // Count the number of EmployeeWorkLocations
+     * const count = await prisma.employeeWorkLocation.count({
+     *   where: {
+     *     // ... the filter for the EmployeeWorkLocations we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployeeWorkLocationCountArgs>(
+      args?: Subset<T, EmployeeWorkLocationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployeeWorkLocationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployeeWorkLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployeeWorkLocationAggregateArgs>(args: Subset<T, EmployeeWorkLocationAggregateArgs>): Prisma.PrismaPromise<GetEmployeeWorkLocationAggregateType<T>>
+
+    /**
+     * Group by EmployeeWorkLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeWorkLocationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmployeeWorkLocationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployeeWorkLocationGroupByArgs['orderBy'] }
+        : { orderBy?: EmployeeWorkLocationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployeeWorkLocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployeeWorkLocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployeeWorkLocation model
+   */
+  readonly fields: EmployeeWorkLocationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployeeWorkLocation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployeeWorkLocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    workLocation<T extends WorkLocationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkLocationDefaultArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployeeWorkLocation model
+   */
+  interface EmployeeWorkLocationFieldRefs {
+    readonly id: FieldRef<"EmployeeWorkLocation", 'Int'>
+    readonly employeeId: FieldRef<"EmployeeWorkLocation", 'Int'>
+    readonly workLocationId: FieldRef<"EmployeeWorkLocation", 'Int'>
+    readonly canCheckIn: FieldRef<"EmployeeWorkLocation", 'Boolean'>
+    readonly canCheckOut: FieldRef<"EmployeeWorkLocation", 'Boolean'>
+    readonly isActive: FieldRef<"EmployeeWorkLocation", 'Boolean'>
+    readonly assignedAt: FieldRef<"EmployeeWorkLocation", 'DateTime'>
+    readonly assignedBy: FieldRef<"EmployeeWorkLocation", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmployeeWorkLocation findUnique
+   */
+  export type EmployeeWorkLocationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeWorkLocation to fetch.
+     */
+    where: EmployeeWorkLocationWhereUniqueInput
+  }
+
+  /**
+   * EmployeeWorkLocation findUniqueOrThrow
+   */
+  export type EmployeeWorkLocationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeWorkLocation to fetch.
+     */
+    where: EmployeeWorkLocationWhereUniqueInput
+  }
+
+  /**
+   * EmployeeWorkLocation findFirst
+   */
+  export type EmployeeWorkLocationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeWorkLocation to fetch.
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeWorkLocations to fetch.
+     */
+    orderBy?: EmployeeWorkLocationOrderByWithRelationInput | EmployeeWorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeWorkLocations.
+     */
+    cursor?: EmployeeWorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeWorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeWorkLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeWorkLocations.
+     */
+    distinct?: EmployeeWorkLocationScalarFieldEnum | EmployeeWorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeWorkLocation findFirstOrThrow
+   */
+  export type EmployeeWorkLocationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeWorkLocation to fetch.
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeWorkLocations to fetch.
+     */
+    orderBy?: EmployeeWorkLocationOrderByWithRelationInput | EmployeeWorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeWorkLocations.
+     */
+    cursor?: EmployeeWorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeWorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeWorkLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeWorkLocations.
+     */
+    distinct?: EmployeeWorkLocationScalarFieldEnum | EmployeeWorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeWorkLocation findMany
+   */
+  export type EmployeeWorkLocationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeWorkLocations to fetch.
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeWorkLocations to fetch.
+     */
+    orderBy?: EmployeeWorkLocationOrderByWithRelationInput | EmployeeWorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmployeeWorkLocations.
+     */
+    cursor?: EmployeeWorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeWorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeWorkLocations.
+     */
+    skip?: number
+    distinct?: EmployeeWorkLocationScalarFieldEnum | EmployeeWorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeWorkLocation create
+   */
+  export type EmployeeWorkLocationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmployeeWorkLocation.
+     */
+    data: XOR<EmployeeWorkLocationCreateInput, EmployeeWorkLocationUncheckedCreateInput>
+  }
+
+  /**
+   * EmployeeWorkLocation createMany
+   */
+  export type EmployeeWorkLocationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployeeWorkLocations.
+     */
+    data: EmployeeWorkLocationCreateManyInput | EmployeeWorkLocationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployeeWorkLocation createManyAndReturn
+   */
+  export type EmployeeWorkLocationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployeeWorkLocations.
+     */
+    data: EmployeeWorkLocationCreateManyInput | EmployeeWorkLocationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeWorkLocation update
+   */
+  export type EmployeeWorkLocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmployeeWorkLocation.
+     */
+    data: XOR<EmployeeWorkLocationUpdateInput, EmployeeWorkLocationUncheckedUpdateInput>
+    /**
+     * Choose, which EmployeeWorkLocation to update.
+     */
+    where: EmployeeWorkLocationWhereUniqueInput
+  }
+
+  /**
+   * EmployeeWorkLocation updateMany
+   */
+  export type EmployeeWorkLocationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployeeWorkLocations.
+     */
+    data: XOR<EmployeeWorkLocationUpdateManyMutationInput, EmployeeWorkLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeWorkLocations to update
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * Limit how many EmployeeWorkLocations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeWorkLocation updateManyAndReturn
+   */
+  export type EmployeeWorkLocationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployeeWorkLocations.
+     */
+    data: XOR<EmployeeWorkLocationUpdateManyMutationInput, EmployeeWorkLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeWorkLocations to update
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * Limit how many EmployeeWorkLocations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeWorkLocation upsert
+   */
+  export type EmployeeWorkLocationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmployeeWorkLocation to update in case it exists.
+     */
+    where: EmployeeWorkLocationWhereUniqueInput
+    /**
+     * In case the EmployeeWorkLocation found by the `where` argument doesn't exist, create a new EmployeeWorkLocation with this data.
+     */
+    create: XOR<EmployeeWorkLocationCreateInput, EmployeeWorkLocationUncheckedCreateInput>
+    /**
+     * In case the EmployeeWorkLocation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployeeWorkLocationUpdateInput, EmployeeWorkLocationUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployeeWorkLocation delete
+   */
+  export type EmployeeWorkLocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter which EmployeeWorkLocation to delete.
+     */
+    where: EmployeeWorkLocationWhereUniqueInput
+  }
+
+  /**
+   * EmployeeWorkLocation deleteMany
+   */
+  export type EmployeeWorkLocationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeWorkLocations to delete
+     */
+    where?: EmployeeWorkLocationWhereInput
+    /**
+     * Limit how many EmployeeWorkLocations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeWorkLocation without action
+   */
+  export type EmployeeWorkLocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkLocation
+   */
+
+  export type AggregateWorkLocation = {
+    _count: WorkLocationCountAggregateOutputType | null
+    _avg: WorkLocationAvgAggregateOutputType | null
+    _sum: WorkLocationSumAggregateOutputType | null
+    _min: WorkLocationMinAggregateOutputType | null
+    _max: WorkLocationMaxAggregateOutputType | null
+  }
+
+  export type WorkLocationAvgAggregateOutputType = {
+    id: number | null
+    latitude: number | null
+    longitude: number | null
+    radiusMeters: number | null
+  }
+
+  export type WorkLocationSumAggregateOutputType = {
+    id: number | null
+    latitude: number | null
+    longitude: number | null
+    radiusMeters: number | null
+  }
+
+  export type WorkLocationMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    address: string | null
+    latitude: number | null
+    longitude: number | null
+    radiusMeters: number | null
+    isActive: boolean | null
+    timezone: string | null
+    description: string | null
+    workingHoursStart: string | null
+    workingHoursEnd: string | null
+    createdBy: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkLocationMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    address: string | null
+    latitude: number | null
+    longitude: number | null
+    radiusMeters: number | null
+    isActive: boolean | null
+    timezone: string | null
+    description: string | null
+    workingHoursStart: string | null
+    workingHoursEnd: string | null
+    createdBy: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkLocationCountAggregateOutputType = {
+    id: number
+    name: number
+    address: number
+    latitude: number
+    longitude: number
+    radiusMeters: number
+    isActive: number
+    timezone: number
+    description: number
+    workingHoursStart: number
+    workingHoursEnd: number
+    createdBy: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkLocationAvgAggregateInputType = {
+    id?: true
+    latitude?: true
+    longitude?: true
+    radiusMeters?: true
+  }
+
+  export type WorkLocationSumAggregateInputType = {
+    id?: true
+    latitude?: true
+    longitude?: true
+    radiusMeters?: true
+  }
+
+  export type WorkLocationMinAggregateInputType = {
+    id?: true
+    name?: true
+    address?: true
+    latitude?: true
+    longitude?: true
+    radiusMeters?: true
+    isActive?: true
+    timezone?: true
+    description?: true
+    workingHoursStart?: true
+    workingHoursEnd?: true
+    createdBy?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkLocationMaxAggregateInputType = {
+    id?: true
+    name?: true
+    address?: true
+    latitude?: true
+    longitude?: true
+    radiusMeters?: true
+    isActive?: true
+    timezone?: true
+    description?: true
+    workingHoursStart?: true
+    workingHoursEnd?: true
+    createdBy?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkLocationCountAggregateInputType = {
+    id?: true
+    name?: true
+    address?: true
+    latitude?: true
+    longitude?: true
+    radiusMeters?: true
+    isActive?: true
+    timezone?: true
+    description?: true
+    workingHoursStart?: true
+    workingHoursEnd?: true
+    createdBy?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkLocationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkLocation to aggregate.
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLocations to fetch.
+     */
+    orderBy?: WorkLocationOrderByWithRelationInput | WorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkLocations
+    **/
+    _count?: true | WorkLocationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkLocationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkLocationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkLocationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkLocationMaxAggregateInputType
+  }
+
+  export type GetWorkLocationAggregateType<T extends WorkLocationAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkLocation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkLocation[P]>
+      : GetScalarType<T[P], AggregateWorkLocation[P]>
+  }
+
+
+
+
+  export type WorkLocationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkLocationWhereInput
+    orderBy?: WorkLocationOrderByWithAggregationInput | WorkLocationOrderByWithAggregationInput[]
+    by: WorkLocationScalarFieldEnum[] | WorkLocationScalarFieldEnum
+    having?: WorkLocationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkLocationCountAggregateInputType | true
+    _avg?: WorkLocationAvgAggregateInputType
+    _sum?: WorkLocationSumAggregateInputType
+    _min?: WorkLocationMinAggregateInputType
+    _max?: WorkLocationMaxAggregateInputType
+  }
+
+  export type WorkLocationGroupByOutputType = {
+    id: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters: number
+    isActive: boolean
+    timezone: string
+    description: string | null
+    workingHoursStart: string | null
+    workingHoursEnd: string | null
+    createdBy: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkLocationCountAggregateOutputType | null
+    _avg: WorkLocationAvgAggregateOutputType | null
+    _sum: WorkLocationSumAggregateOutputType | null
+    _min: WorkLocationMinAggregateOutputType | null
+    _max: WorkLocationMaxAggregateOutputType | null
+  }
+
+  type GetWorkLocationGroupByPayload<T extends WorkLocationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkLocationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkLocationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkLocationGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkLocationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkLocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    address?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    radiusMeters?: boolean
+    isActive?: boolean
+    timezone?: boolean
+    description?: boolean
+    workingHoursStart?: boolean
+    workingHoursEnd?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    checkInRequests?: boolean | WorkLocation$checkInRequestsArgs<ExtArgs>
+    attendanceRecords?: boolean | WorkLocation$attendanceRecordsArgs<ExtArgs>
+    employeeAssignments?: boolean | WorkLocation$employeeAssignmentsArgs<ExtArgs>
+    primaryEmployees?: boolean | WorkLocation$primaryEmployeesArgs<ExtArgs>
+    _count?: boolean | WorkLocationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workLocation"]>
+
+  export type WorkLocationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    address?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    radiusMeters?: boolean
+    isActive?: boolean
+    timezone?: boolean
+    description?: boolean
+    workingHoursStart?: boolean
+    workingHoursEnd?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workLocation"]>
+
+  export type WorkLocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    address?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    radiusMeters?: boolean
+    isActive?: boolean
+    timezone?: boolean
+    description?: boolean
+    workingHoursStart?: boolean
+    workingHoursEnd?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workLocation"]>
+
+  export type WorkLocationSelectScalar = {
+    id?: boolean
+    name?: boolean
+    address?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    radiusMeters?: boolean
+    isActive?: boolean
+    timezone?: boolean
+    description?: boolean
+    workingHoursStart?: boolean
+    workingHoursEnd?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkLocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "latitude" | "longitude" | "radiusMeters" | "isActive" | "timezone" | "description" | "workingHoursStart" | "workingHoursEnd" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["workLocation"]>
+  export type WorkLocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    checkInRequests?: boolean | WorkLocation$checkInRequestsArgs<ExtArgs>
+    attendanceRecords?: boolean | WorkLocation$attendanceRecordsArgs<ExtArgs>
+    employeeAssignments?: boolean | WorkLocation$employeeAssignmentsArgs<ExtArgs>
+    primaryEmployees?: boolean | WorkLocation$primaryEmployeesArgs<ExtArgs>
+    _count?: boolean | WorkLocationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkLocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WorkLocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $WorkLocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkLocation"
+    objects: {
+      checkInRequests: Prisma.$CheckInRequestPayload<ExtArgs>[]
+      attendanceRecords: Prisma.$AttendancePayload<ExtArgs>[]
+      employeeAssignments: Prisma.$EmployeeWorkLocationPayload<ExtArgs>[]
+      primaryEmployees: Prisma.$EmployeePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      address: string
+      latitude: number
+      longitude: number
+      radiusMeters: number
+      isActive: boolean
+      timezone: string
+      description: string | null
+      workingHoursStart: string | null
+      workingHoursEnd: string | null
+      createdBy: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workLocation"]>
+    composites: {}
+  }
+
+  type WorkLocationGetPayload<S extends boolean | null | undefined | WorkLocationDefaultArgs> = $Result.GetResult<Prisma.$WorkLocationPayload, S>
+
+  type WorkLocationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkLocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkLocationCountAggregateInputType | true
+    }
+
+  export interface WorkLocationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkLocation'], meta: { name: 'WorkLocation' } }
+    /**
+     * Find zero or one WorkLocation that matches the filter.
+     * @param {WorkLocationFindUniqueArgs} args - Arguments to find a WorkLocation
+     * @example
+     * // Get one WorkLocation
+     * const workLocation = await prisma.workLocation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkLocationFindUniqueArgs>(args: SelectSubset<T, WorkLocationFindUniqueArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkLocation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkLocationFindUniqueOrThrowArgs} args - Arguments to find a WorkLocation
+     * @example
+     * // Get one WorkLocation
+     * const workLocation = await prisma.workLocation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkLocationFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkLocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkLocation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationFindFirstArgs} args - Arguments to find a WorkLocation
+     * @example
+     * // Get one WorkLocation
+     * const workLocation = await prisma.workLocation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkLocationFindFirstArgs>(args?: SelectSubset<T, WorkLocationFindFirstArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkLocation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationFindFirstOrThrowArgs} args - Arguments to find a WorkLocation
+     * @example
+     * // Get one WorkLocation
+     * const workLocation = await prisma.workLocation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkLocationFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkLocationFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkLocations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkLocations
+     * const workLocations = await prisma.workLocation.findMany()
+     * 
+     * // Get first 10 WorkLocations
+     * const workLocations = await prisma.workLocation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workLocationWithIdOnly = await prisma.workLocation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkLocationFindManyArgs>(args?: SelectSubset<T, WorkLocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkLocation.
+     * @param {WorkLocationCreateArgs} args - Arguments to create a WorkLocation.
+     * @example
+     * // Create one WorkLocation
+     * const WorkLocation = await prisma.workLocation.create({
+     *   data: {
+     *     // ... data to create a WorkLocation
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkLocationCreateArgs>(args: SelectSubset<T, WorkLocationCreateArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkLocations.
+     * @param {WorkLocationCreateManyArgs} args - Arguments to create many WorkLocations.
+     * @example
+     * // Create many WorkLocations
+     * const workLocation = await prisma.workLocation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkLocationCreateManyArgs>(args?: SelectSubset<T, WorkLocationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkLocations and returns the data saved in the database.
+     * @param {WorkLocationCreateManyAndReturnArgs} args - Arguments to create many WorkLocations.
+     * @example
+     * // Create many WorkLocations
+     * const workLocation = await prisma.workLocation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkLocations and only return the `id`
+     * const workLocationWithIdOnly = await prisma.workLocation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkLocationCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkLocationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkLocation.
+     * @param {WorkLocationDeleteArgs} args - Arguments to delete one WorkLocation.
+     * @example
+     * // Delete one WorkLocation
+     * const WorkLocation = await prisma.workLocation.delete({
+     *   where: {
+     *     // ... filter to delete one WorkLocation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkLocationDeleteArgs>(args: SelectSubset<T, WorkLocationDeleteArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkLocation.
+     * @param {WorkLocationUpdateArgs} args - Arguments to update one WorkLocation.
+     * @example
+     * // Update one WorkLocation
+     * const workLocation = await prisma.workLocation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkLocationUpdateArgs>(args: SelectSubset<T, WorkLocationUpdateArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkLocations.
+     * @param {WorkLocationDeleteManyArgs} args - Arguments to filter WorkLocations to delete.
+     * @example
+     * // Delete a few WorkLocations
+     * const { count } = await prisma.workLocation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkLocationDeleteManyArgs>(args?: SelectSubset<T, WorkLocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkLocations
+     * const workLocation = await prisma.workLocation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkLocationUpdateManyArgs>(args: SelectSubset<T, WorkLocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkLocations and returns the data updated in the database.
+     * @param {WorkLocationUpdateManyAndReturnArgs} args - Arguments to update many WorkLocations.
+     * @example
+     * // Update many WorkLocations
+     * const workLocation = await prisma.workLocation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkLocations and only return the `id`
+     * const workLocationWithIdOnly = await prisma.workLocation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkLocationUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkLocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkLocation.
+     * @param {WorkLocationUpsertArgs} args - Arguments to update or create a WorkLocation.
+     * @example
+     * // Update or create a WorkLocation
+     * const workLocation = await prisma.workLocation.upsert({
+     *   create: {
+     *     // ... data to create a WorkLocation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkLocation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkLocationUpsertArgs>(args: SelectSubset<T, WorkLocationUpsertArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationCountArgs} args - Arguments to filter WorkLocations to count.
+     * @example
+     * // Count the number of WorkLocations
+     * const count = await prisma.workLocation.count({
+     *   where: {
+     *     // ... the filter for the WorkLocations we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkLocationCountArgs>(
+      args?: Subset<T, WorkLocationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkLocationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkLocationAggregateArgs>(args: Subset<T, WorkLocationAggregateArgs>): Prisma.PrismaPromise<GetWorkLocationAggregateType<T>>
+
+    /**
+     * Group by WorkLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLocationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkLocationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkLocationGroupByArgs['orderBy'] }
+        : { orderBy?: WorkLocationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkLocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkLocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkLocation model
+   */
+  readonly fields: WorkLocationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkLocation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkLocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    checkInRequests<T extends WorkLocation$checkInRequestsArgs<ExtArgs> = {}>(args?: Subset<T, WorkLocation$checkInRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    attendanceRecords<T extends WorkLocation$attendanceRecordsArgs<ExtArgs> = {}>(args?: Subset<T, WorkLocation$attendanceRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    employeeAssignments<T extends WorkLocation$employeeAssignmentsArgs<ExtArgs> = {}>(args?: Subset<T, WorkLocation$employeeAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    primaryEmployees<T extends WorkLocation$primaryEmployeesArgs<ExtArgs> = {}>(args?: Subset<T, WorkLocation$primaryEmployeesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkLocation model
+   */
+  interface WorkLocationFieldRefs {
+    readonly id: FieldRef<"WorkLocation", 'Int'>
+    readonly name: FieldRef<"WorkLocation", 'String'>
+    readonly address: FieldRef<"WorkLocation", 'String'>
+    readonly latitude: FieldRef<"WorkLocation", 'Float'>
+    readonly longitude: FieldRef<"WorkLocation", 'Float'>
+    readonly radiusMeters: FieldRef<"WorkLocation", 'Int'>
+    readonly isActive: FieldRef<"WorkLocation", 'Boolean'>
+    readonly timezone: FieldRef<"WorkLocation", 'String'>
+    readonly description: FieldRef<"WorkLocation", 'String'>
+    readonly workingHoursStart: FieldRef<"WorkLocation", 'String'>
+    readonly workingHoursEnd: FieldRef<"WorkLocation", 'String'>
+    readonly createdBy: FieldRef<"WorkLocation", 'String'>
+    readonly createdAt: FieldRef<"WorkLocation", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkLocation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkLocation findUnique
+   */
+  export type WorkLocationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLocation to fetch.
+     */
+    where: WorkLocationWhereUniqueInput
+  }
+
+  /**
+   * WorkLocation findUniqueOrThrow
+   */
+  export type WorkLocationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLocation to fetch.
+     */
+    where: WorkLocationWhereUniqueInput
+  }
+
+  /**
+   * WorkLocation findFirst
+   */
+  export type WorkLocationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLocation to fetch.
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLocations to fetch.
+     */
+    orderBy?: WorkLocationOrderByWithRelationInput | WorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkLocations.
+     */
+    cursor?: WorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkLocations.
+     */
+    distinct?: WorkLocationScalarFieldEnum | WorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation findFirstOrThrow
+   */
+  export type WorkLocationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLocation to fetch.
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLocations to fetch.
+     */
+    orderBy?: WorkLocationOrderByWithRelationInput | WorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkLocations.
+     */
+    cursor?: WorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkLocations.
+     */
+    distinct?: WorkLocationScalarFieldEnum | WorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation findMany
+   */
+  export type WorkLocationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLocations to fetch.
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLocations to fetch.
+     */
+    orderBy?: WorkLocationOrderByWithRelationInput | WorkLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkLocations.
+     */
+    cursor?: WorkLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLocations.
+     */
+    skip?: number
+    distinct?: WorkLocationScalarFieldEnum | WorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation create
+   */
+  export type WorkLocationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkLocation.
+     */
+    data: XOR<WorkLocationCreateInput, WorkLocationUncheckedCreateInput>
+  }
+
+  /**
+   * WorkLocation createMany
+   */
+  export type WorkLocationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkLocations.
+     */
+    data: WorkLocationCreateManyInput | WorkLocationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkLocation createManyAndReturn
+   */
+  export type WorkLocationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkLocations.
+     */
+    data: WorkLocationCreateManyInput | WorkLocationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkLocation update
+   */
+  export type WorkLocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkLocation.
+     */
+    data: XOR<WorkLocationUpdateInput, WorkLocationUncheckedUpdateInput>
+    /**
+     * Choose, which WorkLocation to update.
+     */
+    where: WorkLocationWhereUniqueInput
+  }
+
+  /**
+   * WorkLocation updateMany
+   */
+  export type WorkLocationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkLocations.
+     */
+    data: XOR<WorkLocationUpdateManyMutationInput, WorkLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkLocations to update
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * Limit how many WorkLocations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkLocation updateManyAndReturn
+   */
+  export type WorkLocationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkLocations.
+     */
+    data: XOR<WorkLocationUpdateManyMutationInput, WorkLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkLocations to update
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * Limit how many WorkLocations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkLocation upsert
+   */
+  export type WorkLocationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkLocation to update in case it exists.
+     */
+    where: WorkLocationWhereUniqueInput
+    /**
+     * In case the WorkLocation found by the `where` argument doesn't exist, create a new WorkLocation with this data.
+     */
+    create: XOR<WorkLocationCreateInput, WorkLocationUncheckedCreateInput>
+    /**
+     * In case the WorkLocation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkLocationUpdateInput, WorkLocationUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkLocation delete
+   */
+  export type WorkLocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    /**
+     * Filter which WorkLocation to delete.
+     */
+    where: WorkLocationWhereUniqueInput
+  }
+
+  /**
+   * WorkLocation deleteMany
+   */
+  export type WorkLocationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkLocations to delete
+     */
+    where?: WorkLocationWhereInput
+    /**
+     * Limit how many WorkLocations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkLocation.checkInRequests
+   */
+  export type WorkLocation$checkInRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    where?: CheckInRequestWhereInput
+    orderBy?: CheckInRequestOrderByWithRelationInput | CheckInRequestOrderByWithRelationInput[]
+    cursor?: CheckInRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CheckInRequestScalarFieldEnum | CheckInRequestScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation.attendanceRecords
+   */
+  export type WorkLocation$attendanceRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    where?: AttendanceWhereInput
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    cursor?: AttendanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation.employeeAssignments
+   */
+  export type WorkLocation$employeeAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeWorkLocation
+     */
+    select?: EmployeeWorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeWorkLocation
+     */
+    omit?: EmployeeWorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeWorkLocationInclude<ExtArgs> | null
+    where?: EmployeeWorkLocationWhereInput
+    orderBy?: EmployeeWorkLocationOrderByWithRelationInput | EmployeeWorkLocationOrderByWithRelationInput[]
+    cursor?: EmployeeWorkLocationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeWorkLocationScalarFieldEnum | EmployeeWorkLocationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation.primaryEmployees
+   */
+  export type WorkLocation$primaryEmployeesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Employee
+     */
+    select?: EmployeeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Employee
+     */
+    omit?: EmployeeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeInclude<ExtArgs> | null
+    where?: EmployeeWhereInput
+    orderBy?: EmployeeOrderByWithRelationInput | EmployeeOrderByWithRelationInput[]
+    cursor?: EmployeeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeScalarFieldEnum | EmployeeScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLocation without action
+   */
+  export type WorkLocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmployeeSession
+   */
+
+  export type AggregateEmployeeSession = {
+    _count: EmployeeSessionCountAggregateOutputType | null
+    _avg: EmployeeSessionAvgAggregateOutputType | null
+    _sum: EmployeeSessionSumAggregateOutputType | null
+    _min: EmployeeSessionMinAggregateOutputType | null
+    _max: EmployeeSessionMaxAggregateOutputType | null
+  }
+
+  export type EmployeeSessionAvgAggregateOutputType = {
+    employeeId: number | null
+  }
+
+  export type EmployeeSessionSumAggregateOutputType = {
+    employeeId: number | null
+  }
+
+  export type EmployeeSessionMinAggregateOutputType = {
+    id: string | null
+    employeeId: number | null
+    token: string | null
+    deviceInfo: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    isActive: boolean | null
+    expiresAt: Date | null
+    lastSeenAt: Date | null
+    locationPermission: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployeeSessionMaxAggregateOutputType = {
+    id: string | null
+    employeeId: number | null
+    token: string | null
+    deviceInfo: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    isActive: boolean | null
+    expiresAt: Date | null
+    lastSeenAt: Date | null
+    locationPermission: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployeeSessionCountAggregateOutputType = {
+    id: number
+    employeeId: number
+    token: number
+    deviceInfo: number
+    ipAddress: number
+    userAgent: number
+    isActive: number
+    expiresAt: number
+    lastSeenAt: number
+    locationPermission: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmployeeSessionAvgAggregateInputType = {
+    employeeId?: true
+  }
+
+  export type EmployeeSessionSumAggregateInputType = {
+    employeeId?: true
+  }
+
+  export type EmployeeSessionMinAggregateInputType = {
+    id?: true
+    employeeId?: true
+    token?: true
+    deviceInfo?: true
+    ipAddress?: true
+    userAgent?: true
+    isActive?: true
+    expiresAt?: true
+    lastSeenAt?: true
+    locationPermission?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployeeSessionMaxAggregateInputType = {
+    id?: true
+    employeeId?: true
+    token?: true
+    deviceInfo?: true
+    ipAddress?: true
+    userAgent?: true
+    isActive?: true
+    expiresAt?: true
+    lastSeenAt?: true
+    locationPermission?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployeeSessionCountAggregateInputType = {
+    id?: true
+    employeeId?: true
+    token?: true
+    deviceInfo?: true
+    ipAddress?: true
+    userAgent?: true
+    isActive?: true
+    expiresAt?: true
+    lastSeenAt?: true
+    locationPermission?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmployeeSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeSession to aggregate.
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeSessions to fetch.
+     */
+    orderBy?: EmployeeSessionOrderByWithRelationInput | EmployeeSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmployeeSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmployeeSessions
+    **/
+    _count?: true | EmployeeSessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmployeeSessionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmployeeSessionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployeeSessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployeeSessionMaxAggregateInputType
+  }
+
+  export type GetEmployeeSessionAggregateType<T extends EmployeeSessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployeeSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployeeSession[P]>
+      : GetScalarType<T[P], AggregateEmployeeSession[P]>
+  }
+
+
+
+
+  export type EmployeeSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeSessionWhereInput
+    orderBy?: EmployeeSessionOrderByWithAggregationInput | EmployeeSessionOrderByWithAggregationInput[]
+    by: EmployeeSessionScalarFieldEnum[] | EmployeeSessionScalarFieldEnum
+    having?: EmployeeSessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployeeSessionCountAggregateInputType | true
+    _avg?: EmployeeSessionAvgAggregateInputType
+    _sum?: EmployeeSessionSumAggregateInputType
+    _min?: EmployeeSessionMinAggregateInputType
+    _max?: EmployeeSessionMaxAggregateInputType
+  }
+
+  export type EmployeeSessionGroupByOutputType = {
+    id: string
+    employeeId: number
+    token: string
+    deviceInfo: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    isActive: boolean
+    expiresAt: Date
+    lastSeenAt: Date
+    locationPermission: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: EmployeeSessionCountAggregateOutputType | null
+    _avg: EmployeeSessionAvgAggregateOutputType | null
+    _sum: EmployeeSessionSumAggregateOutputType | null
+    _min: EmployeeSessionMinAggregateOutputType | null
+    _max: EmployeeSessionMaxAggregateOutputType | null
+  }
+
+  type GetEmployeeSessionGroupByPayload<T extends EmployeeSessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployeeSessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployeeSessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployeeSessionGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployeeSessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployeeSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    token?: boolean
+    deviceInfo?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeSession"]>
+
+  export type EmployeeSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    token?: boolean
+    deviceInfo?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeSession"]>
+
+  export type EmployeeSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    token?: boolean
+    deviceInfo?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeSession"]>
+
+  export type EmployeeSessionSelectScalar = {
+    id?: boolean
+    employeeId?: boolean
+    token?: boolean
+    deviceInfo?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmployeeSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "token" | "deviceInfo" | "ipAddress" | "userAgent" | "isActive" | "expiresAt" | "lastSeenAt" | "locationPermission" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeSession"]>
+  export type EmployeeSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }
+  export type EmployeeSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }
+  export type EmployeeSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }
+
+  export type $EmployeeSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployeeSession"
+    objects: {
+      employee: Prisma.$EmployeePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      employeeId: number
+      token: string
+      deviceInfo: string | null
+      ipAddress: string | null
+      userAgent: string | null
+      isActive: boolean
+      expiresAt: Date
+      lastSeenAt: Date
+      locationPermission: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employeeSession"]>
+    composites: {}
+  }
+
+  type EmployeeSessionGetPayload<S extends boolean | null | undefined | EmployeeSessionDefaultArgs> = $Result.GetResult<Prisma.$EmployeeSessionPayload, S>
+
+  type EmployeeSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployeeSessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployeeSessionCountAggregateInputType | true
+    }
+
+  export interface EmployeeSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployeeSession'], meta: { name: 'EmployeeSession' } }
+    /**
+     * Find zero or one EmployeeSession that matches the filter.
+     * @param {EmployeeSessionFindUniqueArgs} args - Arguments to find a EmployeeSession
+     * @example
+     * // Get one EmployeeSession
+     * const employeeSession = await prisma.employeeSession.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployeeSessionFindUniqueArgs>(args: SelectSubset<T, EmployeeSessionFindUniqueArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployeeSession that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployeeSessionFindUniqueOrThrowArgs} args - Arguments to find a EmployeeSession
+     * @example
+     * // Get one EmployeeSession
+     * const employeeSession = await prisma.employeeSession.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployeeSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployeeSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeSession that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionFindFirstArgs} args - Arguments to find a EmployeeSession
+     * @example
+     * // Get one EmployeeSession
+     * const employeeSession = await prisma.employeeSession.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployeeSessionFindFirstArgs>(args?: SelectSubset<T, EmployeeSessionFindFirstArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeSession that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionFindFirstOrThrowArgs} args - Arguments to find a EmployeeSession
+     * @example
+     * // Get one EmployeeSession
+     * const employeeSession = await prisma.employeeSession.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployeeSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployeeSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployeeSessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployeeSessions
+     * const employeeSessions = await prisma.employeeSession.findMany()
+     * 
+     * // Get first 10 EmployeeSessions
+     * const employeeSessions = await prisma.employeeSession.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const employeeSessionWithIdOnly = await prisma.employeeSession.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmployeeSessionFindManyArgs>(args?: SelectSubset<T, EmployeeSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployeeSession.
+     * @param {EmployeeSessionCreateArgs} args - Arguments to create a EmployeeSession.
+     * @example
+     * // Create one EmployeeSession
+     * const EmployeeSession = await prisma.employeeSession.create({
+     *   data: {
+     *     // ... data to create a EmployeeSession
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmployeeSessionCreateArgs>(args: SelectSubset<T, EmployeeSessionCreateArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployeeSessions.
+     * @param {EmployeeSessionCreateManyArgs} args - Arguments to create many EmployeeSessions.
+     * @example
+     * // Create many EmployeeSessions
+     * const employeeSession = await prisma.employeeSession.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmployeeSessionCreateManyArgs>(args?: SelectSubset<T, EmployeeSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployeeSessions and returns the data saved in the database.
+     * @param {EmployeeSessionCreateManyAndReturnArgs} args - Arguments to create many EmployeeSessions.
+     * @example
+     * // Create many EmployeeSessions
+     * const employeeSession = await prisma.employeeSession.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmployeeSessions and only return the `id`
+     * const employeeSessionWithIdOnly = await prisma.employeeSession.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmployeeSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployeeSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployeeSession.
+     * @param {EmployeeSessionDeleteArgs} args - Arguments to delete one EmployeeSession.
+     * @example
+     * // Delete one EmployeeSession
+     * const EmployeeSession = await prisma.employeeSession.delete({
+     *   where: {
+     *     // ... filter to delete one EmployeeSession
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmployeeSessionDeleteArgs>(args: SelectSubset<T, EmployeeSessionDeleteArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployeeSession.
+     * @param {EmployeeSessionUpdateArgs} args - Arguments to update one EmployeeSession.
+     * @example
+     * // Update one EmployeeSession
+     * const employeeSession = await prisma.employeeSession.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmployeeSessionUpdateArgs>(args: SelectSubset<T, EmployeeSessionUpdateArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployeeSessions.
+     * @param {EmployeeSessionDeleteManyArgs} args - Arguments to filter EmployeeSessions to delete.
+     * @example
+     * // Delete a few EmployeeSessions
+     * const { count } = await prisma.employeeSession.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmployeeSessionDeleteManyArgs>(args?: SelectSubset<T, EmployeeSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployeeSessions
+     * const employeeSession = await prisma.employeeSession.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmployeeSessionUpdateManyArgs>(args: SelectSubset<T, EmployeeSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeSessions and returns the data updated in the database.
+     * @param {EmployeeSessionUpdateManyAndReturnArgs} args - Arguments to update many EmployeeSessions.
+     * @example
+     * // Update many EmployeeSessions
+     * const employeeSession = await prisma.employeeSession.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmployeeSessions and only return the `id`
+     * const employeeSessionWithIdOnly = await prisma.employeeSession.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmployeeSessionUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployeeSessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployeeSession.
+     * @param {EmployeeSessionUpsertArgs} args - Arguments to update or create a EmployeeSession.
+     * @example
+     * // Update or create a EmployeeSession
+     * const employeeSession = await prisma.employeeSession.upsert({
+     *   create: {
+     *     // ... data to create a EmployeeSession
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployeeSession we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployeeSessionUpsertArgs>(args: SelectSubset<T, EmployeeSessionUpsertArgs<ExtArgs>>): Prisma__EmployeeSessionClient<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployeeSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionCountArgs} args - Arguments to filter EmployeeSessions to count.
+     * @example
+     * // Count the number of EmployeeSessions
+     * const count = await prisma.employeeSession.count({
+     *   where: {
+     *     // ... the filter for the EmployeeSessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployeeSessionCountArgs>(
+      args?: Subset<T, EmployeeSessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployeeSessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployeeSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployeeSessionAggregateArgs>(args: Subset<T, EmployeeSessionAggregateArgs>): Prisma.PrismaPromise<GetEmployeeSessionAggregateType<T>>
+
+    /**
+     * Group by EmployeeSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeSessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmployeeSessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployeeSessionGroupByArgs['orderBy'] }
+        : { orderBy?: EmployeeSessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployeeSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployeeSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployeeSession model
+   */
+  readonly fields: EmployeeSessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployeeSession.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployeeSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployeeSession model
+   */
+  interface EmployeeSessionFieldRefs {
+    readonly id: FieldRef<"EmployeeSession", 'String'>
+    readonly employeeId: FieldRef<"EmployeeSession", 'Int'>
+    readonly token: FieldRef<"EmployeeSession", 'String'>
+    readonly deviceInfo: FieldRef<"EmployeeSession", 'String'>
+    readonly ipAddress: FieldRef<"EmployeeSession", 'String'>
+    readonly userAgent: FieldRef<"EmployeeSession", 'String'>
+    readonly isActive: FieldRef<"EmployeeSession", 'Boolean'>
+    readonly expiresAt: FieldRef<"EmployeeSession", 'DateTime'>
+    readonly lastSeenAt: FieldRef<"EmployeeSession", 'DateTime'>
+    readonly locationPermission: FieldRef<"EmployeeSession", 'Boolean'>
+    readonly createdAt: FieldRef<"EmployeeSession", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmployeeSession", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmployeeSession findUnique
+   */
+  export type EmployeeSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeSession to fetch.
+     */
+    where: EmployeeSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeSession findUniqueOrThrow
+   */
+  export type EmployeeSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeSession to fetch.
+     */
+    where: EmployeeSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeSession findFirst
+   */
+  export type EmployeeSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeSession to fetch.
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeSessions to fetch.
+     */
+    orderBy?: EmployeeSessionOrderByWithRelationInput | EmployeeSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeSessions.
+     */
+    cursor?: EmployeeSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeSessions.
+     */
+    distinct?: EmployeeSessionScalarFieldEnum | EmployeeSessionScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeSession findFirstOrThrow
+   */
+  export type EmployeeSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeSession to fetch.
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeSessions to fetch.
+     */
+    orderBy?: EmployeeSessionOrderByWithRelationInput | EmployeeSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeSessions.
+     */
+    cursor?: EmployeeSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeSessions.
+     */
+    distinct?: EmployeeSessionScalarFieldEnum | EmployeeSessionScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeSession findMany
+   */
+  export type EmployeeSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeSessions to fetch.
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeSessions to fetch.
+     */
+    orderBy?: EmployeeSessionOrderByWithRelationInput | EmployeeSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmployeeSessions.
+     */
+    cursor?: EmployeeSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeSessions.
+     */
+    skip?: number
+    distinct?: EmployeeSessionScalarFieldEnum | EmployeeSessionScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeSession create
+   */
+  export type EmployeeSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmployeeSession.
+     */
+    data: XOR<EmployeeSessionCreateInput, EmployeeSessionUncheckedCreateInput>
+  }
+
+  /**
+   * EmployeeSession createMany
+   */
+  export type EmployeeSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployeeSessions.
+     */
+    data: EmployeeSessionCreateManyInput | EmployeeSessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployeeSession createManyAndReturn
+   */
+  export type EmployeeSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployeeSessions.
+     */
+    data: EmployeeSessionCreateManyInput | EmployeeSessionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeSession update
+   */
+  export type EmployeeSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmployeeSession.
+     */
+    data: XOR<EmployeeSessionUpdateInput, EmployeeSessionUncheckedUpdateInput>
+    /**
+     * Choose, which EmployeeSession to update.
+     */
+    where: EmployeeSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeSession updateMany
+   */
+  export type EmployeeSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployeeSessions.
+     */
+    data: XOR<EmployeeSessionUpdateManyMutationInput, EmployeeSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeSessions to update
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * Limit how many EmployeeSessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeSession updateManyAndReturn
+   */
+  export type EmployeeSessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployeeSessions.
+     */
+    data: XOR<EmployeeSessionUpdateManyMutationInput, EmployeeSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeSessions to update
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * Limit how many EmployeeSessions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeSession upsert
+   */
+  export type EmployeeSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmployeeSession to update in case it exists.
+     */
+    where: EmployeeSessionWhereUniqueInput
+    /**
+     * In case the EmployeeSession found by the `where` argument doesn't exist, create a new EmployeeSession with this data.
+     */
+    create: XOR<EmployeeSessionCreateInput, EmployeeSessionUncheckedCreateInput>
+    /**
+     * In case the EmployeeSession was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployeeSessionUpdateInput, EmployeeSessionUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployeeSession delete
+   */
+  export type EmployeeSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+    /**
+     * Filter which EmployeeSession to delete.
+     */
+    where: EmployeeSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeSession deleteMany
+   */
+  export type EmployeeSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeSessions to delete
+     */
+    where?: EmployeeSessionWhereInput
+    /**
+     * Limit how many EmployeeSessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeSession without action
+   */
+  export type EmployeeSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeSession
+     */
+    select?: EmployeeSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeSession
+     */
+    omit?: EmployeeSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeSessionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmployeeDeviceSession
+   */
+
+  export type AggregateEmployeeDeviceSession = {
+    _count: EmployeeDeviceSessionCountAggregateOutputType | null
+    _avg: EmployeeDeviceSessionAvgAggregateOutputType | null
+    _sum: EmployeeDeviceSessionSumAggregateOutputType | null
+    _min: EmployeeDeviceSessionMinAggregateOutputType | null
+    _max: EmployeeDeviceSessionMaxAggregateOutputType | null
+  }
+
+  export type EmployeeDeviceSessionAvgAggregateOutputType = {
+    employeeId: number | null
+  }
+
+  export type EmployeeDeviceSessionSumAggregateOutputType = {
+    employeeId: number | null
+  }
+
+  export type EmployeeDeviceSessionMinAggregateOutputType = {
+    id: string | null
+    employeeId: number | null
+    deviceId: string | null
+    deviceName: string | null
+    deviceType: string | null
+    pushToken: string | null
+    isActive: boolean | null
+    lastSeenAt: Date | null
+    locationPermission: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployeeDeviceSessionMaxAggregateOutputType = {
+    id: string | null
+    employeeId: number | null
+    deviceId: string | null
+    deviceName: string | null
+    deviceType: string | null
+    pushToken: string | null
+    isActive: boolean | null
+    lastSeenAt: Date | null
+    locationPermission: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployeeDeviceSessionCountAggregateOutputType = {
+    id: number
+    employeeId: number
+    deviceId: number
+    deviceName: number
+    deviceType: number
+    pushToken: number
+    isActive: number
+    lastSeenAt: number
+    locationPermission: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmployeeDeviceSessionAvgAggregateInputType = {
+    employeeId?: true
+  }
+
+  export type EmployeeDeviceSessionSumAggregateInputType = {
+    employeeId?: true
+  }
+
+  export type EmployeeDeviceSessionMinAggregateInputType = {
+    id?: true
+    employeeId?: true
+    deviceId?: true
+    deviceName?: true
+    deviceType?: true
+    pushToken?: true
+    isActive?: true
+    lastSeenAt?: true
+    locationPermission?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployeeDeviceSessionMaxAggregateInputType = {
+    id?: true
+    employeeId?: true
+    deviceId?: true
+    deviceName?: true
+    deviceType?: true
+    pushToken?: true
+    isActive?: true
+    lastSeenAt?: true
+    locationPermission?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployeeDeviceSessionCountAggregateInputType = {
+    id?: true
+    employeeId?: true
+    deviceId?: true
+    deviceName?: true
+    deviceType?: true
+    pushToken?: true
+    isActive?: true
+    lastSeenAt?: true
+    locationPermission?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmployeeDeviceSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeDeviceSession to aggregate.
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeDeviceSessions to fetch.
+     */
+    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmployeeDeviceSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeDeviceSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmployeeDeviceSessions
+    **/
+    _count?: true | EmployeeDeviceSessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmployeeDeviceSessionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmployeeDeviceSessionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployeeDeviceSessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployeeDeviceSessionMaxAggregateInputType
+  }
+
+  export type GetEmployeeDeviceSessionAggregateType<T extends EmployeeDeviceSessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployeeDeviceSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployeeDeviceSession[P]>
+      : GetScalarType<T[P], AggregateEmployeeDeviceSession[P]>
+  }
+
+
+
+
+  export type EmployeeDeviceSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeDeviceSessionWhereInput
+    orderBy?: EmployeeDeviceSessionOrderByWithAggregationInput | EmployeeDeviceSessionOrderByWithAggregationInput[]
+    by: EmployeeDeviceSessionScalarFieldEnum[] | EmployeeDeviceSessionScalarFieldEnum
+    having?: EmployeeDeviceSessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployeeDeviceSessionCountAggregateInputType | true
+    _avg?: EmployeeDeviceSessionAvgAggregateInputType
+    _sum?: EmployeeDeviceSessionSumAggregateInputType
+    _min?: EmployeeDeviceSessionMinAggregateInputType
+    _max?: EmployeeDeviceSessionMaxAggregateInputType
+  }
+
+  export type EmployeeDeviceSessionGroupByOutputType = {
+    id: string
+    employeeId: number
+    deviceId: string
+    deviceName: string | null
+    deviceType: string | null
+    pushToken: string | null
+    isActive: boolean
+    lastSeenAt: Date
+    locationPermission: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: EmployeeDeviceSessionCountAggregateOutputType | null
+    _avg: EmployeeDeviceSessionAvgAggregateOutputType | null
+    _sum: EmployeeDeviceSessionSumAggregateOutputType | null
+    _min: EmployeeDeviceSessionMinAggregateOutputType | null
+    _max: EmployeeDeviceSessionMaxAggregateOutputType | null
+  }
+
+  type GetEmployeeDeviceSessionGroupByPayload<T extends EmployeeDeviceSessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployeeDeviceSessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployeeDeviceSessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployeeDeviceSessionGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployeeDeviceSessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployeeDeviceSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    deviceId?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    pushToken?: boolean
+    isActive?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeDeviceSession"]>
+
+  export type EmployeeDeviceSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    deviceId?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    pushToken?: boolean
+    isActive?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeDeviceSession"]>
+
+  export type EmployeeDeviceSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    deviceId?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    pushToken?: boolean
+    isActive?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeDeviceSession"]>
+
+  export type EmployeeDeviceSessionSelectScalar = {
+    id?: boolean
+    employeeId?: boolean
+    deviceId?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    pushToken?: boolean
+    isActive?: boolean
+    lastSeenAt?: boolean
+    locationPermission?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmployeeDeviceSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "deviceId" | "deviceName" | "deviceType" | "pushToken" | "isActive" | "lastSeenAt" | "locationPermission" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeDeviceSession"]>
+  export type EmployeeDeviceSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }
+  export type EmployeeDeviceSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }
+  export type EmployeeDeviceSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+  }
+
+  export type $EmployeeDeviceSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployeeDeviceSession"
+    objects: {
+      employee: Prisma.$EmployeePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      employeeId: number
+      deviceId: string
+      deviceName: string | null
+      deviceType: string | null
+      pushToken: string | null
+      isActive: boolean
+      lastSeenAt: Date
+      locationPermission: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employeeDeviceSession"]>
+    composites: {}
+  }
+
+  type EmployeeDeviceSessionGetPayload<S extends boolean | null | undefined | EmployeeDeviceSessionDefaultArgs> = $Result.GetResult<Prisma.$EmployeeDeviceSessionPayload, S>
+
+  type EmployeeDeviceSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployeeDeviceSessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployeeDeviceSessionCountAggregateInputType | true
+    }
+
+  export interface EmployeeDeviceSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployeeDeviceSession'], meta: { name: 'EmployeeDeviceSession' } }
+    /**
+     * Find zero or one EmployeeDeviceSession that matches the filter.
+     * @param {EmployeeDeviceSessionFindUniqueArgs} args - Arguments to find a EmployeeDeviceSession
+     * @example
+     * // Get one EmployeeDeviceSession
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployeeDeviceSessionFindUniqueArgs>(args: SelectSubset<T, EmployeeDeviceSessionFindUniqueArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployeeDeviceSession that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployeeDeviceSessionFindUniqueOrThrowArgs} args - Arguments to find a EmployeeDeviceSession
+     * @example
+     * // Get one EmployeeDeviceSession
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployeeDeviceSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployeeDeviceSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeDeviceSession that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionFindFirstArgs} args - Arguments to find a EmployeeDeviceSession
+     * @example
+     * // Get one EmployeeDeviceSession
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployeeDeviceSessionFindFirstArgs>(args?: SelectSubset<T, EmployeeDeviceSessionFindFirstArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeDeviceSession that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionFindFirstOrThrowArgs} args - Arguments to find a EmployeeDeviceSession
+     * @example
+     * // Get one EmployeeDeviceSession
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployeeDeviceSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployeeDeviceSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployeeDeviceSessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployeeDeviceSessions
+     * const employeeDeviceSessions = await prisma.employeeDeviceSession.findMany()
+     * 
+     * // Get first 10 EmployeeDeviceSessions
+     * const employeeDeviceSessions = await prisma.employeeDeviceSession.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const employeeDeviceSessionWithIdOnly = await prisma.employeeDeviceSession.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmployeeDeviceSessionFindManyArgs>(args?: SelectSubset<T, EmployeeDeviceSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployeeDeviceSession.
+     * @param {EmployeeDeviceSessionCreateArgs} args - Arguments to create a EmployeeDeviceSession.
+     * @example
+     * // Create one EmployeeDeviceSession
+     * const EmployeeDeviceSession = await prisma.employeeDeviceSession.create({
+     *   data: {
+     *     // ... data to create a EmployeeDeviceSession
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmployeeDeviceSessionCreateArgs>(args: SelectSubset<T, EmployeeDeviceSessionCreateArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployeeDeviceSessions.
+     * @param {EmployeeDeviceSessionCreateManyArgs} args - Arguments to create many EmployeeDeviceSessions.
+     * @example
+     * // Create many EmployeeDeviceSessions
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmployeeDeviceSessionCreateManyArgs>(args?: SelectSubset<T, EmployeeDeviceSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployeeDeviceSessions and returns the data saved in the database.
+     * @param {EmployeeDeviceSessionCreateManyAndReturnArgs} args - Arguments to create many EmployeeDeviceSessions.
+     * @example
+     * // Create many EmployeeDeviceSessions
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmployeeDeviceSessions and only return the `id`
+     * const employeeDeviceSessionWithIdOnly = await prisma.employeeDeviceSession.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmployeeDeviceSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployeeDeviceSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployeeDeviceSession.
+     * @param {EmployeeDeviceSessionDeleteArgs} args - Arguments to delete one EmployeeDeviceSession.
+     * @example
+     * // Delete one EmployeeDeviceSession
+     * const EmployeeDeviceSession = await prisma.employeeDeviceSession.delete({
+     *   where: {
+     *     // ... filter to delete one EmployeeDeviceSession
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmployeeDeviceSessionDeleteArgs>(args: SelectSubset<T, EmployeeDeviceSessionDeleteArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployeeDeviceSession.
+     * @param {EmployeeDeviceSessionUpdateArgs} args - Arguments to update one EmployeeDeviceSession.
+     * @example
+     * // Update one EmployeeDeviceSession
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmployeeDeviceSessionUpdateArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpdateArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployeeDeviceSessions.
+     * @param {EmployeeDeviceSessionDeleteManyArgs} args - Arguments to filter EmployeeDeviceSessions to delete.
+     * @example
+     * // Delete a few EmployeeDeviceSessions
+     * const { count } = await prisma.employeeDeviceSession.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmployeeDeviceSessionDeleteManyArgs>(args?: SelectSubset<T, EmployeeDeviceSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeDeviceSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployeeDeviceSessions
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmployeeDeviceSessionUpdateManyArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeDeviceSessions and returns the data updated in the database.
+     * @param {EmployeeDeviceSessionUpdateManyAndReturnArgs} args - Arguments to update many EmployeeDeviceSessions.
+     * @example
+     * // Update many EmployeeDeviceSessions
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmployeeDeviceSessions and only return the `id`
+     * const employeeDeviceSessionWithIdOnly = await prisma.employeeDeviceSession.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmployeeDeviceSessionUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployeeDeviceSession.
+     * @param {EmployeeDeviceSessionUpsertArgs} args - Arguments to update or create a EmployeeDeviceSession.
+     * @example
+     * // Update or create a EmployeeDeviceSession
+     * const employeeDeviceSession = await prisma.employeeDeviceSession.upsert({
+     *   create: {
+     *     // ... data to create a EmployeeDeviceSession
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployeeDeviceSession we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployeeDeviceSessionUpsertArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpsertArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployeeDeviceSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionCountArgs} args - Arguments to filter EmployeeDeviceSessions to count.
+     * @example
+     * // Count the number of EmployeeDeviceSessions
+     * const count = await prisma.employeeDeviceSession.count({
+     *   where: {
+     *     // ... the filter for the EmployeeDeviceSessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployeeDeviceSessionCountArgs>(
+      args?: Subset<T, EmployeeDeviceSessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployeeDeviceSessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployeeDeviceSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployeeDeviceSessionAggregateArgs>(args: Subset<T, EmployeeDeviceSessionAggregateArgs>): Prisma.PrismaPromise<GetEmployeeDeviceSessionAggregateType<T>>
+
+    /**
+     * Group by EmployeeDeviceSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeDeviceSessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmployeeDeviceSessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployeeDeviceSessionGroupByArgs['orderBy'] }
+        : { orderBy?: EmployeeDeviceSessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployeeDeviceSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployeeDeviceSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployeeDeviceSession model
+   */
+  readonly fields: EmployeeDeviceSessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployeeDeviceSession.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployeeDeviceSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployeeDeviceSession model
+   */
+  interface EmployeeDeviceSessionFieldRefs {
+    readonly id: FieldRef<"EmployeeDeviceSession", 'String'>
+    readonly employeeId: FieldRef<"EmployeeDeviceSession", 'Int'>
+    readonly deviceId: FieldRef<"EmployeeDeviceSession", 'String'>
+    readonly deviceName: FieldRef<"EmployeeDeviceSession", 'String'>
+    readonly deviceType: FieldRef<"EmployeeDeviceSession", 'String'>
+    readonly pushToken: FieldRef<"EmployeeDeviceSession", 'String'>
+    readonly isActive: FieldRef<"EmployeeDeviceSession", 'Boolean'>
+    readonly lastSeenAt: FieldRef<"EmployeeDeviceSession", 'DateTime'>
+    readonly locationPermission: FieldRef<"EmployeeDeviceSession", 'Boolean'>
+    readonly createdAt: FieldRef<"EmployeeDeviceSession", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmployeeDeviceSession", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmployeeDeviceSession findUnique
+   */
+  export type EmployeeDeviceSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeDeviceSession to fetch.
+     */
+    where: EmployeeDeviceSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeDeviceSession findUniqueOrThrow
+   */
+  export type EmployeeDeviceSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeDeviceSession to fetch.
+     */
+    where: EmployeeDeviceSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeDeviceSession findFirst
+   */
+  export type EmployeeDeviceSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeDeviceSession to fetch.
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeDeviceSessions to fetch.
+     */
+    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeDeviceSessions.
+     */
+    cursor?: EmployeeDeviceSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeDeviceSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeDeviceSessions.
+     */
+    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeDeviceSession findFirstOrThrow
+   */
+  export type EmployeeDeviceSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeDeviceSession to fetch.
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeDeviceSessions to fetch.
+     */
+    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeDeviceSessions.
+     */
+    cursor?: EmployeeDeviceSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeDeviceSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeDeviceSessions.
+     */
+    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeDeviceSession findMany
+   */
+  export type EmployeeDeviceSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeDeviceSessions to fetch.
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeDeviceSessions to fetch.
+     */
+    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmployeeDeviceSessions.
+     */
+    cursor?: EmployeeDeviceSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeDeviceSessions.
+     */
+    skip?: number
+    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeDeviceSession create
+   */
+  export type EmployeeDeviceSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmployeeDeviceSession.
+     */
+    data: XOR<EmployeeDeviceSessionCreateInput, EmployeeDeviceSessionUncheckedCreateInput>
+  }
+
+  /**
+   * EmployeeDeviceSession createMany
+   */
+  export type EmployeeDeviceSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployeeDeviceSessions.
+     */
+    data: EmployeeDeviceSessionCreateManyInput | EmployeeDeviceSessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployeeDeviceSession createManyAndReturn
+   */
+  export type EmployeeDeviceSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployeeDeviceSessions.
+     */
+    data: EmployeeDeviceSessionCreateManyInput | EmployeeDeviceSessionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeDeviceSession update
+   */
+  export type EmployeeDeviceSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmployeeDeviceSession.
+     */
+    data: XOR<EmployeeDeviceSessionUpdateInput, EmployeeDeviceSessionUncheckedUpdateInput>
+    /**
+     * Choose, which EmployeeDeviceSession to update.
+     */
+    where: EmployeeDeviceSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeDeviceSession updateMany
+   */
+  export type EmployeeDeviceSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployeeDeviceSessions.
+     */
+    data: XOR<EmployeeDeviceSessionUpdateManyMutationInput, EmployeeDeviceSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeDeviceSessions to update
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * Limit how many EmployeeDeviceSessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeDeviceSession updateManyAndReturn
+   */
+  export type EmployeeDeviceSessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployeeDeviceSessions.
+     */
+    data: XOR<EmployeeDeviceSessionUpdateManyMutationInput, EmployeeDeviceSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeDeviceSessions to update
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * Limit how many EmployeeDeviceSessions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeDeviceSession upsert
+   */
+  export type EmployeeDeviceSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmployeeDeviceSession to update in case it exists.
+     */
+    where: EmployeeDeviceSessionWhereUniqueInput
+    /**
+     * In case the EmployeeDeviceSession found by the `where` argument doesn't exist, create a new EmployeeDeviceSession with this data.
+     */
+    create: XOR<EmployeeDeviceSessionCreateInput, EmployeeDeviceSessionUncheckedCreateInput>
+    /**
+     * In case the EmployeeDeviceSession was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployeeDeviceSessionUpdateInput, EmployeeDeviceSessionUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployeeDeviceSession delete
+   */
+  export type EmployeeDeviceSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+    /**
+     * Filter which EmployeeDeviceSession to delete.
+     */
+    where: EmployeeDeviceSessionWhereUniqueInput
+  }
+
+  /**
+   * EmployeeDeviceSession deleteMany
+   */
+  export type EmployeeDeviceSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeDeviceSessions to delete
+     */
+    where?: EmployeeDeviceSessionWhereInput
+    /**
+     * Limit how many EmployeeDeviceSessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeDeviceSession without action
+   */
+  export type EmployeeDeviceSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeDeviceSession
+     */
+    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeDeviceSession
+     */
+    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CheckInRequest
+   */
+
+  export type AggregateCheckInRequest = {
+    _count: CheckInRequestCountAggregateOutputType | null
+    _avg: CheckInRequestAvgAggregateOutputType | null
+    _sum: CheckInRequestSumAggregateOutputType | null
+    _min: CheckInRequestMinAggregateOutputType | null
+    _max: CheckInRequestMaxAggregateOutputType | null
+  }
+
+  export type CheckInRequestAvgAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+    latitude: number | null
+    longitude: number | null
+    accuracy: number | null
+    distanceFromLocation: number | null
+  }
+
+  export type CheckInRequestSumAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+    latitude: number | null
+    longitude: number | null
+    accuracy: number | null
+    distanceFromLocation: number | null
+  }
+
+  export type CheckInRequestMinAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+    latitude: number | null
+    longitude: number | null
+    accuracy: number | null
+    address: string | null
+    type: string | null
+    timestamp: Date | null
+    status: string | null
+    distanceFromLocation: number | null
+    isWithinGeofence: boolean | null
+    photoUrl: string | null
+    processedAt: Date | null
+    processedBy: string | null
+    rejectionReason: string | null
+    deviceId: string | null
+    userAgent: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CheckInRequestMaxAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workLocationId: number | null
+    latitude: number | null
+    longitude: number | null
+    accuracy: number | null
+    address: string | null
+    type: string | null
+    timestamp: Date | null
+    status: string | null
+    distanceFromLocation: number | null
+    isWithinGeofence: boolean | null
+    photoUrl: string | null
+    processedAt: Date | null
+    processedBy: string | null
+    rejectionReason: string | null
+    deviceId: string | null
+    userAgent: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CheckInRequestCountAggregateOutputType = {
+    id: number
+    employeeId: number
+    workLocationId: number
+    latitude: number
+    longitude: number
+    accuracy: number
+    address: number
+    type: number
+    timestamp: number
+    status: number
+    distanceFromLocation: number
+    isWithinGeofence: number
+    photoUrl: number
+    processedAt: number
+    processedBy: number
+    rejectionReason: number
+    deviceId: number
+    userAgent: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CheckInRequestAvgAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    latitude?: true
+    longitude?: true
+    accuracy?: true
+    distanceFromLocation?: true
+  }
+
+  export type CheckInRequestSumAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    latitude?: true
+    longitude?: true
+    accuracy?: true
+    distanceFromLocation?: true
+  }
+
+  export type CheckInRequestMinAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    latitude?: true
+    longitude?: true
+    accuracy?: true
+    address?: true
+    type?: true
+    timestamp?: true
+    status?: true
+    distanceFromLocation?: true
+    isWithinGeofence?: true
+    photoUrl?: true
+    processedAt?: true
+    processedBy?: true
+    rejectionReason?: true
+    deviceId?: true
+    userAgent?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CheckInRequestMaxAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    latitude?: true
+    longitude?: true
+    accuracy?: true
+    address?: true
+    type?: true
+    timestamp?: true
+    status?: true
+    distanceFromLocation?: true
+    isWithinGeofence?: true
+    photoUrl?: true
+    processedAt?: true
+    processedBy?: true
+    rejectionReason?: true
+    deviceId?: true
+    userAgent?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CheckInRequestCountAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workLocationId?: true
+    latitude?: true
+    longitude?: true
+    accuracy?: true
+    address?: true
+    type?: true
+    timestamp?: true
+    status?: true
+    distanceFromLocation?: true
+    isWithinGeofence?: true
+    photoUrl?: true
+    processedAt?: true
+    processedBy?: true
+    rejectionReason?: true
+    deviceId?: true
+    userAgent?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CheckInRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CheckInRequest to aggregate.
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CheckInRequests to fetch.
+     */
+    orderBy?: CheckInRequestOrderByWithRelationInput | CheckInRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CheckInRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CheckInRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CheckInRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CheckInRequests
+    **/
+    _count?: true | CheckInRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CheckInRequestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CheckInRequestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CheckInRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CheckInRequestMaxAggregateInputType
+  }
+
+  export type GetCheckInRequestAggregateType<T extends CheckInRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateCheckInRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCheckInRequest[P]>
+      : GetScalarType<T[P], AggregateCheckInRequest[P]>
+  }
+
+
+
+
+  export type CheckInRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CheckInRequestWhereInput
+    orderBy?: CheckInRequestOrderByWithAggregationInput | CheckInRequestOrderByWithAggregationInput[]
+    by: CheckInRequestScalarFieldEnum[] | CheckInRequestScalarFieldEnum
+    having?: CheckInRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CheckInRequestCountAggregateInputType | true
+    _avg?: CheckInRequestAvgAggregateInputType
+    _sum?: CheckInRequestSumAggregateInputType
+    _min?: CheckInRequestMinAggregateInputType
+    _max?: CheckInRequestMaxAggregateInputType
+  }
+
+  export type CheckInRequestGroupByOutputType = {
+    id: number
+    employeeId: number
+    workLocationId: number | null
+    latitude: number
+    longitude: number
+    accuracy: number | null
+    address: string | null
+    type: string
+    timestamp: Date
+    status: string
+    distanceFromLocation: number | null
+    isWithinGeofence: boolean
+    photoUrl: string | null
+    processedAt: Date | null
+    processedBy: string | null
+    rejectionReason: string | null
+    deviceId: string | null
+    userAgent: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CheckInRequestCountAggregateOutputType | null
+    _avg: CheckInRequestAvgAggregateOutputType | null
+    _sum: CheckInRequestSumAggregateOutputType | null
+    _min: CheckInRequestMinAggregateOutputType | null
+    _max: CheckInRequestMaxAggregateOutputType | null
+  }
+
+  type GetCheckInRequestGroupByPayload<T extends CheckInRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CheckInRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CheckInRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CheckInRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], CheckInRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CheckInRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    accuracy?: boolean
+    address?: boolean
+    type?: boolean
+    timestamp?: boolean
+    status?: boolean
+    distanceFromLocation?: boolean
+    isWithinGeofence?: boolean
+    photoUrl?: boolean
+    processedAt?: boolean
+    processedBy?: boolean
+    rejectionReason?: boolean
+    deviceId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | CheckInRequest$workLocationArgs<ExtArgs>
+  }, ExtArgs["result"]["checkInRequest"]>
+
+  export type CheckInRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    accuracy?: boolean
+    address?: boolean
+    type?: boolean
+    timestamp?: boolean
+    status?: boolean
+    distanceFromLocation?: boolean
+    isWithinGeofence?: boolean
+    photoUrl?: boolean
+    processedAt?: boolean
+    processedBy?: boolean
+    rejectionReason?: boolean
+    deviceId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | CheckInRequest$workLocationArgs<ExtArgs>
+  }, ExtArgs["result"]["checkInRequest"]>
+
+  export type CheckInRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    accuracy?: boolean
+    address?: boolean
+    type?: boolean
+    timestamp?: boolean
+    status?: boolean
+    distanceFromLocation?: boolean
+    isWithinGeofence?: boolean
+    photoUrl?: boolean
+    processedAt?: boolean
+    processedBy?: boolean
+    rejectionReason?: boolean
+    deviceId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | CheckInRequest$workLocationArgs<ExtArgs>
+  }, ExtArgs["result"]["checkInRequest"]>
+
+  export type CheckInRequestSelectScalar = {
+    id?: boolean
+    employeeId?: boolean
+    workLocationId?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    accuracy?: boolean
+    address?: boolean
+    type?: boolean
+    timestamp?: boolean
+    status?: boolean
+    distanceFromLocation?: boolean
+    isWithinGeofence?: boolean
+    photoUrl?: boolean
+    processedAt?: boolean
+    processedBy?: boolean
+    rejectionReason?: boolean
+    deviceId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CheckInRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "workLocationId" | "latitude" | "longitude" | "accuracy" | "address" | "type" | "timestamp" | "status" | "distanceFromLocation" | "isWithinGeofence" | "photoUrl" | "processedAt" | "processedBy" | "rejectionReason" | "deviceId" | "userAgent" | "createdAt" | "updatedAt", ExtArgs["result"]["checkInRequest"]>
+  export type CheckInRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | CheckInRequest$workLocationArgs<ExtArgs>
+  }
+  export type CheckInRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | CheckInRequest$workLocationArgs<ExtArgs>
+  }
+  export type CheckInRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | CheckInRequest$workLocationArgs<ExtArgs>
+  }
+
+  export type $CheckInRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CheckInRequest"
+    objects: {
+      employee: Prisma.$EmployeePayload<ExtArgs>
+      workLocation: Prisma.$WorkLocationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      employeeId: number
+      workLocationId: number | null
+      latitude: number
+      longitude: number
+      accuracy: number | null
+      address: string | null
+      type: string
+      timestamp: Date
+      status: string
+      distanceFromLocation: number | null
+      isWithinGeofence: boolean
+      photoUrl: string | null
+      processedAt: Date | null
+      processedBy: string | null
+      rejectionReason: string | null
+      deviceId: string | null
+      userAgent: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["checkInRequest"]>
+    composites: {}
+  }
+
+  type CheckInRequestGetPayload<S extends boolean | null | undefined | CheckInRequestDefaultArgs> = $Result.GetResult<Prisma.$CheckInRequestPayload, S>
+
+  type CheckInRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CheckInRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CheckInRequestCountAggregateInputType | true
+    }
+
+  export interface CheckInRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CheckInRequest'], meta: { name: 'CheckInRequest' } }
+    /**
+     * Find zero or one CheckInRequest that matches the filter.
+     * @param {CheckInRequestFindUniqueArgs} args - Arguments to find a CheckInRequest
+     * @example
+     * // Get one CheckInRequest
+     * const checkInRequest = await prisma.checkInRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CheckInRequestFindUniqueArgs>(args: SelectSubset<T, CheckInRequestFindUniqueArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CheckInRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CheckInRequestFindUniqueOrThrowArgs} args - Arguments to find a CheckInRequest
+     * @example
+     * // Get one CheckInRequest
+     * const checkInRequest = await prisma.checkInRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CheckInRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, CheckInRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CheckInRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestFindFirstArgs} args - Arguments to find a CheckInRequest
+     * @example
+     * // Get one CheckInRequest
+     * const checkInRequest = await prisma.checkInRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CheckInRequestFindFirstArgs>(args?: SelectSubset<T, CheckInRequestFindFirstArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CheckInRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestFindFirstOrThrowArgs} args - Arguments to find a CheckInRequest
+     * @example
+     * // Get one CheckInRequest
+     * const checkInRequest = await prisma.checkInRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CheckInRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, CheckInRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CheckInRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CheckInRequests
+     * const checkInRequests = await prisma.checkInRequest.findMany()
+     * 
+     * // Get first 10 CheckInRequests
+     * const checkInRequests = await prisma.checkInRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const checkInRequestWithIdOnly = await prisma.checkInRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CheckInRequestFindManyArgs>(args?: SelectSubset<T, CheckInRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CheckInRequest.
+     * @param {CheckInRequestCreateArgs} args - Arguments to create a CheckInRequest.
+     * @example
+     * // Create one CheckInRequest
+     * const CheckInRequest = await prisma.checkInRequest.create({
+     *   data: {
+     *     // ... data to create a CheckInRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends CheckInRequestCreateArgs>(args: SelectSubset<T, CheckInRequestCreateArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CheckInRequests.
+     * @param {CheckInRequestCreateManyArgs} args - Arguments to create many CheckInRequests.
+     * @example
+     * // Create many CheckInRequests
+     * const checkInRequest = await prisma.checkInRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CheckInRequestCreateManyArgs>(args?: SelectSubset<T, CheckInRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CheckInRequests and returns the data saved in the database.
+     * @param {CheckInRequestCreateManyAndReturnArgs} args - Arguments to create many CheckInRequests.
+     * @example
+     * // Create many CheckInRequests
+     * const checkInRequest = await prisma.checkInRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CheckInRequests and only return the `id`
+     * const checkInRequestWithIdOnly = await prisma.checkInRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CheckInRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, CheckInRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CheckInRequest.
+     * @param {CheckInRequestDeleteArgs} args - Arguments to delete one CheckInRequest.
+     * @example
+     * // Delete one CheckInRequest
+     * const CheckInRequest = await prisma.checkInRequest.delete({
+     *   where: {
+     *     // ... filter to delete one CheckInRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CheckInRequestDeleteArgs>(args: SelectSubset<T, CheckInRequestDeleteArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CheckInRequest.
+     * @param {CheckInRequestUpdateArgs} args - Arguments to update one CheckInRequest.
+     * @example
+     * // Update one CheckInRequest
+     * const checkInRequest = await prisma.checkInRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CheckInRequestUpdateArgs>(args: SelectSubset<T, CheckInRequestUpdateArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CheckInRequests.
+     * @param {CheckInRequestDeleteManyArgs} args - Arguments to filter CheckInRequests to delete.
+     * @example
+     * // Delete a few CheckInRequests
+     * const { count } = await prisma.checkInRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CheckInRequestDeleteManyArgs>(args?: SelectSubset<T, CheckInRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CheckInRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CheckInRequests
+     * const checkInRequest = await prisma.checkInRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CheckInRequestUpdateManyArgs>(args: SelectSubset<T, CheckInRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CheckInRequests and returns the data updated in the database.
+     * @param {CheckInRequestUpdateManyAndReturnArgs} args - Arguments to update many CheckInRequests.
+     * @example
+     * // Update many CheckInRequests
+     * const checkInRequest = await prisma.checkInRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CheckInRequests and only return the `id`
+     * const checkInRequestWithIdOnly = await prisma.checkInRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CheckInRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, CheckInRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CheckInRequest.
+     * @param {CheckInRequestUpsertArgs} args - Arguments to update or create a CheckInRequest.
+     * @example
+     * // Update or create a CheckInRequest
+     * const checkInRequest = await prisma.checkInRequest.upsert({
+     *   create: {
+     *     // ... data to create a CheckInRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CheckInRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CheckInRequestUpsertArgs>(args: SelectSubset<T, CheckInRequestUpsertArgs<ExtArgs>>): Prisma__CheckInRequestClient<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CheckInRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestCountArgs} args - Arguments to filter CheckInRequests to count.
+     * @example
+     * // Count the number of CheckInRequests
+     * const count = await prisma.checkInRequest.count({
+     *   where: {
+     *     // ... the filter for the CheckInRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends CheckInRequestCountArgs>(
+      args?: Subset<T, CheckInRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CheckInRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CheckInRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CheckInRequestAggregateArgs>(args: Subset<T, CheckInRequestAggregateArgs>): Prisma.PrismaPromise<GetCheckInRequestAggregateType<T>>
+
+    /**
+     * Group by CheckInRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CheckInRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CheckInRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CheckInRequestGroupByArgs['orderBy'] }
+        : { orderBy?: CheckInRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CheckInRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCheckInRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CheckInRequest model
+   */
+  readonly fields: CheckInRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CheckInRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CheckInRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    workLocation<T extends CheckInRequest$workLocationArgs<ExtArgs> = {}>(args?: Subset<T, CheckInRequest$workLocationArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CheckInRequest model
+   */
+  interface CheckInRequestFieldRefs {
+    readonly id: FieldRef<"CheckInRequest", 'Int'>
+    readonly employeeId: FieldRef<"CheckInRequest", 'Int'>
+    readonly workLocationId: FieldRef<"CheckInRequest", 'Int'>
+    readonly latitude: FieldRef<"CheckInRequest", 'Float'>
+    readonly longitude: FieldRef<"CheckInRequest", 'Float'>
+    readonly accuracy: FieldRef<"CheckInRequest", 'Float'>
+    readonly address: FieldRef<"CheckInRequest", 'String'>
+    readonly type: FieldRef<"CheckInRequest", 'String'>
+    readonly timestamp: FieldRef<"CheckInRequest", 'DateTime'>
+    readonly status: FieldRef<"CheckInRequest", 'String'>
+    readonly distanceFromLocation: FieldRef<"CheckInRequest", 'Float'>
+    readonly isWithinGeofence: FieldRef<"CheckInRequest", 'Boolean'>
+    readonly photoUrl: FieldRef<"CheckInRequest", 'String'>
+    readonly processedAt: FieldRef<"CheckInRequest", 'DateTime'>
+    readonly processedBy: FieldRef<"CheckInRequest", 'String'>
+    readonly rejectionReason: FieldRef<"CheckInRequest", 'String'>
+    readonly deviceId: FieldRef<"CheckInRequest", 'String'>
+    readonly userAgent: FieldRef<"CheckInRequest", 'String'>
+    readonly createdAt: FieldRef<"CheckInRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"CheckInRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CheckInRequest findUnique
+   */
+  export type CheckInRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CheckInRequest to fetch.
+     */
+    where: CheckInRequestWhereUniqueInput
+  }
+
+  /**
+   * CheckInRequest findUniqueOrThrow
+   */
+  export type CheckInRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CheckInRequest to fetch.
+     */
+    where: CheckInRequestWhereUniqueInput
+  }
+
+  /**
+   * CheckInRequest findFirst
+   */
+  export type CheckInRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CheckInRequest to fetch.
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CheckInRequests to fetch.
+     */
+    orderBy?: CheckInRequestOrderByWithRelationInput | CheckInRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CheckInRequests.
+     */
+    cursor?: CheckInRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CheckInRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CheckInRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CheckInRequests.
+     */
+    distinct?: CheckInRequestScalarFieldEnum | CheckInRequestScalarFieldEnum[]
+  }
+
+  /**
+   * CheckInRequest findFirstOrThrow
+   */
+  export type CheckInRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CheckInRequest to fetch.
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CheckInRequests to fetch.
+     */
+    orderBy?: CheckInRequestOrderByWithRelationInput | CheckInRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CheckInRequests.
+     */
+    cursor?: CheckInRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CheckInRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CheckInRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CheckInRequests.
+     */
+    distinct?: CheckInRequestScalarFieldEnum | CheckInRequestScalarFieldEnum[]
+  }
+
+  /**
+   * CheckInRequest findMany
+   */
+  export type CheckInRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CheckInRequests to fetch.
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CheckInRequests to fetch.
+     */
+    orderBy?: CheckInRequestOrderByWithRelationInput | CheckInRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CheckInRequests.
+     */
+    cursor?: CheckInRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CheckInRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CheckInRequests.
+     */
+    skip?: number
+    distinct?: CheckInRequestScalarFieldEnum | CheckInRequestScalarFieldEnum[]
+  }
+
+  /**
+   * CheckInRequest create
+   */
+  export type CheckInRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CheckInRequest.
+     */
+    data: XOR<CheckInRequestCreateInput, CheckInRequestUncheckedCreateInput>
+  }
+
+  /**
+   * CheckInRequest createMany
+   */
+  export type CheckInRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CheckInRequests.
+     */
+    data: CheckInRequestCreateManyInput | CheckInRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CheckInRequest createManyAndReturn
+   */
+  export type CheckInRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many CheckInRequests.
+     */
+    data: CheckInRequestCreateManyInput | CheckInRequestCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CheckInRequest update
+   */
+  export type CheckInRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CheckInRequest.
+     */
+    data: XOR<CheckInRequestUpdateInput, CheckInRequestUncheckedUpdateInput>
+    /**
+     * Choose, which CheckInRequest to update.
+     */
+    where: CheckInRequestWhereUniqueInput
+  }
+
+  /**
+   * CheckInRequest updateMany
+   */
+  export type CheckInRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CheckInRequests.
+     */
+    data: XOR<CheckInRequestUpdateManyMutationInput, CheckInRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which CheckInRequests to update
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * Limit how many CheckInRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CheckInRequest updateManyAndReturn
+   */
+  export type CheckInRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update CheckInRequests.
+     */
+    data: XOR<CheckInRequestUpdateManyMutationInput, CheckInRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which CheckInRequests to update
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * Limit how many CheckInRequests to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CheckInRequest upsert
+   */
+  export type CheckInRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CheckInRequest to update in case it exists.
+     */
+    where: CheckInRequestWhereUniqueInput
+    /**
+     * In case the CheckInRequest found by the `where` argument doesn't exist, create a new CheckInRequest with this data.
+     */
+    create: XOR<CheckInRequestCreateInput, CheckInRequestUncheckedCreateInput>
+    /**
+     * In case the CheckInRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CheckInRequestUpdateInput, CheckInRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * CheckInRequest delete
+   */
+  export type CheckInRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
+    /**
+     * Filter which CheckInRequest to delete.
+     */
+    where: CheckInRequestWhereUniqueInput
+  }
+
+  /**
+   * CheckInRequest deleteMany
+   */
+  export type CheckInRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CheckInRequests to delete
+     */
+    where?: CheckInRequestWhereInput
+    /**
+     * Limit how many CheckInRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CheckInRequest.workLocation
+   */
+  export type CheckInRequest$workLocationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    where?: WorkLocationWhereInput
+  }
+
+  /**
+   * CheckInRequest without action
+   */
+  export type CheckInRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CheckInRequest
+     */
+    select?: CheckInRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CheckInRequest
+     */
+    omit?: CheckInRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CheckInRequestInclude<ExtArgs> | null
   }
 
 
@@ -3774,7 +10904,10 @@ export namespace Prisma {
   export type AttendanceAvgAggregateOutputType = {
     id: number | null
     employeeId: number | null
+    workLocationId: number | null
     hoursWorked: number | null
+    checkInRequestId: number | null
+    checkOutRequestId: number | null
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
@@ -3788,7 +10921,10 @@ export namespace Prisma {
   export type AttendanceSumAggregateOutputType = {
     id: number | null
     employeeId: number | null
+    workLocationId: number | null
     hoursWorked: number | null
+    checkInRequestId: number | null
+    checkOutRequestId: number | null
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
@@ -3802,6 +10938,7 @@ export namespace Prisma {
   export type AttendanceMinAggregateOutputType = {
     id: number | null
     employeeId: number | null
+    workLocationId: number | null
     date: Date | null
     checkIn: Date | null
     checkOut: Date | null
@@ -3809,6 +10946,13 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isPaidDay: boolean | null
+    checkInLocationVerified: boolean | null
+    checkOutLocationVerified: boolean | null
+    checkInRequestId: number | null
+    checkOutRequestId: number | null
+    isRemoteWork: boolean | null
+    remoteWorkReason: string | null
+    remoteWorkApprovedBy: string | null
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
@@ -3822,6 +10966,7 @@ export namespace Prisma {
   export type AttendanceMaxAggregateOutputType = {
     id: number | null
     employeeId: number | null
+    workLocationId: number | null
     date: Date | null
     checkIn: Date | null
     checkOut: Date | null
@@ -3829,6 +10974,13 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isPaidDay: boolean | null
+    checkInLocationVerified: boolean | null
+    checkOutLocationVerified: boolean | null
+    checkInRequestId: number | null
+    checkOutRequestId: number | null
+    isRemoteWork: boolean | null
+    remoteWorkReason: string | null
+    remoteWorkApprovedBy: string | null
     actualHoursWorked: number | null
     lateDeductionHours: number | null
     earlyDeductionHours: number | null
@@ -3842,6 +10994,7 @@ export namespace Prisma {
   export type AttendanceCountAggregateOutputType = {
     id: number
     employeeId: number
+    workLocationId: number
     date: number
     checkIn: number
     checkOut: number
@@ -3849,6 +11002,13 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     isPaidDay: number
+    checkInLocationVerified: number
+    checkOutLocationVerified: number
+    checkInRequestId: number
+    checkOutRequestId: number
+    isRemoteWork: number
+    remoteWorkReason: number
+    remoteWorkApprovedBy: number
     actualHoursWorked: number
     lateDeductionHours: number
     earlyDeductionHours: number
@@ -3864,7 +11024,10 @@ export namespace Prisma {
   export type AttendanceAvgAggregateInputType = {
     id?: true
     employeeId?: true
+    workLocationId?: true
     hoursWorked?: true
+    checkInRequestId?: true
+    checkOutRequestId?: true
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
@@ -3878,7 +11041,10 @@ export namespace Prisma {
   export type AttendanceSumAggregateInputType = {
     id?: true
     employeeId?: true
+    workLocationId?: true
     hoursWorked?: true
+    checkInRequestId?: true
+    checkOutRequestId?: true
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
@@ -3892,6 +11058,7 @@ export namespace Prisma {
   export type AttendanceMinAggregateInputType = {
     id?: true
     employeeId?: true
+    workLocationId?: true
     date?: true
     checkIn?: true
     checkOut?: true
@@ -3899,6 +11066,13 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isPaidDay?: true
+    checkInLocationVerified?: true
+    checkOutLocationVerified?: true
+    checkInRequestId?: true
+    checkOutRequestId?: true
+    isRemoteWork?: true
+    remoteWorkReason?: true
+    remoteWorkApprovedBy?: true
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
@@ -3912,6 +11086,7 @@ export namespace Prisma {
   export type AttendanceMaxAggregateInputType = {
     id?: true
     employeeId?: true
+    workLocationId?: true
     date?: true
     checkIn?: true
     checkOut?: true
@@ -3919,6 +11094,13 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isPaidDay?: true
+    checkInLocationVerified?: true
+    checkOutLocationVerified?: true
+    checkInRequestId?: true
+    checkOutRequestId?: true
+    isRemoteWork?: true
+    remoteWorkReason?: true
+    remoteWorkApprovedBy?: true
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
@@ -3932,6 +11114,7 @@ export namespace Prisma {
   export type AttendanceCountAggregateInputType = {
     id?: true
     employeeId?: true
+    workLocationId?: true
     date?: true
     checkIn?: true
     checkOut?: true
@@ -3939,6 +11122,13 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isPaidDay?: true
+    checkInLocationVerified?: true
+    checkOutLocationVerified?: true
+    checkInRequestId?: true
+    checkOutRequestId?: true
+    isRemoteWork?: true
+    remoteWorkReason?: true
+    remoteWorkApprovedBy?: true
     actualHoursWorked?: true
     lateDeductionHours?: true
     earlyDeductionHours?: true
@@ -4039,6 +11229,7 @@ export namespace Prisma {
   export type AttendanceGroupByOutputType = {
     id: number
     employeeId: number
+    workLocationId: number | null
     date: Date
     checkIn: Date
     checkOut: Date | null
@@ -4046,6 +11237,13 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     isPaidDay: boolean
+    checkInLocationVerified: boolean
+    checkOutLocationVerified: boolean
+    checkInRequestId: number | null
+    checkOutRequestId: number | null
+    isRemoteWork: boolean
+    remoteWorkReason: string | null
+    remoteWorkApprovedBy: string | null
     actualHoursWorked: number
     lateDeductionHours: number
     earlyDeductionHours: number
@@ -4078,6 +11276,7 @@ export namespace Prisma {
   export type AttendanceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     employeeId?: boolean
+    workLocationId?: boolean
     date?: boolean
     checkIn?: boolean
     checkOut?: boolean
@@ -4085,6 +11284,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: boolean
+    checkOutRequestId?: boolean
+    isRemoteWork?: boolean
+    remoteWorkReason?: boolean
+    remoteWorkApprovedBy?: boolean
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
@@ -4094,6 +11300,7 @@ export namespace Prisma {
     makeupTimeCompleted?: boolean
     totalPenaltyAmount?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | Attendance$workLocationArgs<ExtArgs>
     penalties?: boolean | Attendance$penaltiesArgs<ExtArgs>
     _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
@@ -4101,6 +11308,7 @@ export namespace Prisma {
   export type AttendanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     employeeId?: boolean
+    workLocationId?: boolean
     date?: boolean
     checkIn?: boolean
     checkOut?: boolean
@@ -4108,6 +11316,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: boolean
+    checkOutRequestId?: boolean
+    isRemoteWork?: boolean
+    remoteWorkReason?: boolean
+    remoteWorkApprovedBy?: boolean
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
@@ -4117,11 +11332,13 @@ export namespace Prisma {
     makeupTimeCompleted?: boolean
     totalPenaltyAmount?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | Attendance$workLocationArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
   export type AttendanceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     employeeId?: boolean
+    workLocationId?: boolean
     date?: boolean
     checkIn?: boolean
     checkOut?: boolean
@@ -4129,6 +11346,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: boolean
+    checkOutRequestId?: boolean
+    isRemoteWork?: boolean
+    remoteWorkReason?: boolean
+    remoteWorkApprovedBy?: boolean
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
@@ -4138,11 +11362,13 @@ export namespace Prisma {
     makeupTimeCompleted?: boolean
     totalPenaltyAmount?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | Attendance$workLocationArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
   export type AttendanceSelectScalar = {
     id?: boolean
     employeeId?: boolean
+    workLocationId?: boolean
     date?: boolean
     checkIn?: boolean
     checkOut?: boolean
@@ -4150,6 +11376,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: boolean
+    checkOutRequestId?: boolean
+    isRemoteWork?: boolean
+    remoteWorkReason?: boolean
+    remoteWorkApprovedBy?: boolean
     actualHoursWorked?: boolean
     lateDeductionHours?: boolean
     earlyDeductionHours?: boolean
@@ -4160,28 +11393,33 @@ export namespace Prisma {
     totalPenaltyAmount?: boolean
   }
 
-  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "date" | "checkIn" | "checkOut" | "hoursWorked" | "createdAt" | "updatedAt" | "isPaidDay" | "actualHoursWorked" | "lateDeductionHours" | "earlyDeductionHours" | "graceMinutesUsed" | "lateMinutesBeyondGrace" | "makeupTimeRequired" | "makeupTimeCompleted" | "totalPenaltyAmount", ExtArgs["result"]["attendance"]>
+  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "workLocationId" | "date" | "checkIn" | "checkOut" | "hoursWorked" | "createdAt" | "updatedAt" | "isPaidDay" | "checkInLocationVerified" | "checkOutLocationVerified" | "checkInRequestId" | "checkOutRequestId" | "isRemoteWork" | "remoteWorkReason" | "remoteWorkApprovedBy" | "actualHoursWorked" | "lateDeductionHours" | "earlyDeductionHours" | "graceMinutesUsed" | "lateMinutesBeyondGrace" | "makeupTimeRequired" | "makeupTimeCompleted" | "totalPenaltyAmount", ExtArgs["result"]["attendance"]>
   export type AttendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | Attendance$workLocationArgs<ExtArgs>
     penalties?: boolean | Attendance$penaltiesArgs<ExtArgs>
     _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AttendanceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | Attendance$workLocationArgs<ExtArgs>
   }
   export type AttendanceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workLocation?: boolean | Attendance$workLocationArgs<ExtArgs>
   }
 
   export type $AttendancePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Attendance"
     objects: {
       employee: Prisma.$EmployeePayload<ExtArgs>
+      workLocation: Prisma.$WorkLocationPayload<ExtArgs> | null
       penalties: Prisma.$AttendancePenaltyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       employeeId: number
+      workLocationId: number | null
       date: Date
       checkIn: Date
       checkOut: Date | null
@@ -4189,6 +11427,13 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       isPaidDay: boolean
+      checkInLocationVerified: boolean
+      checkOutLocationVerified: boolean
+      checkInRequestId: number | null
+      checkOutRequestId: number | null
+      isRemoteWork: boolean
+      remoteWorkReason: string | null
+      remoteWorkApprovedBy: string | null
       actualHoursWorked: number
       lateDeductionHours: number
       earlyDeductionHours: number
@@ -4592,6 +11837,7 @@ export namespace Prisma {
   export interface Prisma__AttendanceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    workLocation<T extends Attendance$workLocationArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$workLocationArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     penalties<T extends Attendance$penaltiesArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$penaltiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePenaltyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4624,6 +11870,7 @@ export namespace Prisma {
   interface AttendanceFieldRefs {
     readonly id: FieldRef<"Attendance", 'Int'>
     readonly employeeId: FieldRef<"Attendance", 'Int'>
+    readonly workLocationId: FieldRef<"Attendance", 'Int'>
     readonly date: FieldRef<"Attendance", 'DateTime'>
     readonly checkIn: FieldRef<"Attendance", 'DateTime'>
     readonly checkOut: FieldRef<"Attendance", 'DateTime'>
@@ -4631,6 +11878,13 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Attendance", 'DateTime'>
     readonly updatedAt: FieldRef<"Attendance", 'DateTime'>
     readonly isPaidDay: FieldRef<"Attendance", 'Boolean'>
+    readonly checkInLocationVerified: FieldRef<"Attendance", 'Boolean'>
+    readonly checkOutLocationVerified: FieldRef<"Attendance", 'Boolean'>
+    readonly checkInRequestId: FieldRef<"Attendance", 'Int'>
+    readonly checkOutRequestId: FieldRef<"Attendance", 'Int'>
+    readonly isRemoteWork: FieldRef<"Attendance", 'Boolean'>
+    readonly remoteWorkReason: FieldRef<"Attendance", 'String'>
+    readonly remoteWorkApprovedBy: FieldRef<"Attendance", 'String'>
     readonly actualHoursWorked: FieldRef<"Attendance", 'Float'>
     readonly lateDeductionHours: FieldRef<"Attendance", 'Float'>
     readonly earlyDeductionHours: FieldRef<"Attendance", 'Float'>
@@ -5032,6 +12286,25 @@ export namespace Prisma {
      * Limit how many Attendances to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Attendance.workLocation
+   */
+  export type Attendance$workLocationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLocation
+     */
+    select?: WorkLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLocation
+     */
+    omit?: WorkLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLocationInclude<ExtArgs> | null
+    where?: WorkLocationWhereInput
   }
 
   /**
@@ -9038,6 +16311,11 @@ export namespace Prisma {
     penaltyMajor150Min: number | null
     penaltyFullDay: number | null
     makeupTimeDeadlineHours: number | null
+    defaultGeofenceRadius: number | null
+    maxCheckInRequestsPerDay: number | null
+    passwordMinLength: number | null
+    sessionTimeoutMinutes: number | null
+    maxActiveDevicesPerEmployee: number | null
   }
 
   export type SystemSettingsSumAggregateOutputType = {
@@ -9051,6 +16329,11 @@ export namespace Prisma {
     penaltyMajor150Min: number | null
     penaltyFullDay: number | null
     makeupTimeDeadlineHours: number | null
+    defaultGeofenceRadius: number | null
+    maxCheckInRequestsPerDay: number | null
+    passwordMinLength: number | null
+    sessionTimeoutMinutes: number | null
+    maxActiveDevicesPerEmployee: number | null
   }
 
   export type SystemSettingsMinAggregateOutputType = {
@@ -9074,6 +16357,19 @@ export namespace Prisma {
     penaltyFullDay: number | null
     allowMakeupTime: boolean | null
     makeupTimeDeadlineHours: number | null
+    enableLocationTracking: boolean | null
+    defaultGeofenceRadius: number | null
+    autoApproveWithinGeofence: boolean | null
+    requirePhotoVerification: boolean | null
+    allowRemoteWork: boolean | null
+    maxCheckInRequestsPerDay: number | null
+    enableEmployeePortal: boolean | null
+    requireStrongPassword: boolean | null
+    passwordMinLength: number | null
+    sessionTimeoutMinutes: number | null
+    maxActiveDevicesPerEmployee: number | null
+    allowPasswordReset: boolean | null
+    requireEmailVerification: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9099,6 +16395,19 @@ export namespace Prisma {
     penaltyFullDay: number | null
     allowMakeupTime: boolean | null
     makeupTimeDeadlineHours: number | null
+    enableLocationTracking: boolean | null
+    defaultGeofenceRadius: number | null
+    autoApproveWithinGeofence: boolean | null
+    requirePhotoVerification: boolean | null
+    allowRemoteWork: boolean | null
+    maxCheckInRequestsPerDay: number | null
+    enableEmployeePortal: boolean | null
+    requireStrongPassword: boolean | null
+    passwordMinLength: number | null
+    sessionTimeoutMinutes: number | null
+    maxActiveDevicesPerEmployee: number | null
+    allowPasswordReset: boolean | null
+    requireEmailVerification: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9124,6 +16433,19 @@ export namespace Prisma {
     penaltyFullDay: number
     allowMakeupTime: number
     makeupTimeDeadlineHours: number
+    enableLocationTracking: number
+    defaultGeofenceRadius: number
+    autoApproveWithinGeofence: number
+    requirePhotoVerification: number
+    allowRemoteWork: number
+    maxCheckInRequestsPerDay: number
+    enableEmployeePortal: number
+    requireStrongPassword: number
+    passwordMinLength: number
+    sessionTimeoutMinutes: number
+    maxActiveDevicesPerEmployee: number
+    allowPasswordReset: number
+    requireEmailVerification: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -9141,6 +16463,11 @@ export namespace Prisma {
     penaltyMajor150Min?: true
     penaltyFullDay?: true
     makeupTimeDeadlineHours?: true
+    defaultGeofenceRadius?: true
+    maxCheckInRequestsPerDay?: true
+    passwordMinLength?: true
+    sessionTimeoutMinutes?: true
+    maxActiveDevicesPerEmployee?: true
   }
 
   export type SystemSettingsSumAggregateInputType = {
@@ -9154,6 +16481,11 @@ export namespace Prisma {
     penaltyMajor150Min?: true
     penaltyFullDay?: true
     makeupTimeDeadlineHours?: true
+    defaultGeofenceRadius?: true
+    maxCheckInRequestsPerDay?: true
+    passwordMinLength?: true
+    sessionTimeoutMinutes?: true
+    maxActiveDevicesPerEmployee?: true
   }
 
   export type SystemSettingsMinAggregateInputType = {
@@ -9177,6 +16509,19 @@ export namespace Prisma {
     penaltyFullDay?: true
     allowMakeupTime?: true
     makeupTimeDeadlineHours?: true
+    enableLocationTracking?: true
+    defaultGeofenceRadius?: true
+    autoApproveWithinGeofence?: true
+    requirePhotoVerification?: true
+    allowRemoteWork?: true
+    maxCheckInRequestsPerDay?: true
+    enableEmployeePortal?: true
+    requireStrongPassword?: true
+    passwordMinLength?: true
+    sessionTimeoutMinutes?: true
+    maxActiveDevicesPerEmployee?: true
+    allowPasswordReset?: true
+    requireEmailVerification?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9202,6 +16547,19 @@ export namespace Prisma {
     penaltyFullDay?: true
     allowMakeupTime?: true
     makeupTimeDeadlineHours?: true
+    enableLocationTracking?: true
+    defaultGeofenceRadius?: true
+    autoApproveWithinGeofence?: true
+    requirePhotoVerification?: true
+    allowRemoteWork?: true
+    maxCheckInRequestsPerDay?: true
+    enableEmployeePortal?: true
+    requireStrongPassword?: true
+    passwordMinLength?: true
+    sessionTimeoutMinutes?: true
+    maxActiveDevicesPerEmployee?: true
+    allowPasswordReset?: true
+    requireEmailVerification?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9227,6 +16585,19 @@ export namespace Prisma {
     penaltyFullDay?: true
     allowMakeupTime?: true
     makeupTimeDeadlineHours?: true
+    enableLocationTracking?: true
+    defaultGeofenceRadius?: true
+    autoApproveWithinGeofence?: true
+    requirePhotoVerification?: true
+    allowRemoteWork?: true
+    maxCheckInRequestsPerDay?: true
+    enableEmployeePortal?: true
+    requireStrongPassword?: true
+    passwordMinLength?: true
+    sessionTimeoutMinutes?: true
+    maxActiveDevicesPerEmployee?: true
+    allowPasswordReset?: true
+    requireEmailVerification?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9339,6 +16710,19 @@ export namespace Prisma {
     penaltyFullDay: number
     allowMakeupTime: boolean
     makeupTimeDeadlineHours: number
+    enableLocationTracking: boolean
+    defaultGeofenceRadius: number
+    autoApproveWithinGeofence: boolean
+    requirePhotoVerification: boolean
+    allowRemoteWork: boolean
+    maxCheckInRequestsPerDay: number
+    enableEmployeePortal: boolean
+    requireStrongPassword: boolean
+    passwordMinLength: number
+    sessionTimeoutMinutes: number
+    maxActiveDevicesPerEmployee: number
+    allowPasswordReset: boolean
+    requireEmailVerification: boolean
     createdAt: Date
     updatedAt: Date
     _count: SystemSettingsCountAggregateOutputType | null
@@ -9383,6 +16767,19 @@ export namespace Prisma {
     penaltyFullDay?: boolean
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: boolean
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: boolean
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: boolean
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: boolean
+    sessionTimeoutMinutes?: boolean
+    maxActiveDevicesPerEmployee?: boolean
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSettings"]>
@@ -9408,6 +16805,19 @@ export namespace Prisma {
     penaltyFullDay?: boolean
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: boolean
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: boolean
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: boolean
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: boolean
+    sessionTimeoutMinutes?: boolean
+    maxActiveDevicesPerEmployee?: boolean
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSettings"]>
@@ -9433,6 +16843,19 @@ export namespace Prisma {
     penaltyFullDay?: boolean
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: boolean
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: boolean
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: boolean
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: boolean
+    sessionTimeoutMinutes?: boolean
+    maxActiveDevicesPerEmployee?: boolean
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSettings"]>
@@ -9458,11 +16881,24 @@ export namespace Prisma {
     penaltyFullDay?: boolean
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: boolean
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: boolean
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: boolean
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: boolean
+    sessionTimeoutMinutes?: boolean
+    maxActiveDevicesPerEmployee?: boolean
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lateAllowanceMinutes" | "workDaySunday" | "workDayMonday" | "workDayTuesday" | "workDayWednesday" | "workDayThursday" | "workDayFriday" | "workDaySaturday" | "workingHoursPerDay" | "workingHoursStart" | "workingHoursEnd" | "overtimeMultiplier" | "weekendOvertimeMultiplier" | "penaltyMinor30Min" | "penaltyModerate90Min" | "penaltyMajor150Min" | "penaltyFullDay" | "allowMakeupTime" | "makeupTimeDeadlineHours" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSettings"]>
+  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lateAllowanceMinutes" | "workDaySunday" | "workDayMonday" | "workDayTuesday" | "workDayWednesday" | "workDayThursday" | "workDayFriday" | "workDaySaturday" | "workingHoursPerDay" | "workingHoursStart" | "workingHoursEnd" | "overtimeMultiplier" | "weekendOvertimeMultiplier" | "penaltyMinor30Min" | "penaltyModerate90Min" | "penaltyMajor150Min" | "penaltyFullDay" | "allowMakeupTime" | "makeupTimeDeadlineHours" | "enableLocationTracking" | "defaultGeofenceRadius" | "autoApproveWithinGeofence" | "requirePhotoVerification" | "allowRemoteWork" | "maxCheckInRequestsPerDay" | "enableEmployeePortal" | "requireStrongPassword" | "passwordMinLength" | "sessionTimeoutMinutes" | "maxActiveDevicesPerEmployee" | "allowPasswordReset" | "requireEmailVerification" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSettings"]>
 
   export type $SystemSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSettings"
@@ -9488,6 +16924,19 @@ export namespace Prisma {
       penaltyFullDay: number
       allowMakeupTime: boolean
       makeupTimeDeadlineHours: number
+      enableLocationTracking: boolean
+      defaultGeofenceRadius: number
+      autoApproveWithinGeofence: boolean
+      requirePhotoVerification: boolean
+      allowRemoteWork: boolean
+      maxCheckInRequestsPerDay: number
+      enableEmployeePortal: boolean
+      requireStrongPassword: boolean
+      passwordMinLength: number
+      sessionTimeoutMinutes: number
+      maxActiveDevicesPerEmployee: number
+      allowPasswordReset: boolean
+      requireEmailVerification: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["systemSettings"]>
@@ -9933,6 +17382,19 @@ export namespace Prisma {
     readonly penaltyFullDay: FieldRef<"SystemSettings", 'Float'>
     readonly allowMakeupTime: FieldRef<"SystemSettings", 'Boolean'>
     readonly makeupTimeDeadlineHours: FieldRef<"SystemSettings", 'Int'>
+    readonly enableLocationTracking: FieldRef<"SystemSettings", 'Boolean'>
+    readonly defaultGeofenceRadius: FieldRef<"SystemSettings", 'Int'>
+    readonly autoApproveWithinGeofence: FieldRef<"SystemSettings", 'Boolean'>
+    readonly requirePhotoVerification: FieldRef<"SystemSettings", 'Boolean'>
+    readonly allowRemoteWork: FieldRef<"SystemSettings", 'Boolean'>
+    readonly maxCheckInRequestsPerDay: FieldRef<"SystemSettings", 'Int'>
+    readonly enableEmployeePortal: FieldRef<"SystemSettings", 'Boolean'>
+    readonly requireStrongPassword: FieldRef<"SystemSettings", 'Boolean'>
+    readonly passwordMinLength: FieldRef<"SystemSettings", 'Int'>
+    readonly sessionTimeoutMinutes: FieldRef<"SystemSettings", 'Int'>
+    readonly maxActiveDevicesPerEmployee: FieldRef<"SystemSettings", 'Int'>
+    readonly allowPasswordReset: FieldRef<"SystemSettings", 'Boolean'>
+    readonly requireEmailVerification: FieldRef<"SystemSettings", 'Boolean'>
     readonly createdAt: FieldRef<"SystemSettings", 'DateTime'>
     readonly updatedAt: FieldRef<"SystemSettings", 'DateTime'>
   }
@@ -10321,14 +17783,130 @@ export namespace Prisma {
     email: 'email',
     position: 'position',
     phone: 'phone',
-    fingerprintId: 'fingerprintId',
     hourlyRate: 'hourlyRate',
     paymentBasis: 'paymentBasis',
+    password: 'password',
+    profilePicture: 'profilePicture',
+    dateOfBirth: 'dateOfBirth',
+    nationalId: 'nationalId',
+    address: 'address',
+    emergencyContact: 'emergencyContact',
+    emergencyPhone: 'emergencyPhone',
+    hireDate: 'hireDate',
+    department: 'department',
+    manager: 'manager',
+    employeeId: 'employeeId',
+    isActive: 'isActive',
+    canAccessPortal: 'canAccessPortal',
+    canWorkRemotely: 'canWorkRemotely',
+    primaryWorkLocationId: 'primaryWorkLocationId',
+    lastLoginAt: 'lastLoginAt',
+    lastActiveAt: 'lastActiveAt',
+    passwordResetToken: 'passwordResetToken',
+    passwordResetExpires: 'passwordResetExpires',
+    preferredLanguage: 'preferredLanguage',
+    timezone: 'timezone',
+    emailNotifications: 'emailNotifications',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type EmployeeScalarFieldEnum = (typeof EmployeeScalarFieldEnum)[keyof typeof EmployeeScalarFieldEnum]
+
+
+  export const EmployeeWorkLocationScalarFieldEnum: {
+    id: 'id',
+    employeeId: 'employeeId',
+    workLocationId: 'workLocationId',
+    canCheckIn: 'canCheckIn',
+    canCheckOut: 'canCheckOut',
+    isActive: 'isActive',
+    assignedAt: 'assignedAt',
+    assignedBy: 'assignedBy'
+  };
+
+  export type EmployeeWorkLocationScalarFieldEnum = (typeof EmployeeWorkLocationScalarFieldEnum)[keyof typeof EmployeeWorkLocationScalarFieldEnum]
+
+
+  export const WorkLocationScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    address: 'address',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    radiusMeters: 'radiusMeters',
+    isActive: 'isActive',
+    timezone: 'timezone',
+    description: 'description',
+    workingHoursStart: 'workingHoursStart',
+    workingHoursEnd: 'workingHoursEnd',
+    createdBy: 'createdBy',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkLocationScalarFieldEnum = (typeof WorkLocationScalarFieldEnum)[keyof typeof WorkLocationScalarFieldEnum]
+
+
+  export const EmployeeSessionScalarFieldEnum: {
+    id: 'id',
+    employeeId: 'employeeId',
+    token: 'token',
+    deviceInfo: 'deviceInfo',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    isActive: 'isActive',
+    expiresAt: 'expiresAt',
+    lastSeenAt: 'lastSeenAt',
+    locationPermission: 'locationPermission',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmployeeSessionScalarFieldEnum = (typeof EmployeeSessionScalarFieldEnum)[keyof typeof EmployeeSessionScalarFieldEnum]
+
+
+  export const EmployeeDeviceSessionScalarFieldEnum: {
+    id: 'id',
+    employeeId: 'employeeId',
+    deviceId: 'deviceId',
+    deviceName: 'deviceName',
+    deviceType: 'deviceType',
+    pushToken: 'pushToken',
+    isActive: 'isActive',
+    lastSeenAt: 'lastSeenAt',
+    locationPermission: 'locationPermission',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmployeeDeviceSessionScalarFieldEnum = (typeof EmployeeDeviceSessionScalarFieldEnum)[keyof typeof EmployeeDeviceSessionScalarFieldEnum]
+
+
+  export const CheckInRequestScalarFieldEnum: {
+    id: 'id',
+    employeeId: 'employeeId',
+    workLocationId: 'workLocationId',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    accuracy: 'accuracy',
+    address: 'address',
+    type: 'type',
+    timestamp: 'timestamp',
+    status: 'status',
+    distanceFromLocation: 'distanceFromLocation',
+    isWithinGeofence: 'isWithinGeofence',
+    photoUrl: 'photoUrl',
+    processedAt: 'processedAt',
+    processedBy: 'processedBy',
+    rejectionReason: 'rejectionReason',
+    deviceId: 'deviceId',
+    userAgent: 'userAgent',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CheckInRequestScalarFieldEnum = (typeof CheckInRequestScalarFieldEnum)[keyof typeof CheckInRequestScalarFieldEnum]
 
 
   export const UserScalarFieldEnum: {
@@ -10346,6 +17924,7 @@ export namespace Prisma {
   export const AttendanceScalarFieldEnum: {
     id: 'id',
     employeeId: 'employeeId',
+    workLocationId: 'workLocationId',
     date: 'date',
     checkIn: 'checkIn',
     checkOut: 'checkOut',
@@ -10353,6 +17932,13 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isPaidDay: 'isPaidDay',
+    checkInLocationVerified: 'checkInLocationVerified',
+    checkOutLocationVerified: 'checkOutLocationVerified',
+    checkInRequestId: 'checkInRequestId',
+    checkOutRequestId: 'checkOutRequestId',
+    isRemoteWork: 'isRemoteWork',
+    remoteWorkReason: 'remoteWorkReason',
+    remoteWorkApprovedBy: 'remoteWorkApprovedBy',
     actualHoursWorked: 'actualHoursWorked',
     lateDeductionHours: 'lateDeductionHours',
     earlyDeductionHours: 'earlyDeductionHours',
@@ -10460,6 +18046,19 @@ export namespace Prisma {
     penaltyFullDay: 'penaltyFullDay',
     allowMakeupTime: 'allowMakeupTime',
     makeupTimeDeadlineHours: 'makeupTimeDeadlineHours',
+    enableLocationTracking: 'enableLocationTracking',
+    defaultGeofenceRadius: 'defaultGeofenceRadius',
+    autoApproveWithinGeofence: 'autoApproveWithinGeofence',
+    requirePhotoVerification: 'requirePhotoVerification',
+    allowRemoteWork: 'allowRemoteWork',
+    maxCheckInRequestsPerDay: 'maxCheckInRequestsPerDay',
+    enableEmployeePortal: 'enableEmployeePortal',
+    requireStrongPassword: 'requireStrongPassword',
+    passwordMinLength: 'passwordMinLength',
+    sessionTimeoutMinutes: 'sessionTimeoutMinutes',
+    maxActiveDevicesPerEmployee: 'maxActiveDevicesPerEmployee',
+    allowPasswordReset: 'allowPasswordReset',
+    requireEmailVerification: 'requireEmailVerification',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -10571,13 +18170,39 @@ export namespace Prisma {
     email?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
-    fingerprintId?: StringNullableFilter<"Employee"> | string | null
     hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
+    password?: StringNullableFilter<"Employee"> | string | null
+    profilePicture?: StringNullableFilter<"Employee"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    nationalId?: StringNullableFilter<"Employee"> | string | null
+    address?: StringNullableFilter<"Employee"> | string | null
+    emergencyContact?: StringNullableFilter<"Employee"> | string | null
+    emergencyPhone?: StringNullableFilter<"Employee"> | string | null
+    hireDate?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    department?: StringNullableFilter<"Employee"> | string | null
+    manager?: StringNullableFilter<"Employee"> | string | null
+    employeeId?: StringNullableFilter<"Employee"> | string | null
+    isActive?: BoolFilter<"Employee"> | boolean
+    canAccessPortal?: BoolFilter<"Employee"> | boolean
+    canWorkRemotely?: BoolFilter<"Employee"> | boolean
+    primaryWorkLocationId?: IntNullableFilter<"Employee"> | number | null
+    lastLoginAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    lastActiveAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    passwordResetToken?: StringNullableFilter<"Employee"> | string | null
+    passwordResetExpires?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    preferredLanguage?: StringFilter<"Employee"> | string
+    timezone?: StringFilter<"Employee"> | string
+    emailNotifications?: BoolFilter<"Employee"> | boolean
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
     attendance?: AttendanceListRelationFilter
     payouts?: PayoutListRelationFilter
+    sessions?: EmployeeSessionListRelationFilter
+    deviceSessions?: EmployeeDeviceSessionListRelationFilter
+    checkInRequests?: CheckInRequestListRelationFilter
+    primaryWorkLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
+    allowedWorkLocations?: EmployeeWorkLocationListRelationFilter
   }
 
   export type EmployeeOrderByWithRelationInput = {
@@ -10586,32 +18211,84 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
-    fingerprintId?: SortOrderInput | SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
+    password?: SortOrderInput | SortOrder
+    profilePicture?: SortOrderInput | SortOrder
+    dateOfBirth?: SortOrderInput | SortOrder
+    nationalId?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    emergencyContact?: SortOrderInput | SortOrder
+    emergencyPhone?: SortOrderInput | SortOrder
+    hireDate?: SortOrderInput | SortOrder
+    department?: SortOrderInput | SortOrder
+    manager?: SortOrderInput | SortOrder
+    employeeId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    canAccessPortal?: SortOrder
+    canWorkRemotely?: SortOrder
+    primaryWorkLocationId?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    lastActiveAt?: SortOrderInput | SortOrder
+    passwordResetToken?: SortOrderInput | SortOrder
+    passwordResetExpires?: SortOrderInput | SortOrder
+    preferredLanguage?: SortOrder
+    timezone?: SortOrder
+    emailNotifications?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     attendance?: AttendanceOrderByRelationAggregateInput
     payouts?: PayoutOrderByRelationAggregateInput
+    sessions?: EmployeeSessionOrderByRelationAggregateInput
+    deviceSessions?: EmployeeDeviceSessionOrderByRelationAggregateInput
+    checkInRequests?: CheckInRequestOrderByRelationAggregateInput
+    primaryWorkLocation?: WorkLocationOrderByWithRelationInput
+    allowedWorkLocations?: EmployeeWorkLocationOrderByRelationAggregateInput
   }
 
   export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
+    nationalId?: string
+    employeeId?: string
     AND?: EmployeeWhereInput | EmployeeWhereInput[]
     OR?: EmployeeWhereInput[]
     NOT?: EmployeeWhereInput | EmployeeWhereInput[]
     name?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
-    fingerprintId?: StringNullableFilter<"Employee"> | string | null
     hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
+    password?: StringNullableFilter<"Employee"> | string | null
+    profilePicture?: StringNullableFilter<"Employee"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    address?: StringNullableFilter<"Employee"> | string | null
+    emergencyContact?: StringNullableFilter<"Employee"> | string | null
+    emergencyPhone?: StringNullableFilter<"Employee"> | string | null
+    hireDate?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    department?: StringNullableFilter<"Employee"> | string | null
+    manager?: StringNullableFilter<"Employee"> | string | null
+    isActive?: BoolFilter<"Employee"> | boolean
+    canAccessPortal?: BoolFilter<"Employee"> | boolean
+    canWorkRemotely?: BoolFilter<"Employee"> | boolean
+    primaryWorkLocationId?: IntNullableFilter<"Employee"> | number | null
+    lastLoginAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    lastActiveAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    passwordResetToken?: StringNullableFilter<"Employee"> | string | null
+    passwordResetExpires?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    preferredLanguage?: StringFilter<"Employee"> | string
+    timezone?: StringFilter<"Employee"> | string
+    emailNotifications?: BoolFilter<"Employee"> | boolean
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
     attendance?: AttendanceListRelationFilter
     payouts?: PayoutListRelationFilter
-  }, "id" | "email">
+    sessions?: EmployeeSessionListRelationFilter
+    deviceSessions?: EmployeeDeviceSessionListRelationFilter
+    checkInRequests?: CheckInRequestListRelationFilter
+    primaryWorkLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
+    allowedWorkLocations?: EmployeeWorkLocationListRelationFilter
+  }, "id" | "email" | "nationalId" | "employeeId">
 
   export type EmployeeOrderByWithAggregationInput = {
     id?: SortOrder
@@ -10619,9 +18296,30 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
-    fingerprintId?: SortOrderInput | SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
+    password?: SortOrderInput | SortOrder
+    profilePicture?: SortOrderInput | SortOrder
+    dateOfBirth?: SortOrderInput | SortOrder
+    nationalId?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    emergencyContact?: SortOrderInput | SortOrder
+    emergencyPhone?: SortOrderInput | SortOrder
+    hireDate?: SortOrderInput | SortOrder
+    department?: SortOrderInput | SortOrder
+    manager?: SortOrderInput | SortOrder
+    employeeId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    canAccessPortal?: SortOrder
+    canWorkRemotely?: SortOrder
+    primaryWorkLocationId?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    lastActiveAt?: SortOrderInput | SortOrder
+    passwordResetToken?: SortOrderInput | SortOrder
+    passwordResetExpires?: SortOrderInput | SortOrder
+    preferredLanguage?: SortOrder
+    timezone?: SortOrder
+    emailNotifications?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: EmployeeCountOrderByAggregateInput
@@ -10640,11 +18338,534 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Employee"> | string
     position?: StringWithAggregatesFilter<"Employee"> | string
     phone?: StringNullableWithAggregatesFilter<"Employee"> | string | null
-    fingerprintId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     hourlyRate?: FloatWithAggregatesFilter<"Employee"> | number
     paymentBasis?: StringWithAggregatesFilter<"Employee"> | string
+    password?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    profilePicture?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    dateOfBirth?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+    nationalId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    address?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    emergencyContact?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    emergencyPhone?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    hireDate?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+    department?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    manager?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    employeeId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    isActive?: BoolWithAggregatesFilter<"Employee"> | boolean
+    canAccessPortal?: BoolWithAggregatesFilter<"Employee"> | boolean
+    canWorkRemotely?: BoolWithAggregatesFilter<"Employee"> | boolean
+    primaryWorkLocationId?: IntNullableWithAggregatesFilter<"Employee"> | number | null
+    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+    lastActiveAt?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+    passwordResetToken?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    passwordResetExpires?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+    preferredLanguage?: StringWithAggregatesFilter<"Employee"> | string
+    timezone?: StringWithAggregatesFilter<"Employee"> | string
+    emailNotifications?: BoolWithAggregatesFilter<"Employee"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
+  }
+
+  export type EmployeeWorkLocationWhereInput = {
+    AND?: EmployeeWorkLocationWhereInput | EmployeeWorkLocationWhereInput[]
+    OR?: EmployeeWorkLocationWhereInput[]
+    NOT?: EmployeeWorkLocationWhereInput | EmployeeWorkLocationWhereInput[]
+    id?: IntFilter<"EmployeeWorkLocation"> | number
+    employeeId?: IntFilter<"EmployeeWorkLocation"> | number
+    workLocationId?: IntFilter<"EmployeeWorkLocation"> | number
+    canCheckIn?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    canCheckOut?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    isActive?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    assignedAt?: DateTimeFilter<"EmployeeWorkLocation"> | Date | string
+    assignedBy?: StringNullableFilter<"EmployeeWorkLocation"> | string | null
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workLocation?: XOR<WorkLocationScalarRelationFilter, WorkLocationWhereInput>
+  }
+
+  export type EmployeeWorkLocationOrderByWithRelationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    canCheckIn?: SortOrder
+    canCheckOut?: SortOrder
+    isActive?: SortOrder
+    assignedAt?: SortOrder
+    assignedBy?: SortOrderInput | SortOrder
+    employee?: EmployeeOrderByWithRelationInput
+    workLocation?: WorkLocationOrderByWithRelationInput
+  }
+
+  export type EmployeeWorkLocationWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    employeeId_workLocationId?: EmployeeWorkLocationEmployeeIdWorkLocationIdCompoundUniqueInput
+    AND?: EmployeeWorkLocationWhereInput | EmployeeWorkLocationWhereInput[]
+    OR?: EmployeeWorkLocationWhereInput[]
+    NOT?: EmployeeWorkLocationWhereInput | EmployeeWorkLocationWhereInput[]
+    employeeId?: IntFilter<"EmployeeWorkLocation"> | number
+    workLocationId?: IntFilter<"EmployeeWorkLocation"> | number
+    canCheckIn?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    canCheckOut?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    isActive?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    assignedAt?: DateTimeFilter<"EmployeeWorkLocation"> | Date | string
+    assignedBy?: StringNullableFilter<"EmployeeWorkLocation"> | string | null
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workLocation?: XOR<WorkLocationScalarRelationFilter, WorkLocationWhereInput>
+  }, "id" | "employeeId_workLocationId">
+
+  export type EmployeeWorkLocationOrderByWithAggregationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    canCheckIn?: SortOrder
+    canCheckOut?: SortOrder
+    isActive?: SortOrder
+    assignedAt?: SortOrder
+    assignedBy?: SortOrderInput | SortOrder
+    _count?: EmployeeWorkLocationCountOrderByAggregateInput
+    _avg?: EmployeeWorkLocationAvgOrderByAggregateInput
+    _max?: EmployeeWorkLocationMaxOrderByAggregateInput
+    _min?: EmployeeWorkLocationMinOrderByAggregateInput
+    _sum?: EmployeeWorkLocationSumOrderByAggregateInput
+  }
+
+  export type EmployeeWorkLocationScalarWhereWithAggregatesInput = {
+    AND?: EmployeeWorkLocationScalarWhereWithAggregatesInput | EmployeeWorkLocationScalarWhereWithAggregatesInput[]
+    OR?: EmployeeWorkLocationScalarWhereWithAggregatesInput[]
+    NOT?: EmployeeWorkLocationScalarWhereWithAggregatesInput | EmployeeWorkLocationScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"EmployeeWorkLocation"> | number
+    employeeId?: IntWithAggregatesFilter<"EmployeeWorkLocation"> | number
+    workLocationId?: IntWithAggregatesFilter<"EmployeeWorkLocation"> | number
+    canCheckIn?: BoolWithAggregatesFilter<"EmployeeWorkLocation"> | boolean
+    canCheckOut?: BoolWithAggregatesFilter<"EmployeeWorkLocation"> | boolean
+    isActive?: BoolWithAggregatesFilter<"EmployeeWorkLocation"> | boolean
+    assignedAt?: DateTimeWithAggregatesFilter<"EmployeeWorkLocation"> | Date | string
+    assignedBy?: StringNullableWithAggregatesFilter<"EmployeeWorkLocation"> | string | null
+  }
+
+  export type WorkLocationWhereInput = {
+    AND?: WorkLocationWhereInput | WorkLocationWhereInput[]
+    OR?: WorkLocationWhereInput[]
+    NOT?: WorkLocationWhereInput | WorkLocationWhereInput[]
+    id?: IntFilter<"WorkLocation"> | number
+    name?: StringFilter<"WorkLocation"> | string
+    address?: StringFilter<"WorkLocation"> | string
+    latitude?: FloatFilter<"WorkLocation"> | number
+    longitude?: FloatFilter<"WorkLocation"> | number
+    radiusMeters?: IntFilter<"WorkLocation"> | number
+    isActive?: BoolFilter<"WorkLocation"> | boolean
+    timezone?: StringFilter<"WorkLocation"> | string
+    description?: StringNullableFilter<"WorkLocation"> | string | null
+    workingHoursStart?: StringNullableFilter<"WorkLocation"> | string | null
+    workingHoursEnd?: StringNullableFilter<"WorkLocation"> | string | null
+    createdBy?: StringNullableFilter<"WorkLocation"> | string | null
+    createdAt?: DateTimeFilter<"WorkLocation"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkLocation"> | Date | string
+    checkInRequests?: CheckInRequestListRelationFilter
+    attendanceRecords?: AttendanceListRelationFilter
+    employeeAssignments?: EmployeeWorkLocationListRelationFilter
+    primaryEmployees?: EmployeeListRelationFilter
+  }
+
+  export type WorkLocationOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+    isActive?: SortOrder
+    timezone?: SortOrder
+    description?: SortOrderInput | SortOrder
+    workingHoursStart?: SortOrderInput | SortOrder
+    workingHoursEnd?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    checkInRequests?: CheckInRequestOrderByRelationAggregateInput
+    attendanceRecords?: AttendanceOrderByRelationAggregateInput
+    employeeAssignments?: EmployeeWorkLocationOrderByRelationAggregateInput
+    primaryEmployees?: EmployeeOrderByRelationAggregateInput
+  }
+
+  export type WorkLocationWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: WorkLocationWhereInput | WorkLocationWhereInput[]
+    OR?: WorkLocationWhereInput[]
+    NOT?: WorkLocationWhereInput | WorkLocationWhereInput[]
+    name?: StringFilter<"WorkLocation"> | string
+    address?: StringFilter<"WorkLocation"> | string
+    latitude?: FloatFilter<"WorkLocation"> | number
+    longitude?: FloatFilter<"WorkLocation"> | number
+    radiusMeters?: IntFilter<"WorkLocation"> | number
+    isActive?: BoolFilter<"WorkLocation"> | boolean
+    timezone?: StringFilter<"WorkLocation"> | string
+    description?: StringNullableFilter<"WorkLocation"> | string | null
+    workingHoursStart?: StringNullableFilter<"WorkLocation"> | string | null
+    workingHoursEnd?: StringNullableFilter<"WorkLocation"> | string | null
+    createdBy?: StringNullableFilter<"WorkLocation"> | string | null
+    createdAt?: DateTimeFilter<"WorkLocation"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkLocation"> | Date | string
+    checkInRequests?: CheckInRequestListRelationFilter
+    attendanceRecords?: AttendanceListRelationFilter
+    employeeAssignments?: EmployeeWorkLocationListRelationFilter
+    primaryEmployees?: EmployeeListRelationFilter
+  }, "id">
+
+  export type WorkLocationOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+    isActive?: SortOrder
+    timezone?: SortOrder
+    description?: SortOrderInput | SortOrder
+    workingHoursStart?: SortOrderInput | SortOrder
+    workingHoursEnd?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkLocationCountOrderByAggregateInput
+    _avg?: WorkLocationAvgOrderByAggregateInput
+    _max?: WorkLocationMaxOrderByAggregateInput
+    _min?: WorkLocationMinOrderByAggregateInput
+    _sum?: WorkLocationSumOrderByAggregateInput
+  }
+
+  export type WorkLocationScalarWhereWithAggregatesInput = {
+    AND?: WorkLocationScalarWhereWithAggregatesInput | WorkLocationScalarWhereWithAggregatesInput[]
+    OR?: WorkLocationScalarWhereWithAggregatesInput[]
+    NOT?: WorkLocationScalarWhereWithAggregatesInput | WorkLocationScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"WorkLocation"> | number
+    name?: StringWithAggregatesFilter<"WorkLocation"> | string
+    address?: StringWithAggregatesFilter<"WorkLocation"> | string
+    latitude?: FloatWithAggregatesFilter<"WorkLocation"> | number
+    longitude?: FloatWithAggregatesFilter<"WorkLocation"> | number
+    radiusMeters?: IntWithAggregatesFilter<"WorkLocation"> | number
+    isActive?: BoolWithAggregatesFilter<"WorkLocation"> | boolean
+    timezone?: StringWithAggregatesFilter<"WorkLocation"> | string
+    description?: StringNullableWithAggregatesFilter<"WorkLocation"> | string | null
+    workingHoursStart?: StringNullableWithAggregatesFilter<"WorkLocation"> | string | null
+    workingHoursEnd?: StringNullableWithAggregatesFilter<"WorkLocation"> | string | null
+    createdBy?: StringNullableWithAggregatesFilter<"WorkLocation"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkLocation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkLocation"> | Date | string
+  }
+
+  export type EmployeeSessionWhereInput = {
+    AND?: EmployeeSessionWhereInput | EmployeeSessionWhereInput[]
+    OR?: EmployeeSessionWhereInput[]
+    NOT?: EmployeeSessionWhereInput | EmployeeSessionWhereInput[]
+    id?: StringFilter<"EmployeeSession"> | string
+    employeeId?: IntFilter<"EmployeeSession"> | number
+    token?: StringFilter<"EmployeeSession"> | string
+    deviceInfo?: StringNullableFilter<"EmployeeSession"> | string | null
+    ipAddress?: StringNullableFilter<"EmployeeSession"> | string | null
+    userAgent?: StringNullableFilter<"EmployeeSession"> | string | null
+    isActive?: BoolFilter<"EmployeeSession"> | boolean
+    expiresAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    lastSeenAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    locationPermission?: BoolFilter<"EmployeeSession"> | boolean
+    createdAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+  }
+
+  export type EmployeeSessionOrderByWithRelationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    token?: SortOrder
+    deviceInfo?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    employee?: EmployeeOrderByWithRelationInput
+  }
+
+  export type EmployeeSessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: EmployeeSessionWhereInput | EmployeeSessionWhereInput[]
+    OR?: EmployeeSessionWhereInput[]
+    NOT?: EmployeeSessionWhereInput | EmployeeSessionWhereInput[]
+    employeeId?: IntFilter<"EmployeeSession"> | number
+    deviceInfo?: StringNullableFilter<"EmployeeSession"> | string | null
+    ipAddress?: StringNullableFilter<"EmployeeSession"> | string | null
+    userAgent?: StringNullableFilter<"EmployeeSession"> | string | null
+    isActive?: BoolFilter<"EmployeeSession"> | boolean
+    expiresAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    lastSeenAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    locationPermission?: BoolFilter<"EmployeeSession"> | boolean
+    createdAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+  }, "id" | "token">
+
+  export type EmployeeSessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    token?: SortOrder
+    deviceInfo?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmployeeSessionCountOrderByAggregateInput
+    _avg?: EmployeeSessionAvgOrderByAggregateInput
+    _max?: EmployeeSessionMaxOrderByAggregateInput
+    _min?: EmployeeSessionMinOrderByAggregateInput
+    _sum?: EmployeeSessionSumOrderByAggregateInput
+  }
+
+  export type EmployeeSessionScalarWhereWithAggregatesInput = {
+    AND?: EmployeeSessionScalarWhereWithAggregatesInput | EmployeeSessionScalarWhereWithAggregatesInput[]
+    OR?: EmployeeSessionScalarWhereWithAggregatesInput[]
+    NOT?: EmployeeSessionScalarWhereWithAggregatesInput | EmployeeSessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmployeeSession"> | string
+    employeeId?: IntWithAggregatesFilter<"EmployeeSession"> | number
+    token?: StringWithAggregatesFilter<"EmployeeSession"> | string
+    deviceInfo?: StringNullableWithAggregatesFilter<"EmployeeSession"> | string | null
+    ipAddress?: StringNullableWithAggregatesFilter<"EmployeeSession"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"EmployeeSession"> | string | null
+    isActive?: BoolWithAggregatesFilter<"EmployeeSession"> | boolean
+    expiresAt?: DateTimeWithAggregatesFilter<"EmployeeSession"> | Date | string
+    lastSeenAt?: DateTimeWithAggregatesFilter<"EmployeeSession"> | Date | string
+    locationPermission?: BoolWithAggregatesFilter<"EmployeeSession"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"EmployeeSession"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmployeeSession"> | Date | string
+  }
+
+  export type EmployeeDeviceSessionWhereInput = {
+    AND?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
+    OR?: EmployeeDeviceSessionWhereInput[]
+    NOT?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
+    id?: StringFilter<"EmployeeDeviceSession"> | string
+    employeeId?: IntFilter<"EmployeeDeviceSession"> | number
+    deviceId?: StringFilter<"EmployeeDeviceSession"> | string
+    deviceName?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    deviceType?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    pushToken?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    isActive?: BoolFilter<"EmployeeDeviceSession"> | boolean
+    lastSeenAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    locationPermission?: BoolFilter<"EmployeeDeviceSession"> | boolean
+    createdAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+  }
+
+  export type EmployeeDeviceSessionOrderByWithRelationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    deviceId?: SortOrder
+    deviceName?: SortOrderInput | SortOrder
+    deviceType?: SortOrderInput | SortOrder
+    pushToken?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    employee?: EmployeeOrderByWithRelationInput
+  }
+
+  export type EmployeeDeviceSessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    employeeId_deviceId?: EmployeeDeviceSessionEmployeeIdDeviceIdCompoundUniqueInput
+    AND?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
+    OR?: EmployeeDeviceSessionWhereInput[]
+    NOT?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
+    employeeId?: IntFilter<"EmployeeDeviceSession"> | number
+    deviceId?: StringFilter<"EmployeeDeviceSession"> | string
+    deviceName?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    deviceType?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    pushToken?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    isActive?: BoolFilter<"EmployeeDeviceSession"> | boolean
+    lastSeenAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    locationPermission?: BoolFilter<"EmployeeDeviceSession"> | boolean
+    createdAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+  }, "id" | "employeeId_deviceId">
+
+  export type EmployeeDeviceSessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    deviceId?: SortOrder
+    deviceName?: SortOrderInput | SortOrder
+    deviceType?: SortOrderInput | SortOrder
+    pushToken?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmployeeDeviceSessionCountOrderByAggregateInput
+    _avg?: EmployeeDeviceSessionAvgOrderByAggregateInput
+    _max?: EmployeeDeviceSessionMaxOrderByAggregateInput
+    _min?: EmployeeDeviceSessionMinOrderByAggregateInput
+    _sum?: EmployeeDeviceSessionSumOrderByAggregateInput
+  }
+
+  export type EmployeeDeviceSessionScalarWhereWithAggregatesInput = {
+    AND?: EmployeeDeviceSessionScalarWhereWithAggregatesInput | EmployeeDeviceSessionScalarWhereWithAggregatesInput[]
+    OR?: EmployeeDeviceSessionScalarWhereWithAggregatesInput[]
+    NOT?: EmployeeDeviceSessionScalarWhereWithAggregatesInput | EmployeeDeviceSessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmployeeDeviceSession"> | string
+    employeeId?: IntWithAggregatesFilter<"EmployeeDeviceSession"> | number
+    deviceId?: StringWithAggregatesFilter<"EmployeeDeviceSession"> | string
+    deviceName?: StringNullableWithAggregatesFilter<"EmployeeDeviceSession"> | string | null
+    deviceType?: StringNullableWithAggregatesFilter<"EmployeeDeviceSession"> | string | null
+    pushToken?: StringNullableWithAggregatesFilter<"EmployeeDeviceSession"> | string | null
+    isActive?: BoolWithAggregatesFilter<"EmployeeDeviceSession"> | boolean
+    lastSeenAt?: DateTimeWithAggregatesFilter<"EmployeeDeviceSession"> | Date | string
+    locationPermission?: BoolWithAggregatesFilter<"EmployeeDeviceSession"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"EmployeeDeviceSession"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmployeeDeviceSession"> | Date | string
+  }
+
+  export type CheckInRequestWhereInput = {
+    AND?: CheckInRequestWhereInput | CheckInRequestWhereInput[]
+    OR?: CheckInRequestWhereInput[]
+    NOT?: CheckInRequestWhereInput | CheckInRequestWhereInput[]
+    id?: IntFilter<"CheckInRequest"> | number
+    employeeId?: IntFilter<"CheckInRequest"> | number
+    workLocationId?: IntNullableFilter<"CheckInRequest"> | number | null
+    latitude?: FloatFilter<"CheckInRequest"> | number
+    longitude?: FloatFilter<"CheckInRequest"> | number
+    accuracy?: FloatNullableFilter<"CheckInRequest"> | number | null
+    address?: StringNullableFilter<"CheckInRequest"> | string | null
+    type?: StringFilter<"CheckInRequest"> | string
+    timestamp?: DateTimeFilter<"CheckInRequest"> | Date | string
+    status?: StringFilter<"CheckInRequest"> | string
+    distanceFromLocation?: FloatNullableFilter<"CheckInRequest"> | number | null
+    isWithinGeofence?: BoolFilter<"CheckInRequest"> | boolean
+    photoUrl?: StringNullableFilter<"CheckInRequest"> | string | null
+    processedAt?: DateTimeNullableFilter<"CheckInRequest"> | Date | string | null
+    processedBy?: StringNullableFilter<"CheckInRequest"> | string | null
+    rejectionReason?: StringNullableFilter<"CheckInRequest"> | string | null
+    deviceId?: StringNullableFilter<"CheckInRequest"> | string | null
+    userAgent?: StringNullableFilter<"CheckInRequest"> | string | null
+    createdAt?: DateTimeFilter<"CheckInRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"CheckInRequest"> | Date | string
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
+  }
+
+  export type CheckInRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrderInput | SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    type?: SortOrder
+    timestamp?: SortOrder
+    status?: SortOrder
+    distanceFromLocation?: SortOrderInput | SortOrder
+    isWithinGeofence?: SortOrder
+    photoUrl?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    processedBy?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    deviceId?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    employee?: EmployeeOrderByWithRelationInput
+    workLocation?: WorkLocationOrderByWithRelationInput
+  }
+
+  export type CheckInRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: CheckInRequestWhereInput | CheckInRequestWhereInput[]
+    OR?: CheckInRequestWhereInput[]
+    NOT?: CheckInRequestWhereInput | CheckInRequestWhereInput[]
+    employeeId?: IntFilter<"CheckInRequest"> | number
+    workLocationId?: IntNullableFilter<"CheckInRequest"> | number | null
+    latitude?: FloatFilter<"CheckInRequest"> | number
+    longitude?: FloatFilter<"CheckInRequest"> | number
+    accuracy?: FloatNullableFilter<"CheckInRequest"> | number | null
+    address?: StringNullableFilter<"CheckInRequest"> | string | null
+    type?: StringFilter<"CheckInRequest"> | string
+    timestamp?: DateTimeFilter<"CheckInRequest"> | Date | string
+    status?: StringFilter<"CheckInRequest"> | string
+    distanceFromLocation?: FloatNullableFilter<"CheckInRequest"> | number | null
+    isWithinGeofence?: BoolFilter<"CheckInRequest"> | boolean
+    photoUrl?: StringNullableFilter<"CheckInRequest"> | string | null
+    processedAt?: DateTimeNullableFilter<"CheckInRequest"> | Date | string | null
+    processedBy?: StringNullableFilter<"CheckInRequest"> | string | null
+    rejectionReason?: StringNullableFilter<"CheckInRequest"> | string | null
+    deviceId?: StringNullableFilter<"CheckInRequest"> | string | null
+    userAgent?: StringNullableFilter<"CheckInRequest"> | string | null
+    createdAt?: DateTimeFilter<"CheckInRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"CheckInRequest"> | Date | string
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
+  }, "id">
+
+  export type CheckInRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrderInput | SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    type?: SortOrder
+    timestamp?: SortOrder
+    status?: SortOrder
+    distanceFromLocation?: SortOrderInput | SortOrder
+    isWithinGeofence?: SortOrder
+    photoUrl?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    processedBy?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    deviceId?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CheckInRequestCountOrderByAggregateInput
+    _avg?: CheckInRequestAvgOrderByAggregateInput
+    _max?: CheckInRequestMaxOrderByAggregateInput
+    _min?: CheckInRequestMinOrderByAggregateInput
+    _sum?: CheckInRequestSumOrderByAggregateInput
+  }
+
+  export type CheckInRequestScalarWhereWithAggregatesInput = {
+    AND?: CheckInRequestScalarWhereWithAggregatesInput | CheckInRequestScalarWhereWithAggregatesInput[]
+    OR?: CheckInRequestScalarWhereWithAggregatesInput[]
+    NOT?: CheckInRequestScalarWhereWithAggregatesInput | CheckInRequestScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"CheckInRequest"> | number
+    employeeId?: IntWithAggregatesFilter<"CheckInRequest"> | number
+    workLocationId?: IntNullableWithAggregatesFilter<"CheckInRequest"> | number | null
+    latitude?: FloatWithAggregatesFilter<"CheckInRequest"> | number
+    longitude?: FloatWithAggregatesFilter<"CheckInRequest"> | number
+    accuracy?: FloatNullableWithAggregatesFilter<"CheckInRequest"> | number | null
+    address?: StringNullableWithAggregatesFilter<"CheckInRequest"> | string | null
+    type?: StringWithAggregatesFilter<"CheckInRequest"> | string
+    timestamp?: DateTimeWithAggregatesFilter<"CheckInRequest"> | Date | string
+    status?: StringWithAggregatesFilter<"CheckInRequest"> | string
+    distanceFromLocation?: FloatNullableWithAggregatesFilter<"CheckInRequest"> | number | null
+    isWithinGeofence?: BoolWithAggregatesFilter<"CheckInRequest"> | boolean
+    photoUrl?: StringNullableWithAggregatesFilter<"CheckInRequest"> | string | null
+    processedAt?: DateTimeNullableWithAggregatesFilter<"CheckInRequest"> | Date | string | null
+    processedBy?: StringNullableWithAggregatesFilter<"CheckInRequest"> | string | null
+    rejectionReason?: StringNullableWithAggregatesFilter<"CheckInRequest"> | string | null
+    deviceId?: StringNullableWithAggregatesFilter<"CheckInRequest"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"CheckInRequest"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CheckInRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CheckInRequest"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -10712,6 +18933,7 @@ export namespace Prisma {
     NOT?: AttendanceWhereInput | AttendanceWhereInput[]
     id?: IntFilter<"Attendance"> | number
     employeeId?: IntFilter<"Attendance"> | number
+    workLocationId?: IntNullableFilter<"Attendance"> | number | null
     date?: DateTimeFilter<"Attendance"> | Date | string
     checkIn?: DateTimeFilter<"Attendance"> | Date | string
     checkOut?: DateTimeNullableFilter<"Attendance"> | Date | string | null
@@ -10719,6 +18941,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
     isPaidDay?: BoolFilter<"Attendance"> | boolean
+    checkInLocationVerified?: BoolFilter<"Attendance"> | boolean
+    checkOutLocationVerified?: BoolFilter<"Attendance"> | boolean
+    checkInRequestId?: IntNullableFilter<"Attendance"> | number | null
+    checkOutRequestId?: IntNullableFilter<"Attendance"> | number | null
+    isRemoteWork?: BoolFilter<"Attendance"> | boolean
+    remoteWorkReason?: StringNullableFilter<"Attendance"> | string | null
+    remoteWorkApprovedBy?: StringNullableFilter<"Attendance"> | string | null
     actualHoursWorked?: FloatFilter<"Attendance"> | number
     lateDeductionHours?: FloatFilter<"Attendance"> | number
     earlyDeductionHours?: FloatFilter<"Attendance"> | number
@@ -10728,12 +18957,14 @@ export namespace Prisma {
     makeupTimeCompleted?: FloatFilter<"Attendance"> | number
     totalPenaltyAmount?: FloatFilter<"Attendance"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
     penalties?: AttendancePenaltyListRelationFilter
   }
 
   export type AttendanceOrderByWithRelationInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrderInput | SortOrder
     date?: SortOrder
     checkIn?: SortOrder
     checkOut?: SortOrderInput | SortOrder
@@ -10741,6 +18972,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    checkInLocationVerified?: SortOrder
+    checkOutLocationVerified?: SortOrder
+    checkInRequestId?: SortOrderInput | SortOrder
+    checkOutRequestId?: SortOrderInput | SortOrder
+    isRemoteWork?: SortOrder
+    remoteWorkReason?: SortOrderInput | SortOrder
+    remoteWorkApprovedBy?: SortOrderInput | SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -10750,6 +18988,7 @@ export namespace Prisma {
     makeupTimeCompleted?: SortOrder
     totalPenaltyAmount?: SortOrder
     employee?: EmployeeOrderByWithRelationInput
+    workLocation?: WorkLocationOrderByWithRelationInput
     penalties?: AttendancePenaltyOrderByRelationAggregateInput
   }
 
@@ -10760,6 +18999,7 @@ export namespace Prisma {
     OR?: AttendanceWhereInput[]
     NOT?: AttendanceWhereInput | AttendanceWhereInput[]
     employeeId?: IntFilter<"Attendance"> | number
+    workLocationId?: IntNullableFilter<"Attendance"> | number | null
     date?: DateTimeFilter<"Attendance"> | Date | string
     checkIn?: DateTimeFilter<"Attendance"> | Date | string
     checkOut?: DateTimeNullableFilter<"Attendance"> | Date | string | null
@@ -10767,6 +19007,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
     isPaidDay?: BoolFilter<"Attendance"> | boolean
+    checkInLocationVerified?: BoolFilter<"Attendance"> | boolean
+    checkOutLocationVerified?: BoolFilter<"Attendance"> | boolean
+    checkInRequestId?: IntNullableFilter<"Attendance"> | number | null
+    checkOutRequestId?: IntNullableFilter<"Attendance"> | number | null
+    isRemoteWork?: BoolFilter<"Attendance"> | boolean
+    remoteWorkReason?: StringNullableFilter<"Attendance"> | string | null
+    remoteWorkApprovedBy?: StringNullableFilter<"Attendance"> | string | null
     actualHoursWorked?: FloatFilter<"Attendance"> | number
     lateDeductionHours?: FloatFilter<"Attendance"> | number
     earlyDeductionHours?: FloatFilter<"Attendance"> | number
@@ -10776,12 +19023,14 @@ export namespace Prisma {
     makeupTimeCompleted?: FloatFilter<"Attendance"> | number
     totalPenaltyAmount?: FloatFilter<"Attendance"> | number
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
     penalties?: AttendancePenaltyListRelationFilter
   }, "id" | "employeeId_date">
 
   export type AttendanceOrderByWithAggregationInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrderInput | SortOrder
     date?: SortOrder
     checkIn?: SortOrder
     checkOut?: SortOrderInput | SortOrder
@@ -10789,6 +19038,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    checkInLocationVerified?: SortOrder
+    checkOutLocationVerified?: SortOrder
+    checkInRequestId?: SortOrderInput | SortOrder
+    checkOutRequestId?: SortOrderInput | SortOrder
+    isRemoteWork?: SortOrder
+    remoteWorkReason?: SortOrderInput | SortOrder
+    remoteWorkApprovedBy?: SortOrderInput | SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -10810,6 +19066,7 @@ export namespace Prisma {
     NOT?: AttendanceScalarWhereWithAggregatesInput | AttendanceScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Attendance"> | number
     employeeId?: IntWithAggregatesFilter<"Attendance"> | number
+    workLocationId?: IntNullableWithAggregatesFilter<"Attendance"> | number | null
     date?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     checkIn?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     checkOut?: DateTimeNullableWithAggregatesFilter<"Attendance"> | Date | string | null
@@ -10817,6 +19074,13 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     isPaidDay?: BoolWithAggregatesFilter<"Attendance"> | boolean
+    checkInLocationVerified?: BoolWithAggregatesFilter<"Attendance"> | boolean
+    checkOutLocationVerified?: BoolWithAggregatesFilter<"Attendance"> | boolean
+    checkInRequestId?: IntNullableWithAggregatesFilter<"Attendance"> | number | null
+    checkOutRequestId?: IntNullableWithAggregatesFilter<"Attendance"> | number | null
+    isRemoteWork?: BoolWithAggregatesFilter<"Attendance"> | boolean
+    remoteWorkReason?: StringNullableWithAggregatesFilter<"Attendance"> | string | null
+    remoteWorkApprovedBy?: StringNullableWithAggregatesFilter<"Attendance"> | string | null
     actualHoursWorked?: FloatWithAggregatesFilter<"Attendance"> | number
     lateDeductionHours?: FloatWithAggregatesFilter<"Attendance"> | number
     earlyDeductionHours?: FloatWithAggregatesFilter<"Attendance"> | number
@@ -11226,6 +19490,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatFilter<"SystemSettings"> | number
     allowMakeupTime?: BoolFilter<"SystemSettings"> | boolean
     makeupTimeDeadlineHours?: IntFilter<"SystemSettings"> | number
+    enableLocationTracking?: BoolFilter<"SystemSettings"> | boolean
+    defaultGeofenceRadius?: IntFilter<"SystemSettings"> | number
+    autoApproveWithinGeofence?: BoolFilter<"SystemSettings"> | boolean
+    requirePhotoVerification?: BoolFilter<"SystemSettings"> | boolean
+    allowRemoteWork?: BoolFilter<"SystemSettings"> | boolean
+    maxCheckInRequestsPerDay?: IntFilter<"SystemSettings"> | number
+    enableEmployeePortal?: BoolFilter<"SystemSettings"> | boolean
+    requireStrongPassword?: BoolFilter<"SystemSettings"> | boolean
+    passwordMinLength?: IntFilter<"SystemSettings"> | number
+    sessionTimeoutMinutes?: IntFilter<"SystemSettings"> | number
+    maxActiveDevicesPerEmployee?: IntFilter<"SystemSettings"> | number
+    allowPasswordReset?: BoolFilter<"SystemSettings"> | boolean
+    requireEmailVerification?: BoolFilter<"SystemSettings"> | boolean
     createdAt?: DateTimeFilter<"SystemSettings"> | Date | string
     updatedAt?: DateTimeFilter<"SystemSettings"> | Date | string
   }
@@ -11251,6 +19528,19 @@ export namespace Prisma {
     penaltyFullDay?: SortOrder
     allowMakeupTime?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    enableLocationTracking?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    autoApproveWithinGeofence?: SortOrder
+    requirePhotoVerification?: SortOrder
+    allowRemoteWork?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    enableEmployeePortal?: SortOrder
+    requireStrongPassword?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
+    allowPasswordReset?: SortOrder
+    requireEmailVerification?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11279,6 +19569,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatFilter<"SystemSettings"> | number
     allowMakeupTime?: BoolFilter<"SystemSettings"> | boolean
     makeupTimeDeadlineHours?: IntFilter<"SystemSettings"> | number
+    enableLocationTracking?: BoolFilter<"SystemSettings"> | boolean
+    defaultGeofenceRadius?: IntFilter<"SystemSettings"> | number
+    autoApproveWithinGeofence?: BoolFilter<"SystemSettings"> | boolean
+    requirePhotoVerification?: BoolFilter<"SystemSettings"> | boolean
+    allowRemoteWork?: BoolFilter<"SystemSettings"> | boolean
+    maxCheckInRequestsPerDay?: IntFilter<"SystemSettings"> | number
+    enableEmployeePortal?: BoolFilter<"SystemSettings"> | boolean
+    requireStrongPassword?: BoolFilter<"SystemSettings"> | boolean
+    passwordMinLength?: IntFilter<"SystemSettings"> | number
+    sessionTimeoutMinutes?: IntFilter<"SystemSettings"> | number
+    maxActiveDevicesPerEmployee?: IntFilter<"SystemSettings"> | number
+    allowPasswordReset?: BoolFilter<"SystemSettings"> | boolean
+    requireEmailVerification?: BoolFilter<"SystemSettings"> | boolean
     createdAt?: DateTimeFilter<"SystemSettings"> | Date | string
     updatedAt?: DateTimeFilter<"SystemSettings"> | Date | string
   }, "id">
@@ -11304,6 +19607,19 @@ export namespace Prisma {
     penaltyFullDay?: SortOrder
     allowMakeupTime?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    enableLocationTracking?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    autoApproveWithinGeofence?: SortOrder
+    requirePhotoVerification?: SortOrder
+    allowRemoteWork?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    enableEmployeePortal?: SortOrder
+    requireStrongPassword?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
+    allowPasswordReset?: SortOrder
+    requireEmailVerification?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SystemSettingsCountOrderByAggregateInput
@@ -11337,6 +19653,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatWithAggregatesFilter<"SystemSettings"> | number
     allowMakeupTime?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     makeupTimeDeadlineHours?: IntWithAggregatesFilter<"SystemSettings"> | number
+    enableLocationTracking?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    defaultGeofenceRadius?: IntWithAggregatesFilter<"SystemSettings"> | number
+    autoApproveWithinGeofence?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    requirePhotoVerification?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    allowRemoteWork?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    maxCheckInRequestsPerDay?: IntWithAggregatesFilter<"SystemSettings"> | number
+    enableEmployeePortal?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    requireStrongPassword?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    passwordMinLength?: IntWithAggregatesFilter<"SystemSettings"> | number
+    sessionTimeoutMinutes?: IntWithAggregatesFilter<"SystemSettings"> | number
+    maxActiveDevicesPerEmployee?: IntWithAggregatesFilter<"SystemSettings"> | number
+    allowPasswordReset?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    requireEmailVerification?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"SystemSettings"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SystemSettings"> | Date | string
   }
@@ -11346,13 +19675,38 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateInput = {
@@ -11361,13 +19715,38 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUpdateInput = {
@@ -11375,13 +19754,38 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateInput = {
@@ -11390,13 +19794,38 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeCreateManyInput = {
@@ -11405,9 +19834,30 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11417,9 +19867,29 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11430,9 +19900,591 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeWorkLocationCreateInput = {
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+    employee: EmployeeCreateNestedOneWithoutAllowedWorkLocationsInput
+    workLocation: WorkLocationCreateNestedOneWithoutEmployeeAssignmentsInput
+  }
+
+  export type EmployeeWorkLocationUncheckedCreateInput = {
+    id?: number
+    employeeId: number
+    workLocationId: number
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+  }
+
+  export type EmployeeWorkLocationUpdateInput = {
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    employee?: EmployeeUpdateOneRequiredWithoutAllowedWorkLocationsNestedInput
+    workLocation?: WorkLocationUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: IntFieldUpdateOperationsInput | number
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type EmployeeWorkLocationCreateManyInput = {
+    id?: number
+    employeeId: number
+    workLocationId: number
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+  }
+
+  export type EmployeeWorkLocationUpdateManyMutationInput = {
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: IntFieldUpdateOperationsInput | number
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type WorkLocationCreateInput = {
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutWorkLocationInput
+    attendanceRecords?: AttendanceCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationUncheckedCreateInput = {
+    id?: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutWorkLocationInput
+    attendanceRecords?: AttendanceUncheckedCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeUncheckedCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUpdateManyWithoutWorkLocationNestedInput
+    attendanceRecords?: AttendanceUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
+  export type WorkLocationUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutWorkLocationNestedInput
+    attendanceRecords?: AttendanceUncheckedUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
+  export type WorkLocationCreateManyInput = {
+    id?: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkLocationUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkLocationUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeSessionCreateInput = {
+    id?: string
+    token: string
+    deviceInfo?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    isActive?: boolean
+    expiresAt: Date | string
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employee: EmployeeCreateNestedOneWithoutSessionsInput
+  }
+
+  export type EmployeeSessionUncheckedCreateInput = {
+    id?: string
+    employeeId: number
+    token: string
+    deviceInfo?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    isActive?: boolean
+    expiresAt: Date | string
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeSessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employee?: EmployeeUpdateOneRequiredWithoutSessionsNestedInput
+  }
+
+  export type EmployeeSessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employeeId?: IntFieldUpdateOperationsInput | number
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeSessionCreateManyInput = {
+    id?: string
+    employeeId: number
+    token: string
+    deviceInfo?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    isActive?: boolean
+    expiresAt: Date | string
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeSessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeSessionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employeeId?: IntFieldUpdateOperationsInput | number
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeDeviceSessionCreateInput = {
+    id?: string
+    deviceId: string
+    deviceName?: string | null
+    deviceType?: string | null
+    pushToken?: string | null
+    isActive?: boolean
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employee: EmployeeCreateNestedOneWithoutDeviceSessionsInput
+  }
+
+  export type EmployeeDeviceSessionUncheckedCreateInput = {
+    id?: string
+    employeeId: number
+    deviceId: string
+    deviceName?: string | null
+    deviceType?: string | null
+    pushToken?: string | null
+    isActive?: boolean
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeDeviceSessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employee?: EmployeeUpdateOneRequiredWithoutDeviceSessionsNestedInput
+  }
+
+  export type EmployeeDeviceSessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employeeId?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeDeviceSessionCreateManyInput = {
+    id?: string
+    employeeId: number
+    deviceId: string
+    deviceName?: string | null
+    deviceType?: string | null
+    pushToken?: string | null
+    isActive?: boolean
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeDeviceSessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeDeviceSessionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employeeId?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CheckInRequestCreateInput = {
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employee: EmployeeCreateNestedOneWithoutCheckInRequestsInput
+    workLocation?: WorkLocationCreateNestedOneWithoutCheckInRequestsInput
+  }
+
+  export type CheckInRequestUncheckedCreateInput = {
+    id?: number
+    employeeId: number
+    workLocationId?: number | null
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CheckInRequestUpdateInput = {
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employee?: EmployeeUpdateOneRequiredWithoutCheckInRequestsNestedInput
+    workLocation?: WorkLocationUpdateOneWithoutCheckInRequestsNestedInput
+  }
+
+  export type CheckInRequestUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CheckInRequestCreateManyInput = {
+    id?: number
+    employeeId: number
+    workLocationId?: number | null
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CheckInRequestUpdateManyMutationInput = {
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CheckInRequestUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11505,6 +20557,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -11514,12 +20573,14 @@ export namespace Prisma {
     makeupTimeCompleted?: number
     totalPenaltyAmount?: number
     employee: EmployeeCreateNestedOneWithoutAttendanceInput
+    workLocation?: WorkLocationCreateNestedOneWithoutAttendanceRecordsInput
     penalties?: AttendancePenaltyCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateInput = {
     id?: number
     employeeId: number
+    workLocationId?: number | null
     date: Date | string
     checkIn: Date | string
     checkOut?: Date | string | null
@@ -11527,6 +20588,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -11546,6 +20614,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -11555,12 +20630,14 @@ export namespace Prisma {
     makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
     totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
     employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+    workLocation?: WorkLocationUpdateOneWithoutAttendanceRecordsNestedInput
     penalties?: AttendancePenaltyUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
     checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11568,6 +20645,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -11582,6 +20666,7 @@ export namespace Prisma {
   export type AttendanceCreateManyInput = {
     id?: number
     employeeId: number
+    workLocationId?: number | null
     date: Date | string
     checkIn: Date | string
     checkOut?: Date | string | null
@@ -11589,6 +20674,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -11607,6 +20699,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -11620,6 +20719,7 @@ export namespace Prisma {
   export type AttendanceUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
     checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11627,6 +20727,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -12097,6 +21204,19 @@ export namespace Prisma {
     penaltyFullDay?: number
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: number
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: number
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: number
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: number
+    sessionTimeoutMinutes?: number
+    maxActiveDevicesPerEmployee?: number
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12122,6 +21242,19 @@ export namespace Prisma {
     penaltyFullDay?: number
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: number
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: number
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: number
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: number
+    sessionTimeoutMinutes?: number
+    maxActiveDevicesPerEmployee?: number
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12146,6 +21279,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatFieldUpdateOperationsInput | number
     allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
     makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
+    enableLocationTracking?: BoolFieldUpdateOperationsInput | boolean
+    defaultGeofenceRadius?: IntFieldUpdateOperationsInput | number
+    autoApproveWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    requirePhotoVerification?: BoolFieldUpdateOperationsInput | boolean
+    allowRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    maxCheckInRequestsPerDay?: IntFieldUpdateOperationsInput | number
+    enableEmployeePortal?: BoolFieldUpdateOperationsInput | boolean
+    requireStrongPassword?: BoolFieldUpdateOperationsInput | boolean
+    passwordMinLength?: IntFieldUpdateOperationsInput | number
+    sessionTimeoutMinutes?: IntFieldUpdateOperationsInput | number
+    maxActiveDevicesPerEmployee?: IntFieldUpdateOperationsInput | number
+    allowPasswordReset?: BoolFieldUpdateOperationsInput | boolean
+    requireEmailVerification?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12171,6 +21317,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatFieldUpdateOperationsInput | number
     allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
     makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
+    enableLocationTracking?: BoolFieldUpdateOperationsInput | boolean
+    defaultGeofenceRadius?: IntFieldUpdateOperationsInput | number
+    autoApproveWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    requirePhotoVerification?: BoolFieldUpdateOperationsInput | boolean
+    allowRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    maxCheckInRequestsPerDay?: IntFieldUpdateOperationsInput | number
+    enableEmployeePortal?: BoolFieldUpdateOperationsInput | boolean
+    requireStrongPassword?: BoolFieldUpdateOperationsInput | boolean
+    passwordMinLength?: IntFieldUpdateOperationsInput | number
+    sessionTimeoutMinutes?: IntFieldUpdateOperationsInput | number
+    maxActiveDevicesPerEmployee?: IntFieldUpdateOperationsInput | number
+    allowPasswordReset?: BoolFieldUpdateOperationsInput | boolean
+    requireEmailVerification?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12196,6 +21355,19 @@ export namespace Prisma {
     penaltyFullDay?: number
     allowMakeupTime?: boolean
     makeupTimeDeadlineHours?: number
+    enableLocationTracking?: boolean
+    defaultGeofenceRadius?: number
+    autoApproveWithinGeofence?: boolean
+    requirePhotoVerification?: boolean
+    allowRemoteWork?: boolean
+    maxCheckInRequestsPerDay?: number
+    enableEmployeePortal?: boolean
+    requireStrongPassword?: boolean
+    passwordMinLength?: number
+    sessionTimeoutMinutes?: number
+    maxActiveDevicesPerEmployee?: number
+    allowPasswordReset?: boolean
+    requireEmailVerification?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12220,6 +21392,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatFieldUpdateOperationsInput | number
     allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
     makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
+    enableLocationTracking?: BoolFieldUpdateOperationsInput | boolean
+    defaultGeofenceRadius?: IntFieldUpdateOperationsInput | number
+    autoApproveWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    requirePhotoVerification?: BoolFieldUpdateOperationsInput | boolean
+    allowRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    maxCheckInRequestsPerDay?: IntFieldUpdateOperationsInput | number
+    enableEmployeePortal?: BoolFieldUpdateOperationsInput | boolean
+    requireStrongPassword?: BoolFieldUpdateOperationsInput | boolean
+    passwordMinLength?: IntFieldUpdateOperationsInput | number
+    sessionTimeoutMinutes?: IntFieldUpdateOperationsInput | number
+    maxActiveDevicesPerEmployee?: IntFieldUpdateOperationsInput | number
+    allowPasswordReset?: BoolFieldUpdateOperationsInput | boolean
+    requireEmailVerification?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12245,6 +21430,19 @@ export namespace Prisma {
     penaltyFullDay?: FloatFieldUpdateOperationsInput | number
     allowMakeupTime?: BoolFieldUpdateOperationsInput | boolean
     makeupTimeDeadlineHours?: IntFieldUpdateOperationsInput | number
+    enableLocationTracking?: BoolFieldUpdateOperationsInput | boolean
+    defaultGeofenceRadius?: IntFieldUpdateOperationsInput | number
+    autoApproveWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    requirePhotoVerification?: BoolFieldUpdateOperationsInput | boolean
+    allowRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    maxCheckInRequestsPerDay?: IntFieldUpdateOperationsInput | number
+    enableEmployeePortal?: BoolFieldUpdateOperationsInput | boolean
+    requireStrongPassword?: BoolFieldUpdateOperationsInput | boolean
+    passwordMinLength?: IntFieldUpdateOperationsInput | number
+    sessionTimeoutMinutes?: IntFieldUpdateOperationsInput | number
+    maxActiveDevicesPerEmployee?: IntFieldUpdateOperationsInput | number
+    allowPasswordReset?: BoolFieldUpdateOperationsInput | boolean
+    requireEmailVerification?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12301,6 +21499,33 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -12324,6 +21549,35 @@ export namespace Prisma {
     none?: PayoutWhereInput
   }
 
+  export type EmployeeSessionListRelationFilter = {
+    every?: EmployeeSessionWhereInput
+    some?: EmployeeSessionWhereInput
+    none?: EmployeeSessionWhereInput
+  }
+
+  export type EmployeeDeviceSessionListRelationFilter = {
+    every?: EmployeeDeviceSessionWhereInput
+    some?: EmployeeDeviceSessionWhereInput
+    none?: EmployeeDeviceSessionWhereInput
+  }
+
+  export type CheckInRequestListRelationFilter = {
+    every?: CheckInRequestWhereInput
+    some?: CheckInRequestWhereInput
+    none?: CheckInRequestWhereInput
+  }
+
+  export type WorkLocationNullableScalarRelationFilter = {
+    is?: WorkLocationWhereInput | null
+    isNot?: WorkLocationWhereInput | null
+  }
+
+  export type EmployeeWorkLocationListRelationFilter = {
+    every?: EmployeeWorkLocationWhereInput
+    some?: EmployeeWorkLocationWhereInput
+    none?: EmployeeWorkLocationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -12337,15 +21591,52 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type EmployeeSessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EmployeeDeviceSessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CheckInRequestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EmployeeWorkLocationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type EmployeeCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
-    fingerprintId?: SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
+    password?: SortOrder
+    profilePicture?: SortOrder
+    dateOfBirth?: SortOrder
+    nationalId?: SortOrder
+    address?: SortOrder
+    emergencyContact?: SortOrder
+    emergencyPhone?: SortOrder
+    hireDate?: SortOrder
+    department?: SortOrder
+    manager?: SortOrder
+    employeeId?: SortOrder
+    isActive?: SortOrder
+    canAccessPortal?: SortOrder
+    canWorkRemotely?: SortOrder
+    primaryWorkLocationId?: SortOrder
+    lastLoginAt?: SortOrder
+    lastActiveAt?: SortOrder
+    passwordResetToken?: SortOrder
+    passwordResetExpires?: SortOrder
+    preferredLanguage?: SortOrder
+    timezone?: SortOrder
+    emailNotifications?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12353,6 +21644,7 @@ export namespace Prisma {
   export type EmployeeAvgOrderByAggregateInput = {
     id?: SortOrder
     hourlyRate?: SortOrder
+    primaryWorkLocationId?: SortOrder
   }
 
   export type EmployeeMaxOrderByAggregateInput = {
@@ -12361,9 +21653,30 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
-    fingerprintId?: SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
+    password?: SortOrder
+    profilePicture?: SortOrder
+    dateOfBirth?: SortOrder
+    nationalId?: SortOrder
+    address?: SortOrder
+    emergencyContact?: SortOrder
+    emergencyPhone?: SortOrder
+    hireDate?: SortOrder
+    department?: SortOrder
+    manager?: SortOrder
+    employeeId?: SortOrder
+    isActive?: SortOrder
+    canAccessPortal?: SortOrder
+    canWorkRemotely?: SortOrder
+    primaryWorkLocationId?: SortOrder
+    lastLoginAt?: SortOrder
+    lastActiveAt?: SortOrder
+    passwordResetToken?: SortOrder
+    passwordResetExpires?: SortOrder
+    preferredLanguage?: SortOrder
+    timezone?: SortOrder
+    emailNotifications?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12374,9 +21687,30 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
-    fingerprintId?: SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
+    password?: SortOrder
+    profilePicture?: SortOrder
+    dateOfBirth?: SortOrder
+    nationalId?: SortOrder
+    address?: SortOrder
+    emergencyContact?: SortOrder
+    emergencyPhone?: SortOrder
+    hireDate?: SortOrder
+    department?: SortOrder
+    manager?: SortOrder
+    employeeId?: SortOrder
+    isActive?: SortOrder
+    canAccessPortal?: SortOrder
+    canWorkRemotely?: SortOrder
+    primaryWorkLocationId?: SortOrder
+    lastLoginAt?: SortOrder
+    lastActiveAt?: SortOrder
+    passwordResetToken?: SortOrder
+    passwordResetExpires?: SortOrder
+    preferredLanguage?: SortOrder
+    timezone?: SortOrder
+    emailNotifications?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12384,6 +21718,7 @@ export namespace Prisma {
   export type EmployeeSumOrderByAggregateInput = {
     id?: SortOrder
     hourlyRate?: SortOrder
+    primaryWorkLocationId?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -12454,6 +21789,44 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -12468,9 +21841,363 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type EmployeeScalarRelationFilter = {
+    is?: EmployeeWhereInput
+    isNot?: EmployeeWhereInput
+  }
+
+  export type WorkLocationScalarRelationFilter = {
+    is?: WorkLocationWhereInput
+    isNot?: WorkLocationWhereInput
+  }
+
+  export type EmployeeWorkLocationEmployeeIdWorkLocationIdCompoundUniqueInput = {
+    employeeId: number
+    workLocationId: number
+  }
+
+  export type EmployeeWorkLocationCountOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    canCheckIn?: SortOrder
+    canCheckOut?: SortOrder
+    isActive?: SortOrder
+    assignedAt?: SortOrder
+    assignedBy?: SortOrder
+  }
+
+  export type EmployeeWorkLocationAvgOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+  }
+
+  export type EmployeeWorkLocationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    canCheckIn?: SortOrder
+    canCheckOut?: SortOrder
+    isActive?: SortOrder
+    assignedAt?: SortOrder
+    assignedBy?: SortOrder
+  }
+
+  export type EmployeeWorkLocationMinOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    canCheckIn?: SortOrder
+    canCheckOut?: SortOrder
+    isActive?: SortOrder
+    assignedAt?: SortOrder
+    assignedBy?: SortOrder
+  }
+
+  export type EmployeeWorkLocationSumOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+  }
+
+  export type EmployeeListRelationFilter = {
+    every?: EmployeeWhereInput
+    some?: EmployeeWhereInput
+    none?: EmployeeWhereInput
+  }
+
+  export type EmployeeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkLocationCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+    isActive?: SortOrder
+    timezone?: SortOrder
+    description?: SortOrder
+    workingHoursStart?: SortOrder
+    workingHoursEnd?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkLocationAvgOrderByAggregateInput = {
+    id?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+  }
+
+  export type WorkLocationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+    isActive?: SortOrder
+    timezone?: SortOrder
+    description?: SortOrder
+    workingHoursStart?: SortOrder
+    workingHoursEnd?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkLocationMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+    isActive?: SortOrder
+    timezone?: SortOrder
+    description?: SortOrder
+    workingHoursStart?: SortOrder
+    workingHoursEnd?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkLocationSumOrderByAggregateInput = {
+    id?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    radiusMeters?: SortOrder
+  }
+
+  export type EmployeeSessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    token?: SortOrder
+    deviceInfo?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeSessionAvgOrderByAggregateInput = {
+    employeeId?: SortOrder
+  }
+
+  export type EmployeeSessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    token?: SortOrder
+    deviceInfo?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeSessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    token?: SortOrder
+    deviceInfo?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeSessionSumOrderByAggregateInput = {
+    employeeId?: SortOrder
+  }
+
+  export type EmployeeDeviceSessionEmployeeIdDeviceIdCompoundUniqueInput = {
+    employeeId: number
+    deviceId: string
+  }
+
+  export type EmployeeDeviceSessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    deviceId?: SortOrder
+    deviceName?: SortOrder
+    deviceType?: SortOrder
+    pushToken?: SortOrder
+    isActive?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeDeviceSessionAvgOrderByAggregateInput = {
+    employeeId?: SortOrder
+  }
+
+  export type EmployeeDeviceSessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    deviceId?: SortOrder
+    deviceName?: SortOrder
+    deviceType?: SortOrder
+    pushToken?: SortOrder
+    isActive?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeDeviceSessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    deviceId?: SortOrder
+    deviceName?: SortOrder
+    deviceType?: SortOrder
+    pushToken?: SortOrder
+    isActive?: SortOrder
+    lastSeenAt?: SortOrder
+    locationPermission?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeDeviceSessionSumOrderByAggregateInput = {
+    employeeId?: SortOrder
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type CheckInRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrder
+    address?: SortOrder
+    type?: SortOrder
+    timestamp?: SortOrder
+    status?: SortOrder
+    distanceFromLocation?: SortOrder
+    isWithinGeofence?: SortOrder
+    photoUrl?: SortOrder
+    processedAt?: SortOrder
+    processedBy?: SortOrder
+    rejectionReason?: SortOrder
+    deviceId?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CheckInRequestAvgOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrder
+    distanceFromLocation?: SortOrder
+  }
+
+  export type CheckInRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrder
+    address?: SortOrder
+    type?: SortOrder
+    timestamp?: SortOrder
+    status?: SortOrder
+    distanceFromLocation?: SortOrder
+    isWithinGeofence?: SortOrder
+    photoUrl?: SortOrder
+    processedAt?: SortOrder
+    processedBy?: SortOrder
+    rejectionReason?: SortOrder
+    deviceId?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CheckInRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrder
+    address?: SortOrder
+    type?: SortOrder
+    timestamp?: SortOrder
+    status?: SortOrder
+    distanceFromLocation?: SortOrder
+    isWithinGeofence?: SortOrder
+    photoUrl?: SortOrder
+    processedAt?: SortOrder
+    processedBy?: SortOrder
+    rejectionReason?: SortOrder
+    deviceId?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CheckInRequestSumOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workLocationId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    accuracy?: SortOrder
+    distanceFromLocation?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -12508,41 +22235,6 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type EmployeeScalarRelationFilter = {
-    is?: EmployeeWhereInput
-    isNot?: EmployeeWhereInput
-  }
-
   export type AttendancePenaltyListRelationFilter = {
     every?: AttendancePenaltyWhereInput
     some?: AttendancePenaltyWhereInput
@@ -12561,6 +22253,7 @@ export namespace Prisma {
   export type AttendanceCountOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrder
     date?: SortOrder
     checkIn?: SortOrder
     checkOut?: SortOrder
@@ -12568,6 +22261,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    checkInLocationVerified?: SortOrder
+    checkOutLocationVerified?: SortOrder
+    checkInRequestId?: SortOrder
+    checkOutRequestId?: SortOrder
+    isRemoteWork?: SortOrder
+    remoteWorkReason?: SortOrder
+    remoteWorkApprovedBy?: SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -12581,7 +22281,10 @@ export namespace Prisma {
   export type AttendanceAvgOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrder
     hoursWorked?: SortOrder
+    checkInRequestId?: SortOrder
+    checkOutRequestId?: SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -12595,6 +22298,7 @@ export namespace Prisma {
   export type AttendanceMaxOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrder
     date?: SortOrder
     checkIn?: SortOrder
     checkOut?: SortOrder
@@ -12602,6 +22306,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    checkInLocationVerified?: SortOrder
+    checkOutLocationVerified?: SortOrder
+    checkInRequestId?: SortOrder
+    checkOutRequestId?: SortOrder
+    isRemoteWork?: SortOrder
+    remoteWorkReason?: SortOrder
+    remoteWorkApprovedBy?: SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -12615,6 +22326,7 @@ export namespace Prisma {
   export type AttendanceMinOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrder
     date?: SortOrder
     checkIn?: SortOrder
     checkOut?: SortOrder
@@ -12622,6 +22334,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isPaidDay?: SortOrder
+    checkInLocationVerified?: SortOrder
+    checkOutLocationVerified?: SortOrder
+    checkInRequestId?: SortOrder
+    checkOutRequestId?: SortOrder
+    isRemoteWork?: SortOrder
+    remoteWorkReason?: SortOrder
+    remoteWorkApprovedBy?: SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -12635,7 +22354,10 @@ export namespace Prisma {
   export type AttendanceSumOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    workLocationId?: SortOrder
     hoursWorked?: SortOrder
+    checkInRequestId?: SortOrder
+    checkOutRequestId?: SortOrder
     actualHoursWorked?: SortOrder
     lateDeductionHours?: SortOrder
     earlyDeductionHours?: SortOrder
@@ -12644,47 +22366,6 @@ export namespace Prisma {
     makeupTimeRequired?: SortOrder
     makeupTimeCompleted?: SortOrder
     totalPenaltyAmount?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type AttendanceScalarRelationFilter = {
@@ -12778,22 +22459,6 @@ export namespace Prisma {
     hoursDeducted?: SortOrder
     salaryDeducted?: SortOrder
     makeupHours?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type PayoutAdjustmentListRelationFilter = {
@@ -13022,6 +22687,19 @@ export namespace Prisma {
     penaltyFullDay?: SortOrder
     allowMakeupTime?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    enableLocationTracking?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    autoApproveWithinGeofence?: SortOrder
+    requirePhotoVerification?: SortOrder
+    allowRemoteWork?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    enableEmployeePortal?: SortOrder
+    requireStrongPassword?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
+    allowPasswordReset?: SortOrder
+    requireEmailVerification?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13037,6 +22715,11 @@ export namespace Prisma {
     penaltyMajor150Min?: SortOrder
     penaltyFullDay?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
   }
 
   export type SystemSettingsMaxOrderByAggregateInput = {
@@ -13060,6 +22743,19 @@ export namespace Prisma {
     penaltyFullDay?: SortOrder
     allowMakeupTime?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    enableLocationTracking?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    autoApproveWithinGeofence?: SortOrder
+    requirePhotoVerification?: SortOrder
+    allowRemoteWork?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    enableEmployeePortal?: SortOrder
+    requireStrongPassword?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
+    allowPasswordReset?: SortOrder
+    requireEmailVerification?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13085,6 +22781,19 @@ export namespace Prisma {
     penaltyFullDay?: SortOrder
     allowMakeupTime?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    enableLocationTracking?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    autoApproveWithinGeofence?: SortOrder
+    requirePhotoVerification?: SortOrder
+    allowRemoteWork?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    enableEmployeePortal?: SortOrder
+    requireStrongPassword?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
+    allowPasswordReset?: SortOrder
+    requireEmailVerification?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13100,6 +22809,11 @@ export namespace Prisma {
     penaltyMajor150Min?: SortOrder
     penaltyFullDay?: SortOrder
     makeupTimeDeadlineHours?: SortOrder
+    defaultGeofenceRadius?: SortOrder
+    maxCheckInRequestsPerDay?: SortOrder
+    passwordMinLength?: SortOrder
+    sessionTimeoutMinutes?: SortOrder
+    maxActiveDevicesPerEmployee?: SortOrder
   }
 
   export type AttendanceCreateNestedManyWithoutEmployeeInput = {
@@ -13116,6 +22830,40 @@ export namespace Prisma {
     connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
   }
 
+  export type EmployeeSessionCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<EmployeeSessionCreateWithoutEmployeeInput, EmployeeSessionUncheckedCreateWithoutEmployeeInput> | EmployeeSessionCreateWithoutEmployeeInput[] | EmployeeSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeSessionCreateOrConnectWithoutEmployeeInput | EmployeeSessionCreateOrConnectWithoutEmployeeInput[]
+    createMany?: EmployeeSessionCreateManyEmployeeInputEnvelope
+    connect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+  }
+
+  export type EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
+    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
+    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+  }
+
+  export type CheckInRequestCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput> | CheckInRequestCreateWithoutEmployeeInput[] | CheckInRequestUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutEmployeeInput | CheckInRequestCreateOrConnectWithoutEmployeeInput[]
+    createMany?: CheckInRequestCreateManyEmployeeInputEnvelope
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+  }
+
+  export type WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput = {
+    create?: XOR<WorkLocationCreateWithoutPrimaryEmployeesInput, WorkLocationUncheckedCreateWithoutPrimaryEmployeesInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutPrimaryEmployeesInput
+    connect?: WorkLocationWhereUniqueInput
+  }
+
+  export type EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutEmployeeInput, EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput> | EmployeeWorkLocationCreateWithoutEmployeeInput[] | EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput | EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput[]
+    createMany?: EmployeeWorkLocationCreateManyEmployeeInputEnvelope
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+  }
+
   export type AttendanceUncheckedCreateNestedManyWithoutEmployeeInput = {
     create?: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput> | AttendanceCreateWithoutEmployeeInput[] | AttendanceUncheckedCreateWithoutEmployeeInput[]
     connectOrCreate?: AttendanceCreateOrConnectWithoutEmployeeInput | AttendanceCreateOrConnectWithoutEmployeeInput[]
@@ -13128,6 +22876,34 @@ export namespace Prisma {
     connectOrCreate?: PayoutCreateOrConnectWithoutEmployeeInput | PayoutCreateOrConnectWithoutEmployeeInput[]
     createMany?: PayoutCreateManyEmployeeInputEnvelope
     connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+  }
+
+  export type EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<EmployeeSessionCreateWithoutEmployeeInput, EmployeeSessionUncheckedCreateWithoutEmployeeInput> | EmployeeSessionCreateWithoutEmployeeInput[] | EmployeeSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeSessionCreateOrConnectWithoutEmployeeInput | EmployeeSessionCreateOrConnectWithoutEmployeeInput[]
+    createMany?: EmployeeSessionCreateManyEmployeeInputEnvelope
+    connect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+  }
+
+  export type EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
+    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
+    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+  }
+
+  export type CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput> | CheckInRequestCreateWithoutEmployeeInput[] | CheckInRequestUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutEmployeeInput | CheckInRequestCreateOrConnectWithoutEmployeeInput[]
+    createMany?: CheckInRequestCreateManyEmployeeInputEnvelope
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+  }
+
+  export type EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutEmployeeInput, EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput> | EmployeeWorkLocationCreateWithoutEmployeeInput[] | EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput | EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput[]
+    createMany?: EmployeeWorkLocationCreateManyEmployeeInputEnvelope
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -13144,6 +22920,14 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -13178,8 +22962,82 @@ export namespace Prisma {
     deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
+  export type EmployeeSessionUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<EmployeeSessionCreateWithoutEmployeeInput, EmployeeSessionUncheckedCreateWithoutEmployeeInput> | EmployeeSessionCreateWithoutEmployeeInput[] | EmployeeSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeSessionCreateOrConnectWithoutEmployeeInput | EmployeeSessionCreateOrConnectWithoutEmployeeInput[]
+    upsert?: EmployeeSessionUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeSessionUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: EmployeeSessionCreateManyEmployeeInputEnvelope
+    set?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    disconnect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    delete?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    connect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    update?: EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: EmployeeSessionScalarWhereInput | EmployeeSessionScalarWhereInput[]
+  }
+
+  export type EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
+    upsert?: EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
+    set?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    disconnect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    delete?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    update?: EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
+  }
+
+  export type CheckInRequestUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput> | CheckInRequestCreateWithoutEmployeeInput[] | CheckInRequestUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutEmployeeInput | CheckInRequestCreateOrConnectWithoutEmployeeInput[]
+    upsert?: CheckInRequestUpsertWithWhereUniqueWithoutEmployeeInput | CheckInRequestUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: CheckInRequestCreateManyEmployeeInputEnvelope
+    set?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    disconnect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    delete?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    update?: CheckInRequestUpdateWithWhereUniqueWithoutEmployeeInput | CheckInRequestUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: CheckInRequestUpdateManyWithWhereWithoutEmployeeInput | CheckInRequestUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: CheckInRequestScalarWhereInput | CheckInRequestScalarWhereInput[]
+  }
+
+  export type WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput = {
+    create?: XOR<WorkLocationCreateWithoutPrimaryEmployeesInput, WorkLocationUncheckedCreateWithoutPrimaryEmployeesInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutPrimaryEmployeesInput
+    upsert?: WorkLocationUpsertWithoutPrimaryEmployeesInput
+    disconnect?: WorkLocationWhereInput | boolean
+    delete?: WorkLocationWhereInput | boolean
+    connect?: WorkLocationWhereUniqueInput
+    update?: XOR<XOR<WorkLocationUpdateToOneWithWhereWithoutPrimaryEmployeesInput, WorkLocationUpdateWithoutPrimaryEmployeesInput>, WorkLocationUncheckedUpdateWithoutPrimaryEmployeesInput>
+  }
+
+  export type EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutEmployeeInput, EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput> | EmployeeWorkLocationCreateWithoutEmployeeInput[] | EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput | EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput[]
+    upsert?: EmployeeWorkLocationUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeWorkLocationUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: EmployeeWorkLocationCreateManyEmployeeInputEnvelope
+    set?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    disconnect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    delete?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    update?: EmployeeWorkLocationUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeWorkLocationUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: EmployeeWorkLocationUpdateManyWithWhereWithoutEmployeeInput | EmployeeWorkLocationUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: EmployeeWorkLocationScalarWhereInput | EmployeeWorkLocationScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
     increment?: number
     decrement?: number
     multiply?: number
@@ -13214,14 +23072,334 @@ export namespace Prisma {
     deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<EmployeeSessionCreateWithoutEmployeeInput, EmployeeSessionUncheckedCreateWithoutEmployeeInput> | EmployeeSessionCreateWithoutEmployeeInput[] | EmployeeSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeSessionCreateOrConnectWithoutEmployeeInput | EmployeeSessionCreateOrConnectWithoutEmployeeInput[]
+    upsert?: EmployeeSessionUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeSessionUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: EmployeeSessionCreateManyEmployeeInputEnvelope
+    set?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    disconnect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    delete?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    connect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
+    update?: EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: EmployeeSessionScalarWhereInput | EmployeeSessionScalarWhereInput[]
+  }
+
+  export type EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
+    upsert?: EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
+    set?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    disconnect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    delete?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
+    update?: EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
+  }
+
+  export type CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput> | CheckInRequestCreateWithoutEmployeeInput[] | CheckInRequestUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutEmployeeInput | CheckInRequestCreateOrConnectWithoutEmployeeInput[]
+    upsert?: CheckInRequestUpsertWithWhereUniqueWithoutEmployeeInput | CheckInRequestUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: CheckInRequestCreateManyEmployeeInputEnvelope
+    set?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    disconnect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    delete?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    update?: CheckInRequestUpdateWithWhereUniqueWithoutEmployeeInput | CheckInRequestUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: CheckInRequestUpdateManyWithWhereWithoutEmployeeInput | CheckInRequestUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: CheckInRequestScalarWhereInput | CheckInRequestScalarWhereInput[]
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutEmployeeInput, EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput> | EmployeeWorkLocationCreateWithoutEmployeeInput[] | EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput | EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput[]
+    upsert?: EmployeeWorkLocationUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeWorkLocationUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: EmployeeWorkLocationCreateManyEmployeeInputEnvelope
+    set?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    disconnect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    delete?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    update?: EmployeeWorkLocationUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeWorkLocationUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: EmployeeWorkLocationUpdateManyWithWhereWithoutEmployeeInput | EmployeeWorkLocationUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: EmployeeWorkLocationScalarWhereInput | EmployeeWorkLocationScalarWhereInput[]
+  }
+
+  export type EmployeeCreateNestedOneWithoutAllowedWorkLocationsInput = {
+    create?: XOR<EmployeeCreateWithoutAllowedWorkLocationsInput, EmployeeUncheckedCreateWithoutAllowedWorkLocationsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutAllowedWorkLocationsInput
+    connect?: EmployeeWhereUniqueInput
+  }
+
+  export type WorkLocationCreateNestedOneWithoutEmployeeAssignmentsInput = {
+    create?: XOR<WorkLocationCreateWithoutEmployeeAssignmentsInput, WorkLocationUncheckedCreateWithoutEmployeeAssignmentsInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutEmployeeAssignmentsInput
+    connect?: WorkLocationWhereUniqueInput
+  }
+
+  export type EmployeeUpdateOneRequiredWithoutAllowedWorkLocationsNestedInput = {
+    create?: XOR<EmployeeCreateWithoutAllowedWorkLocationsInput, EmployeeUncheckedCreateWithoutAllowedWorkLocationsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutAllowedWorkLocationsInput
+    upsert?: EmployeeUpsertWithoutAllowedWorkLocationsInput
+    connect?: EmployeeWhereUniqueInput
+    update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutAllowedWorkLocationsInput, EmployeeUpdateWithoutAllowedWorkLocationsInput>, EmployeeUncheckedUpdateWithoutAllowedWorkLocationsInput>
+  }
+
+  export type WorkLocationUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput = {
+    create?: XOR<WorkLocationCreateWithoutEmployeeAssignmentsInput, WorkLocationUncheckedCreateWithoutEmployeeAssignmentsInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutEmployeeAssignmentsInput
+    upsert?: WorkLocationUpsertWithoutEmployeeAssignmentsInput
+    connect?: WorkLocationWhereUniqueInput
+    update?: XOR<XOR<WorkLocationUpdateToOneWithWhereWithoutEmployeeAssignmentsInput, WorkLocationUpdateWithoutEmployeeAssignmentsInput>, WorkLocationUncheckedUpdateWithoutEmployeeAssignmentsInput>
+  }
+
+  export type CheckInRequestCreateNestedManyWithoutWorkLocationInput = {
+    create?: XOR<CheckInRequestCreateWithoutWorkLocationInput, CheckInRequestUncheckedCreateWithoutWorkLocationInput> | CheckInRequestCreateWithoutWorkLocationInput[] | CheckInRequestUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutWorkLocationInput | CheckInRequestCreateOrConnectWithoutWorkLocationInput[]
+    createMany?: CheckInRequestCreateManyWorkLocationInputEnvelope
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+  }
+
+  export type AttendanceCreateNestedManyWithoutWorkLocationInput = {
+    create?: XOR<AttendanceCreateWithoutWorkLocationInput, AttendanceUncheckedCreateWithoutWorkLocationInput> | AttendanceCreateWithoutWorkLocationInput[] | AttendanceUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkLocationInput | AttendanceCreateOrConnectWithoutWorkLocationInput[]
+    createMany?: AttendanceCreateManyWorkLocationInputEnvelope
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
+  export type EmployeeWorkLocationCreateNestedManyWithoutWorkLocationInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput> | EmployeeWorkLocationCreateWithoutWorkLocationInput[] | EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput | EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput[]
+    createMany?: EmployeeWorkLocationCreateManyWorkLocationInputEnvelope
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+  }
+
+  export type EmployeeCreateNestedManyWithoutPrimaryWorkLocationInput = {
+    create?: XOR<EmployeeCreateWithoutPrimaryWorkLocationInput, EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput> | EmployeeCreateWithoutPrimaryWorkLocationInput[] | EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput | EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput[]
+    createMany?: EmployeeCreateManyPrimaryWorkLocationInputEnvelope
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+  }
+
+  export type CheckInRequestUncheckedCreateNestedManyWithoutWorkLocationInput = {
+    create?: XOR<CheckInRequestCreateWithoutWorkLocationInput, CheckInRequestUncheckedCreateWithoutWorkLocationInput> | CheckInRequestCreateWithoutWorkLocationInput[] | CheckInRequestUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutWorkLocationInput | CheckInRequestCreateOrConnectWithoutWorkLocationInput[]
+    createMany?: CheckInRequestCreateManyWorkLocationInputEnvelope
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+  }
+
+  export type AttendanceUncheckedCreateNestedManyWithoutWorkLocationInput = {
+    create?: XOR<AttendanceCreateWithoutWorkLocationInput, AttendanceUncheckedCreateWithoutWorkLocationInput> | AttendanceCreateWithoutWorkLocationInput[] | AttendanceUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkLocationInput | AttendanceCreateOrConnectWithoutWorkLocationInput[]
+    createMany?: AttendanceCreateManyWorkLocationInputEnvelope
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
+  export type EmployeeWorkLocationUncheckedCreateNestedManyWithoutWorkLocationInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput> | EmployeeWorkLocationCreateWithoutWorkLocationInput[] | EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput | EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput[]
+    createMany?: EmployeeWorkLocationCreateManyWorkLocationInputEnvelope
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+  }
+
+  export type EmployeeUncheckedCreateNestedManyWithoutPrimaryWorkLocationInput = {
+    create?: XOR<EmployeeCreateWithoutPrimaryWorkLocationInput, EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput> | EmployeeCreateWithoutPrimaryWorkLocationInput[] | EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput | EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput[]
+    createMany?: EmployeeCreateManyPrimaryWorkLocationInputEnvelope
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+  }
+
+  export type CheckInRequestUpdateManyWithoutWorkLocationNestedInput = {
+    create?: XOR<CheckInRequestCreateWithoutWorkLocationInput, CheckInRequestUncheckedCreateWithoutWorkLocationInput> | CheckInRequestCreateWithoutWorkLocationInput[] | CheckInRequestUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutWorkLocationInput | CheckInRequestCreateOrConnectWithoutWorkLocationInput[]
+    upsert?: CheckInRequestUpsertWithWhereUniqueWithoutWorkLocationInput | CheckInRequestUpsertWithWhereUniqueWithoutWorkLocationInput[]
+    createMany?: CheckInRequestCreateManyWorkLocationInputEnvelope
+    set?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    disconnect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    delete?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    update?: CheckInRequestUpdateWithWhereUniqueWithoutWorkLocationInput | CheckInRequestUpdateWithWhereUniqueWithoutWorkLocationInput[]
+    updateMany?: CheckInRequestUpdateManyWithWhereWithoutWorkLocationInput | CheckInRequestUpdateManyWithWhereWithoutWorkLocationInput[]
+    deleteMany?: CheckInRequestScalarWhereInput | CheckInRequestScalarWhereInput[]
+  }
+
+  export type AttendanceUpdateManyWithoutWorkLocationNestedInput = {
+    create?: XOR<AttendanceCreateWithoutWorkLocationInput, AttendanceUncheckedCreateWithoutWorkLocationInput> | AttendanceCreateWithoutWorkLocationInput[] | AttendanceUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkLocationInput | AttendanceCreateOrConnectWithoutWorkLocationInput[]
+    upsert?: AttendanceUpsertWithWhereUniqueWithoutWorkLocationInput | AttendanceUpsertWithWhereUniqueWithoutWorkLocationInput[]
+    createMany?: AttendanceCreateManyWorkLocationInputEnvelope
+    set?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    disconnect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    delete?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    update?: AttendanceUpdateWithWhereUniqueWithoutWorkLocationInput | AttendanceUpdateWithWhereUniqueWithoutWorkLocationInput[]
+    updateMany?: AttendanceUpdateManyWithWhereWithoutWorkLocationInput | AttendanceUpdateManyWithWhereWithoutWorkLocationInput[]
+    deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type EmployeeWorkLocationUpdateManyWithoutWorkLocationNestedInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput> | EmployeeWorkLocationCreateWithoutWorkLocationInput[] | EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput | EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput[]
+    upsert?: EmployeeWorkLocationUpsertWithWhereUniqueWithoutWorkLocationInput | EmployeeWorkLocationUpsertWithWhereUniqueWithoutWorkLocationInput[]
+    createMany?: EmployeeWorkLocationCreateManyWorkLocationInputEnvelope
+    set?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    disconnect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    delete?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    update?: EmployeeWorkLocationUpdateWithWhereUniqueWithoutWorkLocationInput | EmployeeWorkLocationUpdateWithWhereUniqueWithoutWorkLocationInput[]
+    updateMany?: EmployeeWorkLocationUpdateManyWithWhereWithoutWorkLocationInput | EmployeeWorkLocationUpdateManyWithWhereWithoutWorkLocationInput[]
+    deleteMany?: EmployeeWorkLocationScalarWhereInput | EmployeeWorkLocationScalarWhereInput[]
+  }
+
+  export type EmployeeUpdateManyWithoutPrimaryWorkLocationNestedInput = {
+    create?: XOR<EmployeeCreateWithoutPrimaryWorkLocationInput, EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput> | EmployeeCreateWithoutPrimaryWorkLocationInput[] | EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput | EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput[]
+    upsert?: EmployeeUpsertWithWhereUniqueWithoutPrimaryWorkLocationInput | EmployeeUpsertWithWhereUniqueWithoutPrimaryWorkLocationInput[]
+    createMany?: EmployeeCreateManyPrimaryWorkLocationInputEnvelope
+    set?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    disconnect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    delete?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    update?: EmployeeUpdateWithWhereUniqueWithoutPrimaryWorkLocationInput | EmployeeUpdateWithWhereUniqueWithoutPrimaryWorkLocationInput[]
+    updateMany?: EmployeeUpdateManyWithWhereWithoutPrimaryWorkLocationInput | EmployeeUpdateManyWithWhereWithoutPrimaryWorkLocationInput[]
+    deleteMany?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
+  }
+
+  export type CheckInRequestUncheckedUpdateManyWithoutWorkLocationNestedInput = {
+    create?: XOR<CheckInRequestCreateWithoutWorkLocationInput, CheckInRequestUncheckedCreateWithoutWorkLocationInput> | CheckInRequestCreateWithoutWorkLocationInput[] | CheckInRequestUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: CheckInRequestCreateOrConnectWithoutWorkLocationInput | CheckInRequestCreateOrConnectWithoutWorkLocationInput[]
+    upsert?: CheckInRequestUpsertWithWhereUniqueWithoutWorkLocationInput | CheckInRequestUpsertWithWhereUniqueWithoutWorkLocationInput[]
+    createMany?: CheckInRequestCreateManyWorkLocationInputEnvelope
+    set?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    disconnect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    delete?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    connect?: CheckInRequestWhereUniqueInput | CheckInRequestWhereUniqueInput[]
+    update?: CheckInRequestUpdateWithWhereUniqueWithoutWorkLocationInput | CheckInRequestUpdateWithWhereUniqueWithoutWorkLocationInput[]
+    updateMany?: CheckInRequestUpdateManyWithWhereWithoutWorkLocationInput | CheckInRequestUpdateManyWithWhereWithoutWorkLocationInput[]
+    deleteMany?: CheckInRequestScalarWhereInput | CheckInRequestScalarWhereInput[]
+  }
+
+  export type AttendanceUncheckedUpdateManyWithoutWorkLocationNestedInput = {
+    create?: XOR<AttendanceCreateWithoutWorkLocationInput, AttendanceUncheckedCreateWithoutWorkLocationInput> | AttendanceCreateWithoutWorkLocationInput[] | AttendanceUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkLocationInput | AttendanceCreateOrConnectWithoutWorkLocationInput[]
+    upsert?: AttendanceUpsertWithWhereUniqueWithoutWorkLocationInput | AttendanceUpsertWithWhereUniqueWithoutWorkLocationInput[]
+    createMany?: AttendanceCreateManyWorkLocationInputEnvelope
+    set?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    disconnect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    delete?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    update?: AttendanceUpdateWithWhereUniqueWithoutWorkLocationInput | AttendanceUpdateWithWhereUniqueWithoutWorkLocationInput[]
+    updateMany?: AttendanceUpdateManyWithWhereWithoutWorkLocationInput | AttendanceUpdateManyWithWhereWithoutWorkLocationInput[]
+    deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationNestedInput = {
+    create?: XOR<EmployeeWorkLocationCreateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput> | EmployeeWorkLocationCreateWithoutWorkLocationInput[] | EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput[]
+    connectOrCreate?: EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput | EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput[]
+    upsert?: EmployeeWorkLocationUpsertWithWhereUniqueWithoutWorkLocationInput | EmployeeWorkLocationUpsertWithWhereUniqueWithoutWorkLocationInput[]
+    createMany?: EmployeeWorkLocationCreateManyWorkLocationInputEnvelope
+    set?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    disconnect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    delete?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    connect?: EmployeeWorkLocationWhereUniqueInput | EmployeeWorkLocationWhereUniqueInput[]
+    update?: EmployeeWorkLocationUpdateWithWhereUniqueWithoutWorkLocationInput | EmployeeWorkLocationUpdateWithWhereUniqueWithoutWorkLocationInput[]
+    updateMany?: EmployeeWorkLocationUpdateManyWithWhereWithoutWorkLocationInput | EmployeeWorkLocationUpdateManyWithWhereWithoutWorkLocationInput[]
+    deleteMany?: EmployeeWorkLocationScalarWhereInput | EmployeeWorkLocationScalarWhereInput[]
+  }
+
+  export type EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationNestedInput = {
+    create?: XOR<EmployeeCreateWithoutPrimaryWorkLocationInput, EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput> | EmployeeCreateWithoutPrimaryWorkLocationInput[] | EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput | EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput[]
+    upsert?: EmployeeUpsertWithWhereUniqueWithoutPrimaryWorkLocationInput | EmployeeUpsertWithWhereUniqueWithoutPrimaryWorkLocationInput[]
+    createMany?: EmployeeCreateManyPrimaryWorkLocationInputEnvelope
+    set?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    disconnect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    delete?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    update?: EmployeeUpdateWithWhereUniqueWithoutPrimaryWorkLocationInput | EmployeeUpdateWithWhereUniqueWithoutPrimaryWorkLocationInput[]
+    updateMany?: EmployeeUpdateManyWithWhereWithoutPrimaryWorkLocationInput | EmployeeUpdateManyWithWhereWithoutPrimaryWorkLocationInput[]
+    deleteMany?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
+  }
+
+  export type EmployeeCreateNestedOneWithoutSessionsInput = {
+    create?: XOR<EmployeeCreateWithoutSessionsInput, EmployeeUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutSessionsInput
+    connect?: EmployeeWhereUniqueInput
+  }
+
+  export type EmployeeUpdateOneRequiredWithoutSessionsNestedInput = {
+    create?: XOR<EmployeeCreateWithoutSessionsInput, EmployeeUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutSessionsInput
+    upsert?: EmployeeUpsertWithoutSessionsInput
+    connect?: EmployeeWhereUniqueInput
+    update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutSessionsInput, EmployeeUpdateWithoutSessionsInput>, EmployeeUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type EmployeeCreateNestedOneWithoutDeviceSessionsInput = {
+    create?: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutDeviceSessionsInput
+    connect?: EmployeeWhereUniqueInput
+  }
+
+  export type EmployeeUpdateOneRequiredWithoutDeviceSessionsNestedInput = {
+    create?: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutDeviceSessionsInput
+    upsert?: EmployeeUpsertWithoutDeviceSessionsInput
+    connect?: EmployeeWhereUniqueInput
+    update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutDeviceSessionsInput, EmployeeUpdateWithoutDeviceSessionsInput>, EmployeeUncheckedUpdateWithoutDeviceSessionsInput>
+  }
+
+  export type EmployeeCreateNestedOneWithoutCheckInRequestsInput = {
+    create?: XOR<EmployeeCreateWithoutCheckInRequestsInput, EmployeeUncheckedCreateWithoutCheckInRequestsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutCheckInRequestsInput
+    connect?: EmployeeWhereUniqueInput
+  }
+
+  export type WorkLocationCreateNestedOneWithoutCheckInRequestsInput = {
+    create?: XOR<WorkLocationCreateWithoutCheckInRequestsInput, WorkLocationUncheckedCreateWithoutCheckInRequestsInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutCheckInRequestsInput
+    connect?: WorkLocationWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EmployeeUpdateOneRequiredWithoutCheckInRequestsNestedInput = {
+    create?: XOR<EmployeeCreateWithoutCheckInRequestsInput, EmployeeUncheckedCreateWithoutCheckInRequestsInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutCheckInRequestsInput
+    upsert?: EmployeeUpsertWithoutCheckInRequestsInput
+    connect?: EmployeeWhereUniqueInput
+    update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutCheckInRequestsInput, EmployeeUpdateWithoutCheckInRequestsInput>, EmployeeUncheckedUpdateWithoutCheckInRequestsInput>
+  }
+
+  export type WorkLocationUpdateOneWithoutCheckInRequestsNestedInput = {
+    create?: XOR<WorkLocationCreateWithoutCheckInRequestsInput, WorkLocationUncheckedCreateWithoutCheckInRequestsInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutCheckInRequestsInput
+    upsert?: WorkLocationUpsertWithoutCheckInRequestsInput
+    disconnect?: WorkLocationWhereInput | boolean
+    delete?: WorkLocationWhereInput | boolean
+    connect?: WorkLocationWhereUniqueInput
+    update?: XOR<XOR<WorkLocationUpdateToOneWithWhereWithoutCheckInRequestsInput, WorkLocationUpdateWithoutCheckInRequestsInput>, WorkLocationUncheckedUpdateWithoutCheckInRequestsInput>
   }
 
   export type EmployeeCreateNestedOneWithoutAttendanceInput = {
     create?: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
     connectOrCreate?: EmployeeCreateOrConnectWithoutAttendanceInput
     connect?: EmployeeWhereUniqueInput
+  }
+
+  export type WorkLocationCreateNestedOneWithoutAttendanceRecordsInput = {
+    create?: XOR<WorkLocationCreateWithoutAttendanceRecordsInput, WorkLocationUncheckedCreateWithoutAttendanceRecordsInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutAttendanceRecordsInput
+    connect?: WorkLocationWhereUniqueInput
   }
 
   export type AttendancePenaltyCreateNestedManyWithoutAttendanceInput = {
@@ -13238,24 +23416,22 @@ export namespace Prisma {
     connect?: AttendancePenaltyWhereUniqueInput | AttendancePenaltyWhereUniqueInput[]
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type EmployeeUpdateOneRequiredWithoutAttendanceNestedInput = {
     create?: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
     connectOrCreate?: EmployeeCreateOrConnectWithoutAttendanceInput
     upsert?: EmployeeUpsertWithoutAttendanceInput
     connect?: EmployeeWhereUniqueInput
     update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutAttendanceInput, EmployeeUpdateWithoutAttendanceInput>, EmployeeUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type WorkLocationUpdateOneWithoutAttendanceRecordsNestedInput = {
+    create?: XOR<WorkLocationCreateWithoutAttendanceRecordsInput, WorkLocationUncheckedCreateWithoutAttendanceRecordsInput>
+    connectOrCreate?: WorkLocationCreateOrConnectWithoutAttendanceRecordsInput
+    upsert?: WorkLocationUpsertWithoutAttendanceRecordsInput
+    disconnect?: WorkLocationWhereInput | boolean
+    delete?: WorkLocationWhereInput | boolean
+    connect?: WorkLocationWhereUniqueInput
+    update?: XOR<XOR<WorkLocationUpdateToOneWithWhereWithoutAttendanceRecordsInput, WorkLocationUpdateWithoutAttendanceRecordsInput>, WorkLocationUncheckedUpdateWithoutAttendanceRecordsInput>
   }
 
   export type AttendancePenaltyUpdateManyWithoutAttendanceNestedInput = {
@@ -13290,14 +23466,6 @@ export namespace Prisma {
     create?: XOR<AttendanceCreateWithoutPenaltiesInput, AttendanceUncheckedCreateWithoutPenaltiesInput>
     connectOrCreate?: AttendanceCreateOrConnectWithoutPenaltiesInput
     connect?: AttendanceWhereUniqueInput
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type AttendanceUpdateOneRequiredWithoutPenaltiesNestedInput = {
@@ -13428,6 +23596,33 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13489,17 +23684,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -13516,55 +23700,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -13579,20 +23714,12 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -13611,6 +23738,47 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type AttendanceCreateWithoutEmployeeInput = {
     date: Date | string
     checkIn: Date | string
@@ -13619,6 +23787,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -13627,11 +23802,13 @@ export namespace Prisma {
     makeupTimeRequired?: number
     makeupTimeCompleted?: number
     totalPenaltyAmount?: number
+    workLocation?: WorkLocationCreateNestedOneWithoutAttendanceRecordsInput
     penalties?: AttendancePenaltyCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutEmployeeInput = {
     id?: number
+    workLocationId?: number | null
     date: Date | string
     checkIn: Date | string
     checkOut?: Date | string | null
@@ -13639,6 +23816,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -13733,6 +23917,206 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type EmployeeSessionCreateWithoutEmployeeInput = {
+    id?: string
+    token: string
+    deviceInfo?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    isActive?: boolean
+    expiresAt: Date | string
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeSessionUncheckedCreateWithoutEmployeeInput = {
+    id?: string
+    token: string
+    deviceInfo?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    isActive?: boolean
+    expiresAt: Date | string
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeSessionCreateOrConnectWithoutEmployeeInput = {
+    where: EmployeeSessionWhereUniqueInput
+    create: XOR<EmployeeSessionCreateWithoutEmployeeInput, EmployeeSessionUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type EmployeeSessionCreateManyEmployeeInputEnvelope = {
+    data: EmployeeSessionCreateManyEmployeeInput | EmployeeSessionCreateManyEmployeeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmployeeDeviceSessionCreateWithoutEmployeeInput = {
+    id?: string
+    deviceId: string
+    deviceName?: string | null
+    deviceType?: string | null
+    pushToken?: string | null
+    isActive?: boolean
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput = {
+    id?: string
+    deviceId: string
+    deviceName?: string | null
+    deviceType?: string | null
+    pushToken?: string | null
+    isActive?: boolean
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput = {
+    where: EmployeeDeviceSessionWhereUniqueInput
+    create: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type EmployeeDeviceSessionCreateManyEmployeeInputEnvelope = {
+    data: EmployeeDeviceSessionCreateManyEmployeeInput | EmployeeDeviceSessionCreateManyEmployeeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CheckInRequestCreateWithoutEmployeeInput = {
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workLocation?: WorkLocationCreateNestedOneWithoutCheckInRequestsInput
+  }
+
+  export type CheckInRequestUncheckedCreateWithoutEmployeeInput = {
+    id?: number
+    workLocationId?: number | null
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CheckInRequestCreateOrConnectWithoutEmployeeInput = {
+    where: CheckInRequestWhereUniqueInput
+    create: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type CheckInRequestCreateManyEmployeeInputEnvelope = {
+    data: CheckInRequestCreateManyEmployeeInput | CheckInRequestCreateManyEmployeeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkLocationCreateWithoutPrimaryEmployeesInput = {
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutWorkLocationInput
+    attendanceRecords?: AttendanceCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationCreateNestedManyWithoutWorkLocationInput
+  }
+
+  export type WorkLocationUncheckedCreateWithoutPrimaryEmployeesInput = {
+    id?: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutWorkLocationInput
+    attendanceRecords?: AttendanceUncheckedCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutWorkLocationInput
+  }
+
+  export type WorkLocationCreateOrConnectWithoutPrimaryEmployeesInput = {
+    where: WorkLocationWhereUniqueInput
+    create: XOR<WorkLocationCreateWithoutPrimaryEmployeesInput, WorkLocationUncheckedCreateWithoutPrimaryEmployeesInput>
+  }
+
+  export type EmployeeWorkLocationCreateWithoutEmployeeInput = {
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+    workLocation: WorkLocationCreateNestedOneWithoutEmployeeAssignmentsInput
+  }
+
+  export type EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput = {
+    id?: number
+    workLocationId: number
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+  }
+
+  export type EmployeeWorkLocationCreateOrConnectWithoutEmployeeInput = {
+    where: EmployeeWorkLocationWhereUniqueInput
+    create: XOR<EmployeeWorkLocationCreateWithoutEmployeeInput, EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type EmployeeWorkLocationCreateManyEmployeeInputEnvelope = {
+    data: EmployeeWorkLocationCreateManyEmployeeInput | EmployeeWorkLocationCreateManyEmployeeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AttendanceUpsertWithWhereUniqueWithoutEmployeeInput = {
     where: AttendanceWhereUniqueInput
     update: XOR<AttendanceUpdateWithoutEmployeeInput, AttendanceUncheckedUpdateWithoutEmployeeInput>
@@ -13755,6 +24139,7 @@ export namespace Prisma {
     NOT?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
     id?: IntFilter<"Attendance"> | number
     employeeId?: IntFilter<"Attendance"> | number
+    workLocationId?: IntNullableFilter<"Attendance"> | number | null
     date?: DateTimeFilter<"Attendance"> | Date | string
     checkIn?: DateTimeFilter<"Attendance"> | Date | string
     checkOut?: DateTimeNullableFilter<"Attendance"> | Date | string | null
@@ -13762,6 +24147,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
     isPaidDay?: BoolFilter<"Attendance"> | boolean
+    checkInLocationVerified?: BoolFilter<"Attendance"> | boolean
+    checkOutLocationVerified?: BoolFilter<"Attendance"> | boolean
+    checkInRequestId?: IntNullableFilter<"Attendance"> | number | null
+    checkOutRequestId?: IntNullableFilter<"Attendance"> | number | null
+    isRemoteWork?: BoolFilter<"Attendance"> | boolean
+    remoteWorkReason?: StringNullableFilter<"Attendance"> | string | null
+    remoteWorkApprovedBy?: StringNullableFilter<"Attendance"> | string | null
     actualHoursWorked?: FloatFilter<"Attendance"> | number
     lateDeductionHours?: FloatFilter<"Attendance"> | number
     earlyDeductionHours?: FloatFilter<"Attendance"> | number
@@ -13823,17 +24215,1434 @@ export namespace Prisma {
     holidayPayout?: FloatFilter<"Payout"> | number
   }
 
+  export type EmployeeSessionUpsertWithWhereUniqueWithoutEmployeeInput = {
+    where: EmployeeSessionWhereUniqueInput
+    update: XOR<EmployeeSessionUpdateWithoutEmployeeInput, EmployeeSessionUncheckedUpdateWithoutEmployeeInput>
+    create: XOR<EmployeeSessionCreateWithoutEmployeeInput, EmployeeSessionUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput = {
+    where: EmployeeSessionWhereUniqueInput
+    data: XOR<EmployeeSessionUpdateWithoutEmployeeInput, EmployeeSessionUncheckedUpdateWithoutEmployeeInput>
+  }
+
+  export type EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput = {
+    where: EmployeeSessionScalarWhereInput
+    data: XOR<EmployeeSessionUpdateManyMutationInput, EmployeeSessionUncheckedUpdateManyWithoutEmployeeInput>
+  }
+
+  export type EmployeeSessionScalarWhereInput = {
+    AND?: EmployeeSessionScalarWhereInput | EmployeeSessionScalarWhereInput[]
+    OR?: EmployeeSessionScalarWhereInput[]
+    NOT?: EmployeeSessionScalarWhereInput | EmployeeSessionScalarWhereInput[]
+    id?: StringFilter<"EmployeeSession"> | string
+    employeeId?: IntFilter<"EmployeeSession"> | number
+    token?: StringFilter<"EmployeeSession"> | string
+    deviceInfo?: StringNullableFilter<"EmployeeSession"> | string | null
+    ipAddress?: StringNullableFilter<"EmployeeSession"> | string | null
+    userAgent?: StringNullableFilter<"EmployeeSession"> | string | null
+    isActive?: BoolFilter<"EmployeeSession"> | boolean
+    expiresAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    lastSeenAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    locationPermission?: BoolFilter<"EmployeeSession"> | boolean
+    createdAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeSession"> | Date | string
+  }
+
+  export type EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput = {
+    where: EmployeeDeviceSessionWhereUniqueInput
+    update: XOR<EmployeeDeviceSessionUpdateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedUpdateWithoutEmployeeInput>
+    create: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput = {
+    where: EmployeeDeviceSessionWhereUniqueInput
+    data: XOR<EmployeeDeviceSessionUpdateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedUpdateWithoutEmployeeInput>
+  }
+
+  export type EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput = {
+    where: EmployeeDeviceSessionScalarWhereInput
+    data: XOR<EmployeeDeviceSessionUpdateManyMutationInput, EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeInput>
+  }
+
+  export type EmployeeDeviceSessionScalarWhereInput = {
+    AND?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
+    OR?: EmployeeDeviceSessionScalarWhereInput[]
+    NOT?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
+    id?: StringFilter<"EmployeeDeviceSession"> | string
+    employeeId?: IntFilter<"EmployeeDeviceSession"> | number
+    deviceId?: StringFilter<"EmployeeDeviceSession"> | string
+    deviceName?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    deviceType?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    pushToken?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
+    isActive?: BoolFilter<"EmployeeDeviceSession"> | boolean
+    lastSeenAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    locationPermission?: BoolFilter<"EmployeeDeviceSession"> | boolean
+    createdAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
+  }
+
+  export type CheckInRequestUpsertWithWhereUniqueWithoutEmployeeInput = {
+    where: CheckInRequestWhereUniqueInput
+    update: XOR<CheckInRequestUpdateWithoutEmployeeInput, CheckInRequestUncheckedUpdateWithoutEmployeeInput>
+    create: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type CheckInRequestUpdateWithWhereUniqueWithoutEmployeeInput = {
+    where: CheckInRequestWhereUniqueInput
+    data: XOR<CheckInRequestUpdateWithoutEmployeeInput, CheckInRequestUncheckedUpdateWithoutEmployeeInput>
+  }
+
+  export type CheckInRequestUpdateManyWithWhereWithoutEmployeeInput = {
+    where: CheckInRequestScalarWhereInput
+    data: XOR<CheckInRequestUpdateManyMutationInput, CheckInRequestUncheckedUpdateManyWithoutEmployeeInput>
+  }
+
+  export type CheckInRequestScalarWhereInput = {
+    AND?: CheckInRequestScalarWhereInput | CheckInRequestScalarWhereInput[]
+    OR?: CheckInRequestScalarWhereInput[]
+    NOT?: CheckInRequestScalarWhereInput | CheckInRequestScalarWhereInput[]
+    id?: IntFilter<"CheckInRequest"> | number
+    employeeId?: IntFilter<"CheckInRequest"> | number
+    workLocationId?: IntNullableFilter<"CheckInRequest"> | number | null
+    latitude?: FloatFilter<"CheckInRequest"> | number
+    longitude?: FloatFilter<"CheckInRequest"> | number
+    accuracy?: FloatNullableFilter<"CheckInRequest"> | number | null
+    address?: StringNullableFilter<"CheckInRequest"> | string | null
+    type?: StringFilter<"CheckInRequest"> | string
+    timestamp?: DateTimeFilter<"CheckInRequest"> | Date | string
+    status?: StringFilter<"CheckInRequest"> | string
+    distanceFromLocation?: FloatNullableFilter<"CheckInRequest"> | number | null
+    isWithinGeofence?: BoolFilter<"CheckInRequest"> | boolean
+    photoUrl?: StringNullableFilter<"CheckInRequest"> | string | null
+    processedAt?: DateTimeNullableFilter<"CheckInRequest"> | Date | string | null
+    processedBy?: StringNullableFilter<"CheckInRequest"> | string | null
+    rejectionReason?: StringNullableFilter<"CheckInRequest"> | string | null
+    deviceId?: StringNullableFilter<"CheckInRequest"> | string | null
+    userAgent?: StringNullableFilter<"CheckInRequest"> | string | null
+    createdAt?: DateTimeFilter<"CheckInRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"CheckInRequest"> | Date | string
+  }
+
+  export type WorkLocationUpsertWithoutPrimaryEmployeesInput = {
+    update: XOR<WorkLocationUpdateWithoutPrimaryEmployeesInput, WorkLocationUncheckedUpdateWithoutPrimaryEmployeesInput>
+    create: XOR<WorkLocationCreateWithoutPrimaryEmployeesInput, WorkLocationUncheckedCreateWithoutPrimaryEmployeesInput>
+    where?: WorkLocationWhereInput
+  }
+
+  export type WorkLocationUpdateToOneWithWhereWithoutPrimaryEmployeesInput = {
+    where?: WorkLocationWhereInput
+    data: XOR<WorkLocationUpdateWithoutPrimaryEmployeesInput, WorkLocationUncheckedUpdateWithoutPrimaryEmployeesInput>
+  }
+
+  export type WorkLocationUpdateWithoutPrimaryEmployeesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUpdateManyWithoutWorkLocationNestedInput
+    attendanceRecords?: AttendanceUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUpdateManyWithoutWorkLocationNestedInput
+  }
+
+  export type WorkLocationUncheckedUpdateWithoutPrimaryEmployeesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutWorkLocationNestedInput
+    attendanceRecords?: AttendanceUncheckedUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationNestedInput
+  }
+
+  export type EmployeeWorkLocationUpsertWithWhereUniqueWithoutEmployeeInput = {
+    where: EmployeeWorkLocationWhereUniqueInput
+    update: XOR<EmployeeWorkLocationUpdateWithoutEmployeeInput, EmployeeWorkLocationUncheckedUpdateWithoutEmployeeInput>
+    create: XOR<EmployeeWorkLocationCreateWithoutEmployeeInput, EmployeeWorkLocationUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type EmployeeWorkLocationUpdateWithWhereUniqueWithoutEmployeeInput = {
+    where: EmployeeWorkLocationWhereUniqueInput
+    data: XOR<EmployeeWorkLocationUpdateWithoutEmployeeInput, EmployeeWorkLocationUncheckedUpdateWithoutEmployeeInput>
+  }
+
+  export type EmployeeWorkLocationUpdateManyWithWhereWithoutEmployeeInput = {
+    where: EmployeeWorkLocationScalarWhereInput
+    data: XOR<EmployeeWorkLocationUpdateManyMutationInput, EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeInput>
+  }
+
+  export type EmployeeWorkLocationScalarWhereInput = {
+    AND?: EmployeeWorkLocationScalarWhereInput | EmployeeWorkLocationScalarWhereInput[]
+    OR?: EmployeeWorkLocationScalarWhereInput[]
+    NOT?: EmployeeWorkLocationScalarWhereInput | EmployeeWorkLocationScalarWhereInput[]
+    id?: IntFilter<"EmployeeWorkLocation"> | number
+    employeeId?: IntFilter<"EmployeeWorkLocation"> | number
+    workLocationId?: IntFilter<"EmployeeWorkLocation"> | number
+    canCheckIn?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    canCheckOut?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    isActive?: BoolFilter<"EmployeeWorkLocation"> | boolean
+    assignedAt?: DateTimeFilter<"EmployeeWorkLocation"> | Date | string
+    assignedBy?: StringNullableFilter<"EmployeeWorkLocation"> | string | null
+  }
+
+  export type EmployeeCreateWithoutAllowedWorkLocationsInput = {
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutAllowedWorkLocationsInput = {
+    id?: number
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeCreateOrConnectWithoutAllowedWorkLocationsInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutAllowedWorkLocationsInput, EmployeeUncheckedCreateWithoutAllowedWorkLocationsInput>
+  }
+
+  export type WorkLocationCreateWithoutEmployeeAssignmentsInput = {
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutWorkLocationInput
+    attendanceRecords?: AttendanceCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationUncheckedCreateWithoutEmployeeAssignmentsInput = {
+    id?: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutWorkLocationInput
+    attendanceRecords?: AttendanceUncheckedCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeUncheckedCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationCreateOrConnectWithoutEmployeeAssignmentsInput = {
+    where: WorkLocationWhereUniqueInput
+    create: XOR<WorkLocationCreateWithoutEmployeeAssignmentsInput, WorkLocationUncheckedCreateWithoutEmployeeAssignmentsInput>
+  }
+
+  export type EmployeeUpsertWithoutAllowedWorkLocationsInput = {
+    update: XOR<EmployeeUpdateWithoutAllowedWorkLocationsInput, EmployeeUncheckedUpdateWithoutAllowedWorkLocationsInput>
+    create: XOR<EmployeeCreateWithoutAllowedWorkLocationsInput, EmployeeUncheckedCreateWithoutAllowedWorkLocationsInput>
+    where?: EmployeeWhereInput
+  }
+
+  export type EmployeeUpdateToOneWithWhereWithoutAllowedWorkLocationsInput = {
+    where?: EmployeeWhereInput
+    data: XOR<EmployeeUpdateWithoutAllowedWorkLocationsInput, EmployeeUncheckedUpdateWithoutAllowedWorkLocationsInput>
+  }
+
+  export type EmployeeUpdateWithoutAllowedWorkLocationsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutAllowedWorkLocationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type WorkLocationUpsertWithoutEmployeeAssignmentsInput = {
+    update: XOR<WorkLocationUpdateWithoutEmployeeAssignmentsInput, WorkLocationUncheckedUpdateWithoutEmployeeAssignmentsInput>
+    create: XOR<WorkLocationCreateWithoutEmployeeAssignmentsInput, WorkLocationUncheckedCreateWithoutEmployeeAssignmentsInput>
+    where?: WorkLocationWhereInput
+  }
+
+  export type WorkLocationUpdateToOneWithWhereWithoutEmployeeAssignmentsInput = {
+    where?: WorkLocationWhereInput
+    data: XOR<WorkLocationUpdateWithoutEmployeeAssignmentsInput, WorkLocationUncheckedUpdateWithoutEmployeeAssignmentsInput>
+  }
+
+  export type WorkLocationUpdateWithoutEmployeeAssignmentsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUpdateManyWithoutWorkLocationNestedInput
+    attendanceRecords?: AttendanceUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
+  export type WorkLocationUncheckedUpdateWithoutEmployeeAssignmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutWorkLocationNestedInput
+    attendanceRecords?: AttendanceUncheckedUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
+  export type CheckInRequestCreateWithoutWorkLocationInput = {
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employee: EmployeeCreateNestedOneWithoutCheckInRequestsInput
+  }
+
+  export type CheckInRequestUncheckedCreateWithoutWorkLocationInput = {
+    id?: number
+    employeeId: number
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CheckInRequestCreateOrConnectWithoutWorkLocationInput = {
+    where: CheckInRequestWhereUniqueInput
+    create: XOR<CheckInRequestCreateWithoutWorkLocationInput, CheckInRequestUncheckedCreateWithoutWorkLocationInput>
+  }
+
+  export type CheckInRequestCreateManyWorkLocationInputEnvelope = {
+    data: CheckInRequestCreateManyWorkLocationInput | CheckInRequestCreateManyWorkLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AttendanceCreateWithoutWorkLocationInput = {
+    date: Date | string
+    checkIn: Date | string
+    checkOut?: Date | string | null
+    hoursWorked?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+    employee: EmployeeCreateNestedOneWithoutAttendanceInput
+    penalties?: AttendancePenaltyCreateNestedManyWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutWorkLocationInput = {
+    id?: number
+    employeeId: number
+    date: Date | string
+    checkIn: Date | string
+    checkOut?: Date | string | null
+    hoursWorked?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+    penalties?: AttendancePenaltyUncheckedCreateNestedManyWithoutAttendanceInput
+  }
+
+  export type AttendanceCreateOrConnectWithoutWorkLocationInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutWorkLocationInput, AttendanceUncheckedCreateWithoutWorkLocationInput>
+  }
+
+  export type AttendanceCreateManyWorkLocationInputEnvelope = {
+    data: AttendanceCreateManyWorkLocationInput | AttendanceCreateManyWorkLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmployeeWorkLocationCreateWithoutWorkLocationInput = {
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+    employee: EmployeeCreateNestedOneWithoutAllowedWorkLocationsInput
+  }
+
+  export type EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput = {
+    id?: number
+    employeeId: number
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+  }
+
+  export type EmployeeWorkLocationCreateOrConnectWithoutWorkLocationInput = {
+    where: EmployeeWorkLocationWhereUniqueInput
+    create: XOR<EmployeeWorkLocationCreateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput>
+  }
+
+  export type EmployeeWorkLocationCreateManyWorkLocationInputEnvelope = {
+    data: EmployeeWorkLocationCreateManyWorkLocationInput | EmployeeWorkLocationCreateManyWorkLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmployeeCreateWithoutPrimaryWorkLocationInput = {
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput = {
+    id?: number
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeCreateOrConnectWithoutPrimaryWorkLocationInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutPrimaryWorkLocationInput, EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput>
+  }
+
+  export type EmployeeCreateManyPrimaryWorkLocationInputEnvelope = {
+    data: EmployeeCreateManyPrimaryWorkLocationInput | EmployeeCreateManyPrimaryWorkLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CheckInRequestUpsertWithWhereUniqueWithoutWorkLocationInput = {
+    where: CheckInRequestWhereUniqueInput
+    update: XOR<CheckInRequestUpdateWithoutWorkLocationInput, CheckInRequestUncheckedUpdateWithoutWorkLocationInput>
+    create: XOR<CheckInRequestCreateWithoutWorkLocationInput, CheckInRequestUncheckedCreateWithoutWorkLocationInput>
+  }
+
+  export type CheckInRequestUpdateWithWhereUniqueWithoutWorkLocationInput = {
+    where: CheckInRequestWhereUniqueInput
+    data: XOR<CheckInRequestUpdateWithoutWorkLocationInput, CheckInRequestUncheckedUpdateWithoutWorkLocationInput>
+  }
+
+  export type CheckInRequestUpdateManyWithWhereWithoutWorkLocationInput = {
+    where: CheckInRequestScalarWhereInput
+    data: XOR<CheckInRequestUpdateManyMutationInput, CheckInRequestUncheckedUpdateManyWithoutWorkLocationInput>
+  }
+
+  export type AttendanceUpsertWithWhereUniqueWithoutWorkLocationInput = {
+    where: AttendanceWhereUniqueInput
+    update: XOR<AttendanceUpdateWithoutWorkLocationInput, AttendanceUncheckedUpdateWithoutWorkLocationInput>
+    create: XOR<AttendanceCreateWithoutWorkLocationInput, AttendanceUncheckedCreateWithoutWorkLocationInput>
+  }
+
+  export type AttendanceUpdateWithWhereUniqueWithoutWorkLocationInput = {
+    where: AttendanceWhereUniqueInput
+    data: XOR<AttendanceUpdateWithoutWorkLocationInput, AttendanceUncheckedUpdateWithoutWorkLocationInput>
+  }
+
+  export type AttendanceUpdateManyWithWhereWithoutWorkLocationInput = {
+    where: AttendanceScalarWhereInput
+    data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutWorkLocationInput>
+  }
+
+  export type EmployeeWorkLocationUpsertWithWhereUniqueWithoutWorkLocationInput = {
+    where: EmployeeWorkLocationWhereUniqueInput
+    update: XOR<EmployeeWorkLocationUpdateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedUpdateWithoutWorkLocationInput>
+    create: XOR<EmployeeWorkLocationCreateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedCreateWithoutWorkLocationInput>
+  }
+
+  export type EmployeeWorkLocationUpdateWithWhereUniqueWithoutWorkLocationInput = {
+    where: EmployeeWorkLocationWhereUniqueInput
+    data: XOR<EmployeeWorkLocationUpdateWithoutWorkLocationInput, EmployeeWorkLocationUncheckedUpdateWithoutWorkLocationInput>
+  }
+
+  export type EmployeeWorkLocationUpdateManyWithWhereWithoutWorkLocationInput = {
+    where: EmployeeWorkLocationScalarWhereInput
+    data: XOR<EmployeeWorkLocationUpdateManyMutationInput, EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationInput>
+  }
+
+  export type EmployeeUpsertWithWhereUniqueWithoutPrimaryWorkLocationInput = {
+    where: EmployeeWhereUniqueInput
+    update: XOR<EmployeeUpdateWithoutPrimaryWorkLocationInput, EmployeeUncheckedUpdateWithoutPrimaryWorkLocationInput>
+    create: XOR<EmployeeCreateWithoutPrimaryWorkLocationInput, EmployeeUncheckedCreateWithoutPrimaryWorkLocationInput>
+  }
+
+  export type EmployeeUpdateWithWhereUniqueWithoutPrimaryWorkLocationInput = {
+    where: EmployeeWhereUniqueInput
+    data: XOR<EmployeeUpdateWithoutPrimaryWorkLocationInput, EmployeeUncheckedUpdateWithoutPrimaryWorkLocationInput>
+  }
+
+  export type EmployeeUpdateManyWithWhereWithoutPrimaryWorkLocationInput = {
+    where: EmployeeScalarWhereInput
+    data: XOR<EmployeeUpdateManyMutationInput, EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationInput>
+  }
+
+  export type EmployeeScalarWhereInput = {
+    AND?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
+    OR?: EmployeeScalarWhereInput[]
+    NOT?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
+    id?: IntFilter<"Employee"> | number
+    name?: StringFilter<"Employee"> | string
+    email?: StringFilter<"Employee"> | string
+    position?: StringFilter<"Employee"> | string
+    phone?: StringNullableFilter<"Employee"> | string | null
+    hourlyRate?: FloatFilter<"Employee"> | number
+    paymentBasis?: StringFilter<"Employee"> | string
+    password?: StringNullableFilter<"Employee"> | string | null
+    profilePicture?: StringNullableFilter<"Employee"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    nationalId?: StringNullableFilter<"Employee"> | string | null
+    address?: StringNullableFilter<"Employee"> | string | null
+    emergencyContact?: StringNullableFilter<"Employee"> | string | null
+    emergencyPhone?: StringNullableFilter<"Employee"> | string | null
+    hireDate?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    department?: StringNullableFilter<"Employee"> | string | null
+    manager?: StringNullableFilter<"Employee"> | string | null
+    employeeId?: StringNullableFilter<"Employee"> | string | null
+    isActive?: BoolFilter<"Employee"> | boolean
+    canAccessPortal?: BoolFilter<"Employee"> | boolean
+    canWorkRemotely?: BoolFilter<"Employee"> | boolean
+    primaryWorkLocationId?: IntNullableFilter<"Employee"> | number | null
+    lastLoginAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    lastActiveAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    passwordResetToken?: StringNullableFilter<"Employee"> | string | null
+    passwordResetExpires?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    preferredLanguage?: StringFilter<"Employee"> | string
+    timezone?: StringFilter<"Employee"> | string
+    emailNotifications?: BoolFilter<"Employee"> | boolean
+    createdAt?: DateTimeFilter<"Employee"> | Date | string
+    updatedAt?: DateTimeFilter<"Employee"> | Date | string
+  }
+
+  export type EmployeeCreateWithoutSessionsInput = {
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutSessionsInput = {
+    id?: number
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeCreateOrConnectWithoutSessionsInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutSessionsInput, EmployeeUncheckedCreateWithoutSessionsInput>
+  }
+
+  export type EmployeeUpsertWithoutSessionsInput = {
+    update: XOR<EmployeeUpdateWithoutSessionsInput, EmployeeUncheckedUpdateWithoutSessionsInput>
+    create: XOR<EmployeeCreateWithoutSessionsInput, EmployeeUncheckedCreateWithoutSessionsInput>
+    where?: EmployeeWhereInput
+  }
+
+  export type EmployeeUpdateToOneWithWhereWithoutSessionsInput = {
+    where?: EmployeeWhereInput
+    data: XOR<EmployeeUpdateWithoutSessionsInput, EmployeeUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type EmployeeUpdateWithoutSessionsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutSessionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeCreateWithoutDeviceSessionsInput = {
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutDeviceSessionsInput = {
+    id?: number
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeCreateOrConnectWithoutDeviceSessionsInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
+  }
+
+  export type EmployeeUpsertWithoutDeviceSessionsInput = {
+    update: XOR<EmployeeUpdateWithoutDeviceSessionsInput, EmployeeUncheckedUpdateWithoutDeviceSessionsInput>
+    create: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
+    where?: EmployeeWhereInput
+  }
+
+  export type EmployeeUpdateToOneWithWhereWithoutDeviceSessionsInput = {
+    where?: EmployeeWhereInput
+    data: XOR<EmployeeUpdateWithoutDeviceSessionsInput, EmployeeUncheckedUpdateWithoutDeviceSessionsInput>
+  }
+
+  export type EmployeeUpdateWithoutDeviceSessionsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutDeviceSessionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeCreateWithoutCheckInRequestsInput = {
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutCheckInRequestsInput = {
+    id?: number
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+    payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeCreateOrConnectWithoutCheckInRequestsInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutCheckInRequestsInput, EmployeeUncheckedCreateWithoutCheckInRequestsInput>
+  }
+
+  export type WorkLocationCreateWithoutCheckInRequestsInput = {
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendanceRecords?: AttendanceCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationUncheckedCreateWithoutCheckInRequestsInput = {
+    id?: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendanceRecords?: AttendanceUncheckedCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeUncheckedCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationCreateOrConnectWithoutCheckInRequestsInput = {
+    where: WorkLocationWhereUniqueInput
+    create: XOR<WorkLocationCreateWithoutCheckInRequestsInput, WorkLocationUncheckedCreateWithoutCheckInRequestsInput>
+  }
+
+  export type EmployeeUpsertWithoutCheckInRequestsInput = {
+    update: XOR<EmployeeUpdateWithoutCheckInRequestsInput, EmployeeUncheckedUpdateWithoutCheckInRequestsInput>
+    create: XOR<EmployeeCreateWithoutCheckInRequestsInput, EmployeeUncheckedCreateWithoutCheckInRequestsInput>
+    where?: EmployeeWhereInput
+  }
+
+  export type EmployeeUpdateToOneWithWhereWithoutCheckInRequestsInput = {
+    where?: EmployeeWhereInput
+    data: XOR<EmployeeUpdateWithoutCheckInRequestsInput, EmployeeUncheckedUpdateWithoutCheckInRequestsInput>
+  }
+
+  export type EmployeeUpdateWithoutCheckInRequestsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutCheckInRequestsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type WorkLocationUpsertWithoutCheckInRequestsInput = {
+    update: XOR<WorkLocationUpdateWithoutCheckInRequestsInput, WorkLocationUncheckedUpdateWithoutCheckInRequestsInput>
+    create: XOR<WorkLocationCreateWithoutCheckInRequestsInput, WorkLocationUncheckedCreateWithoutCheckInRequestsInput>
+    where?: WorkLocationWhereInput
+  }
+
+  export type WorkLocationUpdateToOneWithWhereWithoutCheckInRequestsInput = {
+    where?: WorkLocationWhereInput
+    data: XOR<WorkLocationUpdateWithoutCheckInRequestsInput, WorkLocationUncheckedUpdateWithoutCheckInRequestsInput>
+  }
+
+  export type WorkLocationUpdateWithoutCheckInRequestsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendanceRecords?: AttendanceUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
+  export type WorkLocationUncheckedUpdateWithoutCheckInRequestsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendanceRecords?: AttendanceUncheckedUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
   export type EmployeeCreateWithoutAttendanceInput = {
     name: string
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateWithoutAttendanceInput = {
@@ -13842,17 +25651,86 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeCreateOrConnectWithoutAttendanceInput = {
     where: EmployeeWhereUniqueInput
     create: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type WorkLocationCreateWithoutAttendanceRecordsInput = {
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationUncheckedCreateWithoutAttendanceRecordsInput = {
+    id?: number
+    name: string
+    address: string
+    latitude: number
+    longitude: number
+    radiusMeters?: number
+    isActive?: boolean
+    timezone?: string
+    description?: string | null
+    workingHoursStart?: string | null
+    workingHoursEnd?: string | null
+    createdBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutWorkLocationInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutWorkLocationInput
+    primaryEmployees?: EmployeeUncheckedCreateNestedManyWithoutPrimaryWorkLocationInput
+  }
+
+  export type WorkLocationCreateOrConnectWithoutAttendanceRecordsInput = {
+    where: WorkLocationWhereUniqueInput
+    create: XOR<WorkLocationCreateWithoutAttendanceRecordsInput, WorkLocationUncheckedCreateWithoutAttendanceRecordsInput>
   }
 
   export type AttendancePenaltyCreateWithoutAttendanceInput = {
@@ -13922,12 +25800,37 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutAttendanceInput = {
@@ -13936,12 +25839,87 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type WorkLocationUpsertWithoutAttendanceRecordsInput = {
+    update: XOR<WorkLocationUpdateWithoutAttendanceRecordsInput, WorkLocationUncheckedUpdateWithoutAttendanceRecordsInput>
+    create: XOR<WorkLocationCreateWithoutAttendanceRecordsInput, WorkLocationUncheckedCreateWithoutAttendanceRecordsInput>
+    where?: WorkLocationWhereInput
+  }
+
+  export type WorkLocationUpdateToOneWithWhereWithoutAttendanceRecordsInput = {
+    where?: WorkLocationWhereInput
+    data: XOR<WorkLocationUpdateWithoutAttendanceRecordsInput, WorkLocationUncheckedUpdateWithoutAttendanceRecordsInput>
+  }
+
+  export type WorkLocationUpdateWithoutAttendanceRecordsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUpdateManyWithoutPrimaryWorkLocationNestedInput
+  }
+
+  export type WorkLocationUncheckedUpdateWithoutAttendanceRecordsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    radiusMeters?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    timezone?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    workingHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutWorkLocationNestedInput
+    employeeAssignments?: EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationNestedInput
+    primaryEmployees?: EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationNestedInput
   }
 
   export type AttendancePenaltyUpsertWithWhereUniqueWithoutAttendanceInput = {
@@ -13993,6 +25971,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -14002,11 +25987,13 @@ export namespace Prisma {
     makeupTimeCompleted?: number
     totalPenaltyAmount?: number
     employee: EmployeeCreateNestedOneWithoutAttendanceInput
+    workLocation?: WorkLocationCreateNestedOneWithoutAttendanceRecordsInput
   }
 
   export type AttendanceUncheckedCreateWithoutPenaltiesInput = {
     id?: number
     employeeId: number
+    workLocationId?: number | null
     date: Date | string
     checkIn: Date | string
     checkOut?: Date | string | null
@@ -14014,6 +26001,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -14048,6 +26042,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -14057,11 +26058,13 @@ export namespace Prisma {
     makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
     totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
     employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+    workLocation?: WorkLocationUpdateOneWithoutAttendanceRecordsNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutPenaltiesInput = {
     id?: IntFieldUpdateOperationsInput | number
     employeeId?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
     checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14069,6 +26072,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -14084,12 +26094,37 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
+    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
+    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateWithoutPayoutsInput = {
@@ -14098,12 +26133,37 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    fingerprintId?: string | null
     hourlyRate?: number
     paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    primaryWorkLocationId?: number | null
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
+    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeCreateOrConnectWithoutPayoutsInput = {
@@ -14154,12 +26214,37 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutPayoutsInput = {
@@ -14168,12 +26253,37 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type PayoutAdjustmentUpsertWithWhereUniqueWithoutPayoutInput = {
@@ -14349,6 +26459,7 @@ export namespace Prisma {
 
   export type AttendanceCreateManyEmployeeInput = {
     id?: number
+    workLocationId?: number | null
     date: Date | string
     checkIn: Date | string
     checkOut?: Date | string | null
@@ -14356,6 +26467,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
     actualHoursWorked?: number
     lateDeductionHours?: number
     earlyDeductionHours?: number
@@ -14397,6 +26515,65 @@ export namespace Prisma {
     holidayPayout?: number
   }
 
+  export type EmployeeSessionCreateManyEmployeeInput = {
+    id?: string
+    token: string
+    deviceInfo?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    isActive?: boolean
+    expiresAt: Date | string
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeDeviceSessionCreateManyEmployeeInput = {
+    id?: string
+    deviceId: string
+    deviceName?: string | null
+    deviceType?: string | null
+    pushToken?: string | null
+    isActive?: boolean
+    lastSeenAt?: Date | string
+    locationPermission?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CheckInRequestCreateManyEmployeeInput = {
+    id?: number
+    workLocationId?: number | null
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeWorkLocationCreateManyEmployeeInput = {
+    id?: number
+    workLocationId: number
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+  }
+
   export type AttendanceUpdateWithoutEmployeeInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14405,6 +26582,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -14413,11 +26597,13 @@ export namespace Prisma {
     makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
     makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
     totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    workLocation?: WorkLocationUpdateOneWithoutAttendanceRecordsNestedInput
     penalties?: AttendancePenaltyUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutEmployeeInput = {
     id?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
     checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14425,6 +26611,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -14438,6 +26631,7 @@ export namespace Prisma {
 
   export type AttendanceUncheckedUpdateManyWithoutEmployeeInput = {
     id?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
     checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14445,6 +26639,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
     actualHoursWorked?: FloatFieldUpdateOperationsInput | number
     lateDeductionHours?: FloatFieldUpdateOperationsInput | number
     earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
@@ -14547,6 +26748,559 @@ export namespace Prisma {
     totalDeductions?: FloatFieldUpdateOperationsInput | number
     holidayHours?: FloatFieldUpdateOperationsInput | number
     holidayPayout?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type EmployeeSessionUpdateWithoutEmployeeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeSessionUncheckedUpdateWithoutEmployeeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeSessionUncheckedUpdateManyWithoutEmployeeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeDeviceSessionUpdateWithoutEmployeeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeDeviceSessionUncheckedUpdateWithoutEmployeeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deviceId?: StringFieldUpdateOperationsInput | string
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locationPermission?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CheckInRequestUpdateWithoutEmployeeInput = {
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workLocation?: WorkLocationUpdateOneWithoutCheckInRequestsNestedInput
+  }
+
+  export type CheckInRequestUncheckedUpdateWithoutEmployeeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CheckInRequestUncheckedUpdateManyWithoutEmployeeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workLocationId?: NullableIntFieldUpdateOperationsInput | number | null
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeWorkLocationUpdateWithoutEmployeeInput = {
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    workLocation?: WorkLocationUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateWithoutEmployeeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workLocationId?: IntFieldUpdateOperationsInput | number
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workLocationId?: IntFieldUpdateOperationsInput | number
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CheckInRequestCreateManyWorkLocationInput = {
+    id?: number
+    employeeId: number
+    latitude: number
+    longitude: number
+    accuracy?: number | null
+    address?: string | null
+    type: string
+    timestamp?: Date | string
+    status?: string
+    distanceFromLocation?: number | null
+    isWithinGeofence?: boolean
+    photoUrl?: string | null
+    processedAt?: Date | string | null
+    processedBy?: string | null
+    rejectionReason?: string | null
+    deviceId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttendanceCreateManyWorkLocationInput = {
+    id?: number
+    employeeId: number
+    date: Date | string
+    checkIn: Date | string
+    checkOut?: Date | string | null
+    hoursWorked?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPaidDay?: boolean
+    checkInLocationVerified?: boolean
+    checkOutLocationVerified?: boolean
+    checkInRequestId?: number | null
+    checkOutRequestId?: number | null
+    isRemoteWork?: boolean
+    remoteWorkReason?: string | null
+    remoteWorkApprovedBy?: string | null
+    actualHoursWorked?: number
+    lateDeductionHours?: number
+    earlyDeductionHours?: number
+    graceMinutesUsed?: number
+    lateMinutesBeyondGrace?: number
+    makeupTimeRequired?: number
+    makeupTimeCompleted?: number
+    totalPenaltyAmount?: number
+  }
+
+  export type EmployeeWorkLocationCreateManyWorkLocationInput = {
+    id?: number
+    employeeId: number
+    canCheckIn?: boolean
+    canCheckOut?: boolean
+    isActive?: boolean
+    assignedAt?: Date | string
+    assignedBy?: string | null
+  }
+
+  export type EmployeeCreateManyPrimaryWorkLocationInput = {
+    id?: number
+    name: string
+    email: string
+    position: string
+    phone?: string | null
+    hourlyRate?: number
+    paymentBasis?: string
+    password?: string | null
+    profilePicture?: string | null
+    dateOfBirth?: Date | string | null
+    nationalId?: string | null
+    address?: string | null
+    emergencyContact?: string | null
+    emergencyPhone?: string | null
+    hireDate?: Date | string | null
+    department?: string | null
+    manager?: string | null
+    employeeId?: string | null
+    isActive?: boolean
+    canAccessPortal?: boolean
+    canWorkRemotely?: boolean
+    lastLoginAt?: Date | string | null
+    lastActiveAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
+    preferredLanguage?: string
+    timezone?: string
+    emailNotifications?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CheckInRequestUpdateWithoutWorkLocationInput = {
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employee?: EmployeeUpdateOneRequiredWithoutCheckInRequestsNestedInput
+  }
+
+  export type CheckInRequestUncheckedUpdateWithoutWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CheckInRequestUncheckedUpdateManyWithoutWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    distanceFromLocation?: NullableFloatFieldUpdateOperationsInput | number | null
+    isWithinGeofence?: BoolFieldUpdateOperationsInput | boolean
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttendanceUpdateWithoutWorkLocationInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hoursWorked?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+    penalties?: AttendancePenaltyUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hoursWorked?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+    penalties?: AttendancePenaltyUncheckedUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateManyWithoutWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkIn?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOut?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hoursWorked?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPaidDay?: BoolFieldUpdateOperationsInput | boolean
+    checkInLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkOutLocationVerified?: BoolFieldUpdateOperationsInput | boolean
+    checkInRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    checkOutRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+    isRemoteWork?: BoolFieldUpdateOperationsInput | boolean
+    remoteWorkReason?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteWorkApprovedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    actualHoursWorked?: FloatFieldUpdateOperationsInput | number
+    lateDeductionHours?: FloatFieldUpdateOperationsInput | number
+    earlyDeductionHours?: FloatFieldUpdateOperationsInput | number
+    graceMinutesUsed?: IntFieldUpdateOperationsInput | number
+    lateMinutesBeyondGrace?: IntFieldUpdateOperationsInput | number
+    makeupTimeRequired?: FloatFieldUpdateOperationsInput | number
+    makeupTimeCompleted?: FloatFieldUpdateOperationsInput | number
+    totalPenaltyAmount?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type EmployeeWorkLocationUpdateWithoutWorkLocationInput = {
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    employee?: EmployeeUpdateOneRequiredWithoutAllowedWorkLocationsNestedInput
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateWithoutWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type EmployeeWorkLocationUncheckedUpdateManyWithoutWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    canCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    canCheckOut?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type EmployeeUpdateWithoutPrimaryWorkLocationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutPrimaryWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+    payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
+    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
+    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateManyWithoutPrimaryWorkLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    paymentBasis?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
+    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AttendancePenaltyCreateManyAttendanceInput = {

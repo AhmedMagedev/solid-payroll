@@ -15,15 +15,190 @@ model Employee {
   email        String       @unique
   position     String
   phone        String?
-  fingerprintId String?     @map("fingerprint_id")
+  // Deprecated: fingerprintId String?     @map("fingerprint_id") // Keeping for migration but will be removed
   hourlyRate   Float        @default(0) @map("hourly_rate")
   paymentBasis String       @default("Daily") @map("payment_basis")
+  
+  // Employee authentication and profile
+  password              String?   @map("password") // Hashed password for employee portal
+  profilePicture        String?   @map("profile_picture") // Profile image URL
+  dateOfBirth          DateTime? @map("date_of_birth") @db.Date
+  nationalId           String?   @unique @map("national_id")
+  address              String?
+  emergencyContact     String?   @map("emergency_contact")
+  emergencyPhone       String?   @map("emergency_phone")
+  
+  // Employment details
+  hireDate             DateTime? @map("hire_date") @db.Date
+  department           String?
+  manager              String?   // Could be linked to another employee later
+  employeeId           String?   @unique @map("employee_id") // Company employee ID
+  
+  // Access and permissions
+  isActive             Boolean   @default(true) @map("is_active")
+  canAccessPortal      Boolean   @default(true) @map("can_access_portal")
+  canWorkRemotely      Boolean   @default(false) @map("can_work_remotely")
+  primaryWorkLocationId Int?     @map("primary_work_location_id") // Primary work location
+  
+  // Session tracking
+  lastLoginAt          DateTime? @map("last_login_at")
+  lastActiveAt         DateTime? @map("last_active_at")
+  passwordResetToken   String?   @map("password_reset_token")
+  passwordResetExpires DateTime? @map("password_reset_expires")
+  
+  // Preferences
+  preferredLanguage    String    @default("en") @map("preferred_language")
+  timezone             String    @default("Africa/Cairo")
+  emailNotifications   Boolean   @default(true) @map("email_notifications")
+  
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
+  
   attendance   Attendance[]
   payouts      Payout[]
+  sessions     EmployeeSession[]
+  deviceSessions EmployeeDeviceSession[]
+  checkInRequests CheckInRequest[]
+  primaryWorkLocation WorkLocation? @relation("EmployeePrimaryLocation", fields: [primaryWorkLocationId], references: [id])
+  allowedWorkLocations EmployeeWorkLocation[]
 
   @@map("employees")
+}
+
+// Junction table for many-to-many relationship between employees and work locations
+model EmployeeWorkLocation {
+  id             Int          @id @default(autoincrement())
+  employeeId     Int          @map("employee_id")
+  workLocationId Int          @map("work_location_id")
+  canCheckIn     Boolean      @default(true) @map("can_check_in")
+  canCheckOut    Boolean      @default(true) @map("can_check_out")
+  isActive       Boolean      @default(true) @map("is_active")
+  assignedAt     DateTime     @default(now()) @map("assigned_at")
+  assignedBy     String?      @map("assigned_by") // Admin who assigned this location
+  
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  workLocation   WorkLocation @relation(fields: [workLocationId], references: [id], onDelete: Cascade)
+  
+  @@unique([employeeId, workLocationId])
+  @@map("employee_work_locations")
+}
+
+model WorkLocation {
+  id          Int     @id @default(autoincrement())
+  name        String
+  address     String
+  latitude    Float
+  longitude   Float
+  radiusMeters Int    @default(100) @map("radius_meters") // Geofence radius in meters
+  isActive    Boolean @default(true) @map("is_active")
+  timezone    String  @default("Africa/Cairo")
+  description String? // Optional description of the location
+  
+  // Working hours for this location (can override system defaults)
+  workingHoursStart String? @map("working_hours_start")
+  workingHoursEnd   String? @map("working_hours_end")
+  
+  // Location management
+  createdBy   String?  @map("created_by") // Admin who created this location
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  checkInRequests CheckInRequest[]
+  attendanceRecords Attendance[]
+  employeeAssignments EmployeeWorkLocation[]
+  primaryEmployees Employee[] @relation("EmployeePrimaryLocation")
+
+  @@map("work_locations")
+}
+
+model EmployeeSession {
+  id              String    @id @default(cuid())
+  employeeId      Int       @map("employee_id")
+  token           String    @unique // Session token
+  deviceInfo      String?   @map("device_info") // Browser/device information
+  ipAddress       String?   @map("ip_address")
+  userAgent       String?   @map("user_agent")
+  
+  isActive        Boolean   @default(true) @map("is_active")
+  expiresAt       DateTime  @map("expires_at")
+  lastSeenAt      DateTime  @default(now()) @map("last_seen_at")
+  
+  // Location permissions for check-ins
+  locationPermission Boolean @default(false) @map("location_permission")
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  employee        Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("employee_sessions")
+}
+
+model EmployeeDeviceSession {
+  id              String    @id @default(cuid())
+  employeeId      Int       @map("employee_id")
+  deviceId        String    @map("device_id") // Unique device identifier
+  deviceName      String?   @map("device_name")
+  deviceType      String?   @map("device_type") // "android", "ios", "web"
+  pushToken       String?   @map("push_token") // For notifications
+  
+  isActive        Boolean   @default(true) @map("is_active")
+  lastSeenAt      DateTime  @default(now()) @map("last_seen_at")
+  
+  // Location permissions
+  locationPermission Boolean @default(false) @map("location_permission")
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  employee        Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, deviceId])
+  @@map("employee_device_sessions")
+}
+
+model CheckInRequest {
+  id              Int       @id @default(autoincrement())
+  employeeId      Int       @map("employee_id")
+  workLocationId  Int?      @map("work_location_id")
+  
+  // Location data
+  latitude        Float
+  longitude       Float
+  accuracy        Float?    // GPS accuracy in meters
+  address         String?   // Reverse geocoded address
+  
+  // Check-in/out details
+  type            String    // "CHECK_IN", "CHECK_OUT"
+  timestamp       DateTime  @default(now())
+  
+  // Verification status
+  status          String    @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "AUTO_APPROVED"
+  
+  // Distance verification
+  distanceFromLocation Float? @map("distance_from_location") // Distance in meters from work location
+  isWithinGeofence     Boolean @default(false) @map("is_within_geofence")
+  
+  // Photo verification (optional)
+  photoUrl        String?   @map("photo_url")
+  
+  // Processing details
+  processedAt     DateTime? @map("processed_at")
+  processedBy     String?   @map("processed_by") // "AUTO" or admin user ID
+  rejectionReason String?   @map("rejection_reason")
+  
+  // Device info
+  deviceId        String?   @map("device_id")
+  userAgent       String?   @map("user_agent")
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  employee        Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  workLocation    WorkLocation? @relation(fields: [workLocationId], references: [id])
+
+  @@map("check_in_requests")
 }
 
 model User {
@@ -40,6 +215,7 @@ model User {
 model Attendance {
   id          Int       @id @default(autoincrement())
   employeeId  Int       @map("employee_id")
+  workLocationId Int?   @map("work_location_id") // New: link to work location
   date        DateTime  @db.Date
   checkIn     DateTime  @map("check_in")
   checkOut    DateTime? @map("check_out")
@@ -48,12 +224,23 @@ model Attendance {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   isPaidDay   Boolean   @default(true) @map("is_paid_day")
   
-  // Deduction tracking fields
+  // Location verification
+  checkInLocationVerified  Boolean @default(false) @map("check_in_location_verified")
+  checkOutLocationVerified Boolean @default(false) @map("check_out_location_verified")
+  checkInRequestId         Int?    @map("check_in_request_id") // Link to the check-in request
+  checkOutRequestId        Int?    @map("check_out_request_id") // Link to the check-out request
+  
+  // Remote work tracking
+  isRemoteWork            Boolean @default(false) @map("is_remote_work")
+  remoteWorkReason        String? @map("remote_work_reason")
+  remoteWorkApprovedBy    String? @map("remote_work_approved_by")
+  
+  // Existing deduction tracking fields
   actualHoursWorked   Float @default(0) @map("actual_hours_worked")
   lateDeductionHours  Float @default(0) @map("late_deduction_hours")
   earlyDeductionHours Float @default(0) @map("early_deduction_hours")
   
-  // New penalty tracking fields
+  // Existing penalty tracking fields
   graceMinutesUsed    Int     @default(0) @map("grace_minutes_used")
   lateMinutesBeyondGrace Int  @default(0) @map("late_minutes_beyond_grace")
   makeupTimeRequired  Float   @default(0) @map("makeup_time_required")
@@ -61,6 +248,7 @@ model Attendance {
   totalPenaltyAmount  Float   @default(0) @map("total_penalty_amount")
   
   employee    Employee  @relation(fields: [employeeId], references: [id])
+  workLocation WorkLocation? @relation(fields: [workLocationId], references: [id])
   penalties   AttendancePenalty[]
 
   @@unique([employeeId, date])
@@ -178,6 +366,23 @@ model SystemSettings {
   penaltyFullDay            Float    @default(1.0) @map("penalty_full_day") // Full day for 150+ min beyond grace
   allowMakeupTime           Boolean  @default(true) @map("allow_makeup_time")
   makeupTimeDeadlineHours   Int      @default(24) @map("makeup_time_deadline_hours")
+  
+  // Location-based attendance settings
+  enableLocationTracking    Boolean  @default(true) @map("enable_location_tracking")
+  defaultGeofenceRadius     Int      @default(100) @map("default_geofence_radius") // meters
+  autoApproveWithinGeofence Boolean  @default(true) @map("auto_approve_within_geofence")
+  requirePhotoVerification  Boolean  @default(false) @map("require_photo_verification")
+  allowRemoteWork           Boolean  @default(false) @map("allow_remote_work")
+  maxCheckInRequestsPerDay  Int      @default(10) @map("max_check_in_requests_per_day")
+  
+  // Employee portal settings
+  enableEmployeePortal      Boolean  @default(true) @map("enable_employee_portal")
+  requireStrongPassword     Boolean  @default(true) @map("require_strong_password")
+  passwordMinLength         Int      @default(8) @map("password_min_length")
+  sessionTimeoutMinutes     Int      @default(480) @map("session_timeout_minutes") // 8 hours
+  maxActiveDevicesPerEmployee Int    @default(3) @map("max_active_devices_per_employee")
+  allowPasswordReset        Boolean  @default(true) @map("allow_password_reset")
+  requireEmailVerification  Boolean  @default(false) @map("require_email_verification")
   
   createdAt                 DateTime @default(now()) @map("created_at")
   updatedAt                 DateTime @updatedAt @map("updated_at")
