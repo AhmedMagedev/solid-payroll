@@ -63,7 +63,7 @@ export class PenaltyCalculator {
     workingHoursStart: string,
     workingHoursEnd: string,
     workingHoursPerDay: number,
-    hourlyRate: number
+    dailyRate: number
   ): Promise<PenaltyCalculationResult> {
     const result: PenaltyCalculationResult = {
       penalties: [],
@@ -75,7 +75,7 @@ export class PenaltyCalculator {
 
     // FUNDAMENTAL RULE: Only missing check-in marks the entire day as unpaid
     if (!checkIn) {
-      const dailySalary = hourlyRate * workingHoursPerDay;
+      const dailySalary = dailyRate;
       
       result.penalties.push({
         penaltyType: 'MISSING_ATTENDANCE',
@@ -97,7 +97,7 @@ export class PenaltyCalculator {
 
     // CHECK FOR ZERO WORKING HOURS: If check-in and check-out are the same time (0 hours worked)
     if (checkOut && checkIn.getTime() === checkOut.getTime()) {
-      const dailySalary = hourlyRate * workingHoursPerDay;
+      const dailySalary = dailyRate;
       
       result.penalties.push({
         penaltyType: 'MISSING_ATTENDANCE',
@@ -130,7 +130,7 @@ export class PenaltyCalculator {
     const lateArrivalPenalty = this.calculateLateArrivalPenalty(
       checkIn,
       workingHoursStart,
-      hourlyRate,
+      dailyRate,
       workingHoursPerDay
     );
     
@@ -148,7 +148,7 @@ export class PenaltyCalculator {
         checkIn,
         workingHoursEnd,
         workingHoursPerDay,
-        hourlyRate
+        dailyRate
       );
       
       if (earlyDeparturePenalty) {
@@ -160,7 +160,7 @@ export class PenaltyCalculator {
     }
 
     // Apply daily salary cap - total penalties cannot exceed daily salary
-    const dailySalary = hourlyRate * workingHoursPerDay;
+    const dailySalary = dailyRate;
     if (result.totalSalaryDeducted > dailySalary) {
       const ratio = dailySalary / result.totalSalaryDeducted;
       
@@ -449,7 +449,7 @@ export async function processAttendanceWithPenalties(
   // Get employee hourly rate
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { hourlyRate: true, paymentBasis: true },
+            select: { dailyRate: true, paymentBasis: true },
   });
 
   if (!employee) {
@@ -465,7 +465,7 @@ export async function processAttendanceWithPenalties(
     settings.workingHoursStart,
     settings.workingHoursEnd,
     settings.workingHoursPerDay,
-    employee.hourlyRate
+          employee.dailyRate
   );
 
   await calculator.applyPenaltiesToAttendance(attendanceId, result);

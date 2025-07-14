@@ -150,18 +150,18 @@ export default function SettingsPage() {
       if (response.ok) {
         setSaveResult({
           success: true,
-          message: 'Settings saved successfully',
+          message: 'تم حفظ الإعدادات بنجاح',
         });
       } else {
         setSaveResult({
           success: false,
-          error: data.error || 'Failed to save settings',
+          error: data.error || 'فشل في حفظ الإعدادات',
         });
       }
     } catch (error) {
       setSaveResult({
         success: false,
-        error: 'An error occurred while saving settings',
+        error: 'حدث خطأ أثناء حفظ الإعدادات',
       });
       console.error('Error saving settings:', error);
     } finally {
@@ -171,11 +171,11 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      <div className="p-4 md:p-6 max-w-7xl mx-auto" dir="rtl">
         <div className="flex justify-center items-center min-h-[300px]">
           <div className="text-center">
             <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-            <p className="mt-2 text-muted-foreground">Loading settings...</p>
+            <p className="mt-2 text-muted-foreground">جاري تحميل الإعدادات...</p>
           </div>
         </div>
       </div>
@@ -183,14 +183,14 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto" dir="rtl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold">System Settings</h1>
-          <p className="text-muted-foreground mt-1">Configure global system parameters</p>
+          <h1 className="text-2xl font-bold">إعدادات النظام</h1>
+          <p className="text-muted-foreground mt-1">تكوين معاملات النظام العامة</p>
         </div>
         <Button onClick={handleSave} disabled={isSaving} className="w-full md:w-auto">
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
         </Button>
       </div>
       
@@ -199,15 +199,15 @@ export default function SettingsPage() {
           {saveResult.success ? (
             <Alert className="bg-green-50 border-green-500">
               <CheckCircle2 className="h-5 w-5 text-green-500" />
-              <AlertTitle className="text-green-800 font-medium">Success!</AlertTitle>
+              <AlertTitle className="text-green-800 font-medium">نجح!</AlertTitle>
               <AlertDescription className="text-green-700">
-                {saveResult.message}
+                تم حفظ الإعدادات بنجاح
               </AlertDescription>
             </Alert>
           ) : (
             <Alert variant="destructive">
               <AlertCircle className="h-5 w-5" />
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>خطأ</AlertTitle>
               <AlertDescription>
                 {saveResult.error}
               </AlertDescription>
@@ -220,8 +220,8 @@ export default function SettingsPage() {
         <Card className="shadow-sm">
           <CardHeader className="bg-muted/20 border-b">
             <CardTitle className="flex items-center">
-              <SettingsIcon className="h-5 w-5 mr-2" />
-              Attendance Rules
+              <SettingsIcon className="h-5 w-5 ml-2" />
+              قواعد الحضور
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
@@ -229,7 +229,7 @@ export default function SettingsPage() {
               <div>
                 <div className="mb-6">
                   <Label htmlFor="lateAllowanceMinutes" className="text-base font-medium mb-2 block">
-                    Late Allowance (minutes)
+                    فترة السماح للتأخير (بالدقائق)
                   </Label>
                   <Input
                     id="lateAllowanceMinutes"
@@ -241,13 +241,13 @@ export default function SettingsPage() {
                     className="h-11"
                   />
                   <p className="text-sm text-muted-foreground mt-2">
-                    Grace period before an employee is marked as late
+                    فترة سماح قبل اعتبار الموظف متأخراً
                   </p>
                 </div>
                 
                 <div>
                   <Label htmlFor="workingHoursPerDay" className="text-base font-medium mb-2 block">
-                    Working Hours Per Day
+                    ساعات العمل في اليوم
                   </Label>
                   <Input
                     id="workingHoursPerDay"
@@ -260,22 +260,22 @@ export default function SettingsPage() {
                     className="h-11"
                   />
                   <p className="text-sm text-muted-foreground mt-2">
-                    Standard number of hours in a work day
+                    العدد المعياري لساعات يوم العمل
                   </p>
                 </div>
               </div>
               
               <div>
-                <Label className="text-base font-medium mb-4 block">Working Days</Label>
+                <Label className="text-base font-medium mb-4 block">أيام العمل</Label>
                 <div className="space-y-4">
                   {[
-                    { key: 'workDaySunday', label: 'Sunday' },
-                    { key: 'workDayMonday', label: 'Monday' },
-                    { key: 'workDayTuesday', label: 'Tuesday' },
-                    { key: 'workDayWednesday', label: 'Wednesday' },
-                    { key: 'workDayThursday', label: 'Thursday' },
-                    { key: 'workDayFriday', label: 'Friday' },
-                    { key: 'workDaySaturday', label: 'Saturday' },
+                    { key: 'workDaySunday', label: 'الأحد' },
+                    { key: 'workDayMonday', label: 'الاثنين' },
+                    { key: 'workDayTuesday', label: 'الثلاثاء' },
+                    { key: 'workDayWednesday', label: 'الأربعاء' },
+                    { key: 'workDayThursday', label: 'الخميس' },
+                    { key: 'workDayFriday', label: 'الجمعة' },
+                    { key: 'workDaySaturday', label: 'السبت' },
                   ].map(({ key, label }) => (
                     <div key={key} className="flex items-center justify-between">
                       <Label htmlFor={key} className="cursor-pointer">{label}</Label>
@@ -290,19 +290,19 @@ export default function SettingsPage() {
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground mt-3">
-                  Toggle which days are regular working days
+                  حدد أيام العمل العادية
                 </p>
               </div>
 
               <div className="md:col-span-2">
                 <div className="flex items-center gap-2 mb-4">
                   <Clock className="h-4 w-4 text-muted-foreground" />
-                  <Label className="text-base font-medium">Working Hours</Label>
+                  <Label className="text-base font-medium">ساعات العمل</Label>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <Label htmlFor="workingHoursStart" className="text-sm font-medium mb-2 block">Start Time</Label>
+                    <Label htmlFor="workingHoursStart" className="text-sm font-medium mb-2 block">وقت البدء</Label>
                     <div className="relative">
                       <Input
                         id="workingHoursStart"
@@ -311,14 +311,14 @@ export default function SettingsPage() {
                           const timeIn24h = parseTimeFromDisplay(e.target.value);
                           handleChange('workingHoursStart', timeIn24h);
                         }}
-                        className="h-11 pr-10"
+                        className="h-11 pl-10"
                       />
-                      <Clock className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+                      <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
                     </div>
                   </div>
                   
                   <div>
-                    <Label htmlFor="workingHoursEnd" className="text-sm font-medium mb-2 block">End Time</Label>
+                    <Label htmlFor="workingHoursEnd" className="text-sm font-medium mb-2 block">وقت الانتهاء</Label>
                     <div className="relative">
                       <Input
                         id="workingHoursEnd"
@@ -327,15 +327,15 @@ export default function SettingsPage() {
                           const timeIn24h = parseTimeFromDisplay(e.target.value);
                           handleChange('workingHoursEnd', timeIn24h);
                         }}
-                        className="h-11 pr-10"
+                        className="h-11 pl-10"
                       />
-                      <Clock className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+                      <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
                     </div>
                   </div>
                 </div>
                 
                 <p className="text-sm text-muted-foreground mt-3">
-                  Set the standard working hours for all employees
+                  تحديد ساعات العمل المعيارية لجميع الموظفين
                 </p>
               </div>
             </div>
@@ -345,15 +345,15 @@ export default function SettingsPage() {
         <Card className="shadow-sm">
           <CardHeader className="bg-muted/20 border-b">
             <CardTitle className="flex items-center">
-              <SettingsIcon className="h-5 w-5 mr-2" />
-              Payroll Settings
+              <SettingsIcon className="h-5 w-5 ml-2" />
+              إعدادات كشف المرتبات
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="overtimeMultiplier" className="text-base font-medium mb-2 block">
-                  Overtime Multiplier
+                  معامل الوقت الإضافي
                 </Label>
                 <Input
                   id="overtimeMultiplier"
@@ -366,13 +366,13 @@ export default function SettingsPage() {
                   className="h-11"
                 />
                 <p className="text-sm text-muted-foreground mt-2">
-                  Pay multiplier for overtime hours on regular days
+                  معامل الدفع للساعات الإضافية في الأيام العادية
                 </p>
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="weekendOvertimeMultiplier" className="text-base font-medium mb-2 block">
-                  Weekend/Holiday Multiplier
+                  معامل عطلة نهاية الأسبوع/العطل
                 </Label>
                 <Input
                   id="weekendOvertimeMultiplier"
@@ -385,7 +385,7 @@ export default function SettingsPage() {
                   className="h-11"
                 />
                 <p className="text-sm text-muted-foreground mt-2">
-                  Pay multiplier for hours worked on weekends or holidays
+                  معامل الدفع للساعات المعمولة في عطلة نهاية الأسبوع أو العطل
                 </p>
               </div>
             </div>

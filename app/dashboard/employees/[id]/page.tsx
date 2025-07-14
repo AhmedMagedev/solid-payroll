@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, DollarSign, Calendar, Mail, Hash, CreditCard, Phone, MapPin } from 'lucide-react';
+import { ArrowLeft, DollarSign, Calendar, Mail, Hash, Phone, MapPin } from 'lucide-react';
 import EmployeeActions from './employee-actions';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ interface Employee {
   email: string;
   position: string;
   phone?: string; // Optional phone number
-  hourlyRate: number;
+  dailyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
   createdAt: Date;
   updatedAt: Date;
@@ -207,17 +207,11 @@ export default function EmployeeProfilePage() {
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
                   <DollarSign className="h-4 w-4 ml-2" />
-                  <span>الأجر بالساعة</span>
+                  <span>الأجر اليومي</span>
                 </dt>
-                <dd className="mt-1 text-base font-medium text-left">{employee.hourlyRate.toFixed(2)} ج.م</dd>
+                <dd className="mt-1 text-base font-medium text-left">{employee.dailyRate.toFixed(2)} ج.م</dd>
               </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-muted-foreground flex items-center">
-                  <CreditCard className="h-4 w-4 ml-2" />
-                  <span>أساس الدفع</span>
-                </dt>
-                <dd className="mt-1 text-base font-medium text-left">{employee.paymentBasis === 'Monthly' ? 'شهري' : employee.paymentBasis || 'شهري'}</dd>
-              </div>
+
             </dl>
           </div>
           <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8 sm:space-x-reverse">

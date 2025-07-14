@@ -68,7 +68,7 @@ export async function GET() {
         systemSettings.workingHoursStart,
         systemSettings.workingHoursEnd,
         8, // Default working hours per day
-        attendanceRecord.employee.hourlyRate || 50
+        attendanceRecord.employee.dailyRate / 9 || 50
       );
     }
 
@@ -102,7 +102,7 @@ export async function GET() {
           expectedPenalty = {
             severity: 'MINOR',
             hoursDeducted: 1,
-            salaryDeducted: attendanceRecord.employee.hourlyRate * 1,
+            salaryDeducted: (attendanceRecord.employee.dailyRate / 9) * 1,
             description: '1 hour penalty for minor early departure'
           };
         } else if (minutesBeyondGrace <= 120) {
@@ -143,7 +143,7 @@ export async function GET() {
         isPaidDay: attendanceRecord.isPaidDay,
       },
       employeeDetails: {
-        hourlyRate: attendanceRecord.employee.hourlyRate,
+        dailyRate: attendanceRecord.employee.dailyRate,
         paymentBasis: attendanceRecord.employee.paymentBasis,
         defaultWorkingHoursPerDay: 8,
       },

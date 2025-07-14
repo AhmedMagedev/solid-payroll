@@ -6,13 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 
 export function CreateEmployeeForm() {
   const router = useRouter();
@@ -21,7 +15,7 @@ export function CreateEmployeeForm() {
     email: '',
     position: '',
     phone: '',
-    hourlyRate: '',
+    dailyRate: '',
     paymentBasis: 'Monthly', // Default to Monthly
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,9 +27,7 @@ export function CreateEmployeeForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,16 +46,16 @@ export function CreateEmployeeForm() {
       if (!formData.position.trim()) {
         throw new Error('Position is required');
       }
-      if (!formData.hourlyRate || parseFloat(formData.hourlyRate) <= 0) {
-        throw new Error('Valid hourly rate is required');
+      if (!formData.dailyRate || parseFloat(formData.dailyRate) <= 0) {
+        throw new Error('Valid daily rate is required');
       }
       if (!formData.paymentBasis) {
         throw new Error('Payment basis is required');
       }
       
-      const hourlyRate = parseFloat(formData.hourlyRate);
-      if (isNaN(hourlyRate) || hourlyRate <= 0) {
-        throw new Error('Hourly rate must be a positive number');
+      const dailyRate = parseFloat(formData.dailyRate);
+      if (isNaN(dailyRate) || dailyRate <= 0) {
+        throw new Error('Daily rate must be a positive number');
       }
 
       // Send data to API
@@ -78,7 +70,7 @@ export function CreateEmployeeForm() {
           email: formData.email,
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
-          hourlyRate,
+          dailyRate,
           paymentBasis: formData.paymentBasis,
         }),
       });
@@ -215,46 +207,24 @@ export function CreateEmployeeForm() {
 
           {/* Remove the entire fingerprintId field section */}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="hourlyRate" className="text-sm font-medium text-gray-700">
-                Hourly Rate (L.E) *
-              </Label>
-              <Input
-                id="hourlyRate"
-                name="hourlyRate"
-                type="number"
-                value={formData.hourlyRate}
-                onChange={handleChange}
-                disabled={isSubmitting}
-                placeholder="25.00"
-                step="0.01"
-                min="0"
-                inputMode="decimal"
-                required
-                className="h-10"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="paymentBasis" className="text-sm font-medium text-gray-700">
-                Payment Basis *
-              </Label>
-              <Select
-                disabled={isSubmitting}
-                value={formData.paymentBasis}
-                onValueChange={(value) => handleSelectChange('paymentBasis', value)}
-              >
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="Select payment schedule" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Weekly">Weekly</SelectItem>
-                  <SelectItem value="Biweekly">Biweekly</SelectItem>
-                  <SelectItem value="Monthly">Monthly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="dailyRate" className="text-sm font-medium text-gray-700">
+              Daily Rate (L.E) *
+            </Label>
+            <Input
+              id="dailyRate"
+              name="dailyRate"
+              type="number"
+              value={formData.dailyRate}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              placeholder="200"
+              step="1"
+              min="0"
+              inputMode="decimal"
+              required
+              className="h-10"
+            />
           </div>
         </div>
         

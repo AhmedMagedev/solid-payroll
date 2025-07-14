@@ -56,17 +56,17 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
     
     // Use default values instead of trying to extract position from random numbers
     const position = 'Employee'; // Default position for all uploaded employees
-    const hourlyRate = 25; // Default hourly rate (can be edited later)
+
     
-    employeeData.push({
-      name: cleanName,
-      email,
-      position,
-      hourlyRate,
-      paymentBasis: 'Monthly' // Default payment basis
-    });
-    
-    console.log(`Processed employee: ${cleanName} (${email}) - ${position} - Hourly Rate: $${hourlyRate}`);
+              employeeData.push({
+            name: cleanName,
+            email,
+            position,
+            dailyRate: 200, // Default daily rate
+            paymentBasis: 'Monthly' // Default payment basis
+          });
+          
+          console.log(`Processed employee: ${cleanName} (${email}) - ${position} - Daily Rate: $200`);
   }
   
   // Alternative approach: try to find fixed-width patterns if the regex didn't work
@@ -116,17 +116,17 @@ async function parseEmployeesFromDatFile(buffer: Buffer) {
           
           // Use default values instead of generating dummy positions
           const position = 'Employee'; // Default position for all uploaded employees
-          const hourlyRate = 25; // Default hourly rate (can be edited later)
+          const dailyRate = 200; // Default daily rate (can be edited later)
           
           employeeData.push({
             name,
             email,
             position,
-            hourlyRate,
+            dailyRate,
             paymentBasis: 'Monthly' // Default payment basis
           });
           
-          console.log(`From chunk extracted: ${name} (${email}) - ${position} - Hourly Rate: $${hourlyRate}`);
+                      console.log(`From chunk extracted: ${name} (${email}) - ${position} - Daily Rate: $${dailyRate}`);
         }
       } catch (error) {
         console.error("Error processing chunk:", chunk, error);

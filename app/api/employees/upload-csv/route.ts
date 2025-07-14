@@ -78,6 +78,7 @@ function parseEmployeesFromCSV(content: string) {
   const hasHeader = firstRow.some(cell => 
     cell.toLowerCase().includes('employee') || 
     cell.toLowerCase().includes('name') || 
+    cell.toLowerCase().includes('daily') ||
     cell.toLowerCase().includes('rate')
   );
   
@@ -97,12 +98,12 @@ function parseEmployeesFromCSV(content: string) {
     const row = dataRows[i];
     const rowNumber = hasHeader ? i + 2 : i + 1; // For error reporting
     
-    if (row.length < 3) {
-      console.warn(`Row ${rowNumber}: Insufficient columns (${row.length}/3 required)`);
+    if (row.length < 2) {
+      console.warn(`Row ${rowNumber}: Insufficient columns (${row.length}/2 required)`);
       continue;
     }
     
-    const [name, hourlyRate, paymentBasis] = row;
+    const [name, dailyRate] = row;
     
     // Validate required fields
     if (!name || !name.trim()) {
@@ -110,27 +111,21 @@ function parseEmployeesFromCSV(content: string) {
       continue;
     }
     
-    if (!hourlyRate || isNaN(Number(hourlyRate))) {
-      console.warn(`Row ${rowNumber}: Invalid hourly rate: ${hourlyRate}`);
-      continue;
-    }
-    
-    if (!paymentBasis || !['Monthly', 'Weekly'].includes(paymentBasis.trim())) {
-      console.warn(`Row ${rowNumber}: Invalid payment basis: ${paymentBasis} (must be "Monthly" or "Weekly")`);
+    if (!dailyRate || isNaN(Number(dailyRate))) {
+      console.warn(`Row ${rowNumber}: Invalid daily rate: ${dailyRate}`);
       continue;
     }
     
     // Clean and prepare data
     const cleanName = name.trim();
-    const cleanHourlyRate = parseFloat(hourlyRate);
-    const cleanPaymentBasis = paymentBasis.trim();
+    const cleanDailyRate = parseFloat(dailyRate);
     
     employees.push({
       name: cleanName,
       email: generateEmail(cleanName),
       position: 'Employee', // Default position
-      hourlyRate: cleanHourlyRate,
-      paymentBasis: cleanPaymentBasis
+      dailyRate: cleanDailyRate, // Store daily rate in dailyRate field
+      paymentBasis: 'Monthly' // Always set to Monthly
     });
   }
   
@@ -142,7 +137,7 @@ async function processEmployeesInBatches(employees: Array<{
   name: string;
   email: string;
   position: string;
-  hourlyRate: number;
+  dailyRate: number;
   paymentBasis: string;
 }>) {
   const results = [];

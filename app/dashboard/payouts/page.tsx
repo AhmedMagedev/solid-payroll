@@ -459,7 +459,7 @@ export default function AllPayoutsPage() {
                   <TableRow>
                     <SortableTableHeader field="employee.name" label="Employee" />
                     <SortableTableHeader field="periodEnd" label="Pay Period" />
-                    <TableHead>Payment Basis</TableHead>
+
                     <SortableTableHeader field="totalAmount" label="Amount" />
                     <SortableTableHeader field="isPaid" label="Status" />
                     <SortableTableHeader field="paymentDate" label="Payment Date" />
@@ -481,11 +481,7 @@ export default function AllPayoutsPage() {
                       <TableCell className="font-mono text-sm">
                         {formatDateRange(payout.periodStart, payout.periodEnd)}
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-xs">
-                          {payout.employee.paymentBasis}
-                        </Badge>
-                      </TableCell>
+
                       <TableCell className="font-semibold">
                         {payout.isPaid ? (
                           <>

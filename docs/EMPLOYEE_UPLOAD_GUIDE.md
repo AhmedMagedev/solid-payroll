@@ -1,7 +1,7 @@
 # Employee Upload Guide
 
 ## Overview
-Upload multiple employees to the system using CSV files. This feature allows bulk importing of employee data including names, hourly rates, and payment basis configurations.
+Upload multiple employees to the system using CSV files. This feature allows bulk importing of employee data including names and daily rates. All employees are automatically set to monthly payment basis.
 
 ## File Requirements
 
@@ -12,30 +12,29 @@ Upload multiple employees to the system using CSV files. This feature allows bul
 - **Duplicate Prevention** - Checks for existing emails
 
 ### CSV Structure
-The CSV file should contain 3 columns in this exact order:
+The CSV file should contain 2 columns in this exact order:
 
 1. **Employee Name** - Full name of the employee
-2. **Hourly Rate** - Numeric hourly wage (numbers only)
-3. **Payment Basis** - Either "Monthly" or "Weekly"
+2. **Daily Rate** - Numeric daily wage (numbers only)
 
 ### Sample Format
 ```csv
-Employee Name,Hourly Rate,Payment Basis
-John Smith,25.5,Monthly
-Jane Doe,30.0,Weekly
-Ahmed Hassan,22.75,Monthly
+Employee Name,Daily Rate
+John Smith,200
+Jane Doe,250
+Ahmed Hassan,180
 ```
 
 ## Validation Rules
 
 ### Required Fields
 1. **Employee Name**: Cannot be empty or contain only spaces
-2. **Hourly Rate**: Must be a positive number
-3. **Payment Basis**: Must be exactly "Monthly" or "Weekly"
+2. **Daily Rate**: Must be a positive number
 
 ### Auto-Generated Fields
 - **Email**: Automatically generated from employee name (e.g., "john.smith@solid-metals.com")
 - **Position**: Set to "Employee" by default
+- **Payment Basis**: Automatically set to "Monthly"
 - **Employee ID**: System auto-generated
 
 ### Duplicate Handling
@@ -74,8 +73,8 @@ The system will display:
 - The generated email is already assigned to another employee
 - Use a different name variation or check existing employees
 
-**"Invalid hourly rate"**
-- Ensure hourly rate is a positive number
+**"Invalid daily rate"**
+- Ensure daily rate is a positive number
 - Remove any currency symbols or text
 
 **"Invalid payment basis"**
@@ -106,8 +105,7 @@ Use this template for your uploads:
 | Column | Type | Required | Example |
 |--------|------|----------|---------|
 | A | Employee Name | Yes | John Smith |
-| B | Hourly Rate | Yes | 25.5 |
-| C | Payment Basis | Yes | Monthly |
+| B | Daily Rate | Yes | 200 |
 
 ## Best Practices
 

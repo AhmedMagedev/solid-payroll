@@ -71,17 +71,11 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Position is required' }, { status: 400 });
     }
 
-    if (typeof data.hourlyRate !== 'number' || data.hourlyRate <= 0) {
-      return NextResponse.json({ error: 'Hourly rate must be a positive number' }, { status: 400 });
+    if (typeof data.dailyRate !== 'number' || data.dailyRate <= 0) {
+      return NextResponse.json({ error: 'Daily rate must be a positive number' }, { status: 400 });
     }
     
-    // Validate payment basis if provided
-    const validPaymentBases = ['Weekly', 'Biweekly', 'Monthly'];
-    if (data.paymentBasis && !validPaymentBases.includes(data.paymentBasis)) {
-      return NextResponse.json({ 
-        error: `Payment basis must be one of: ${validPaymentBases.join(', ')}` 
-      }, { status: 400 });
-    }
+
     
 
     
@@ -93,8 +87,8 @@ export async function PUT(request: NextRequest) {
         email: data.email,
         position: data.position,
         phone: data.phone || null,
-        hourlyRate: data.hourlyRate,
-        paymentBasis: data.paymentBasis || 'Monthly', // Default to Monthly if not provided
+        dailyRate: data.dailyRate,
+        paymentBasis: 'Monthly', // Always set to Monthly
       },
     });
     

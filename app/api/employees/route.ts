@@ -57,11 +57,11 @@ export async function POST(request: NextRequest) {
     
     const data = await request.json();
     
-    const { name, email, position, phone, hourlyRate, paymentBasis } = data;
+    const { name, email, position, phone, dailyRate } = data;
 
-  if (!name || !email || !position || !hourlyRate) {
+  if (!name || !email || !position || !dailyRate) {
     return NextResponse.json(
-      { error: 'Missing required fields (name, email, position, hourlyRate)' },
+      { error: 'Missing required fields (name, email, position, dailyRate)' },
       { status: 400 }
     );
   }
@@ -72,8 +72,8 @@ export async function POST(request: NextRequest) {
         email,
         position,
         phone: phone || null,
-        hourlyRate: parseFloat(hourlyRate),
-        paymentBasis: paymentBasis || 'Monthly',
+        dailyRate: parseFloat(dailyRate),
+        paymentBasis: 'Monthly',
       },
     });
     

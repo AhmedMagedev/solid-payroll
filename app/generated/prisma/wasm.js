@@ -126,7 +126,7 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   email: 'email',
   position: 'position',
   phone: 'phone',
-  hourlyRate: 'hourlyRate',
+  dailyRate: 'dailyRate',
   paymentBasis: 'paymentBasis',
   password: 'password',
   profilePicture: 'profilePicture',

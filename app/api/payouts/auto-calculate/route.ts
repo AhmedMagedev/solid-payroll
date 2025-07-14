@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { verifyToken } from '@/app/lib/auth';
-import { parseISO, isWithinInterval, startOfWeek, endOfWeek, format, addWeeks, isBefore, startOfMonth, endOfMonth, addMonths } from 'date-fns';
+import { parseISO, isWithinInterval, format, isBefore, startOfMonth, endOfMonth, addMonths } from 'date-fns';
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
         
         // RESTORED OVERTIME CALCULATION with sophisticated rules
         const hoursPerDay = 9; // Standard working hours per day
-        const hourlyRate = employee.hourlyRate;
+        const hourlyRate = employee.dailyRate / hoursPerDay; // Calculate hourly rate from daily rate
         const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
         
         let regularHours = 0;
@@ -263,130 +263,70 @@ interface EmployeeRecord {
   id: number;
   name: string;
   paymentBasis: string;
-  hourlyRate: number;
+  dailyRate: number;
 }
 
 function calculatePaymentPeriods(attendance: AttendanceRecord[], employee: EmployeeRecord): PaymentPeriod[] {
   const periods: PaymentPeriod[] = [];
   const now = new Date();
   
-  console.log(`[Period Calc] Employee ${employee.name} has payment basis: ${employee.paymentBasis}`);
+  console.log(`[Period Calc] Employee ${employee.name} - generating monthly periods (all employees are monthly now)`);
   
-  if (employee.paymentBasis === 'Weekly') {
-    // For weekly employees, create payouts for all weeks that have passed
-    // Start from the earliest attendance date or 6 months ago, whichever is earlier
-    let startDate: Date;
-    if (attendance.length > 0) {
-      const earliestAttendance = new Date(attendance[0].date);
-      const sixMonthsAgo = new Date(now);
-      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      startDate = earliestAttendance < sixMonthsAgo ? earliestAttendance : sixMonthsAgo;
-    } else {
-      // If no attendance data, start from 3 months ago
-      startDate = new Date(now);
-      startDate.setMonth(startDate.getMonth() - 3);
-    }
-    
-    // Generate weekly periods from start date to current date
-    const weekStart = startOfWeek(startDate, { weekStartsOn: 0 }); // Start on Sunday
-    let currentWeekStart = weekStart;
-    
-    while (currentWeekStart < now) {
-      const weekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 0 }); // End on Saturday
-      
-      // Only include weeks where the period has completely passed
-      if (isBefore(weekEnd, now)) {
-        // Convert to UTC dates for consistency
-        const weekStartUTC = new Date(Date.UTC(
-          currentWeekStart.getFullYear(), 
-          currentWeekStart.getMonth(), 
-          currentWeekStart.getDate(), 
-          0, 0, 0, 0
-        ));
-        const weekEndUTC = new Date(Date.UTC(
-          weekEnd.getFullYear(), 
-          weekEnd.getMonth(), 
-          weekEnd.getDate(), 
-          23, 59, 59, 999
-        ));
-        
-        // Create human-readable label
-        const weekLabel = `Week of ${format(currentWeekStart, 'MMM d, yyyy')}`;
-        
-        periods.push({
-          periodStart: weekStartUTC,
-          periodEnd: weekEndUTC,
-          label: weekLabel
-        });
-        
-        console.log(`[Period Calc] Created eligible weekly period: ${weekLabel} = ${weekStartUTC.toISOString().split('T')[0]} to ${weekEndUTC.toISOString().split('T')[0]}`);
-      } else {
-        console.log(`[Period Calc] Skipping current/future week: ${format(currentWeekStart, 'MMM d, yyyy')} (period not yet complete)`);
-      }
-      
-      // Move to next week
-      currentWeekStart = addWeeks(currentWeekStart, 1);
-    }
-    
-    console.log(`[Period Calc] Generated ${periods.length} eligible weekly periods for ${employee.name}`);
+  // Generate monthly periods for all employees
+  let startDate: Date;
+  if (attendance.length > 0) {
+    const earliestAttendance = new Date(attendance[0].date);
+    const sixMonthsAgo = new Date(now);
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    startDate = earliestAttendance < sixMonthsAgo ? earliestAttendance : sixMonthsAgo;
   } else {
-    // Generate monthly periods (default for Monthly and Daily payment basis)
-    // For monthly employees, also base on eligibility rather than just attendance data
-    let startDate: Date;
-    if (attendance.length > 0) {
-      const earliestAttendance = new Date(attendance[0].date);
-      const sixMonthsAgo = new Date(now);
-      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      startDate = earliestAttendance < sixMonthsAgo ? earliestAttendance : sixMonthsAgo;
-    } else {
-      // If no attendance data, start from 6 months ago
-      startDate = new Date(now);
-      startDate.setMonth(startDate.getMonth() - 6);
-    }
-    
-    // Start from the beginning of the start month
-    let currentMonth = startOfMonth(startDate);
-    
-    while (currentMonth < now) {
-      const monthEnd = endOfMonth(currentMonth);
-      
-      // Only include months where the period has completely passed
-      if (isBefore(monthEnd, now)) {
-        // Convert to UTC dates for consistency
-        const monthStartUTC = new Date(Date.UTC(
-          currentMonth.getFullYear(), 
-          currentMonth.getMonth(), 
-          1, 0, 0, 0, 0
-        ));
-        const monthEndUTC = new Date(Date.UTC(
-          monthEnd.getFullYear(), 
-          monthEnd.getMonth(), 
-          monthEnd.getDate(), 
-          23, 59, 59, 999
-        ));
-        
-        // Create human-readable label
-        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                           'July', 'August', 'September', 'October', 'November', 'December'];
-        const label = `${monthNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`;
-        
-        periods.push({
-          periodStart: monthStartUTC,
-          periodEnd: monthEndUTC,
-          label: label
-        });
-        
-        console.log(`[Period Calc] Created eligible monthly period: ${label} = ${monthStartUTC.toISOString().split('T')[0]} to ${monthEndUTC.toISOString().split('T')[0]}`);
-      } else {
-        console.log(`[Period Calc] Skipping current/future month: ${format(currentMonth, 'MMM yyyy')} (period not yet complete)`);
-      }
-      
-      // Move to next month
-      currentMonth = addMonths(currentMonth, 1);
-    }
-    
-    console.log(`[Period Calc] Generated ${periods.length} eligible monthly periods for ${employee.name}`);
+    // If no attendance data, start from 6 months ago
+    startDate = new Date(now);
+    startDate.setMonth(startDate.getMonth() - 6);
   }
+  
+  // Start from the beginning of the start month
+  let currentMonth = startOfMonth(startDate);
+  
+  while (currentMonth < now) {
+    const monthEnd = endOfMonth(currentMonth);
+    
+    // Only include months where the period has completely passed
+    if (isBefore(monthEnd, now)) {
+      // Convert to UTC dates for consistency
+      const monthStartUTC = new Date(Date.UTC(
+        currentMonth.getFullYear(), 
+        currentMonth.getMonth(), 
+        1, 0, 0, 0, 0
+      ));
+      const monthEndUTC = new Date(Date.UTC(
+        monthEnd.getFullYear(), 
+        monthEnd.getMonth(), 
+        monthEnd.getDate(), 
+        23, 59, 59, 999
+      ));
+      
+      // Create human-readable label
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+      const label = `${monthNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`;
+      
+      periods.push({
+        periodStart: monthStartUTC,
+        periodEnd: monthEndUTC,
+        label: label
+      });
+      
+      console.log(`[Period Calc] Created monthly period: ${label} = ${monthStartUTC.toISOString().split('T')[0]} to ${monthEndUTC.toISOString().split('T')[0]}`);
+    } else {
+      console.log(`[Period Calc] Skipping current/future month: ${format(currentMonth, 'MMM yyyy')} (period not yet complete)`);
+    }
+    
+    // Move to next month
+    currentMonth = addMonths(currentMonth, 1);
+  }
+  
+  console.log(`[Period Calc] Generated ${periods.length} monthly periods for ${employee.name}`);
   
   return periods;
 } 

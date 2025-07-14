@@ -16,8 +16,8 @@ model Employee {
   position String
   phone    String?
 
-  hourlyRate   Float  @default(0) @map("hourly_rate")
-  paymentBasis String @default("Daily") @map("payment_basis")
+  dailyRate    Float  @default(0) @map("daily_rate")
+  paymentBasis String @default("Monthly") @map("payment_basis")
 
   // Employee authentication and profile
   password         String?   @map("password") // Hashed password for employee portal

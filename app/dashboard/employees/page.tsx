@@ -16,7 +16,7 @@ interface Employee {
   name: string;
   email: string; // Keep in interface for data structure, but won't display
   position: string;
-  hourlyRate: number;
+  dailyRate: number;
   paymentBasis?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -121,51 +121,49 @@ export default function EmployeesPage() {
         <CardHeader>
           <CardTitle>دليل الموظفين</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent dir="rtl">
           {/* Custom table without whitespace issues */}
           <div className="border rounded-md overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="text-left p-3 font-semibold text-sm border-b">Name</th>
-                  <th className="text-left p-3 font-semibold text-sm border-b">Email</th>
-                  <th className="text-left p-3 font-semibold text-sm border-b">Position</th>
-                  <th className="text-left p-3 font-semibold text-sm border-b">Hourly Rate</th>
-                  <th className="text-left p-3 font-semibold text-sm border-b">Payment</th>
-                  <th className="text-left p-3 font-semibold text-sm border-b">Actions</th>
+                  <th className="text-right p-3 font-semibold text-sm border-b">الاسم</th>
+                  <th className="text-right p-3 font-semibold text-sm border-b">البريد الإلكتروني</th>
+                  <th className="text-right p-3 font-semibold text-sm border-b">المنصب</th>
+                  <th className="text-right p-3 font-semibold text-sm border-b">الراتب اليومي</th>
+                  <th className="text-right p-3 font-semibold text-sm border-b">الإجراءات</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading ? (
                   <tr className="border-b">
-                    <td colSpan={7} className="p-4 text-center">جاري تحميل الموظفين...</td>
+                    <td colSpan={5} className="p-4 text-center">جاري تحميل الموظفين...</td>
                   </tr>
                 ) : currentEmployees.length === 0 ? (
                   <tr className="border-b">
-                    <td colSpan={7} className="p-4 text-center">
+                    <td colSpan={5} className="p-4 text-center">
                       {searchTerm ? `لم يتم العثور على موظفين مطابقين لـ "${searchTerm}".` : 'لم يتم العثور على موظفين. أضف أو ارفع موظفين للبدء.'}
                     </td>
                   </tr>
                 ) : (
                   currentEmployees.map((employee) => (
                                          <tr key={employee.id} className="border-b hover:bg-muted/30 transition-colors">
-                       <td className="p-3 font-medium">
+                       <td className="p-3 font-medium text-right">
                          <Link href={`/dashboard/employees/${employee.id}`} className="hover:underline text-primary">
                            {employee.name}
                          </Link>
                        </td>
-                       <td className="p-3 text-muted-foreground">{employee.email}</td>
-                       <td className="p-3">{employee.position}</td>
-                       <td className="p-3 font-mono">${employee.hourlyRate}</td>
-                       <td className="p-3">{employee.paymentBasis || 'Monthly'}</td>
-                       <td className="p-3">
-                         <div className="flex items-center gap-1">
+                       <td className="p-3 text-muted-foreground text-right">{employee.email}</td>
+                       <td className="p-3 text-right">{employee.position}</td>
+                       <td className="p-3 font-mono text-right">{employee.dailyRate} ج.م</td>
+                       <td className="p-3 text-right">
+                         <div className="flex items-center gap-1 justify-end">
                            <Button
                              variant="ghost"
                              size="sm"
                              onClick={() => router.push(`/dashboard/employees/${employee.id}/edit`)}
                              className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
-                             title="Edit Employee"
+                             title="تعديل الموظف"
                            >
                              <Edit className="h-4 w-4" />
                            </Button>

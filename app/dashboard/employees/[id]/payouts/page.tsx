@@ -24,7 +24,7 @@ interface Employee {
   email: string;
   position: string;
   fingerprintId?: string;
-  hourlyRate: number;
+  dailyRate: number;
   paymentBasis: string;
 }
 
@@ -393,12 +393,13 @@ export default function EmployeePayoutsPage() {
     // Include excess overtime hours in regular hours for payment calculation
     regularHours += excessOvertimeHours;
     
-    // Calculate hourly rate from Hourly Rate
-            const hourlyRate = employee.hourlyRate;
+    // Calculate hourly rate from Daily Rate (assuming 9 hours per day)
+    const workingHoursPerDay = systemSettings?.workingHoursPerDay || 9;
+    const hourlyRate = employee.dailyRate / workingHoursPerDay;
     const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
     
-    // Calculate payout: base Hourly Rate (overtime is added conditionally in UI)
-          const basePayout = regularHours * hourlyRate;
+    // Calculate payout: base daily rate (overtime is added conditionally in UI)
+    const basePayout = regularHours * hourlyRate;
     const excessOvertimePayout = excessOvertimeHours * hourlyRate; // Excess overtime at regular rate
     const overtimePayout = (overtimeHours * overtimeRate) + excessOvertimePayout; // Total overtime payment
     // Return only base payout - overtime will be added conditionally based on toggle
@@ -789,17 +790,11 @@ export default function EmployeePayoutsPage() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">Payouts for {employee.name}</h1>
               <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
+
                 <div className="flex items-center gap-2">
-                  <span>Payment Basis:</span> 
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-medium">
-                    {employee.paymentBasis}
-                  </Badge>
-                </div>
-                <span className="text-gray-400">•</span>
-                <div className="flex items-center gap-2">
-                  <span>Hourly Rate:</span> 
+                  <span>Daily Rate:</span> 
                   <Badge variant="secondary" className="bg-green-100 text-green-800 font-medium">
-                    L.E {employee.hourlyRate.toFixed(2)}
+                    L.E {employee.dailyRate.toFixed(2)}
                   </Badge>
                 </div>
               </div>
@@ -910,9 +905,9 @@ export default function EmployeePayoutsPage() {
                 const totalAmount = existingPayout.finalAmount || existingPayout.amount;
                 const daysWorked = existingPayout.daysWorked || 0;
                 
-                // If we have days worked, calculate basePayout from Hourly Rate
-                if (daysWorked > 0 && employee.hourlyRate > 0) {
-                  derivedBasePayout = daysWorked * 9 * employee.hourlyRate;
+                // If we have days worked, calculate basePayout from Daily Rate
+                if (daysWorked > 0 && employee.dailyRate > 0) {
+                  derivedBasePayout = daysWorked * employee.dailyRate;
                   derivedOvertimePayout = Math.max(0, totalAmount - derivedBasePayout);
                 } else {
                   // Fallback: assume all amount is base payout
@@ -989,20 +984,20 @@ export default function EmployeePayoutsPage() {
                             });
                             
                             const hoursPerDay = systemSettings?.workingHoursPerDay || 9;
-                            const hourlyRate = employee.hourlyRate;
+                            const dailyRate = employee.dailyRate;
                             
                             // Calculate gross salary (perfect attendance)
-                            const grossSalary = workingDaysInPeriod * hoursPerDay * hourlyRate;
+                            const grossSalary = workingDaysInPeriod * dailyRate;
                             
                             // Calculate deductions
                             const unpaidDaysCount = periodAttendance.filter(record => record.isPaidDay === false).length;
-                            const unpaidDaysDeductions = unpaidDaysCount * hoursPerDay * hourlyRate;
+                            const unpaidDaysDeductions = unpaidDaysCount * dailyRate;
                             
                             // Calculate penalty deductions from hours difference
                             const expectedWorkHours = daysWorked * hoursPerDay;
                             const actualWorkHours = totalHours;
                             const hoursPenalized = Math.max(0, expectedWorkHours - actualWorkHours);
-                            const penaltyDeductions = hoursPenalized * hourlyRate;
+                            const penaltyDeductions = hoursPenalized * dailyRate;
                             
                             const totalDeductions = unpaidDaysDeductions + penaltyDeductions;
                             const actualPayout = existingPayout ? (existingPayout.finalAmount || existingPayout.amount) : (basePayout + (currentState.includeOvertime ? overtimePayout : 0));

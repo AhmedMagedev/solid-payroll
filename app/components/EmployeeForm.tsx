@@ -137,23 +137,7 @@ export default function EmployeeForm() {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="paymentBasis">
-            Payment Basis
-          </label>
-          <select
-            id="paymentBasis"
-            name="paymentBasis"
-            value={formData.paymentBasis}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003366]"
-            required
-          >
-            <option value="Weekly">Weekly</option>
-            <option value="Biweekly">Biweekly</option>
-            <option value="Monthly">Monthly</option>
-          </select>
-        </div>
+
 
         <button
           type="submit"
