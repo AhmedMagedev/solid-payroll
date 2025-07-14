@@ -32,13 +32,12 @@ interface EmployeeFormProps {
 export function EmployeeForm({ employee }: EmployeeFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: employee.name,
-    email: employee.email,
-    position: employee.position,
+    name: employee.name || '',
+    email: employee.email || '',
+    position: employee.position || '',
     phone: employee.phone || '',
-    fingerprintId: employee.fingerprintId || '',
-    hourlyRate: employee.hourlyRate.toString(),
-    paymentBasis: employee.paymentBasis || 'Monthly', // Default to Monthly
+    hourlyRate: employee.hourlyRate?.toString() || '',
+    paymentBasis: employee.paymentBasis || 'Monthly'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +52,21 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      throw new Error('Employee name is required');
+    }
+    if (!formData.email.trim()) {
+      throw new Error('Email is required');
+    }
+    if (!formData.position.trim()) {
+      throw new Error('Position is required');
+    }
+    if (!formData.hourlyRate || parseFloat(formData.hourlyRate) <= 0) {
+      throw new Error('Valid hourly rate is required');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -60,27 +74,16 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     setSuccess(false);
 
     try {
-      // Basic validation
-      if (!formData.name.trim()) {
-        throw new Error('الاسم مطلوب');
-      }
-      if (!formData.email.trim()) {
-        throw new Error('البريد الإلكتروني مطلوب');
-      }
-      if (!formData.position.trim()) {
-        throw new Error('المنصب مطلوب');
-      }
-      if (!formData.fingerprintId.trim()) {
-        throw new Error('رقم جهاز البصمة مطلوب');
-      }
-      if (!formData.paymentBasis) {
-        throw new Error('أساس الدفع مطلوب');
-      }
-      
-      const hourlyRate = parseFloat(formData.hourlyRate);
-      if (isNaN(hourlyRate) || hourlyRate <= 0) {
-        throw new Error('الأجر بالساعة يجب أن يكون رقماً موجباً');
-      }
+      validateForm();
+
+      const submitData = {
+        name: formData.name,
+        email: formData.email,
+        position: formData.position,
+        phone: formData.phone || null,
+        hourlyRate: parseFloat(formData.hourlyRate),
+        paymentBasis: formData.paymentBasis
+      };
 
       // Send data to API
       const response = await fetch(`/api/employee/${employee.id}`, {
@@ -89,15 +92,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          position: formData.position,
-          phone: formData.phone || null, // Send null if empty
-          fingerprintId: formData.fingerprintId, // Required field, no need for null check
-          hourlyRate,
-          paymentBasis: formData.paymentBasis,
-        }),
+        body: JSON.stringify(submitData),
       });
 
       if (!response.ok) {
@@ -190,23 +185,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           placeholder="+20 123 456 7890"
           className="text-right"
         />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="fingerprintId">رقم جهاز البصمة</Label>
-        <Input
-          id="fingerprintId"
-          name="fingerprintId"
-          value={formData.fingerprintId}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          placeholder="رقم الجهاز من ملفات الحضور (مثل: EMP001, 12345)"
-          className="text-right"
-          required
-        />
-        <p className="text-xs text-muted-foreground text-right">
-          أدخل الرقم الفريد المستخدم في تصدير جهاز الحضور لربط هذا الموظف بصورة صحيحة.
-        </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

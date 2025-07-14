@@ -34,11 +34,6 @@ export type WorkLocation = $Result.DefaultSelection<Prisma.$WorkLocationPayload>
  */
 export type EmployeeSession = $Result.DefaultSelection<Prisma.$EmployeeSessionPayload>
 /**
- * Model EmployeeDeviceSession
- * 
- */
-export type EmployeeDeviceSession = $Result.DefaultSelection<Prisma.$EmployeeDeviceSessionPayload>
-/**
  * Model CheckInRequest
  * 
  */
@@ -238,16 +233,6 @@ export class PrismaClient<
     * ```
     */
   get employeeSession(): Prisma.EmployeeSessionDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.employeeDeviceSession`: Exposes CRUD operations for the **EmployeeDeviceSession** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more EmployeeDeviceSessions
-    * const employeeDeviceSessions = await prisma.employeeDeviceSession.findMany()
-    * ```
-    */
-  get employeeDeviceSession(): Prisma.EmployeeDeviceSessionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.checkInRequest`: Exposes CRUD operations for the **CheckInRequest** model.
@@ -762,7 +747,6 @@ export namespace Prisma {
     EmployeeWorkLocation: 'EmployeeWorkLocation',
     WorkLocation: 'WorkLocation',
     EmployeeSession: 'EmployeeSession',
-    EmployeeDeviceSession: 'EmployeeDeviceSession',
     CheckInRequest: 'CheckInRequest',
     User: 'User',
     Attendance: 'Attendance',
@@ -788,7 +772,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "employee" | "employeeWorkLocation" | "workLocation" | "employeeSession" | "employeeDeviceSession" | "checkInRequest" | "user" | "attendance" | "attendancePenalty" | "payout" | "payoutAdjustment" | "systemSettings"
+      modelProps: "employee" | "employeeWorkLocation" | "workLocation" | "employeeSession" | "checkInRequest" | "user" | "attendance" | "attendancePenalty" | "payout" | "payoutAdjustment" | "systemSettings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1085,80 +1069,6 @@ export namespace Prisma {
           count: {
             args: Prisma.EmployeeSessionCountArgs<ExtArgs>
             result: $Utils.Optional<EmployeeSessionCountAggregateOutputType> | number
-          }
-        }
-      }
-      EmployeeDeviceSession: {
-        payload: Prisma.$EmployeeDeviceSessionPayload<ExtArgs>
-        fields: Prisma.EmployeeDeviceSessionFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.EmployeeDeviceSessionFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.EmployeeDeviceSessionFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
-          }
-          findFirst: {
-            args: Prisma.EmployeeDeviceSessionFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.EmployeeDeviceSessionFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
-          }
-          findMany: {
-            args: Prisma.EmployeeDeviceSessionFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>[]
-          }
-          create: {
-            args: Prisma.EmployeeDeviceSessionCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
-          }
-          createMany: {
-            args: Prisma.EmployeeDeviceSessionCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.EmployeeDeviceSessionCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>[]
-          }
-          delete: {
-            args: Prisma.EmployeeDeviceSessionDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
-          }
-          update: {
-            args: Prisma.EmployeeDeviceSessionUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
-          }
-          deleteMany: {
-            args: Prisma.EmployeeDeviceSessionDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.EmployeeDeviceSessionUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.EmployeeDeviceSessionUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>[]
-          }
-          upsert: {
-            args: Prisma.EmployeeDeviceSessionUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EmployeeDeviceSessionPayload>
-          }
-          aggregate: {
-            args: Prisma.EmployeeDeviceSessionAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateEmployeeDeviceSession>
-          }
-          groupBy: {
-            args: Prisma.EmployeeDeviceSessionGroupByArgs<ExtArgs>
-            result: $Utils.Optional<EmployeeDeviceSessionGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.EmployeeDeviceSessionCountArgs<ExtArgs>
-            result: $Utils.Optional<EmployeeDeviceSessionCountAggregateOutputType> | number
           }
         }
       }
@@ -1768,7 +1678,6 @@ export namespace Prisma {
     employeeWorkLocation?: EmployeeWorkLocationOmit
     workLocation?: WorkLocationOmit
     employeeSession?: EmployeeSessionOmit
-    employeeDeviceSession?: EmployeeDeviceSessionOmit
     checkInRequest?: CheckInRequestOmit
     user?: UserOmit
     attendance?: AttendanceOmit
@@ -1873,7 +1782,6 @@ export namespace Prisma {
     attendance: number
     payouts: number
     sessions: number
-    deviceSessions: number
     checkInRequests: number
     allowedWorkLocations: number
   }
@@ -1882,7 +1790,6 @@ export namespace Prisma {
     attendance?: boolean | EmployeeCountOutputTypeCountAttendanceArgs
     payouts?: boolean | EmployeeCountOutputTypeCountPayoutsArgs
     sessions?: boolean | EmployeeCountOutputTypeCountSessionsArgs
-    deviceSessions?: boolean | EmployeeCountOutputTypeCountDeviceSessionsArgs
     checkInRequests?: boolean | EmployeeCountOutputTypeCountCheckInRequestsArgs
     allowedWorkLocations?: boolean | EmployeeCountOutputTypeCountAllowedWorkLocationsArgs
   }
@@ -1917,13 +1824,6 @@ export namespace Prisma {
    */
   export type EmployeeCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmployeeSessionWhereInput
-  }
-
-  /**
-   * EmployeeCountOutputType without action
-   */
-  export type EmployeeCountOutputTypeCountDeviceSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: EmployeeDeviceSessionWhereInput
   }
 
   /**
@@ -2482,7 +2382,6 @@ export namespace Prisma {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
     sessions?: boolean | Employee$sessionsArgs<ExtArgs>
-    deviceSessions?: boolean | Employee$deviceSessionsArgs<ExtArgs>
     checkInRequests?: boolean | Employee$checkInRequestsArgs<ExtArgs>
     primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
     allowedWorkLocations?: boolean | Employee$allowedWorkLocationsArgs<ExtArgs>
@@ -2598,7 +2497,6 @@ export namespace Prisma {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
     sessions?: boolean | Employee$sessionsArgs<ExtArgs>
-    deviceSessions?: boolean | Employee$deviceSessionsArgs<ExtArgs>
     checkInRequests?: boolean | Employee$checkInRequestsArgs<ExtArgs>
     primaryWorkLocation?: boolean | Employee$primaryWorkLocationArgs<ExtArgs>
     allowedWorkLocations?: boolean | Employee$allowedWorkLocationsArgs<ExtArgs>
@@ -2617,7 +2515,6 @@ export namespace Prisma {
       attendance: Prisma.$AttendancePayload<ExtArgs>[]
       payouts: Prisma.$PayoutPayload<ExtArgs>[]
       sessions: Prisma.$EmployeeSessionPayload<ExtArgs>[]
-      deviceSessions: Prisma.$EmployeeDeviceSessionPayload<ExtArgs>[]
       checkInRequests: Prisma.$CheckInRequestPayload<ExtArgs>[]
       primaryWorkLocation: Prisma.$WorkLocationPayload<ExtArgs> | null
       allowedWorkLocations: Prisma.$EmployeeWorkLocationPayload<ExtArgs>[]
@@ -3051,7 +2948,6 @@ export namespace Prisma {
     attendance<T extends Employee$attendanceArgs<ExtArgs> = {}>(args?: Subset<T, Employee$attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payouts<T extends Employee$payoutsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$payoutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends Employee$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    deviceSessions<T extends Employee$deviceSessionsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$deviceSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     checkInRequests<T extends Employee$checkInRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$checkInRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CheckInRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     primaryWorkLocation<T extends Employee$primaryWorkLocationArgs<ExtArgs> = {}>(args?: Subset<T, Employee$primaryWorkLocationArgs<ExtArgs>>): Prisma__WorkLocationClient<$Result.GetResult<Prisma.$WorkLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     allowedWorkLocations<T extends Employee$allowedWorkLocationsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$allowedWorkLocationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeWorkLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3580,30 +3476,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EmployeeSessionScalarFieldEnum | EmployeeSessionScalarFieldEnum[]
-  }
-
-  /**
-   * Employee.deviceSessions
-   */
-  export type Employee$deviceSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    where?: EmployeeDeviceSessionWhereInput
-    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
-    cursor?: EmployeeDeviceSessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
   }
 
   /**
@@ -7336,1176 +7208,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: EmployeeSessionInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model EmployeeDeviceSession
-   */
-
-  export type AggregateEmployeeDeviceSession = {
-    _count: EmployeeDeviceSessionCountAggregateOutputType | null
-    _avg: EmployeeDeviceSessionAvgAggregateOutputType | null
-    _sum: EmployeeDeviceSessionSumAggregateOutputType | null
-    _min: EmployeeDeviceSessionMinAggregateOutputType | null
-    _max: EmployeeDeviceSessionMaxAggregateOutputType | null
-  }
-
-  export type EmployeeDeviceSessionAvgAggregateOutputType = {
-    employeeId: number | null
-  }
-
-  export type EmployeeDeviceSessionSumAggregateOutputType = {
-    employeeId: number | null
-  }
-
-  export type EmployeeDeviceSessionMinAggregateOutputType = {
-    id: string | null
-    employeeId: number | null
-    deviceId: string | null
-    deviceName: string | null
-    deviceType: string | null
-    pushToken: string | null
-    isActive: boolean | null
-    lastSeenAt: Date | null
-    locationPermission: boolean | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type EmployeeDeviceSessionMaxAggregateOutputType = {
-    id: string | null
-    employeeId: number | null
-    deviceId: string | null
-    deviceName: string | null
-    deviceType: string | null
-    pushToken: string | null
-    isActive: boolean | null
-    lastSeenAt: Date | null
-    locationPermission: boolean | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type EmployeeDeviceSessionCountAggregateOutputType = {
-    id: number
-    employeeId: number
-    deviceId: number
-    deviceName: number
-    deviceType: number
-    pushToken: number
-    isActive: number
-    lastSeenAt: number
-    locationPermission: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type EmployeeDeviceSessionAvgAggregateInputType = {
-    employeeId?: true
-  }
-
-  export type EmployeeDeviceSessionSumAggregateInputType = {
-    employeeId?: true
-  }
-
-  export type EmployeeDeviceSessionMinAggregateInputType = {
-    id?: true
-    employeeId?: true
-    deviceId?: true
-    deviceName?: true
-    deviceType?: true
-    pushToken?: true
-    isActive?: true
-    lastSeenAt?: true
-    locationPermission?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type EmployeeDeviceSessionMaxAggregateInputType = {
-    id?: true
-    employeeId?: true
-    deviceId?: true
-    deviceName?: true
-    deviceType?: true
-    pushToken?: true
-    isActive?: true
-    lastSeenAt?: true
-    locationPermission?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type EmployeeDeviceSessionCountAggregateInputType = {
-    id?: true
-    employeeId?: true
-    deviceId?: true
-    deviceName?: true
-    deviceType?: true
-    pushToken?: true
-    isActive?: true
-    lastSeenAt?: true
-    locationPermission?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type EmployeeDeviceSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which EmployeeDeviceSession to aggregate.
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of EmployeeDeviceSessions to fetch.
-     */
-    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: EmployeeDeviceSessionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` EmployeeDeviceSessions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned EmployeeDeviceSessions
-    **/
-    _count?: true | EmployeeDeviceSessionCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: EmployeeDeviceSessionAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: EmployeeDeviceSessionSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: EmployeeDeviceSessionMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: EmployeeDeviceSessionMaxAggregateInputType
-  }
-
-  export type GetEmployeeDeviceSessionAggregateType<T extends EmployeeDeviceSessionAggregateArgs> = {
-        [P in keyof T & keyof AggregateEmployeeDeviceSession]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateEmployeeDeviceSession[P]>
-      : GetScalarType<T[P], AggregateEmployeeDeviceSession[P]>
-  }
-
-
-
-
-  export type EmployeeDeviceSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: EmployeeDeviceSessionWhereInput
-    orderBy?: EmployeeDeviceSessionOrderByWithAggregationInput | EmployeeDeviceSessionOrderByWithAggregationInput[]
-    by: EmployeeDeviceSessionScalarFieldEnum[] | EmployeeDeviceSessionScalarFieldEnum
-    having?: EmployeeDeviceSessionScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: EmployeeDeviceSessionCountAggregateInputType | true
-    _avg?: EmployeeDeviceSessionAvgAggregateInputType
-    _sum?: EmployeeDeviceSessionSumAggregateInputType
-    _min?: EmployeeDeviceSessionMinAggregateInputType
-    _max?: EmployeeDeviceSessionMaxAggregateInputType
-  }
-
-  export type EmployeeDeviceSessionGroupByOutputType = {
-    id: string
-    employeeId: number
-    deviceId: string
-    deviceName: string | null
-    deviceType: string | null
-    pushToken: string | null
-    isActive: boolean
-    lastSeenAt: Date
-    locationPermission: boolean
-    createdAt: Date
-    updatedAt: Date
-    _count: EmployeeDeviceSessionCountAggregateOutputType | null
-    _avg: EmployeeDeviceSessionAvgAggregateOutputType | null
-    _sum: EmployeeDeviceSessionSumAggregateOutputType | null
-    _min: EmployeeDeviceSessionMinAggregateOutputType | null
-    _max: EmployeeDeviceSessionMaxAggregateOutputType | null
-  }
-
-  type GetEmployeeDeviceSessionGroupByPayload<T extends EmployeeDeviceSessionGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<EmployeeDeviceSessionGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof EmployeeDeviceSessionGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], EmployeeDeviceSessionGroupByOutputType[P]>
-            : GetScalarType<T[P], EmployeeDeviceSessionGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type EmployeeDeviceSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    employeeId?: boolean
-    deviceId?: boolean
-    deviceName?: boolean
-    deviceType?: boolean
-    pushToken?: boolean
-    isActive?: boolean
-    lastSeenAt?: boolean
-    locationPermission?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["employeeDeviceSession"]>
-
-  export type EmployeeDeviceSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    employeeId?: boolean
-    deviceId?: boolean
-    deviceName?: boolean
-    deviceType?: boolean
-    pushToken?: boolean
-    isActive?: boolean
-    lastSeenAt?: boolean
-    locationPermission?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["employeeDeviceSession"]>
-
-  export type EmployeeDeviceSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    employeeId?: boolean
-    deviceId?: boolean
-    deviceName?: boolean
-    deviceType?: boolean
-    pushToken?: boolean
-    isActive?: boolean
-    lastSeenAt?: boolean
-    locationPermission?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["employeeDeviceSession"]>
-
-  export type EmployeeDeviceSessionSelectScalar = {
-    id?: boolean
-    employeeId?: boolean
-    deviceId?: boolean
-    deviceName?: boolean
-    deviceType?: boolean
-    pushToken?: boolean
-    isActive?: boolean
-    lastSeenAt?: boolean
-    locationPermission?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type EmployeeDeviceSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "deviceId" | "deviceName" | "deviceType" | "pushToken" | "isActive" | "lastSeenAt" | "locationPermission" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeDeviceSession"]>
-  export type EmployeeDeviceSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
-  }
-  export type EmployeeDeviceSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
-  }
-  export type EmployeeDeviceSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
-  }
-
-  export type $EmployeeDeviceSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "EmployeeDeviceSession"
-    objects: {
-      employee: Prisma.$EmployeePayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      employeeId: number
-      deviceId: string
-      deviceName: string | null
-      deviceType: string | null
-      pushToken: string | null
-      isActive: boolean
-      lastSeenAt: Date
-      locationPermission: boolean
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["employeeDeviceSession"]>
-    composites: {}
-  }
-
-  type EmployeeDeviceSessionGetPayload<S extends boolean | null | undefined | EmployeeDeviceSessionDefaultArgs> = $Result.GetResult<Prisma.$EmployeeDeviceSessionPayload, S>
-
-  type EmployeeDeviceSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<EmployeeDeviceSessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: EmployeeDeviceSessionCountAggregateInputType | true
-    }
-
-  export interface EmployeeDeviceSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployeeDeviceSession'], meta: { name: 'EmployeeDeviceSession' } }
-    /**
-     * Find zero or one EmployeeDeviceSession that matches the filter.
-     * @param {EmployeeDeviceSessionFindUniqueArgs} args - Arguments to find a EmployeeDeviceSession
-     * @example
-     * // Get one EmployeeDeviceSession
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends EmployeeDeviceSessionFindUniqueArgs>(args: SelectSubset<T, EmployeeDeviceSessionFindUniqueArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one EmployeeDeviceSession that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {EmployeeDeviceSessionFindUniqueOrThrowArgs} args - Arguments to find a EmployeeDeviceSession
-     * @example
-     * // Get one EmployeeDeviceSession
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends EmployeeDeviceSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployeeDeviceSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first EmployeeDeviceSession that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionFindFirstArgs} args - Arguments to find a EmployeeDeviceSession
-     * @example
-     * // Get one EmployeeDeviceSession
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends EmployeeDeviceSessionFindFirstArgs>(args?: SelectSubset<T, EmployeeDeviceSessionFindFirstArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first EmployeeDeviceSession that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionFindFirstOrThrowArgs} args - Arguments to find a EmployeeDeviceSession
-     * @example
-     * // Get one EmployeeDeviceSession
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends EmployeeDeviceSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployeeDeviceSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more EmployeeDeviceSessions that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all EmployeeDeviceSessions
-     * const employeeDeviceSessions = await prisma.employeeDeviceSession.findMany()
-     * 
-     * // Get first 10 EmployeeDeviceSessions
-     * const employeeDeviceSessions = await prisma.employeeDeviceSession.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const employeeDeviceSessionWithIdOnly = await prisma.employeeDeviceSession.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends EmployeeDeviceSessionFindManyArgs>(args?: SelectSubset<T, EmployeeDeviceSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a EmployeeDeviceSession.
-     * @param {EmployeeDeviceSessionCreateArgs} args - Arguments to create a EmployeeDeviceSession.
-     * @example
-     * // Create one EmployeeDeviceSession
-     * const EmployeeDeviceSession = await prisma.employeeDeviceSession.create({
-     *   data: {
-     *     // ... data to create a EmployeeDeviceSession
-     *   }
-     * })
-     * 
-     */
-    create<T extends EmployeeDeviceSessionCreateArgs>(args: SelectSubset<T, EmployeeDeviceSessionCreateArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many EmployeeDeviceSessions.
-     * @param {EmployeeDeviceSessionCreateManyArgs} args - Arguments to create many EmployeeDeviceSessions.
-     * @example
-     * // Create many EmployeeDeviceSessions
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends EmployeeDeviceSessionCreateManyArgs>(args?: SelectSubset<T, EmployeeDeviceSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many EmployeeDeviceSessions and returns the data saved in the database.
-     * @param {EmployeeDeviceSessionCreateManyAndReturnArgs} args - Arguments to create many EmployeeDeviceSessions.
-     * @example
-     * // Create many EmployeeDeviceSessions
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many EmployeeDeviceSessions and only return the `id`
-     * const employeeDeviceSessionWithIdOnly = await prisma.employeeDeviceSession.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends EmployeeDeviceSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployeeDeviceSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a EmployeeDeviceSession.
-     * @param {EmployeeDeviceSessionDeleteArgs} args - Arguments to delete one EmployeeDeviceSession.
-     * @example
-     * // Delete one EmployeeDeviceSession
-     * const EmployeeDeviceSession = await prisma.employeeDeviceSession.delete({
-     *   where: {
-     *     // ... filter to delete one EmployeeDeviceSession
-     *   }
-     * })
-     * 
-     */
-    delete<T extends EmployeeDeviceSessionDeleteArgs>(args: SelectSubset<T, EmployeeDeviceSessionDeleteArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one EmployeeDeviceSession.
-     * @param {EmployeeDeviceSessionUpdateArgs} args - Arguments to update one EmployeeDeviceSession.
-     * @example
-     * // Update one EmployeeDeviceSession
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends EmployeeDeviceSessionUpdateArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpdateArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more EmployeeDeviceSessions.
-     * @param {EmployeeDeviceSessionDeleteManyArgs} args - Arguments to filter EmployeeDeviceSessions to delete.
-     * @example
-     * // Delete a few EmployeeDeviceSessions
-     * const { count } = await prisma.employeeDeviceSession.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends EmployeeDeviceSessionDeleteManyArgs>(args?: SelectSubset<T, EmployeeDeviceSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more EmployeeDeviceSessions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many EmployeeDeviceSessions
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends EmployeeDeviceSessionUpdateManyArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more EmployeeDeviceSessions and returns the data updated in the database.
-     * @param {EmployeeDeviceSessionUpdateManyAndReturnArgs} args - Arguments to update many EmployeeDeviceSessions.
-     * @example
-     * // Update many EmployeeDeviceSessions
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more EmployeeDeviceSessions and only return the `id`
-     * const employeeDeviceSessionWithIdOnly = await prisma.employeeDeviceSession.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends EmployeeDeviceSessionUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one EmployeeDeviceSession.
-     * @param {EmployeeDeviceSessionUpsertArgs} args - Arguments to update or create a EmployeeDeviceSession.
-     * @example
-     * // Update or create a EmployeeDeviceSession
-     * const employeeDeviceSession = await prisma.employeeDeviceSession.upsert({
-     *   create: {
-     *     // ... data to create a EmployeeDeviceSession
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the EmployeeDeviceSession we want to update
-     *   }
-     * })
-     */
-    upsert<T extends EmployeeDeviceSessionUpsertArgs>(args: SelectSubset<T, EmployeeDeviceSessionUpsertArgs<ExtArgs>>): Prisma__EmployeeDeviceSessionClient<$Result.GetResult<Prisma.$EmployeeDeviceSessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of EmployeeDeviceSessions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionCountArgs} args - Arguments to filter EmployeeDeviceSessions to count.
-     * @example
-     * // Count the number of EmployeeDeviceSessions
-     * const count = await prisma.employeeDeviceSession.count({
-     *   where: {
-     *     // ... the filter for the EmployeeDeviceSessions we want to count
-     *   }
-     * })
-    **/
-    count<T extends EmployeeDeviceSessionCountArgs>(
-      args?: Subset<T, EmployeeDeviceSessionCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], EmployeeDeviceSessionCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a EmployeeDeviceSession.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends EmployeeDeviceSessionAggregateArgs>(args: Subset<T, EmployeeDeviceSessionAggregateArgs>): Prisma.PrismaPromise<GetEmployeeDeviceSessionAggregateType<T>>
-
-    /**
-     * Group by EmployeeDeviceSession.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmployeeDeviceSessionGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends EmployeeDeviceSessionGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: EmployeeDeviceSessionGroupByArgs['orderBy'] }
-        : { orderBy?: EmployeeDeviceSessionGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, EmployeeDeviceSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployeeDeviceSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the EmployeeDeviceSession model
-   */
-  readonly fields: EmployeeDeviceSessionFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for EmployeeDeviceSession.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__EmployeeDeviceSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the EmployeeDeviceSession model
-   */
-  interface EmployeeDeviceSessionFieldRefs {
-    readonly id: FieldRef<"EmployeeDeviceSession", 'String'>
-    readonly employeeId: FieldRef<"EmployeeDeviceSession", 'Int'>
-    readonly deviceId: FieldRef<"EmployeeDeviceSession", 'String'>
-    readonly deviceName: FieldRef<"EmployeeDeviceSession", 'String'>
-    readonly deviceType: FieldRef<"EmployeeDeviceSession", 'String'>
-    readonly pushToken: FieldRef<"EmployeeDeviceSession", 'String'>
-    readonly isActive: FieldRef<"EmployeeDeviceSession", 'Boolean'>
-    readonly lastSeenAt: FieldRef<"EmployeeDeviceSession", 'DateTime'>
-    readonly locationPermission: FieldRef<"EmployeeDeviceSession", 'Boolean'>
-    readonly createdAt: FieldRef<"EmployeeDeviceSession", 'DateTime'>
-    readonly updatedAt: FieldRef<"EmployeeDeviceSession", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * EmployeeDeviceSession findUnique
-   */
-  export type EmployeeDeviceSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * Filter, which EmployeeDeviceSession to fetch.
-     */
-    where: EmployeeDeviceSessionWhereUniqueInput
-  }
-
-  /**
-   * EmployeeDeviceSession findUniqueOrThrow
-   */
-  export type EmployeeDeviceSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * Filter, which EmployeeDeviceSession to fetch.
-     */
-    where: EmployeeDeviceSessionWhereUniqueInput
-  }
-
-  /**
-   * EmployeeDeviceSession findFirst
-   */
-  export type EmployeeDeviceSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * Filter, which EmployeeDeviceSession to fetch.
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of EmployeeDeviceSessions to fetch.
-     */
-    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for EmployeeDeviceSessions.
-     */
-    cursor?: EmployeeDeviceSessionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` EmployeeDeviceSessions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of EmployeeDeviceSessions.
-     */
-    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
-  }
-
-  /**
-   * EmployeeDeviceSession findFirstOrThrow
-   */
-  export type EmployeeDeviceSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * Filter, which EmployeeDeviceSession to fetch.
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of EmployeeDeviceSessions to fetch.
-     */
-    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for EmployeeDeviceSessions.
-     */
-    cursor?: EmployeeDeviceSessionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` EmployeeDeviceSessions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of EmployeeDeviceSessions.
-     */
-    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
-  }
-
-  /**
-   * EmployeeDeviceSession findMany
-   */
-  export type EmployeeDeviceSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * Filter, which EmployeeDeviceSessions to fetch.
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of EmployeeDeviceSessions to fetch.
-     */
-    orderBy?: EmployeeDeviceSessionOrderByWithRelationInput | EmployeeDeviceSessionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing EmployeeDeviceSessions.
-     */
-    cursor?: EmployeeDeviceSessionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` EmployeeDeviceSessions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` EmployeeDeviceSessions.
-     */
-    skip?: number
-    distinct?: EmployeeDeviceSessionScalarFieldEnum | EmployeeDeviceSessionScalarFieldEnum[]
-  }
-
-  /**
-   * EmployeeDeviceSession create
-   */
-  export type EmployeeDeviceSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * The data needed to create a EmployeeDeviceSession.
-     */
-    data: XOR<EmployeeDeviceSessionCreateInput, EmployeeDeviceSessionUncheckedCreateInput>
-  }
-
-  /**
-   * EmployeeDeviceSession createMany
-   */
-  export type EmployeeDeviceSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many EmployeeDeviceSessions.
-     */
-    data: EmployeeDeviceSessionCreateManyInput | EmployeeDeviceSessionCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * EmployeeDeviceSession createManyAndReturn
-   */
-  export type EmployeeDeviceSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * The data used to create many EmployeeDeviceSessions.
-     */
-    data: EmployeeDeviceSessionCreateManyInput | EmployeeDeviceSessionCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * EmployeeDeviceSession update
-   */
-  export type EmployeeDeviceSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * The data needed to update a EmployeeDeviceSession.
-     */
-    data: XOR<EmployeeDeviceSessionUpdateInput, EmployeeDeviceSessionUncheckedUpdateInput>
-    /**
-     * Choose, which EmployeeDeviceSession to update.
-     */
-    where: EmployeeDeviceSessionWhereUniqueInput
-  }
-
-  /**
-   * EmployeeDeviceSession updateMany
-   */
-  export type EmployeeDeviceSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update EmployeeDeviceSessions.
-     */
-    data: XOR<EmployeeDeviceSessionUpdateManyMutationInput, EmployeeDeviceSessionUncheckedUpdateManyInput>
-    /**
-     * Filter which EmployeeDeviceSessions to update
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * Limit how many EmployeeDeviceSessions to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * EmployeeDeviceSession updateManyAndReturn
-   */
-  export type EmployeeDeviceSessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * The data used to update EmployeeDeviceSessions.
-     */
-    data: XOR<EmployeeDeviceSessionUpdateManyMutationInput, EmployeeDeviceSessionUncheckedUpdateManyInput>
-    /**
-     * Filter which EmployeeDeviceSessions to update
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * Limit how many EmployeeDeviceSessions to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * EmployeeDeviceSession upsert
-   */
-  export type EmployeeDeviceSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * The filter to search for the EmployeeDeviceSession to update in case it exists.
-     */
-    where: EmployeeDeviceSessionWhereUniqueInput
-    /**
-     * In case the EmployeeDeviceSession found by the `where` argument doesn't exist, create a new EmployeeDeviceSession with this data.
-     */
-    create: XOR<EmployeeDeviceSessionCreateInput, EmployeeDeviceSessionUncheckedCreateInput>
-    /**
-     * In case the EmployeeDeviceSession was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<EmployeeDeviceSessionUpdateInput, EmployeeDeviceSessionUncheckedUpdateInput>
-  }
-
-  /**
-   * EmployeeDeviceSession delete
-   */
-  export type EmployeeDeviceSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
-    /**
-     * Filter which EmployeeDeviceSession to delete.
-     */
-    where: EmployeeDeviceSessionWhereUniqueInput
-  }
-
-  /**
-   * EmployeeDeviceSession deleteMany
-   */
-  export type EmployeeDeviceSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which EmployeeDeviceSessions to delete
-     */
-    where?: EmployeeDeviceSessionWhereInput
-    /**
-     * Limit how many EmployeeDeviceSessions to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * EmployeeDeviceSession without action
-   */
-  export type EmployeeDeviceSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmployeeDeviceSession
-     */
-    select?: EmployeeDeviceSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the EmployeeDeviceSession
-     */
-    omit?: EmployeeDeviceSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmployeeDeviceSessionInclude<ExtArgs> | null
   }
 
 
@@ -17866,23 +16568,6 @@ export namespace Prisma {
   export type EmployeeSessionScalarFieldEnum = (typeof EmployeeSessionScalarFieldEnum)[keyof typeof EmployeeSessionScalarFieldEnum]
 
 
-  export const EmployeeDeviceSessionScalarFieldEnum: {
-    id: 'id',
-    employeeId: 'employeeId',
-    deviceId: 'deviceId',
-    deviceName: 'deviceName',
-    deviceType: 'deviceType',
-    pushToken: 'pushToken',
-    isActive: 'isActive',
-    lastSeenAt: 'lastSeenAt',
-    locationPermission: 'locationPermission',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type EmployeeDeviceSessionScalarFieldEnum = (typeof EmployeeDeviceSessionScalarFieldEnum)[keyof typeof EmployeeDeviceSessionScalarFieldEnum]
-
-
   export const CheckInRequestScalarFieldEnum: {
     id: 'id',
     employeeId: 'employeeId',
@@ -18199,7 +16884,6 @@ export namespace Prisma {
     attendance?: AttendanceListRelationFilter
     payouts?: PayoutListRelationFilter
     sessions?: EmployeeSessionListRelationFilter
-    deviceSessions?: EmployeeDeviceSessionListRelationFilter
     checkInRequests?: CheckInRequestListRelationFilter
     primaryWorkLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
     allowedWorkLocations?: EmployeeWorkLocationListRelationFilter
@@ -18240,7 +16924,6 @@ export namespace Prisma {
     attendance?: AttendanceOrderByRelationAggregateInput
     payouts?: PayoutOrderByRelationAggregateInput
     sessions?: EmployeeSessionOrderByRelationAggregateInput
-    deviceSessions?: EmployeeDeviceSessionOrderByRelationAggregateInput
     checkInRequests?: CheckInRequestOrderByRelationAggregateInput
     primaryWorkLocation?: WorkLocationOrderByWithRelationInput
     allowedWorkLocations?: EmployeeWorkLocationOrderByRelationAggregateInput
@@ -18284,7 +16967,6 @@ export namespace Prisma {
     attendance?: AttendanceListRelationFilter
     payouts?: PayoutListRelationFilter
     sessions?: EmployeeSessionListRelationFilter
-    deviceSessions?: EmployeeDeviceSessionListRelationFilter
     checkInRequests?: CheckInRequestListRelationFilter
     primaryWorkLocation?: XOR<WorkLocationNullableScalarRelationFilter, WorkLocationWhereInput> | null
     allowedWorkLocations?: EmployeeWorkLocationListRelationFilter
@@ -18643,94 +17325,6 @@ export namespace Prisma {
     locationPermission?: BoolWithAggregatesFilter<"EmployeeSession"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"EmployeeSession"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"EmployeeSession"> | Date | string
-  }
-
-  export type EmployeeDeviceSessionWhereInput = {
-    AND?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
-    OR?: EmployeeDeviceSessionWhereInput[]
-    NOT?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
-    id?: StringFilter<"EmployeeDeviceSession"> | string
-    employeeId?: IntFilter<"EmployeeDeviceSession"> | number
-    deviceId?: StringFilter<"EmployeeDeviceSession"> | string
-    deviceName?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    deviceType?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    pushToken?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    isActive?: BoolFilter<"EmployeeDeviceSession"> | boolean
-    lastSeenAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    locationPermission?: BoolFilter<"EmployeeDeviceSession"> | boolean
-    createdAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    updatedAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
-  }
-
-  export type EmployeeDeviceSessionOrderByWithRelationInput = {
-    id?: SortOrder
-    employeeId?: SortOrder
-    deviceId?: SortOrder
-    deviceName?: SortOrderInput | SortOrder
-    deviceType?: SortOrderInput | SortOrder
-    pushToken?: SortOrderInput | SortOrder
-    isActive?: SortOrder
-    lastSeenAt?: SortOrder
-    locationPermission?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    employee?: EmployeeOrderByWithRelationInput
-  }
-
-  export type EmployeeDeviceSessionWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    employeeId_deviceId?: EmployeeDeviceSessionEmployeeIdDeviceIdCompoundUniqueInput
-    AND?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
-    OR?: EmployeeDeviceSessionWhereInput[]
-    NOT?: EmployeeDeviceSessionWhereInput | EmployeeDeviceSessionWhereInput[]
-    employeeId?: IntFilter<"EmployeeDeviceSession"> | number
-    deviceId?: StringFilter<"EmployeeDeviceSession"> | string
-    deviceName?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    deviceType?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    pushToken?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    isActive?: BoolFilter<"EmployeeDeviceSession"> | boolean
-    lastSeenAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    locationPermission?: BoolFilter<"EmployeeDeviceSession"> | boolean
-    createdAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    updatedAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
-  }, "id" | "employeeId_deviceId">
-
-  export type EmployeeDeviceSessionOrderByWithAggregationInput = {
-    id?: SortOrder
-    employeeId?: SortOrder
-    deviceId?: SortOrder
-    deviceName?: SortOrderInput | SortOrder
-    deviceType?: SortOrderInput | SortOrder
-    pushToken?: SortOrderInput | SortOrder
-    isActive?: SortOrder
-    lastSeenAt?: SortOrder
-    locationPermission?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: EmployeeDeviceSessionCountOrderByAggregateInput
-    _avg?: EmployeeDeviceSessionAvgOrderByAggregateInput
-    _max?: EmployeeDeviceSessionMaxOrderByAggregateInput
-    _min?: EmployeeDeviceSessionMinOrderByAggregateInput
-    _sum?: EmployeeDeviceSessionSumOrderByAggregateInput
-  }
-
-  export type EmployeeDeviceSessionScalarWhereWithAggregatesInput = {
-    AND?: EmployeeDeviceSessionScalarWhereWithAggregatesInput | EmployeeDeviceSessionScalarWhereWithAggregatesInput[]
-    OR?: EmployeeDeviceSessionScalarWhereWithAggregatesInput[]
-    NOT?: EmployeeDeviceSessionScalarWhereWithAggregatesInput | EmployeeDeviceSessionScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"EmployeeDeviceSession"> | string
-    employeeId?: IntWithAggregatesFilter<"EmployeeDeviceSession"> | number
-    deviceId?: StringWithAggregatesFilter<"EmployeeDeviceSession"> | string
-    deviceName?: StringNullableWithAggregatesFilter<"EmployeeDeviceSession"> | string | null
-    deviceType?: StringNullableWithAggregatesFilter<"EmployeeDeviceSession"> | string | null
-    pushToken?: StringNullableWithAggregatesFilter<"EmployeeDeviceSession"> | string | null
-    isActive?: BoolWithAggregatesFilter<"EmployeeDeviceSession"> | boolean
-    lastSeenAt?: DateTimeWithAggregatesFilter<"EmployeeDeviceSession"> | Date | string
-    locationPermission?: BoolWithAggregatesFilter<"EmployeeDeviceSession"> | boolean
-    createdAt?: DateTimeWithAggregatesFilter<"EmployeeDeviceSession"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"EmployeeDeviceSession"> | Date | string
   }
 
   export type CheckInRequestWhereInput = {
@@ -19703,7 +18297,6 @@ export namespace Prisma {
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
     primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
     allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
@@ -19744,7 +18337,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
@@ -19782,7 +18374,6 @@ export namespace Prisma {
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
     primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
@@ -19823,7 +18414,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
@@ -20230,103 +18820,6 @@ export namespace Prisma {
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmployeeDeviceSessionCreateInput = {
-    id?: string
-    deviceId: string
-    deviceName?: string | null
-    deviceType?: string | null
-    pushToken?: string | null
-    isActive?: boolean
-    lastSeenAt?: Date | string
-    locationPermission?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    employee: EmployeeCreateNestedOneWithoutDeviceSessionsInput
-  }
-
-  export type EmployeeDeviceSessionUncheckedCreateInput = {
-    id?: string
-    employeeId: number
-    deviceId: string
-    deviceName?: string | null
-    deviceType?: string | null
-    pushToken?: string | null
-    isActive?: boolean
-    lastSeenAt?: Date | string
-    locationPermission?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type EmployeeDeviceSessionUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    employee?: EmployeeUpdateOneRequiredWithoutDeviceSessionsNestedInput
-  }
-
-  export type EmployeeDeviceSessionUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    employeeId?: IntFieldUpdateOperationsInput | number
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmployeeDeviceSessionCreateManyInput = {
-    id?: string
-    employeeId: number
-    deviceId: string
-    deviceName?: string | null
-    deviceType?: string | null
-    pushToken?: string | null
-    isActive?: boolean
-    lastSeenAt?: Date | string
-    locationPermission?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type EmployeeDeviceSessionUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmployeeDeviceSessionUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    employeeId?: IntFieldUpdateOperationsInput | number
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     locationPermission?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21555,12 +20048,6 @@ export namespace Prisma {
     none?: EmployeeSessionWhereInput
   }
 
-  export type EmployeeDeviceSessionListRelationFilter = {
-    every?: EmployeeDeviceSessionWhereInput
-    some?: EmployeeDeviceSessionWhereInput
-    none?: EmployeeDeviceSessionWhereInput
-  }
-
   export type CheckInRequestListRelationFilter = {
     every?: CheckInRequestWhereInput
     some?: CheckInRequestWhereInput
@@ -21592,10 +20079,6 @@ export namespace Prisma {
   }
 
   export type EmployeeSessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type EmployeeDeviceSessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22026,61 +20509,6 @@ export namespace Prisma {
   }
 
   export type EmployeeSessionSumOrderByAggregateInput = {
-    employeeId?: SortOrder
-  }
-
-  export type EmployeeDeviceSessionEmployeeIdDeviceIdCompoundUniqueInput = {
-    employeeId: number
-    deviceId: string
-  }
-
-  export type EmployeeDeviceSessionCountOrderByAggregateInput = {
-    id?: SortOrder
-    employeeId?: SortOrder
-    deviceId?: SortOrder
-    deviceName?: SortOrder
-    deviceType?: SortOrder
-    pushToken?: SortOrder
-    isActive?: SortOrder
-    lastSeenAt?: SortOrder
-    locationPermission?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type EmployeeDeviceSessionAvgOrderByAggregateInput = {
-    employeeId?: SortOrder
-  }
-
-  export type EmployeeDeviceSessionMaxOrderByAggregateInput = {
-    id?: SortOrder
-    employeeId?: SortOrder
-    deviceId?: SortOrder
-    deviceName?: SortOrder
-    deviceType?: SortOrder
-    pushToken?: SortOrder
-    isActive?: SortOrder
-    lastSeenAt?: SortOrder
-    locationPermission?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type EmployeeDeviceSessionMinOrderByAggregateInput = {
-    id?: SortOrder
-    employeeId?: SortOrder
-    deviceId?: SortOrder
-    deviceName?: SortOrder
-    deviceType?: SortOrder
-    pushToken?: SortOrder
-    isActive?: SortOrder
-    lastSeenAt?: SortOrder
-    locationPermission?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type EmployeeDeviceSessionSumOrderByAggregateInput = {
     employeeId?: SortOrder
   }
 
@@ -22837,13 +21265,6 @@ export namespace Prisma {
     connect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
   }
 
-  export type EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput = {
-    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
-    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
-    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
-    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-  }
-
   export type CheckInRequestCreateNestedManyWithoutEmployeeInput = {
     create?: XOR<CheckInRequestCreateWithoutEmployeeInput, CheckInRequestUncheckedCreateWithoutEmployeeInput> | CheckInRequestCreateWithoutEmployeeInput[] | CheckInRequestUncheckedCreateWithoutEmployeeInput[]
     connectOrCreate?: CheckInRequestCreateOrConnectWithoutEmployeeInput | CheckInRequestCreateOrConnectWithoutEmployeeInput[]
@@ -22883,13 +21304,6 @@ export namespace Prisma {
     connectOrCreate?: EmployeeSessionCreateOrConnectWithoutEmployeeInput | EmployeeSessionCreateOrConnectWithoutEmployeeInput[]
     createMany?: EmployeeSessionCreateManyEmployeeInputEnvelope
     connect?: EmployeeSessionWhereUniqueInput | EmployeeSessionWhereUniqueInput[]
-  }
-
-  export type EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput = {
-    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
-    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
-    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
-    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
   }
 
   export type CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput = {
@@ -22974,20 +21388,6 @@ export namespace Prisma {
     update?: EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
     updateMany?: EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput[]
     deleteMany?: EmployeeSessionScalarWhereInput | EmployeeSessionScalarWhereInput[]
-  }
-
-  export type EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput = {
-    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
-    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
-    upsert?: EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput[]
-    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
-    set?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    disconnect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    delete?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    update?: EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
-    updateMany?: EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput[]
-    deleteMany?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
   }
 
   export type CheckInRequestUpdateManyWithoutEmployeeNestedInput = {
@@ -23084,20 +21484,6 @@ export namespace Prisma {
     update?: EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
     updateMany?: EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeSessionUpdateManyWithWhereWithoutEmployeeInput[]
     deleteMany?: EmployeeSessionScalarWhereInput | EmployeeSessionScalarWhereInput[]
-  }
-
-  export type EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput = {
-    create?: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput> | EmployeeDeviceSessionCreateWithoutEmployeeInput[] | EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput[]
-    connectOrCreate?: EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput | EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput[]
-    upsert?: EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput[]
-    createMany?: EmployeeDeviceSessionCreateManyEmployeeInputEnvelope
-    set?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    disconnect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    delete?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    connect?: EmployeeDeviceSessionWhereUniqueInput | EmployeeDeviceSessionWhereUniqueInput[]
-    update?: EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput | EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput[]
-    updateMany?: EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput | EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput[]
-    deleteMany?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
   }
 
   export type CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput = {
@@ -23336,20 +21722,6 @@ export namespace Prisma {
     upsert?: EmployeeUpsertWithoutSessionsInput
     connect?: EmployeeWhereUniqueInput
     update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutSessionsInput, EmployeeUpdateWithoutSessionsInput>, EmployeeUncheckedUpdateWithoutSessionsInput>
-  }
-
-  export type EmployeeCreateNestedOneWithoutDeviceSessionsInput = {
-    create?: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
-    connectOrCreate?: EmployeeCreateOrConnectWithoutDeviceSessionsInput
-    connect?: EmployeeWhereUniqueInput
-  }
-
-  export type EmployeeUpdateOneRequiredWithoutDeviceSessionsNestedInput = {
-    create?: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
-    connectOrCreate?: EmployeeCreateOrConnectWithoutDeviceSessionsInput
-    upsert?: EmployeeUpsertWithoutDeviceSessionsInput
-    connect?: EmployeeWhereUniqueInput
-    update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutDeviceSessionsInput, EmployeeUpdateWithoutDeviceSessionsInput>, EmployeeUncheckedUpdateWithoutDeviceSessionsInput>
   }
 
   export type EmployeeCreateNestedOneWithoutCheckInRequestsInput = {
@@ -23955,42 +22327,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type EmployeeDeviceSessionCreateWithoutEmployeeInput = {
-    id?: string
-    deviceId: string
-    deviceName?: string | null
-    deviceType?: string | null
-    pushToken?: string | null
-    isActive?: boolean
-    lastSeenAt?: Date | string
-    locationPermission?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput = {
-    id?: string
-    deviceId: string
-    deviceName?: string | null
-    deviceType?: string | null
-    pushToken?: string | null
-    isActive?: boolean
-    lastSeenAt?: Date | string
-    locationPermission?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type EmployeeDeviceSessionCreateOrConnectWithoutEmployeeInput = {
-    where: EmployeeDeviceSessionWhereUniqueInput
-    create: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput>
-  }
-
-  export type EmployeeDeviceSessionCreateManyEmployeeInputEnvelope = {
-    data: EmployeeDeviceSessionCreateManyEmployeeInput | EmployeeDeviceSessionCreateManyEmployeeInput[]
-    skipDuplicates?: boolean
-  }
-
   export type CheckInRequestCreateWithoutEmployeeInput = {
     latitude: number
     longitude: number
@@ -24249,39 +22585,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"EmployeeSession"> | Date | string
   }
 
-  export type EmployeeDeviceSessionUpsertWithWhereUniqueWithoutEmployeeInput = {
-    where: EmployeeDeviceSessionWhereUniqueInput
-    update: XOR<EmployeeDeviceSessionUpdateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedUpdateWithoutEmployeeInput>
-    create: XOR<EmployeeDeviceSessionCreateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedCreateWithoutEmployeeInput>
-  }
-
-  export type EmployeeDeviceSessionUpdateWithWhereUniqueWithoutEmployeeInput = {
-    where: EmployeeDeviceSessionWhereUniqueInput
-    data: XOR<EmployeeDeviceSessionUpdateWithoutEmployeeInput, EmployeeDeviceSessionUncheckedUpdateWithoutEmployeeInput>
-  }
-
-  export type EmployeeDeviceSessionUpdateManyWithWhereWithoutEmployeeInput = {
-    where: EmployeeDeviceSessionScalarWhereInput
-    data: XOR<EmployeeDeviceSessionUpdateManyMutationInput, EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeInput>
-  }
-
-  export type EmployeeDeviceSessionScalarWhereInput = {
-    AND?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
-    OR?: EmployeeDeviceSessionScalarWhereInput[]
-    NOT?: EmployeeDeviceSessionScalarWhereInput | EmployeeDeviceSessionScalarWhereInput[]
-    id?: StringFilter<"EmployeeDeviceSession"> | string
-    employeeId?: IntFilter<"EmployeeDeviceSession"> | number
-    deviceId?: StringFilter<"EmployeeDeviceSession"> | string
-    deviceName?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    deviceType?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    pushToken?: StringNullableFilter<"EmployeeDeviceSession"> | string | null
-    isActive?: BoolFilter<"EmployeeDeviceSession"> | boolean
-    lastSeenAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    locationPermission?: BoolFilter<"EmployeeDeviceSession"> | boolean
-    createdAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-    updatedAt?: DateTimeFilter<"EmployeeDeviceSession"> | Date | string
-  }
-
   export type CheckInRequestUpsertWithWhereUniqueWithoutEmployeeInput = {
     where: CheckInRequestWhereUniqueInput
     update: XOR<CheckInRequestUpdateWithoutEmployeeInput, CheckInRequestUncheckedUpdateWithoutEmployeeInput>
@@ -24437,7 +22740,6 @@ export namespace Prisma {
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
     primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
   }
@@ -24477,7 +22779,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
@@ -24574,7 +22875,6 @@ export namespace Prisma {
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
     primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
   }
@@ -24614,7 +22914,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
@@ -24848,7 +23147,6 @@ export namespace Prisma {
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
   }
@@ -24887,7 +23185,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
@@ -25035,7 +23332,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
     primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
     allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
@@ -25075,7 +23371,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
@@ -25128,7 +23423,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
     primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
@@ -25168,177 +23462,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-    allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
-  }
-
-  export type EmployeeCreateWithoutDeviceSessionsInput = {
-    name: string
-    email: string
-    position: string
-    phone?: string | null
-    hourlyRate?: number
-    paymentBasis?: string
-    password?: string | null
-    profilePicture?: string | null
-    dateOfBirth?: Date | string | null
-    nationalId?: string | null
-    address?: string | null
-    emergencyContact?: string | null
-    emergencyPhone?: string | null
-    hireDate?: Date | string | null
-    department?: string | null
-    manager?: string | null
-    employeeId?: string | null
-    isActive?: boolean
-    canAccessPortal?: boolean
-    canWorkRemotely?: boolean
-    lastLoginAt?: Date | string | null
-    lastActiveAt?: Date | string | null
-    passwordResetToken?: string | null
-    passwordResetExpires?: Date | string | null
-    preferredLanguage?: string
-    timezone?: string
-    emailNotifications?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
-    payouts?: PayoutCreateNestedManyWithoutEmployeeInput
-    sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
-    primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
-    allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
-  }
-
-  export type EmployeeUncheckedCreateWithoutDeviceSessionsInput = {
-    id?: number
-    name: string
-    email: string
-    position: string
-    phone?: string | null
-    hourlyRate?: number
-    paymentBasis?: string
-    password?: string | null
-    profilePicture?: string | null
-    dateOfBirth?: Date | string | null
-    nationalId?: string | null
-    address?: string | null
-    emergencyContact?: string | null
-    emergencyPhone?: string | null
-    hireDate?: Date | string | null
-    department?: string | null
-    manager?: string | null
-    employeeId?: string | null
-    isActive?: boolean
-    canAccessPortal?: boolean
-    canWorkRemotely?: boolean
-    primaryWorkLocationId?: number | null
-    lastLoginAt?: Date | string | null
-    lastActiveAt?: Date | string | null
-    passwordResetToken?: string | null
-    passwordResetExpires?: Date | string | null
-    preferredLanguage?: string
-    timezone?: string
-    emailNotifications?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
-    payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
-    sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
-    allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
-  }
-
-  export type EmployeeCreateOrConnectWithoutDeviceSessionsInput = {
-    where: EmployeeWhereUniqueInput
-    create: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
-  }
-
-  export type EmployeeUpsertWithoutDeviceSessionsInput = {
-    update: XOR<EmployeeUpdateWithoutDeviceSessionsInput, EmployeeUncheckedUpdateWithoutDeviceSessionsInput>
-    create: XOR<EmployeeCreateWithoutDeviceSessionsInput, EmployeeUncheckedCreateWithoutDeviceSessionsInput>
-    where?: EmployeeWhereInput
-  }
-
-  export type EmployeeUpdateToOneWithWhereWithoutDeviceSessionsInput = {
-    where?: EmployeeWhereInput
-    data: XOR<EmployeeUpdateWithoutDeviceSessionsInput, EmployeeUncheckedUpdateWithoutDeviceSessionsInput>
-  }
-
-  export type EmployeeUpdateWithoutDeviceSessionsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    position?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    hourlyRate?: FloatFieldUpdateOperationsInput | number
-    paymentBasis?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
-    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
-    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    manager?: NullableStringFieldUpdateOperationsInput | string | null
-    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
-    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    preferredLanguage?: StringFieldUpdateOperationsInput | string
-    timezone?: StringFieldUpdateOperationsInput | string
-    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
-    payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
-    sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
-    primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
-    allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
-  }
-
-  export type EmployeeUncheckedUpdateWithoutDeviceSessionsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    position?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    hourlyRate?: FloatFieldUpdateOperationsInput | number
-    paymentBasis?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
-    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nationalId?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
-    emergencyPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    hireDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    manager?: NullableStringFieldUpdateOperationsInput | string | null
-    employeeId?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    canAccessPortal?: BoolFieldUpdateOperationsInput | boolean
-    canWorkRemotely?: BoolFieldUpdateOperationsInput | boolean
-    primaryWorkLocationId?: NullableIntFieldUpdateOperationsInput | number | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    preferredLanguage?: StringFieldUpdateOperationsInput | string
-    timezone?: StringFieldUpdateOperationsInput | string
-    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
-    payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
-    sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
@@ -25376,7 +23499,6 @@ export namespace Prisma {
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
     allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
   }
@@ -25416,7 +23538,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
@@ -25513,7 +23634,6 @@ export namespace Prisma {
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
   }
@@ -25553,7 +23673,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
@@ -25639,7 +23758,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     payouts?: PayoutCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
     primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
     allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
@@ -25679,7 +23797,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     payouts?: PayoutUncheckedCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
@@ -25827,7 +23944,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
     primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
@@ -25867,7 +23983,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
@@ -26121,7 +24236,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestCreateNestedManyWithoutEmployeeInput
     primaryWorkLocation?: WorkLocationCreateNestedOneWithoutPrimaryEmployeesInput
     allowedWorkLocations?: EmployeeWorkLocationCreateNestedManyWithoutEmployeeInput
@@ -26161,7 +24275,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
     sessions?: EmployeeSessionUncheckedCreateNestedManyWithoutEmployeeInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedCreateNestedManyWithoutEmployeeInput
     checkInRequests?: CheckInRequestUncheckedCreateNestedManyWithoutEmployeeInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedCreateNestedManyWithoutEmployeeInput
   }
@@ -26241,7 +24354,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
     primaryWorkLocation?: WorkLocationUpdateOneWithoutPrimaryEmployeesNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
@@ -26281,7 +24393,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }
@@ -26523,19 +24634,6 @@ export namespace Prisma {
     userAgent?: string | null
     isActive?: boolean
     expiresAt: Date | string
-    lastSeenAt?: Date | string
-    locationPermission?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type EmployeeDeviceSessionCreateManyEmployeeInput = {
-    id?: string
-    deviceId: string
-    deviceName?: string | null
-    deviceType?: string | null
-    pushToken?: string | null
-    isActive?: boolean
     lastSeenAt?: Date | string
     locationPermission?: boolean
     createdAt?: Date | string
@@ -26786,45 +24884,6 @@ export namespace Prisma {
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmployeeDeviceSessionUpdateWithoutEmployeeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmployeeDeviceSessionUncheckedUpdateWithoutEmployeeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    locationPermission?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    deviceId?: StringFieldUpdateOperationsInput | string
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
-    pushToken?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     locationPermission?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27226,7 +25285,6 @@ export namespace Prisma {
     attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUpdateManyWithoutEmployeeNestedInput
   }
@@ -27265,7 +25323,6 @@ export namespace Prisma {
     attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
     payouts?: PayoutUncheckedUpdateManyWithoutEmployeeNestedInput
     sessions?: EmployeeSessionUncheckedUpdateManyWithoutEmployeeNestedInput
-    deviceSessions?: EmployeeDeviceSessionUncheckedUpdateManyWithoutEmployeeNestedInput
     checkInRequests?: CheckInRequestUncheckedUpdateManyWithoutEmployeeNestedInput
     allowedWorkLocations?: EmployeeWorkLocationUncheckedUpdateManyWithoutEmployeeNestedInput
   }

@@ -21,7 +21,6 @@ export function CreateEmployeeForm() {
     email: '',
     position: '',
     phone: '',
-    fingerprintId: '',
     hourlyRate: '',
     paymentBasis: 'Monthly', // Default to Monthly
   });
@@ -55,8 +54,8 @@ export function CreateEmployeeForm() {
       if (!formData.position.trim()) {
         throw new Error('Position is required');
       }
-      if (!formData.fingerprintId.trim()) {
-        throw new Error('Fingerprint Device ID is required');
+      if (!formData.hourlyRate || parseFloat(formData.hourlyRate) <= 0) {
+        throw new Error('Valid hourly rate is required');
       }
       if (!formData.paymentBasis) {
         throw new Error('Payment basis is required');
@@ -79,7 +78,6 @@ export function CreateEmployeeForm() {
           email: formData.email,
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
-          fingerprintId: formData.fingerprintId, // Required field, no need for null check
           hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
@@ -211,28 +209,11 @@ export function CreateEmployeeForm() {
         {/* System Information Section */}
         <div className="space-y-6">
           <div className="border-b border-gray-200 pb-4">
-            <h3 className="text-lg font-medium text-gray-900">System Information</h3>
-            <p className="text-sm text-gray-500">Attendance tracking and payroll configuration.</p>
+            <h3 className="text-lg font-medium text-gray-900">Employee Information</h3>
+            <p className="text-sm text-gray-500">Basic employee details and payroll configuration.</p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="fingerprintId" className="text-sm font-medium text-gray-700">
-              Fingerprint Device ID *
-            </Label>
-            <Input
-              id="fingerprintId"
-              name="fingerprintId"
-              value={formData.fingerprintId}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              placeholder="EMP001, 12345, etc."
-              required
-              className="h-10"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Enter the unique ID used in attendance device exports. This must be unique across all employees.
-            </p>
-          </div>
+          {/* Remove the entire fingerprintId field section */}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">

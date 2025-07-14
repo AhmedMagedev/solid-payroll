@@ -73,11 +73,10 @@ function parseEmployeesFromCSV(content: string) {
     throw new Error('No data found in file');
   }
   
-  // Skip header row if it exists (check if first row contains text like "Employee Name" or "Device ID")
+  // Skip header row if it exists (check if first row contains text like "Employee Name")
   const firstRow = rows[0];
   const hasHeader = firstRow.some(cell => 
     cell.toLowerCase().includes('employee') || 
-    cell.toLowerCase().includes('device') || 
     cell.toLowerCase().includes('name') || 
     cell.toLowerCase().includes('rate')
   );
@@ -98,21 +97,16 @@ function parseEmployeesFromCSV(content: string) {
     const row = dataRows[i];
     const rowNumber = hasHeader ? i + 2 : i + 1; // For error reporting
     
-    if (row.length < 4) {
-      console.warn(`Row ${rowNumber}: Insufficient columns (${row.length}/4 required)`);
+    if (row.length < 3) {
+      console.warn(`Row ${rowNumber}: Insufficient columns (${row.length}/3 required)`);
       continue;
     }
     
-    const [name, deviceId, hourlyRate, paymentBasis] = row;
+    const [name, hourlyRate, paymentBasis] = row;
     
     // Validate required fields
     if (!name || !name.trim()) {
       console.warn(`Row ${rowNumber}: Missing employee name`);
-      continue;
-    }
-    
-    if (!deviceId || !deviceId.trim()) {
-      console.warn(`Row ${rowNumber}: Missing device ID`);
       continue;
     }
     
@@ -128,7 +122,6 @@ function parseEmployeesFromCSV(content: string) {
     
     // Clean and prepare data
     const cleanName = name.trim();
-    const cleanDeviceId = deviceId.trim();
     const cleanHourlyRate = parseFloat(hourlyRate);
     const cleanPaymentBasis = paymentBasis.trim();
     
@@ -136,8 +129,7 @@ function parseEmployeesFromCSV(content: string) {
       name: cleanName,
       email: generateEmail(cleanName),
       position: 'Employee', // Default position
-      fingerprintId: cleanDeviceId,
-              hourlyRate: cleanHourlyRate,
+      hourlyRate: cleanHourlyRate,
       paymentBasis: cleanPaymentBasis
     });
   }
@@ -150,7 +142,6 @@ async function processEmployeesInBatches(employees: Array<{
   name: string;
   email: string;
   position: string;
-  fingerprintId: string;
   hourlyRate: number;
   paymentBasis: string;
 }>) {
@@ -166,15 +157,12 @@ async function processEmployeesInBatches(employees: Array<{
     
     for (const employeeData of batch) {
       try {
-        console.log(`[API] Checking if employee exists: ${employeeData.email} (Device ID: ${employeeData.fingerprintId})`);
+        console.log(`[API] Checking if employee exists: ${employeeData.email}`);
         
-        // Check if employee with this email or fingerprint ID already exists
+        // Check if employee with this email already exists
         const existingEmployee = await prisma.employee.findFirst({
           where: {
-            OR: [
-              { email: employeeData.email },
-              { fingerprintId: employeeData.fingerprintId }
-            ]
+            email: employeeData.email
           }
         });
         
@@ -190,8 +178,8 @@ async function processEmployeesInBatches(employees: Array<{
           results.push({ success: true, employee });
           createdCount++;
         } else {
-          const conflictField = existingEmployee.email === employeeData.email ? 'email' : 'device ID';
-          const conflictValue = existingEmployee.email === employeeData.email ? employeeData.email : employeeData.fingerprintId;
+          const conflictField = 'email';
+          const conflictValue = employeeData.email;
           
           console.log(`[API] Employee conflict: ${conflictField} ${conflictValue} already exists`);
           results.push({ 
@@ -311,14 +299,14 @@ export async function POST(request: NextRequest) {
 
     console.log(`[API] Found ${employees.length} employees in uploaded CSV file`);
     
-    // Check for duplicate fingerprint IDs in the file
-    const fingerprintIds = employees.map(emp => emp.fingerprintId);
-    const duplicateIds = fingerprintIds.filter((id, index) => fingerprintIds.indexOf(id) !== index);
+    // Check for duplicate emails in the file
+    const emails = employees.map(emp => emp.email);
+    const duplicateEmails = emails.filter((email, index) => emails.indexOf(email) !== index);
     
-    if (duplicateIds.length > 0) {
+    if (duplicateEmails.length > 0) {
       return NextResponse.json({ 
-        error: 'Duplicate device IDs found in file',
-        details: `The following device IDs appear multiple times: ${[...new Set(duplicateIds)].join(', ')}`
+        error: 'Duplicate employee names found in file (resulting in duplicate emails)',
+        details: `The following emails would be duplicated: ${[...new Set(duplicateEmails)].join(', ')}`
       }, { status: 400 });
     }
 

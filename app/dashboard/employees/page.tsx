@@ -16,7 +16,6 @@ interface Employee {
   name: string;
   email: string; // Keep in interface for data structure, but won't display
   position: string;
-  fingerprintId?: string;
   hourlyRate: number;
   paymentBasis?: string;
   createdAt: Date;
@@ -128,13 +127,12 @@ export default function EmployeesPage() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="h-10 px-4 text-right align-middle font-medium w-[100px]">الرقم</th>
-                  <th className="h-10 px-4 text-right align-middle font-medium">الاسم</th>
-                  <th className="h-10 px-4 text-right align-middle font-medium">المنصب</th>
-                  <th className="h-10 px-4 text-right align-middle font-medium">رقم الجهاز</th>
-                  <th className="h-10 px-4 text-right align-middle font-medium">الأجر بالساعة</th>
-                  <th className="h-10 px-4 text-right align-middle font-medium">المتوقع شهرياً</th>
-                  <th className="h-10 px-4 text-center align-middle font-medium w-[120px]">الإجراءات</th>
+                  <th className="text-left p-3 font-semibold text-sm border-b">Name</th>
+                  <th className="text-left p-3 font-semibold text-sm border-b">Email</th>
+                  <th className="text-left p-3 font-semibold text-sm border-b">Position</th>
+                  <th className="text-left p-3 font-semibold text-sm border-b">Hourly Rate</th>
+                  <th className="text-left p-3 font-semibold text-sm border-b">Payment</th>
+                  <th className="text-left p-3 font-semibold text-sm border-b">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -150,44 +148,37 @@ export default function EmployeesPage() {
                   </tr>
                 ) : (
                   currentEmployees.map((employee) => (
-                    <tr key={employee.id} className="border-b hover:bg-muted/50 transition-colors">
-                      <td className="p-4 font-medium text-right">{employee.id}</td>
-                      <td className="p-4 text-right">
-                        <Link href={`/dashboard/employees/${employee.id}`} className="hover:underline text-primary">
-                          {employee.name}
-                        </Link>
-                      </td>
-                      <td className="p-4 text-right">{employee.position}</td>
-                      <td className="p-4 font-mono text-sm text-right">
-                        {employee.fingerprintId ? (
-                          employee.fingerprintId
-                        ) : (
-                          <span className="text-orange-600 italic">غير محدد</span>
-                        )}
-                      </td>
-                      <td className="p-4 text-right">{employee.hourlyRate.toFixed(2)} ج.م</td>
-                      <td className="p-4 text-right">{(employee.hourlyRate * 9 * 22).toFixed(2)} ج.م</td>
-                      <td className="p-4">
-                        <div className="flex items-center justify-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => router.push(`/dashboard/employees/${employee.id}/edit`)}
-                            className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
-                            title="تعديل الموظف"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <QuickDeleteButton 
-                            employeeId={employee.id} 
-                            employeeName={employee.name}
-                            onDelete={() => {
-                              setAllEmployees(prev => prev.filter(emp => emp.id !== employee.id));
-                            }}
-                          />
-                        </div>
-                      </td>
-                    </tr>
+                                         <tr key={employee.id} className="border-b hover:bg-muted/30 transition-colors">
+                       <td className="p-3 font-medium">
+                         <Link href={`/dashboard/employees/${employee.id}`} className="hover:underline text-primary">
+                           {employee.name}
+                         </Link>
+                       </td>
+                       <td className="p-3 text-muted-foreground">{employee.email}</td>
+                       <td className="p-3">{employee.position}</td>
+                       <td className="p-3 font-mono">${employee.hourlyRate}</td>
+                       <td className="p-3">{employee.paymentBasis || 'Monthly'}</td>
+                       <td className="p-3">
+                         <div className="flex items-center gap-1">
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => router.push(`/dashboard/employees/${employee.id}/edit`)}
+                             className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
+                             title="Edit Employee"
+                           >
+                             <Edit className="h-4 w-4" />
+                           </Button>
+                           <QuickDeleteButton 
+                             employeeId={employee.id} 
+                             employeeName={employee.name}
+                             onDelete={() => {
+                               setAllEmployees(prev => prev.filter(emp => emp.id !== employee.id));
+                             }}
+                           />
+                         </div>
+                       </td>
+                     </tr>
                   ))
                 )}
               </tbody>

@@ -57,26 +57,14 @@ export async function POST(request: NextRequest) {
     
     const data = await request.json();
     
-    const { name, email, position, phone, fingerprintId, hourlyRate, paymentBasis } = data;
+    const { name, email, position, phone, hourlyRate, paymentBasis } = data;
 
-  if (!name || !email || !position || !hourlyRate || !fingerprintId) {
+  if (!name || !email || !position || !hourlyRate) {
     return NextResponse.json(
-      { error: 'Missing required fields (name, email, position, hourlyRate, fingerprintId)' },
+      { error: 'Missing required fields (name, email, position, hourlyRate)' },
       { status: 400 }
     );
   }
-    
-    // Check if fingerprintId is already taken
-    const existingEmployee = await prisma.employee.findFirst({
-      where: { fingerprintId },
-    });
-
-    if (existingEmployee) {
-      return NextResponse.json(
-        { error: 'Fingerprint Device ID is already in use by another employee' },
-        { status: 400 }
-      );
-    }
     
     const employee = await prisma.employee.create({
       data: {
@@ -84,7 +72,6 @@ export async function POST(request: NextRequest) {
         email,
         position,
         phone: phone || null,
-        fingerprintId,
         hourlyRate: parseFloat(hourlyRate),
         paymentBasis: paymentBasis || 'Monthly',
       },

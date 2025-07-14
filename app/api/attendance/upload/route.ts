@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Process attendance records
-    const recordsByEmployeeAndDay = new Map<string, { records: string[], deviceId: string, date: string, employeeId: number, isPaidDay: boolean }>();
+    const recordsByEmployeeAndDay = new Map<string, { records: string[], date: string, employeeId: number, isPaidDay: boolean }>();
 
     console.log(`[API] Processing ${lines.length} lines from uploaded file`);
 
@@ -96,12 +96,12 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Correct parsing: parts[0] = deviceId, parts[1] = date, parts[2] = time
-      const deviceId = parseInt(parts[0], 10);
+      // Correct parsing: parts[0] = employeeId, parts[1] = date, parts[2] = time
+      const employeeId = parseInt(parts[0], 10);
       const timeString = parts[1] + ' ' + parts[2]; // YYYY-MM-DD HH:MM:SS
 
       console.log(`[API] Parsing line: ${line}`);
-      console.log(`[API] Extracted - DeviceID: ${deviceId}, Timestamp: ${timeString}`);
+      console.log(`[API] Extracted - EmployeeID: ${employeeId}, Timestamp: ${timeString}`);
 
       // Parse the timestamp as Egypt time (local) and convert to UTC for storage
       const checkInDateTime = parseEgyptTimeToUtc(timeString);
@@ -110,15 +110,15 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Find employee by deviceId (fingerprint device ID)
+      // Find employee by ID
       const employee = await prisma.employee.findFirst({
         where: { 
-          fingerprintId: deviceId.toString()
+          id: employeeId
         }
       });
 
       if (!employee) {
-        console.log(`Skipping record ${line}: Employee with fingerprint device ID ${deviceId} not found`);
+        console.log(`Skipping record ${line}: Employee with ID ${employeeId} not found`);
         continue;
       }
 
@@ -142,7 +142,6 @@ export async function POST(request: NextRequest) {
       if (!recordsByEmployeeAndDay.has(employeeKey)) {
         recordsByEmployeeAndDay.set(employeeKey, {
           employeeId: employee.id,
-          deviceId: deviceId.toString(), // Convert to string for consistency
           date: dateKey,
           records: [],
           isPaidDay: isPaidDay // Store calculated isPaidDay
@@ -163,7 +162,7 @@ export async function POST(request: NextRequest) {
       console.log(`[API] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(entries.length / BATCH_SIZE)}`);
       
       for (const [, data] of batch) {
-        const { records, deviceId, date, employeeId, isPaidDay } = data;
+        const { records, date, employeeId, isPaidDay } = data;
 
         // Find employee by ID
         const employee = await prisma.employee.findUnique({
@@ -175,7 +174,7 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        console.log(`[API] Found employee: ${employee.name} (ID: ${employee.id}) for device ID: ${deviceId}`);
+        console.log(`[API] Found employee: ${employee.name} (ID: ${employee.id})`);
 
         // Sort records by time to get first (check-in) and last (check-out)
         const sortedRecords = records.sort();

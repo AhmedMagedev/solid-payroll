@@ -197,20 +197,6 @@ exports.Prisma.EmployeeSessionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.EmployeeDeviceSessionScalarFieldEnum = {
-  id: 'id',
-  employeeId: 'employeeId',
-  deviceId: 'deviceId',
-  deviceName: 'deviceName',
-  deviceType: 'deviceType',
-  pushToken: 'pushToken',
-  isActive: 'isActive',
-  lastSeenAt: 'lastSeenAt',
-  locationPermission: 'locationPermission',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.CheckInRequestScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -394,7 +380,6 @@ exports.Prisma.ModelName = {
   EmployeeWorkLocation: 'EmployeeWorkLocation',
   WorkLocation: 'WorkLocation',
   EmployeeSession: 'EmployeeSession',
-  EmployeeDeviceSession: 'EmployeeDeviceSession',
   CheckInRequest: 'CheckInRequest',
   User: 'User',
   Attendance: 'Attendance',

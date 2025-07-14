@@ -70,9 +70,7 @@ export async function PUT(request: NextRequest) {
     if (!data.position) {
       return NextResponse.json({ error: 'Position is required' }, { status: 400 });
     }
-    if (!data.fingerprintId) {
-      return NextResponse.json({ error: 'Fingerprint Device ID is required' }, { status: 400 });
-    }
+
     if (typeof data.hourlyRate !== 'number' || data.hourlyRate <= 0) {
       return NextResponse.json({ error: 'Hourly rate must be a positive number' }, { status: 400 });
     }
@@ -85,20 +83,7 @@ export async function PUT(request: NextRequest) {
       }, { status: 400 });
     }
     
-    // Check if fingerprintId is already taken by another employee
-    const fingerprintExists = await prisma.employee.findFirst({
-      where: { 
-        fingerprintId: data.fingerprintId,
-        NOT: { id: employeeId }, // Exclude current employee
-      },
-    });
 
-    if (fingerprintExists) {
-      return NextResponse.json(
-        { error: 'Fingerprint Device ID is already in use by another employee' },
-        { status: 400 }
-      );
-    }
     
     // Update employee in database
     const updatedEmployee = await prisma.employee.update({
@@ -108,8 +93,7 @@ export async function PUT(request: NextRequest) {
         email: data.email,
         position: data.position,
         phone: data.phone || null,
-        fingerprintId: data.fingerprintId,
-                  hourlyRate: data.hourlyRate,
+        hourlyRate: data.hourlyRate,
         paymentBasis: data.paymentBasis || 'Monthly', // Default to Monthly if not provided
       },
     });

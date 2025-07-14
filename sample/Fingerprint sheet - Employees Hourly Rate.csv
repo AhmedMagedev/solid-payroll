@@ -1,22 +1,6 @@
-Employee Name,Device ID,Hourly Rate,Payment Basis
-Hassan Mohamed Hassan,2,27.78,Monthly
-Mustafa Mohamed,3,30.00,Weekly
-Ibrahim Ahmed Abdalaal,4,32.56,Monthly
-Mustafa Shaaban,6,16.67,Monthly
-Saif eddien,10,24.44,Monthly
-Hussein Mohamed,11,38.89,Weekly
-Ashraf Abdul Tawab,13,38.89,Weekly
-Osama gameel,14,32.56,Monthly
-Mohamed El Sayed gamal,16,33.33,Weekly
-Mohamed Hamdy,17,24.44,Monthly
-Galal Eddin,20,38.89,Weekly
-Ahmed Abdelnasir,21,24.44,Weekly
-Mohamed Nour Eldine,26,50.00,Weekly
-Mohamed Alaa,30,69.44,Monthly
-Ramadan Rida,33,20.00,Monthly
-Subhi Abdulazeem,34,41.67,Monthly
-Ahmed Maged,35,138.89,Monthly
-Salah Edddien,36,33.33,Monthly
-Mohamed Sultan,38,22.22,Weekly
-Mahmoud Ebrahim,39,24.44,Monthly
-Hashem,7,33.33,Weekly
+Employee Name,Hourly Rate,Payment Basis
+John Smith,25.50,Monthly
+Jane Doe,30.00,Weekly
+Ahmed Hassan,22.75,Monthly
+Sarah Johnson,28.25,Monthly
+Omar Ali,26.00,Weekly

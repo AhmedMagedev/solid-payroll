@@ -10,14 +10,14 @@ datasource db {
 }
 
 model Employee {
-  id           Int     @id @default(autoincrement())
-  name         String
-  email        String  @unique
-  position     String
-  phone        String?
-  // Deprecated: fingerprintId String?     @map("fingerprint_id") // Keeping for migration but will be removed
-  hourlyRate   Float   @default(0) @map("hourly_rate")
-  paymentBasis String  @default("Daily") @map("payment_basis")
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String  @unique
+  position String
+  phone    String?
+
+  hourlyRate   Float  @default(0) @map("hourly_rate")
+  paymentBasis String @default("Daily") @map("payment_basis")
 
   // Employee authentication and profile
   password         String?   @map("password") // Hashed password for employee portal
@@ -57,9 +57,8 @@ model Employee {
   attendance           Attendance[]
   payouts              Payout[]
   sessions             EmployeeSession[]
-  deviceSessions       EmployeeDeviceSession[]
   checkInRequests      CheckInRequest[]
-  primaryWorkLocation  WorkLocation?           @relation("EmployeePrimaryLocation", fields: [primaryWorkLocationId], references: [id])
+  primaryWorkLocation  WorkLocation?          @relation("EmployeePrimaryLocation", fields: [primaryWorkLocationId], references: [id])
   allowedWorkLocations EmployeeWorkLocation[]
 
   @@map("employees")
@@ -133,29 +132,6 @@ model EmployeeSession {
   employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("employee_sessions")
-}
-
-model EmployeeDeviceSession {
-  id         String  @id @default(cuid())
-  employeeId Int     @map("employee_id")
-  deviceId   String  @map("device_id") // Unique device identifier
-  deviceName String? @map("device_name")
-  deviceType String? @map("device_type") // "android", "ios", "web"
-  pushToken  String? @map("push_token") // For notifications
-
-  isActive   Boolean  @default(true) @map("is_active")
-  lastSeenAt DateTime @default(now()) @map("last_seen_at")
-
-  // Location permissions
-  locationPermission Boolean @default(false) @map("location_permission")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  @@unique([employeeId, deviceId])
-  @@map("employee_device_sessions")
 }
 
 model CheckInRequest {

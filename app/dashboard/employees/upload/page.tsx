@@ -291,11 +291,10 @@ export default function EmployeeUploadPage() {
                   Your CSV or Excel file must contain these columns in this exact order:
                 </p>
                 <div className="bg-muted p-3 rounded-md text-sm border">
-                  <div className="grid grid-cols-4 gap-4 font-medium text-foreground mb-2">
+                  <div className="grid grid-cols-3 gap-4 font-medium text-foreground mb-2">
                     <div>A: Employee Name</div>
-                    <div>B: Device ID</div>
-                    <div>C: Hourly Rate</div>
-                    <div>D: Payment Basis</div>
+                    <div>B: Hourly Rate</div>
+                    <div>C: Payment Basis</div>
                   </div>
                 </div>
               </div>
@@ -312,29 +311,20 @@ export default function EmployeeUploadPage() {
                     <thead>
                       <tr className="border-b border-border">
                         <th className="text-left p-1 font-medium">Employee Name</th>
-                        <th className="text-left p-1 font-medium">Device ID</th>
                         <th className="text-left p-1 font-medium">Hourly Rate</th>
                         <th className="text-left p-1 font-medium">Payment Basis</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td className="p-1">Hassan Mohamed Hassan</td>
-                        <td className="p-1">2</td>
-                        <td className="p-1">250</td>
+                        <td className="p-1">John Smith</td>
+                        <td className="p-1">25.5</td>
                         <td className="p-1">Monthly</td>
                       </tr>
                       <tr>
-                        <td className="p-1">Mustafa Mohamed</td>
-                        <td className="p-1">3</td>
-                        <td className="p-1">270</td>
+                        <td className="p-1">Jane Doe</td>
+                        <td className="p-1">30.0</td>
                         <td className="p-1">Weekly</td>
-                      </tr>
-                      <tr>
-                        <td className="p-1">Ibrahim Ahmed Abdalaal</td>
-                        <td className="p-1">4</td>
-                        <td className="p-1">293</td>
-                        <td className="p-1">Monthly</td>
                       </tr>
                     </tbody>
                   </table>
@@ -352,37 +342,31 @@ export default function EmployeeUploadPage() {
                       <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
                         <span className="text-xs font-bold text-primary">1</span>
                       </div>
-                      <span className="text-sm">Employee Name: Full name as it should appear in the system</span>
+                      <span className="text-sm">Employee Name: Full name as it appears in the system</span>
                     </li>
                     <li className="flex items-start">
                       <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
                         <span className="text-xs font-bold text-primary">2</span>
                       </div>
-                      <span className="text-sm">Device ID: Unique fingerprint device identifier (must be unique)</span>
+                      <span className="text-sm">Hourly Rate: Numeric hourly wage (must be positive number)</span>
                     </li>
                     <li className="flex items-start">
                       <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
                         <span className="text-xs font-bold text-primary">3</span>
                       </div>
-                      <span className="text-sm">Hourly Rate: Numeric value for daily compensation</span>
+                                             <span className="text-sm">Payment Basis: Either &ldquo;Monthly&rdquo; or &ldquo;Weekly&rdquo; (exact spelling required)</span>
                     </li>
                     <li className="flex items-start">
                       <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
                         <span className="text-xs font-bold text-primary">4</span>
                       </div>
-                      <span className="text-sm">Payment Basis: Either &ldquo;Monthly&rdquo; or &ldquo;Weekly&rdquo;</span>
+                      <span className="text-sm">Emails are auto-generated from names; Position defaults to &ldquo;Employee&rdquo;</span>
                     </li>
                     <li className="flex items-start">
                       <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
                         <span className="text-xs font-bold text-primary">5</span>
                       </div>
-                      <span className="text-sm">Emails are auto-generated from names; Position defaults to &ldquo;Employee&rdquo;</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="rounded-full bg-primary/10 p-1 mr-2 mt-0.5">
-                        <span className="text-xs font-bold text-primary">6</span>
-                      </div>
-                      <span className="text-sm">Duplicate device IDs or emails will be skipped with error reporting</span>
+                      <span className="text-sm">Duplicate employee names (resulting in duplicate emails) will be skipped with error reporting</span>
                     </li>
                   </ul>
                 </div>

@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
                 value={username}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                 disabled={loading}
-                className="bg-card text-right"
+                className="bg-card text-left"
               />
             </div>
             <div className="space-y-2">
@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 disabled={loading}
-                className="bg-card text-right"
+                className="bg-card text-left"
               />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
