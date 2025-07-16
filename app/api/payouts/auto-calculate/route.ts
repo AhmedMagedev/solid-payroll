@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
         
         // RESTORED OVERTIME CALCULATION with sophisticated rules
         const hoursPerDay = 9; // Standard working hours per day
-        const hourlyRate = employee.dailyRate / hoursPerDay; // Calculate hourly rate from daily rate
+        const hourlyRate = employee.hourlyRate; // Use hourly rate directly
         const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
         
         let regularHours = 0;
@@ -263,7 +263,7 @@ interface EmployeeRecord {
   id: number;
   name: string;
   paymentBasis: string;
-  dailyRate: number;
+  hourlyRate: number;
 }
 
 function calculatePaymentPeriods(attendance: AttendanceRecord[], employee: EmployeeRecord): PaymentPeriod[] {

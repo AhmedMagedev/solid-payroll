@@ -61,7 +61,7 @@ export async function GET() {
       message: 'All attendance records for Employee 4',
       totalRecords: attendanceRecords.length,
       employeeId: 4,
-      employeeDailyRate: attendanceRecords[0]?.employee.dailyRate || 'Unknown',
+      employeeHourlyRate: attendanceRecords[0]?.employee.hourlyRate || 'Unknown',
       allRecords: formattedRecords,
       suspiciousRecords: suspiciousRecords,
       analysisDate: new Date().toISOString(),

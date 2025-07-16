@@ -63,7 +63,7 @@ export class PenaltyCalculator {
     workingHoursStart: string,
     workingHoursEnd: string,
     workingHoursPerDay: number,
-    dailyRate: number
+    hourlyRate: number
   ): Promise<PenaltyCalculationResult> {
     const result: PenaltyCalculationResult = {
       penalties: [],
@@ -75,7 +75,7 @@ export class PenaltyCalculator {
 
     // FUNDAMENTAL RULE: Only missing check-in marks the entire day as unpaid
     if (!checkIn) {
-      const dailySalary = dailyRate;
+      const dailySalary = hourlyRate * workingHoursPerDay;
       
       result.penalties.push({
         penaltyType: 'MISSING_ATTENDANCE',
@@ -97,7 +97,7 @@ export class PenaltyCalculator {
 
     // CHECK FOR ZERO WORKING HOURS: If check-in and check-out are the same time (0 hours worked)
     if (checkOut && checkIn.getTime() === checkOut.getTime()) {
-      const dailySalary = dailyRate;
+      const dailySalary = hourlyRate * workingHoursPerDay;
       
       result.penalties.push({
         penaltyType: 'MISSING_ATTENDANCE',
@@ -130,7 +130,7 @@ export class PenaltyCalculator {
     const lateArrivalPenalty = this.calculateLateArrivalPenalty(
       checkIn,
       workingHoursStart,
-      dailyRate,
+      hourlyRate,
       workingHoursPerDay
     );
     
@@ -449,7 +449,7 @@ export async function processAttendanceWithPenalties(
   // Get employee hourly rate
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-            select: { dailyRate: true, paymentBasis: true },
+            select: { hourlyRate: true, paymentBasis: true },
   });
 
   if (!employee) {
@@ -465,7 +465,7 @@ export async function processAttendanceWithPenalties(
     settings.workingHoursStart,
     settings.workingHoursEnd,
     settings.workingHoursPerDay,
-          employee.dailyRate
+          employee.hourlyRate
   );
 
   await calculator.applyPenaltiesToAttendance(attendanceId, result);

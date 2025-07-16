@@ -16,7 +16,7 @@ model Employee {
   position String
   phone    String?
 
-  dailyRate    Float  @default(0) @map("daily_rate")
+  hourlyRate   Float  @default(0) @map("hourly_rate")
   paymentBasis String @default("Monthly") @map("payment_basis")
 
   // Employee authentication and profile

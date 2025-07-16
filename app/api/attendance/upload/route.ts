@@ -542,7 +542,7 @@ export async function POST(request: NextRequest) {
             
             // NEW OVERTIME CALCULATION with updated rules
             const hoursPerDay = 9; // Standard working hours per day
-            const hourlyRate = employee.dailyRate / hoursPerDay; // Calculate hourly rate from daily rate
+            const hourlyRate = employee.hourlyRate; // Use hourly rate directly
             const overtimeRate = hourlyRate * 1.5; // 1.5x overtime rate
             const holidayRate = hourlyRate * 2; // 2x holiday rate
             
@@ -642,8 +642,8 @@ export async function POST(request: NextRequest) {
             
             // Calculate deductions and gross salary
             const unpaidDaysCount = periodAttendance.length - daysWorked;
-            const grossSalary = periodAttendance.length * employee.dailyRate; // What they would earn without deductions (daily rate)
-            const unpaidDaysDeductions = unpaidDaysCount * employee.dailyRate;
+            const grossSalary = periodAttendance.length * hoursPerDay * hourlyRate; // What they would earn without deductions
+            const unpaidDaysDeductions = unpaidDaysCount * hoursPerDay * hourlyRate;
             
             // We'll calculate late/early deductions from the difference between gross and actual paid
             const lateDeductions = 0; // Will be calculated from attendance penalties  

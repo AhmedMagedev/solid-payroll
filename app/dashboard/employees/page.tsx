@@ -16,7 +16,7 @@ interface Employee {
   name: string;
   email: string; // Keep in interface for data structure, but won't display
   position: string;
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -130,7 +130,7 @@ export default function EmployeesPage() {
                   <th className="text-right p-3 font-semibold text-sm border-b">الاسم</th>
                   <th className="text-right p-3 font-semibold text-sm border-b">البريد الإلكتروني</th>
                   <th className="text-right p-3 font-semibold text-sm border-b">المنصب</th>
-                  <th className="text-right p-3 font-semibold text-sm border-b">الراتب اليومي</th>
+                  <th className="text-right p-3 font-semibold text-sm border-b">الأجر بالساعة</th>
                   <th className="text-right p-3 font-semibold text-sm border-b">الإجراءات</th>
                 </tr>
               </thead>
@@ -155,7 +155,7 @@ export default function EmployeesPage() {
                        </td>
                        <td className="p-3 text-muted-foreground text-right">{employee.email}</td>
                        <td className="p-3 text-right">{employee.position}</td>
-                       <td className="p-3 font-mono text-right">{employee.dailyRate} ج.م</td>
+                       <td className="p-3 font-mono text-right">{employee.hourlyRate} ج.م</td>
                        <td className="p-3 text-right">
                          <div className="flex items-center gap-1 justify-end">
                            <Button

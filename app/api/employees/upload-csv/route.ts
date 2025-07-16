@@ -98,34 +98,40 @@ function parseEmployeesFromCSV(content: string) {
     const row = dataRows[i];
     const rowNumber = hasHeader ? i + 2 : i + 1; // For error reporting
     
-    if (row.length < 2) {
-      console.warn(`Row ${rowNumber}: Insufficient columns (${row.length}/2 required)`);
+    // Updated validation: Name and Hourly Rate
+    if (row.length !== 2) {
+      console.warn(`Row ${rowNumber}: Expected 2 columns (Name, Hourly Rate), got ${row.length}`);
       continue;
     }
-    
-    const [name, dailyRate] = row;
-    
-    // Validate required fields
-    if (!name || !name.trim()) {
-      console.warn(`Row ${rowNumber}: Missing employee name`);
+
+    const [name, hourlyRateStr] = row.map(cell => cell.trim());
+
+    // Validate name
+    if (!name) {
+      console.warn(`Row ${rowNumber}: Name is required`);
       continue;
     }
-    
-    if (!dailyRate || isNaN(Number(dailyRate))) {
-      console.warn(`Row ${rowNumber}: Invalid daily rate: ${dailyRate}`);
+
+    // Validate hourly rate
+    const hourlyRate = parseFloat(hourlyRateStr);
+    if (isNaN(hourlyRate) || hourlyRate <= 0) {
+      console.warn(`Row ${rowNumber}: Invalid hourly rate "${hourlyRateStr}". Must be a positive number.`);
       continue;
     }
     
     // Clean and prepare data
     const cleanName = name.trim();
-    const cleanDailyRate = parseFloat(dailyRate);
+    const cleanHourlyRate = hourlyRate;
     
+    const email = `${name.replace(/\s+/g, '.').toLowerCase()}@solid-metals.com`;
+
     employees.push({
       name: cleanName,
-      email: generateEmail(cleanName),
-      position: 'Employee', // Default position
-      dailyRate: cleanDailyRate, // Store daily rate in dailyRate field
-      paymentBasis: 'Monthly' // Always set to Monthly
+      email,
+      position: 'Employee',
+      phone: null,
+      hourlyRate: cleanHourlyRate,
+      paymentBasis: 'Monthly'
     });
   }
   
@@ -137,7 +143,8 @@ async function processEmployeesInBatches(employees: Array<{
   name: string;
   email: string;
   position: string;
-  dailyRate: number;
+  phone: null;
+  hourlyRate: number;
   paymentBasis: string;
 }>) {
   const results = [];

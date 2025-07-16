@@ -15,7 +15,7 @@ interface Employee {
   position: string;
   phone?: string; // Optional phone number field
   fingerprintId?: string; // For mapping to attendance device IDs
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
 }
 
@@ -30,7 +30,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     email: employee.email || '',
     position: employee.position || '',
     phone: employee.phone || '',
-    dailyRate: employee.dailyRate?.toString() || '',
+    hourlyRate: employee.hourlyRate?.toString() || '',
     paymentBasis: employee.paymentBasis || 'Monthly'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,8 +54,8 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     if (!formData.position.trim()) {
       throw new Error('Position is required');
     }
-    if (!formData.dailyRate || parseFloat(formData.dailyRate) <= 0) {
-      throw new Error('Valid daily rate is required');
+    if (!formData.hourlyRate || parseFloat(formData.hourlyRate) <= 0) {
+      throw new Error('Valid hourly rate is required');
     }
   };
 
@@ -73,7 +73,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         email: formData.email,
         position: formData.position,
         phone: formData.phone || null,
-        dailyRate: parseFloat(formData.dailyRate),
+        hourlyRate: parseFloat(formData.hourlyRate),
         paymentBasis: formData.paymentBasis
       };
 
@@ -180,17 +180,17 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="dailyRate">الأجر اليومي (ج.م)</Label>
+        <Label htmlFor="hourlyRate">الأجر بالساعة (ج.م)</Label>
         <Input
-          id="dailyRate"
-          name="dailyRate"
+          id="hourlyRate"
+          name="hourlyRate"
           type="number"
-          value={formData.dailyRate}
+          value={formData.hourlyRate}
           onChange={handleChange}
           disabled={isSubmitting}
-          placeholder="200"
+          placeholder="25.00"
           className="text-right"
-          step="1"
+          step="0.01"
           min="0"
           inputMode="decimal"
           required

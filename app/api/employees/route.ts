@@ -55,26 +55,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid authentication token' }, { status: 401 });
     }
     
-    const data = await request.json();
-    
-    const { name, email, position, phone, dailyRate } = data;
+          const { name, email, position, phone, hourlyRate } = await request.json();
 
-  if (!name || !email || !position || !dailyRate) {
-    return NextResponse.json(
-      { error: 'Missing required fields (name, email, position, dailyRate)' },
-      { status: 400 }
-    );
-  }
+    // Validate required fields
+    if (!name?.trim()) {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+    }
+    if (!email?.trim()) {
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+    }
+    if (!position?.trim()) {
+      return NextResponse.json({ error: 'Position is required' }, { status: 400 });
+    }
+    if (!hourlyRate || parseFloat(hourlyRate) <= 0) {
+      return NextResponse.json({ error: 'Valid hourly rate is required' }, { status: 400 });
+    }
     
     const employee = await prisma.employee.create({
       data: {
-        name,
-        email,
-        position,
-        phone: phone || null,
-        dailyRate: parseFloat(dailyRate),
-        paymentBasis: 'Monthly',
-      },
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        position: position.trim(),
+        phone: phone?.trim() || null,
+        hourlyRate: parseFloat(hourlyRate),
+        paymentBasis: 'Monthly' // Always set to Monthly
+      }
     });
     
     return NextResponse.json(employee, { status: 201 });

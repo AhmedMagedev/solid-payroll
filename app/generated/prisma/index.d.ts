@@ -1979,13 +1979,13 @@ export namespace Prisma {
 
   export type EmployeeAvgAggregateOutputType = {
     id: number | null
-    dailyRate: number | null
+    hourlyRate: number | null
     primaryWorkLocationId: number | null
   }
 
   export type EmployeeSumAggregateOutputType = {
     id: number | null
-    dailyRate: number | null
+    hourlyRate: number | null
     primaryWorkLocationId: number | null
   }
 
@@ -1995,7 +1995,7 @@ export namespace Prisma {
     email: string | null
     position: string | null
     phone: string | null
-    dailyRate: number | null
+    hourlyRate: number | null
     paymentBasis: string | null
     password: string | null
     profilePicture: string | null
@@ -2029,7 +2029,7 @@ export namespace Prisma {
     email: string | null
     position: string | null
     phone: string | null
-    dailyRate: number | null
+    hourlyRate: number | null
     paymentBasis: string | null
     password: string | null
     profilePicture: string | null
@@ -2063,7 +2063,7 @@ export namespace Prisma {
     email: number
     position: number
     phone: number
-    dailyRate: number
+    hourlyRate: number
     paymentBasis: number
     password: number
     profilePicture: number
@@ -2095,13 +2095,13 @@ export namespace Prisma {
 
   export type EmployeeAvgAggregateInputType = {
     id?: true
-    dailyRate?: true
+    hourlyRate?: true
     primaryWorkLocationId?: true
   }
 
   export type EmployeeSumAggregateInputType = {
     id?: true
-    dailyRate?: true
+    hourlyRate?: true
     primaryWorkLocationId?: true
   }
 
@@ -2111,7 +2111,7 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
-    dailyRate?: true
+    hourlyRate?: true
     paymentBasis?: true
     password?: true
     profilePicture?: true
@@ -2145,7 +2145,7 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
-    dailyRate?: true
+    hourlyRate?: true
     paymentBasis?: true
     password?: true
     profilePicture?: true
@@ -2179,7 +2179,7 @@ export namespace Prisma {
     email?: true
     position?: true
     phone?: true
-    dailyRate?: true
+    hourlyRate?: true
     paymentBasis?: true
     password?: true
     profilePicture?: true
@@ -2300,7 +2300,7 @@ export namespace Prisma {
     email: string
     position: string
     phone: string | null
-    dailyRate: number
+    hourlyRate: number
     paymentBasis: string
     password: string | null
     profilePicture: string | null
@@ -2353,7 +2353,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     password?: boolean
     profilePicture?: boolean
@@ -2394,7 +2394,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     password?: boolean
     profilePicture?: boolean
@@ -2429,7 +2429,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     password?: boolean
     profilePicture?: boolean
@@ -2464,7 +2464,7 @@ export namespace Prisma {
     email?: boolean
     position?: boolean
     phone?: boolean
-    dailyRate?: boolean
+    hourlyRate?: boolean
     paymentBasis?: boolean
     password?: boolean
     profilePicture?: boolean
@@ -2492,7 +2492,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "dailyRate" | "paymentBasis" | "password" | "profilePicture" | "dateOfBirth" | "nationalId" | "address" | "emergencyContact" | "emergencyPhone" | "hireDate" | "department" | "manager" | "employeeId" | "isActive" | "canAccessPortal" | "canWorkRemotely" | "primaryWorkLocationId" | "lastLoginAt" | "lastActiveAt" | "passwordResetToken" | "passwordResetExpires" | "preferredLanguage" | "timezone" | "emailNotifications" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "hourlyRate" | "paymentBasis" | "password" | "profilePicture" | "dateOfBirth" | "nationalId" | "address" | "emergencyContact" | "emergencyPhone" | "hireDate" | "department" | "manager" | "employeeId" | "isActive" | "canAccessPortal" | "canWorkRemotely" | "primaryWorkLocationId" | "lastLoginAt" | "lastActiveAt" | "passwordResetToken" | "passwordResetExpires" | "preferredLanguage" | "timezone" | "emailNotifications" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
@@ -2525,7 +2525,7 @@ export namespace Prisma {
       email: string
       position: string
       phone: string | null
-      dailyRate: number
+      hourlyRate: number
       paymentBasis: string
       password: string | null
       profilePicture: string | null
@@ -2985,7 +2985,7 @@ export namespace Prisma {
     readonly email: FieldRef<"Employee", 'String'>
     readonly position: FieldRef<"Employee", 'String'>
     readonly phone: FieldRef<"Employee", 'String'>
-    readonly dailyRate: FieldRef<"Employee", 'Float'>
+    readonly hourlyRate: FieldRef<"Employee", 'Float'>
     readonly paymentBasis: FieldRef<"Employee", 'String'>
     readonly password: FieldRef<"Employee", 'String'>
     readonly profilePicture: FieldRef<"Employee", 'String'>
@@ -16485,7 +16485,7 @@ export namespace Prisma {
     email: 'email',
     position: 'position',
     phone: 'phone',
-    dailyRate: 'dailyRate',
+    hourlyRate: 'hourlyRate',
     paymentBasis: 'paymentBasis',
     password: 'password',
     profilePicture: 'profilePicture',
@@ -16855,7 +16855,7 @@ export namespace Prisma {
     email?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
-    dailyRate?: FloatFilter<"Employee"> | number
+    hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     password?: StringNullableFilter<"Employee"> | string | null
     profilePicture?: StringNullableFilter<"Employee"> | string | null
@@ -16895,7 +16895,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     password?: SortOrderInput | SortOrder
     profilePicture?: SortOrderInput | SortOrder
@@ -16940,7 +16940,7 @@ export namespace Prisma {
     name?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
-    dailyRate?: FloatFilter<"Employee"> | number
+    hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     password?: StringNullableFilter<"Employee"> | string | null
     profilePicture?: StringNullableFilter<"Employee"> | string | null
@@ -16978,7 +16978,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     password?: SortOrderInput | SortOrder
     profilePicture?: SortOrderInput | SortOrder
@@ -17020,7 +17020,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Employee"> | string
     position?: StringWithAggregatesFilter<"Employee"> | string
     phone?: StringNullableWithAggregatesFilter<"Employee"> | string | null
-    dailyRate?: FloatWithAggregatesFilter<"Employee"> | number
+    hourlyRate?: FloatWithAggregatesFilter<"Employee"> | number
     paymentBasis?: StringWithAggregatesFilter<"Employee"> | string
     password?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     profilePicture?: StringNullableWithAggregatesFilter<"Employee"> | string | null
@@ -18269,7 +18269,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -18308,7 +18308,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -18346,7 +18346,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18385,7 +18385,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18424,7 +18424,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -18457,7 +18457,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18490,7 +18490,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20096,7 +20096,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     password?: SortOrder
     profilePicture?: SortOrder
@@ -20126,7 +20126,7 @@ export namespace Prisma {
 
   export type EmployeeAvgOrderByAggregateInput = {
     id?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     primaryWorkLocationId?: SortOrder
   }
 
@@ -20136,7 +20136,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     password?: SortOrder
     profilePicture?: SortOrder
@@ -20170,7 +20170,7 @@ export namespace Prisma {
     email?: SortOrder
     position?: SortOrder
     phone?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     password?: SortOrder
     profilePicture?: SortOrder
@@ -20200,7 +20200,7 @@ export namespace Prisma {
 
   export type EmployeeSumOrderByAggregateInput = {
     id?: SortOrder
-    dailyRate?: SortOrder
+    hourlyRate?: SortOrder
     primaryWorkLocationId?: SortOrder
   }
 
@@ -22712,7 +22712,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -22750,7 +22750,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -22847,7 +22847,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22885,7 +22885,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23119,7 +23119,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23157,7 +23157,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23272,7 +23272,7 @@ export namespace Prisma {
     email?: StringFilter<"Employee"> | string
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
-    dailyRate?: FloatFilter<"Employee"> | number
+    hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     password?: StringNullableFilter<"Employee"> | string | null
     profilePicture?: StringNullableFilter<"Employee"> | string | null
@@ -23305,7 +23305,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23343,7 +23343,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23396,7 +23396,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23434,7 +23434,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23471,7 +23471,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23509,7 +23509,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23606,7 +23606,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23644,7 +23644,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23731,7 +23731,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23769,7 +23769,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -23917,7 +23917,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23955,7 +23955,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24209,7 +24209,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -24247,7 +24247,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -24327,7 +24327,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24365,7 +24365,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25049,7 +25049,7 @@ export namespace Prisma {
     email: string
     position: string
     phone?: string | null
-    dailyRate?: number
+    hourlyRate?: number
     paymentBasis?: string
     password?: string | null
     profilePicture?: string | null
@@ -25257,7 +25257,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25295,7 +25295,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25333,7 +25333,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    dailyRate?: FloatFieldUpdateOperationsInput | number
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     profilePicture?: NullableStringFieldUpdateOperationsInput | string | null

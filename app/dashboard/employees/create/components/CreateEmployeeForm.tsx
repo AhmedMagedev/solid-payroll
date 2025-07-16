@@ -15,7 +15,7 @@ export function CreateEmployeeForm() {
     email: '',
     position: '',
     phone: '',
-    dailyRate: '',
+    hourlyRate: '',
     paymentBasis: 'Monthly', // Default to Monthly
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,16 +46,16 @@ export function CreateEmployeeForm() {
       if (!formData.position.trim()) {
         throw new Error('Position is required');
       }
-      if (!formData.dailyRate || parseFloat(formData.dailyRate) <= 0) {
-        throw new Error('Valid daily rate is required');
+      if (!formData.hourlyRate || parseFloat(formData.hourlyRate) <= 0) {
+        throw new Error('Valid hourly rate is required');
       }
       if (!formData.paymentBasis) {
         throw new Error('Payment basis is required');
       }
       
-      const dailyRate = parseFloat(formData.dailyRate);
-      if (isNaN(dailyRate) || dailyRate <= 0) {
-        throw new Error('Daily rate must be a positive number');
+      const hourlyRate = parseFloat(formData.hourlyRate);
+      if (isNaN(hourlyRate) || hourlyRate <= 0) {
+        throw new Error('Hourly rate must be a positive number');
       }
 
       // Send data to API
@@ -70,7 +70,7 @@ export function CreateEmployeeForm() {
           email: formData.email,
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
-          dailyRate,
+          hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
       });
@@ -208,22 +208,20 @@ export function CreateEmployeeForm() {
           {/* Remove the entire fingerprintId field section */}
           
           <div className="space-y-2">
-            <Label htmlFor="dailyRate" className="text-sm font-medium text-gray-700">
-              Daily Rate (L.E) *
-            </Label>
+            <Label htmlFor="hourlyRate">الأجر بالساعة (ج.م) *</Label>
             <Input
-              id="dailyRate"
-              name="dailyRate"
+              id="hourlyRate"
+              name="hourlyRate"
               type="number"
-              value={formData.dailyRate}
+              value={formData.hourlyRate}
               onChange={handleChange}
               disabled={isSubmitting}
-              placeholder="200"
-              step="1"
+              placeholder="25.00"
+              className="text-right"
+              step="0.01"
               min="0"
               inputMode="decimal"
               required
-              className="h-10"
             />
           </div>
         </div>

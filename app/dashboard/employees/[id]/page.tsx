@@ -17,7 +17,7 @@ interface Employee {
   email: string;
   position: string;
   phone?: string; // Optional phone number
-  dailyRate: number;
+  hourlyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
   createdAt: Date;
   updatedAt: Date;
@@ -29,23 +29,10 @@ export default function EmployeeProfilePage() {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  
   const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
   const employeeId = parseInt(id, 10);
 
   useEffect(() => {
-    // Check if user is admin from localStorage token
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setIsAdmin(payload.isAdmin || false);
-      } catch (error) {
-        console.error('Error parsing token:', error);
-        setIsAdmin(false);
-      }
-    }
 
     async function fetchEmployee() {
       if (isNaN(employeeId)) {
@@ -207,9 +194,9 @@ export default function EmployeeProfilePage() {
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">
                   <DollarSign className="h-4 w-4 ml-2" />
-                  <span>الأجر اليومي</span>
+                  <span>الأجر بالساعة</span>
                 </dt>
-                <dd className="mt-1 text-base font-medium text-left">{employee.dailyRate.toFixed(2)} ج.م</dd>
+                <dd className="mt-1 text-base font-medium text-left">{employee.hourlyRate.toFixed(2)} ج.م</dd>
               </div>
 
             </dl>
@@ -236,15 +223,6 @@ export default function EmployeeProfilePage() {
               <MapPin className="h-4 w-4 ml-2" />
               إدارة المواقع
             </Button>
-            {isAdmin && (
-              <Button 
-                variant="outline" 
-                className="sm:flex-1"
-                onClick={() => router.push(`/dashboard/employees/${employee.id}/payouts`)}
-              >
-                المدفوعات
-              </Button>
-            )}
           </div>
         </CardContent>
       </Card>

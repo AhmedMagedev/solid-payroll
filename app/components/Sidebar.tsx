@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { HelpCircle, LogOut, Settings, Home, Users, Calendar, BookOpen, DollarSign, UserCog, MapPin } from 'lucide-react';
+import { HelpCircle, LogOut, Settings, Home, Users, Calendar, BookOpen, UserCog, MapPin } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Sidebar() {
@@ -123,20 +123,6 @@ export default function Sidebar() {
             <Calendar size={18} />
             الحضور والانصراف
           </Link>
-          
-          {isAdmin && (
-            <Link 
-              href="/dashboard/payouts" 
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors flex-row-reverse ${
-                isActive('/dashboard/payouts') 
-                  ? 'bg-primary text-white' 
-                  : 'text-slate-700 hover:bg-gray-100'
-              }`}
-            >
-              <DollarSign size={18} />
-              المدفوعات
-            </Link>
-          )}
           
           {isAdmin && (
             <Link 

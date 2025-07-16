@@ -57,42 +57,22 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
     }
     
-    // Parse request body
     const data = await request.json();
-    
-    // Validate required fields
-    if (!data.name) {
-      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
-    }
-    if (!data.email) {
-      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
-    }
-    if (!data.position) {
-      return NextResponse.json({ error: 'Position is required' }, { status: 400 });
-    }
+    const { name, email, position, phone, hourlyRate } = data;
 
-    if (typeof data.dailyRate !== 'number' || data.dailyRate <= 0) {
-      return NextResponse.json({ error: 'Daily rate must be a positive number' }, { status: 400 });
-    }
-    
-
-    
-
-    
-    // Update employee in database
-    const updatedEmployee = await prisma.employee.update({
-      where: { id: employeeId },
+    const employee = await prisma.employee.update({
+      where: { id: parseInt(id) },
       data: {
-        name: data.name,
-        email: data.email,
-        position: data.position,
-        phone: data.phone || null,
-        dailyRate: data.dailyRate,
-        paymentBasis: 'Monthly', // Always set to Monthly
-      },
+        name,
+        email,
+        position,
+        phone: phone || null,
+        hourlyRate: parseFloat(hourlyRate),
+        paymentBasis: 'Monthly' // Always set to Monthly
+      }
     });
     
-    return NextResponse.json(updatedEmployee);
+    return NextResponse.json(employee);
   } catch (error) {
     console.error('Error updating employee:', error);
     return NextResponse.json({ error: 'Failed to update employee' }, { status: 500 });
