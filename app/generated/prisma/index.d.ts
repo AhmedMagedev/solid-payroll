@@ -1545,6 +1545,7 @@ export namespace Prisma {
     position: string | null
     phone: string | null
     fingerprintId: string | null
+    hikvisionEmployeeId: string | null
     hourlyRate: number | null
     paymentBasis: string | null
     createdAt: Date | null
@@ -1558,6 +1559,7 @@ export namespace Prisma {
     position: string | null
     phone: string | null
     fingerprintId: string | null
+    hikvisionEmployeeId: string | null
     hourlyRate: number | null
     paymentBasis: string | null
     createdAt: Date | null
@@ -1571,6 +1573,7 @@ export namespace Prisma {
     position: number
     phone: number
     fingerprintId: number
+    hikvisionEmployeeId: number
     hourlyRate: number
     paymentBasis: number
     createdAt: number
@@ -1596,6 +1599,7 @@ export namespace Prisma {
     position?: true
     phone?: true
     fingerprintId?: true
+    hikvisionEmployeeId?: true
     hourlyRate?: true
     paymentBasis?: true
     createdAt?: true
@@ -1609,6 +1613,7 @@ export namespace Prisma {
     position?: true
     phone?: true
     fingerprintId?: true
+    hikvisionEmployeeId?: true
     hourlyRate?: true
     paymentBasis?: true
     createdAt?: true
@@ -1622,6 +1627,7 @@ export namespace Prisma {
     position?: true
     phone?: true
     fingerprintId?: true
+    hikvisionEmployeeId?: true
     hourlyRate?: true
     paymentBasis?: true
     createdAt?: true
@@ -1718,10 +1724,11 @@ export namespace Prisma {
   export type EmployeeGroupByOutputType = {
     id: number
     name: string
-    email: string
+    email: string | null
     position: string
     phone: string | null
     fingerprintId: string | null
+    hikvisionEmployeeId: string | null
     hourlyRate: number
     paymentBasis: string
     createdAt: Date
@@ -1754,6 +1761,7 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
+    hikvisionEmployeeId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
@@ -1770,6 +1778,7 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
+    hikvisionEmployeeId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
@@ -1783,6 +1792,7 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
+    hikvisionEmployeeId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
@@ -1796,13 +1806,14 @@ export namespace Prisma {
     position?: boolean
     phone?: boolean
     fingerprintId?: boolean
+    hikvisionEmployeeId?: boolean
     hourlyRate?: boolean
     paymentBasis?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "fingerprintId" | "hourlyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "position" | "phone" | "fingerprintId" | "hikvisionEmployeeId" | "hourlyRate" | "paymentBasis" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendance?: boolean | Employee$attendanceArgs<ExtArgs>
     payouts?: boolean | Employee$payoutsArgs<ExtArgs>
@@ -1820,10 +1831,11 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
-      email: string
+      email: string | null
       position: string
       phone: string | null
       fingerprintId: string | null
+      hikvisionEmployeeId: string | null
       hourlyRate: number
       paymentBasis: string
       createdAt: Date
@@ -2259,6 +2271,7 @@ export namespace Prisma {
     readonly position: FieldRef<"Employee", 'String'>
     readonly phone: FieldRef<"Employee", 'String'>
     readonly fingerprintId: FieldRef<"Employee", 'String'>
+    readonly hikvisionEmployeeId: FieldRef<"Employee", 'String'>
     readonly hourlyRate: FieldRef<"Employee", 'Float'>
     readonly paymentBasis: FieldRef<"Employee", 'String'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
@@ -10322,6 +10335,7 @@ export namespace Prisma {
     position: 'position',
     phone: 'phone',
     fingerprintId: 'fingerprintId',
+    hikvisionEmployeeId: 'hikvisionEmployeeId',
     hourlyRate: 'hourlyRate',
     paymentBasis: 'paymentBasis',
     createdAt: 'createdAt',
@@ -10568,10 +10582,11 @@ export namespace Prisma {
     NOT?: EmployeeWhereInput | EmployeeWhereInput[]
     id?: IntFilter<"Employee"> | number
     name?: StringFilter<"Employee"> | string
-    email?: StringFilter<"Employee"> | string
+    email?: StringNullableFilter<"Employee"> | string | null
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
     fingerprintId?: StringNullableFilter<"Employee"> | string | null
+    hikvisionEmployeeId?: StringNullableFilter<"Employee"> | string | null
     hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
@@ -10583,10 +10598,11 @@ export namespace Prisma {
   export type EmployeeOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    email?: SortOrder
+    email?: SortOrderInput | SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
     fingerprintId?: SortOrderInput | SortOrder
+    hikvisionEmployeeId?: SortOrderInput | SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -10605,6 +10621,7 @@ export namespace Prisma {
     position?: StringFilter<"Employee"> | string
     phone?: StringNullableFilter<"Employee"> | string | null
     fingerprintId?: StringNullableFilter<"Employee"> | string | null
+    hikvisionEmployeeId?: StringNullableFilter<"Employee"> | string | null
     hourlyRate?: FloatFilter<"Employee"> | number
     paymentBasis?: StringFilter<"Employee"> | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
@@ -10616,10 +10633,11 @@ export namespace Prisma {
   export type EmployeeOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    email?: SortOrder
+    email?: SortOrderInput | SortOrder
     position?: SortOrder
     phone?: SortOrderInput | SortOrder
     fingerprintId?: SortOrderInput | SortOrder
+    hikvisionEmployeeId?: SortOrderInput | SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -10637,10 +10655,11 @@ export namespace Prisma {
     NOT?: EmployeeScalarWhereWithAggregatesInput | EmployeeScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Employee"> | number
     name?: StringWithAggregatesFilter<"Employee"> | string
-    email?: StringWithAggregatesFilter<"Employee"> | string
+    email?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     position?: StringWithAggregatesFilter<"Employee"> | string
     phone?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     fingerprintId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    hikvisionEmployeeId?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     hourlyRate?: FloatWithAggregatesFilter<"Employee"> | number
     paymentBasis?: StringWithAggregatesFilter<"Employee"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -11343,10 +11362,11 @@ export namespace Prisma {
 
   export type EmployeeCreateInput = {
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -11358,10 +11378,11 @@ export namespace Prisma {
   export type EmployeeUncheckedCreateInput = {
     id?: number
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -11372,10 +11393,11 @@ export namespace Prisma {
 
   export type EmployeeUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11387,10 +11409,11 @@ export namespace Prisma {
   export type EmployeeUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11402,10 +11425,11 @@ export namespace Prisma {
   export type EmployeeCreateManyInput = {
     id?: number
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -11414,10 +11438,11 @@ export namespace Prisma {
 
   export type EmployeeUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11427,10 +11452,11 @@ export namespace Prisma {
   export type EmployeeUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12344,6 +12370,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrder
     fingerprintId?: SortOrder
+    hikvisionEmployeeId?: SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -12362,6 +12389,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrder
     fingerprintId?: SortOrder
+    hikvisionEmployeeId?: SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -12375,6 +12403,7 @@ export namespace Prisma {
     position?: SortOrder
     phone?: SortOrder
     fingerprintId?: SortOrder
+    hikvisionEmployeeId?: SortOrder
     hourlyRate?: SortOrder
     paymentBasis?: SortOrder
     createdAt?: SortOrder
@@ -13825,10 +13854,11 @@ export namespace Prisma {
 
   export type EmployeeCreateWithoutAttendanceInput = {
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -13839,10 +13869,11 @@ export namespace Prisma {
   export type EmployeeUncheckedCreateWithoutAttendanceInput = {
     id?: number
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -13919,10 +13950,11 @@ export namespace Prisma {
 
   export type EmployeeUpdateWithoutAttendanceInput = {
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13933,10 +13965,11 @@ export namespace Prisma {
   export type EmployeeUncheckedUpdateWithoutAttendanceInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14081,10 +14114,11 @@ export namespace Prisma {
 
   export type EmployeeCreateWithoutPayoutsInput = {
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -14095,10 +14129,11 @@ export namespace Prisma {
   export type EmployeeUncheckedCreateWithoutPayoutsInput = {
     id?: number
     name: string
-    email: string
+    email?: string | null
     position: string
     phone?: string | null
     fingerprintId?: string | null
+    hikvisionEmployeeId?: string | null
     hourlyRate?: number
     paymentBasis?: string
     createdAt?: Date | string
@@ -14151,10 +14186,11 @@ export namespace Prisma {
 
   export type EmployeeUpdateWithoutPayoutsInput = {
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14165,10 +14201,11 @@ export namespace Prisma {
   export type EmployeeUncheckedUpdateWithoutPayoutsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     position?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fingerprintId?: NullableStringFieldUpdateOperationsInput | string | null
+    hikvisionEmployeeId?: NullableStringFieldUpdateOperationsInput | string | null
     hourlyRate?: FloatFieldUpdateOperationsInput | number
     paymentBasis?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

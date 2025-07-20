@@ -64,9 +64,7 @@ export async function PUT(request: NextRequest) {
     if (!data.name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
-    if (!data.email) {
-      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
-    }
+    // Email is now optional
     if (!data.position) {
       return NextResponse.json({ error: 'Position is required' }, { status: 400 });
     }
@@ -105,11 +103,12 @@ export async function PUT(request: NextRequest) {
       where: { id: employeeId },
       data: {
         name: data.name,
-        email: data.email,
+        email: data.email || null,
         position: data.position,
         phone: data.phone || null,
         fingerprintId: data.fingerprintId,
-                  hourlyRate: data.hourlyRate,
+        hikvisionEmployeeId: data.hikvisionEmployeeId || null,
+        hourlyRate: data.hourlyRate,
         paymentBasis: data.paymentBasis || 'Monthly', // Default to Monthly if not provided
       },
     });

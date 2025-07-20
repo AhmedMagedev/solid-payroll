@@ -57,11 +57,11 @@ export async function POST(request: NextRequest) {
     
     const data = await request.json();
     
-    const { name, email, position, phone, fingerprintId, hourlyRate, paymentBasis } = data;
+    const { name, email, position, phone, fingerprintId, hikvisionEmployeeId, hourlyRate, paymentBasis } = data;
 
-  if (!name || !email || !position || !hourlyRate || !fingerprintId) {
+  if (!name || !position || !hourlyRate || !fingerprintId) {
     return NextResponse.json(
-      { error: 'Missing required fields (name, email, position, hourlyRate, fingerprintId)' },
+      { error: 'Missing required fields (name, position, hourlyRate, fingerprintId)' },
       { status: 400 }
     );
   }
@@ -81,10 +81,11 @@ export async function POST(request: NextRequest) {
     const employee = await prisma.employee.create({
       data: {
         name,
-        email,
+        email: email || null,
         position,
         phone: phone || null,
         fingerprintId,
+        hikvisionEmployeeId: hikvisionEmployeeId || null,
         hourlyRate: parseFloat(hourlyRate),
         paymentBasis: paymentBasis || 'Monthly',
       },

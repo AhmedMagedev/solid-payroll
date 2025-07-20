@@ -22,6 +22,7 @@ export function CreateEmployeeForm() {
     position: '',
     phone: '',
     fingerprintId: '',
+    hikvisionEmployeeId: '',
     hourlyRate: '',
     paymentBasis: 'Monthly', // Default to Monthly
   });
@@ -49,8 +50,9 @@ export function CreateEmployeeForm() {
       if (!formData.name.trim()) {
         throw new Error('Name is required');
       }
-      if (!formData.email.trim()) {
-        throw new Error('Email is required');
+      // Email is now optional, but if provided should be valid
+      if (formData.email.trim() && !formData.email.includes('@')) {
+        throw new Error('Email format is invalid');
       }
       if (!formData.position.trim()) {
         throw new Error('Position is required');
@@ -80,6 +82,7 @@ export function CreateEmployeeForm() {
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
           fingerprintId: formData.fingerprintId, // Required field, no need for null check
+          hikvisionEmployeeId: formData.hikvisionEmployeeId || null, // Send null if empty
           hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
@@ -157,7 +160,7 @@ export function CreateEmployeeForm() {
             
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email Address *
+                Email Address (Optional)
               </Label>
               <Input
                 id="email"
@@ -167,7 +170,6 @@ export function CreateEmployeeForm() {
                 onChange={handleChange}
                 disabled={isSubmitting}
                 placeholder="john.doe@company.com"
-                required
                 className="h-10"
               />
             </div>
@@ -217,7 +219,7 @@ export function CreateEmployeeForm() {
 
           <div className="space-y-2">
             <Label htmlFor="fingerprintId" className="text-sm font-medium text-gray-700">
-              Fingerprint Device ID *
+              Fingerprint Device ID * (Legacy System)
             </Label>
             <Input
               id="fingerprintId"
@@ -230,7 +232,25 @@ export function CreateEmployeeForm() {
               className="h-10"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Enter the unique ID used in attendance device exports. This must be unique across all employees.
+              Enter the unique ID used in legacy attendance device exports. This must be unique across all employees.
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="hikvisionEmployeeId" className="text-sm font-medium text-gray-700">
+              Hikvision Employee ID (Optional)
+            </Label>
+            <Input
+              id="hikvisionEmployeeId"
+              name="hikvisionEmployeeId"
+              value={formData.hikvisionEmployeeId}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              placeholder="1, 2, 3, etc."
+              className="h-10"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Employee ID in the Hikvision attendance system. If not provided, the Fingerprint Device ID will be used as fallback.
             </p>
           </div>
           
