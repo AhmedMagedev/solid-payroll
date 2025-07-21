@@ -109,6 +109,62 @@ export default function AttendancePage() {
     fetchAttendance(currentPage, searchTerm);
   }, [currentPage, searchTerm, fetchAttendance]);
 
+  // Auto-refresh by periodically fetching fresh data
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    const autoRefresh = async () => {
+      try {
+        console.log('[Attendance Page] Auto-refresh check...');
+        
+        const token = localStorage.getItem('auth_token');
+        if (!token) return;
+
+        // Get fresh attendance data
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        };
+
+        const response = await fetch(`/api/attendance?page=${currentPage}&limit=20${searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''}`, {
+          headers,
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const freshData = await response.json();
+          
+          // Compare with current data to see if there are changes
+          const currentDataString = JSON.stringify(attendanceData);
+          const freshDataString = JSON.stringify(freshData.data);
+          
+          if (currentDataString !== freshDataString && attendanceData.length > 0) {
+            console.log('[Attendance Page] New data detected, updating UI...');
+            
+            // Update the data
+            setAttendanceData(freshData.data);
+            setPagination(freshData.pagination);
+            
+            // Show notification
+            setRefreshResult('🔄 تم تحديث البيانات تلقائياً');
+            setTimeout(() => setRefreshResult(null), 5000);
+          } else if (attendanceData.length === 0) {
+            // First load, just set the data
+            setAttendanceData(freshData.data);
+            setPagination(freshData.pagination);
+          }
+        }
+      } catch (error) {
+        console.error('[Attendance Page] Auto-refresh error:', error);
+      }
+    };
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(autoRefresh, 30000);
+    
+    return () => clearInterval(interval);
+  }, [isHydrated, currentPage, searchTerm, attendanceData]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
@@ -127,7 +183,7 @@ export default function AttendancePage() {
     setError(null);
 
     try {
-      // Use a comprehensive date range to ensure we get today's logs
+      // Use a date range to ensure we get today's logs
       // Pull from 7 days ago to tomorrow (to account for any timezone issues)
       const todayEgypt = getNowInEgypt();
       
@@ -136,49 +192,33 @@ export default function AttendancePage() {
       // End tomorrow at 23:59:59 to ensure we capture today's logs regardless of timezone
       const endDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() + 1, 23, 59, 59);
       
-      console.log('[Attendance Page] Pulling comprehensive attendance data:', {
+      console.log('[Attendance Page] Pulling attendance data:', {
         egyptTime: todayEgypt.toISOString(),
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
         dateRange: `${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
-        maxResults: '20000 (increased from 5000)',
         isHydrated,
         timestamp: new Date().toISOString()
       });
       
-      const response = await fetch('/api/debug/test-hikvision-integration', {
-        method: 'POST',
+      const response = await fetch('/api/attendance?forceRefresh=true', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString()
-        })
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        const results = data.data.processedResults;
-        const eventCount = results.eventsProcessed || 0;
+      if (response.ok) {
+        setRefreshResult('تم سحب وتحديث البيانات بنجاح!');
         
-        setRefreshResult(
-          `تم سحب البيانات بنجاح! ` +
-          `معالجة ${eventCount} حدث، ` +
-          `${results.employeesMatched || 0} موظف موجود، ` +
-          `${results.employeesAutoCreated || 0} موظف جديد، ` +
-          `${results.attendanceRecordsCreated || 0} سجل حضور جديد، ` +
-          `${results.attendanceRecordsUpdated || 0} سجل محدث. ` +
-          `(استخدمت حد أقصى 20,000 سجل من ${startDate.toLocaleDateString()} إلى ${endDate.toLocaleDateString()})`
-        );
-        
-        // Refresh the attendance data
+        // Refresh the attendance data by calling fetchAttendance
         fetchAttendance(currentPage, searchTerm);
         
-        // Clear success message after 10 seconds (longer for more detailed message)
-        setTimeout(() => setRefreshResult(null), 10000);
+        // Clear success message after 5 seconds
+        setTimeout(() => setRefreshResult(null), 5000);
       } else {
         setError(data.error || 'فشل في سحب بيانات الحضور من الجهاز');
       }

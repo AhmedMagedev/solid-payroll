@@ -69,12 +69,12 @@ export async function POST(request: NextRequest) {
       }
       
       // Trigger comprehensive attendance pull with increased maxResults and better date range
-      console.log('[Hikvision Webhook] Triggering comprehensive attendance pull...');
+      console.log('[Hikvision Webhook] Triggering attendance pull...');
       await pullAttendanceFromHikvision();
       
       return NextResponse.json({ 
         success: true, 
-        message: 'Event received, comprehensive attendance pull triggered with 20k maxResults and 9-day range' 
+        message: 'Event received, attendance pull triggered with 20k maxResults and 9-day range' 
       });
       
     } catch (parseError) {
@@ -101,7 +101,7 @@ async function pullAttendanceFromHikvision() {
   lastPullTime = Date.now();
   
   try {
-    console.log('[Hikvision Pull] Starting comprehensive attendance data pull triggered by event...');
+    console.log('[Hikvision Pull] Starting attendance data pull triggered by event...');
     
     // Use the same comprehensive date range as the manual pull button
     // Import the timezone function here
@@ -112,7 +112,7 @@ async function pullAttendanceFromHikvision() {
     const startDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() - 7, 0, 0, 0);
     const endDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() + 1, 23, 59, 59);
     
-    console.log('[Hikvision Pull] Using comprehensive date range:', {
+    console.log('[Hikvision Pull] Using date range:', {
       egyptTime: todayEgypt.toISOString(),
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
@@ -245,7 +245,6 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         
         if (existingAttendance) {
           // Update existing attendance record
-          // Determine if this should be check-in or check-out based on time
           const updateData: {
             checkIn?: Date;
             checkOut?: Date;
@@ -253,24 +252,33 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
             actualHoursWorked?: number;
             updatedAt?: Date;
           } = {};
-          
-          if (!existingAttendance.checkIn || eventTime < existingAttendance.checkIn) {
+
+          const currentCheckIn = existingAttendance.checkIn;
+          const currentCheckOut = existingAttendance.checkOut;
+
+          if (!currentCheckIn) {
             updateData.checkIn = eventTime;
-          }
-          
-          if (!existingAttendance.checkOut || eventTime > (existingAttendance.checkOut || new Date(0))) {
+          } else if (eventTime < currentCheckIn) {
+            updateData.checkIn = eventTime;
+            if (!currentCheckOut || currentCheckIn > currentCheckOut) {
+              updateData.checkOut = currentCheckIn;
+            }
+          } else if (!currentCheckOut) {
+            if (eventTime > currentCheckIn) {
+              updateData.checkOut = eventTime;
+            }
+          } else if (eventTime > currentCheckOut) {
             updateData.checkOut = eventTime;
           }
-          
+
           // Recalculate hours worked if we have both check-in and check-out
-          if (updateData.checkIn || updateData.checkOut) {
-            const checkIn = updateData.checkIn || existingAttendance.checkIn;
-            const checkOut = updateData.checkOut || existingAttendance.checkOut;
-            
-            if (checkIn && checkOut && checkOut > checkIn) {
-              updateData.hoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
-              updateData.actualHoursWorked = updateData.hoursWorked;
-            }
+          const newCheckIn = updateData.checkIn || currentCheckIn;
+          const newCheckOut = updateData.checkOut || currentCheckOut;
+
+          if (newCheckIn && newCheckOut && newCheckOut > newCheckIn) {
+            const hours = (newCheckOut.getTime() - newCheckIn.getTime()) / (1000 * 60 * 60);
+            updateData.hoursWorked = hours;
+            updateData.actualHoursWorked = hours;
           }
           
           if (Object.keys(updateData).length > 0) {
@@ -323,6 +331,13 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search'); // New search parameter
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const forceRefresh = searchParams.get('forceRefresh') === 'true';
+
+    // If forceRefresh is requested, pull fresh data from Hikvision
+    if (forceRefresh) {
+      console.log('[API GET /api/attendance] Force refresh requested, pulling fresh data...');
+      await pullAttendanceFromHikvision();
+    }
     
     // Calculate offset for pagination
     const offset = (page - 1) * limit;

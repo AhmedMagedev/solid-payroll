@@ -1,29 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server';
 import HikvisionClient from '@/lib/hikvision-client';
 import { pullHikvisionDataWithCurl, pullHikvisionDataWithFetch } from '@/lib/hikvision-curl';
 import { prisma } from '@/app/lib/prisma';
 import { getHikvisionConfig, sanitizeEmployeeName } from '@/lib/hikvision-config';
 
-export async function POST(request: NextRequest) {
-  try {
-    console.log('[Debug] Testing Hikvision integration...');
-    
-    // Get date range from request or default to 7 days backward from today
-    const body = await request.json().catch(() => ({}));
-    const startDate = body.startDate ? new Date(body.startDate) : (() => {
-      const date = new Date();
-      date.setDate(date.getDate() - 7);
-      return date;
-    })();
-    const endDate = body.endDate ? new Date(body.endDate) : new Date();
+export interface AttendancePullResult {
+  success: boolean;
+  error?: string;
+  data?: {
+    dateRange: {
+      startDate: string;
+      endDate: string;
+    };
+    pullMethod: string;
+    hikvisionResponse: unknown;
+    processedResults: {
+      eventsProcessed: number;
+      employeesMatched: number;
+      employeesAutoCreated: number;
+      employeesNotFound: string[];
+      attendanceRecordsCreated: number;
+      attendanceRecordsUpdated: number;
+      errors: string[];
+    };
+  };
+}
 
-    console.log('[Debug] Date range:', {
+/**
+ * Shared function to pull attendance data from Hikvision and process it
+ * Used by both manual pull button and event hook to ensure consistency
+ */
+export async function pullAndProcessAttendanceData(startDate: Date, endDate: Date): Promise<AttendancePullResult> {
+  try {
+    console.log('[Attendance Pull Service] Starting attendance data pull...');
+    console.log('[Attendance Pull Service] Date range:', {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString()
     });
 
     // Try curl approach first (most reliable)
-    console.log('[Debug] Attempting curl approach...');
+    console.log('[Attendance Pull Service] Attempting curl approach...');
     let attendanceData = null;
     let pullMethod = 'unknown';
 
@@ -31,46 +46,45 @@ export async function POST(request: NextRequest) {
     if (curlResult.success && curlResult.data) {
       attendanceData = curlResult.data;
       pullMethod = 'curl';
-      console.log('[Debug] Successfully pulled data using curl');
+      console.log('[Attendance Pull Service] Successfully pulled data using curl');
     } else {
-      console.log('[Debug] Curl approach failed:', curlResult.error);
+      console.log('[Attendance Pull Service] Curl approach failed:', curlResult.error);
       
       // Fallback to fetch approach
-      console.log('[Debug] Attempting fetch approach...');
+      console.log('[Attendance Pull Service] Attempting fetch approach...');
       const fetchResult = await pullHikvisionDataWithFetch(startDate, endDate);
       if (fetchResult.success && fetchResult.data) {
         attendanceData = fetchResult.data;
         pullMethod = 'fetch';
-        console.log('[Debug] Successfully pulled data using fetch');
+        console.log('[Attendance Pull Service] Successfully pulled data using fetch');
       } else {
-        console.log('[Debug] Fetch approach failed:', fetchResult.error);
+        console.log('[Attendance Pull Service] Fetch approach failed:', fetchResult.error);
         
         // Final fallback to original client
-        console.log('[Debug] Attempting original Hikvision client...');
+        console.log('[Attendance Pull Service] Attempting original Hikvision client...');
         const hikvisionClient = new HikvisionClient();
         attendanceData = await hikvisionClient.pullAttendanceData(startDate, endDate);
         if (attendanceData) {
           pullMethod = 'hikvision-client';
-          console.log('[Debug] Successfully pulled data using Hikvision client');
+          console.log('[Attendance Pull Service] Successfully pulled data using Hikvision client');
         }
       }
     }
 
     if (!attendanceData) {
-      return NextResponse.json({
+      return {
         success: false,
         error: 'Failed to retrieve data from Hikvision API using all methods (curl, fetch, client)'
-      }, { status: 500 });
+      };
     }
 
-    console.log('[Debug] Retrieved attendance data:', attendanceData);
+    console.log('[Attendance Pull Service] Retrieved attendance data:', attendanceData);
 
     // Process the data
     const processedResults = await processHikvisionAttendanceData(attendanceData);
 
-    return NextResponse.json({
+    return {
       success: true,
-      message: 'Hikvision integration test completed',
       data: {
         dateRange: {
           startDate: startDate.toISOString(),
@@ -80,19 +94,18 @@ export async function POST(request: NextRequest) {
         hikvisionResponse: attendanceData,
         processedResults
       }
-    });
+    };
 
   } catch (error) {
-    console.error('[Debug] Hikvision integration test failed:', error);
-    return NextResponse.json({
+    console.error('[Attendance Pull Service] Error during pull:', error);
+    return {
       success: false,
-      error: 'Integration test failed',
-      details: (error as Error).message
-    }, { status: 500 });
+      error: `Pull service error: ${(error as Error).message}`
+    };
   }
 }
 
-// Function to process Hikvision attendance data (same as in the main route)
+// Function to process Hikvision attendance data
 async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Array<{ employeeNoString?: string; time: string; eventType?: string; majorEventType?: number; subEventType?: number; name?: string }> } }) {
   const results = {
     eventsProcessed: 0,
@@ -105,15 +118,15 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
   };
 
   try {
-    console.log('[Debug Process] Processing attendance data...');
+    console.log('[Attendance Pull Service] Processing attendance data...');
     
     if (!data.AcsEvent || !data.AcsEvent.InfoList) {
-      console.log('[Debug Process] No attendance events found in response');
+      console.log('[Attendance Pull Service] No attendance events found in response');
       return results;
     }
     
     const events = data.AcsEvent.InfoList;
-    console.log(`[Debug Process] Found ${events.length} attendance events`);
+    console.log(`[Attendance Pull Service] Found ${events.length} attendance events`);
     
     for (const event of events) {
       try {
@@ -124,14 +137,14 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         const eventTime = new Date(event.time);
         
         if (!employeeNo) {
-          console.log('[Debug Process] Skipping event with no employee number. Event details:', {
-          time: event.time,
-          eventType: event.eventType,
-          majorEventType: event.majorEventType,
-          subEventType: event.subEventType,
-          name: event.name,
-          employeeNoString: event.employeeNoString
-        });
+          console.log('[Attendance Pull Service] Skipping event with no employee number. Event details:', {
+            time: event.time,
+            eventType: event.eventType,
+            majorEventType: event.majorEventType,
+            subEventType: event.subEventType,
+            name: event.name,
+            employeeNoString: event.employeeNoString
+          });
           results.errors.push('Event with no employee number found');
           continue;
         }
@@ -144,7 +157,7 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         });
         
         if (!employee) {
-          console.log(`[Debug Process] Employee not found for fingerprint ID: ${employeeNo}, creating new employee...`);
+          console.log(`[Attendance Pull Service] Employee not found for fingerprint ID: ${employeeNo}, creating new employee...`);
           
           // Auto-create employee from Hikvision data (minimal data only)
           const config = getHikvisionConfig();
@@ -154,17 +167,15 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
             employee = await prisma.employee.create({
               data: {
                 name: employeeName,
-                // email is optional, so we don't include it
                 position: config.position,
                 fingerprintId: employeeNo,
-                // hourlyRate and paymentBasis will use schema defaults (0 and "Daily")
               }
             });
             
-            console.log(`[Debug Process] Auto-created employee: ${employee.name} (ID: ${employee.id}) for fingerprint ID: ${employeeNo}`);
+            console.log(`[Attendance Pull Service] Auto-created employee: ${employee.name} (ID: ${employee.id}) for fingerprint ID: ${employeeNo}`);
             results.employeesAutoCreated++;
           } catch (createError) {
-            console.error(`[Debug Process] Failed to create employee for fingerprint ID ${employeeNo}:`, createError);
+            console.error(`[Attendance Pull Service] Failed to create employee for fingerprint ID ${employeeNo}:`, createError);
             results.errors.push(`Failed to create employee for fingerprint ID ${employeeNo}: ${(createError as Error).message}`);
             results.employeesNotFound.push(employeeNo);
             continue;
@@ -172,7 +183,7 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         }
         
         results.employeesMatched++;
-        console.log(`[Debug Process] Processing event for employee: ${employee.name} at ${eventTime.toISOString()}`);
+        console.log(`[Attendance Pull Service] Processing event for employee: ${employee.name} at ${eventTime.toISOString()}`);
         
         // Get the date for grouping (no timezone adjustment - use the event time as-is for date)
         const eventDate = new Date(eventTime.toISOString().split('T')[0] + 'T00:00:00.000Z');
@@ -225,7 +236,7 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
               }
             });
             results.attendanceRecordsUpdated++;
-            console.log(`[Debug Process] Updated attendance for ${employee.name} on ${eventDate.toDateString()}`);
+            console.log(`[Attendance Pull Service] Updated attendance for ${employee.name} on ${eventDate.toDateString()}`);
           }
         } else {
           // Create new attendance record
@@ -234,27 +245,36 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
               employeeId: employee.id,
               date: eventDate,
               checkIn: eventTime,
-              checkOut: null, // Will be updated by subsequent events
+              checkOut: null,
               hoursWorked: null,
               actualHoursWorked: 0,
-              isPaidDay: true // Will be calculated later by penalty system
+              isPaidDay: true
             }
           });
           results.attendanceRecordsCreated++;
-          console.log(`[Debug Process] Created new attendance for ${employee.name} on ${eventDate.toDateString()}`);
+          console.log(`[Attendance Pull Service] Created new attendance for ${employee.name} on ${eventDate.toDateString()}`);
         }
         
       } catch (eventError) {
-        console.error('[Debug Process] Error processing individual event:', eventError);
+        console.error('[Attendance Pull Service] Error processing individual event:', eventError);
         results.errors.push(`Error processing event: ${(eventError as Error).message}`);
       }
     }
     
-    console.log(`[Debug Process] Successfully processed ${results.eventsProcessed} events`);
+    console.log(`[Attendance Pull Service] Successfully processed ${results.eventsProcessed} events`);
+    console.log(`[Attendance Pull Service] Results:`, {
+      eventsProcessed: results.eventsProcessed,
+      employeesMatched: results.employeesMatched,
+      employeesAutoCreated: results.employeesAutoCreated,
+      attendanceRecordsCreated: results.attendanceRecordsCreated,
+      attendanceRecordsUpdated: results.attendanceRecordsUpdated,
+      errors: results.errors.length
+    });
+    
     return results;
     
   } catch (error) {
-    console.error('[Debug Process] Error processing attendance data:', error);
+    console.error('[Attendance Pull Service] Error processing attendance data:', error);
     results.errors.push(`Processing error: ${(error as Error).message}`);
     return results;
   }
