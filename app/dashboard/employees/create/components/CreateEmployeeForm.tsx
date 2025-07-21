@@ -22,7 +22,7 @@ export function CreateEmployeeForm() {
     position: '',
     phone: '',
     fingerprintId: '',
-    hikvisionEmployeeId: '',
+  
     hourlyRate: '',
     paymentBasis: 'Monthly', // Default to Monthly
   });
@@ -82,7 +82,7 @@ export function CreateEmployeeForm() {
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
           fingerprintId: formData.fingerprintId, // Required field, no need for null check
-          hikvisionEmployeeId: formData.hikvisionEmployeeId || null, // Send null if empty
+  
           hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
@@ -235,24 +235,7 @@ export function CreateEmployeeForm() {
               Enter the unique ID used in legacy attendance device exports. This must be unique across all employees.
             </p>
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="hikvisionEmployeeId" className="text-sm font-medium text-gray-700">
-              Hikvision Employee ID (Optional)
-            </Label>
-            <Input
-              id="hikvisionEmployeeId"
-              name="hikvisionEmployeeId"
-              value={formData.hikvisionEmployeeId}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              placeholder="1, 2, 3, etc."
-              className="h-10"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Employee ID in the Hikvision attendance system. If not provided, the Fingerprint Device ID will be used as fallback.
-            </p>
-          </div>
+
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">

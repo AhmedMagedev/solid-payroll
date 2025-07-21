@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import HikvisionClient from '@/lib/hikvision-client';
+import { pullHikvisionDataWithCurl, pullHikvisionDataWithFetch } from '@/lib/hikvision-curl';
 import { prisma } from '@/app/lib/prisma';
 import { getHikvisionConfig, sanitizeEmployeeName } from '@/lib/hikvision-config';
 
@@ -7,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log('[Debug] Testing Hikvision integration...');
     
-    // Get date range from request or default to last 7 days
+    // Get date range from request or default to 7 days backward from today
     const body = await request.json().catch(() => ({}));
     const startDate = body.startDate ? new Date(body.startDate) : (() => {
       const date = new Date();
@@ -21,14 +22,44 @@ export async function POST(request: NextRequest) {
       endDate: endDate.toISOString()
     });
 
-    // Test Hikvision client
-    const hikvisionClient = new HikvisionClient();
-    const attendanceData = await hikvisionClient.pullAttendanceData(startDate, endDate);
+    // Try curl approach first (most reliable)
+    console.log('[Debug] Attempting curl approach...');
+    let attendanceData = null;
+    let pullMethod = 'unknown';
+
+    const curlResult = await pullHikvisionDataWithCurl(startDate, endDate);
+    if (curlResult.success && curlResult.data) {
+      attendanceData = curlResult.data;
+      pullMethod = 'curl';
+      console.log('[Debug] Successfully pulled data using curl');
+    } else {
+      console.log('[Debug] Curl approach failed:', curlResult.error);
+      
+      // Fallback to fetch approach
+      console.log('[Debug] Attempting fetch approach...');
+      const fetchResult = await pullHikvisionDataWithFetch(startDate, endDate);
+      if (fetchResult.success && fetchResult.data) {
+        attendanceData = fetchResult.data;
+        pullMethod = 'fetch';
+        console.log('[Debug] Successfully pulled data using fetch');
+      } else {
+        console.log('[Debug] Fetch approach failed:', fetchResult.error);
+        
+        // Final fallback to original client
+        console.log('[Debug] Attempting original Hikvision client...');
+        const hikvisionClient = new HikvisionClient();
+        attendanceData = await hikvisionClient.pullAttendanceData(startDate, endDate);
+        if (attendanceData) {
+          pullMethod = 'hikvision-client';
+          console.log('[Debug] Successfully pulled data using Hikvision client');
+        }
+      }
+    }
 
     if (!attendanceData) {
       return NextResponse.json({
         success: false,
-        error: 'Failed to retrieve data from Hikvision API'
+        error: 'Failed to retrieve data from Hikvision API using all methods (curl, fetch, client)'
       }, { status: 500 });
     }
 
@@ -45,6 +76,7 @@ export async function POST(request: NextRequest) {
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString()
         },
+        pullMethod: pullMethod,
         hikvisionResponse: attendanceData,
         processedResults
       }
@@ -92,23 +124,27 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         const eventTime = new Date(event.time);
         
         if (!employeeNo) {
-          console.log('[Debug Process] Skipping event with no employee number');
+          console.log('[Debug Process] Skipping event with no employee number. Event details:', {
+          time: event.time,
+          eventType: event.eventType,
+          majorEventType: event.majorEventType,
+          subEventType: event.subEventType,
+          name: event.name,
+          employeeNoString: event.employeeNoString
+        });
           results.errors.push('Event with no employee number found');
           continue;
         }
         
-        // Find employee by Hikvision employee number
+        // Find employee by fingerprint ID
         let employee = await prisma.employee.findFirst({
           where: {
-            OR: [
-              { hikvisionEmployeeId: employeeNo },
-              { fingerprintId: employeeNo } // Fallback to fingerprintId for backward compatibility
-            ]
+            fingerprintId: employeeNo
           }
         });
         
         if (!employee) {
-          console.log(`[Debug Process] Employee not found for Hikvision ID: ${employeeNo}, creating new employee...`);
+          console.log(`[Debug Process] Employee not found for fingerprint ID: ${employeeNo}, creating new employee...`);
           
           // Auto-create employee from Hikvision data (minimal data only)
           const config = getHikvisionConfig();
@@ -120,17 +156,16 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
                 name: employeeName,
                 // email is optional, so we don't include it
                 position: config.position,
-                hikvisionEmployeeId: employeeNo,
-                fingerprintId: employeeNo, // Also set as fingerprintId for backward compatibility
+                fingerprintId: employeeNo,
                 // hourlyRate and paymentBasis will use schema defaults (0 and "Daily")
               }
             });
             
-            console.log(`[Debug Process] Auto-created employee: ${employee.name} (ID: ${employee.id}) for Hikvision ID: ${employeeNo}`);
+            console.log(`[Debug Process] Auto-created employee: ${employee.name} (ID: ${employee.id}) for fingerprint ID: ${employeeNo}`);
             results.employeesAutoCreated++;
           } catch (createError) {
-            console.error(`[Debug Process] Failed to create employee for Hikvision ID ${employeeNo}:`, createError);
-            results.errors.push(`Failed to create employee for Hikvision ID ${employeeNo}: ${(createError as Error).message}`);
+            console.error(`[Debug Process] Failed to create employee for fingerprint ID ${employeeNo}:`, createError);
+            results.errors.push(`Failed to create employee for fingerprint ID ${employeeNo}: ${(createError as Error).message}`);
             results.employeesNotFound.push(employeeNo);
             continue;
           }
@@ -139,8 +174,8 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         results.employeesMatched++;
         console.log(`[Debug Process] Processing event for employee: ${employee.name} at ${eventTime.toISOString()}`);
         
-        // Get the date for grouping (local date)
-        const eventDate = new Date(eventTime.getFullYear(), eventTime.getMonth(), eventTime.getDate());
+        // Get the date for grouping (no timezone adjustment - use the event time as-is for date)
+        const eventDate = new Date(eventTime.toISOString().split('T')[0] + 'T00:00:00.000Z');
         
         // Check if we already have attendance for this employee on this date
         const existingAttendance = await prisma.attendance.findUnique({

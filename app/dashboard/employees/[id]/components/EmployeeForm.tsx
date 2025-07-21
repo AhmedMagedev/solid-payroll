@@ -21,7 +21,7 @@ interface Employee {
   position: string;
   phone?: string; // Optional phone number field
   fingerprintId?: string; // For mapping to attendance device IDs
-  hikvisionEmployeeId?: string; // For mapping to Hikvision attendance device
+
   hourlyRate: number;
   paymentBasis?: string; // Make it optional since older records might not have it
 }
@@ -38,7 +38,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     position: employee.position,
     phone: employee.phone || '',
     fingerprintId: employee.fingerprintId || '',
-    hikvisionEmployeeId: employee.hikvisionEmployeeId || '',
+
     hourlyRate: employee.hourlyRate.toString(),
     paymentBasis: employee.paymentBasis || 'Monthly', // Default to Monthly
   });
@@ -98,7 +98,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           position: formData.position,
           phone: formData.phone || null, // Send null if empty
           fingerprintId: formData.fingerprintId, // Required field, no need for null check
-          hikvisionEmployeeId: formData.hikvisionEmployeeId || null, // Send null if empty
+  
           hourlyRate,
           paymentBasis: formData.paymentBasis,
         }),
@@ -211,22 +211,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           أدخل الرقم الفريد المستخدم في تصدير جهاز الحضور لربط هذا الموظف بصورة صحيحة.
         </p>
       </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="hikvisionEmployeeId">رقم الموظف في Hikvision (اختياري)</Label>
-        <Input
-          id="hikvisionEmployeeId"
-          name="hikvisionEmployeeId"
-          value={formData.hikvisionEmployeeId}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          placeholder="رقم الموظف في جهاز Hikvision (مثل: 1, 2, 3)"
-          className="text-right"
-        />
-        <p className="text-xs text-muted-foreground text-right">
-          رقم الموظف المستخدم في جهاز Hikvision للحضور والانصراف. إذا لم يتم تعبئته، سيتم استخدام رقم جهاز البصمة.
-        </p>
-      </div>
+
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import HikvisionClient from '@/lib/hikvision-client';
+import { pullHikvisionDataWithCurl, pullHikvisionDataWithFetch } from '@/lib/hikvision-curl';
 import { getHikvisionConfig, sanitizeEmployeeName } from '@/lib/hikvision-config';
+
+// Rate limiting: prevent multiple simultaneous pulls
+let isCurrentlyPulling = false;
+let lastPullTime = 0;
+const PULL_COOLDOWN_MS = 30000; // 30 seconds minimum between pulls
 
 interface DateFilter {
   gte?: Date;
@@ -40,15 +46,35 @@ export async function POST(request: NextRequest) {
         dateTime: eventData.dateTime,
         deviceIp: eventData.ipAddress,
         employeeName: eventData.AccessControllerEvent?.name,
-        employeeNo: eventData.AccessControllerEvent?.employeeNoString
+        employeeNo: eventData.AccessControllerEvent?.employeeNoString,
+        rawEventData: eventData // Log full event for debugging
       });
       
-      // Trigger attendance pull (we'll implement this function next)
+      // Check rate limiting before triggering pull
+      const now = Date.now();
+      if (isCurrentlyPulling) {
+        console.log('[Hikvision Webhook] Pull already in progress, skipping this event');
+        return NextResponse.json({ 
+          success: true, 
+          message: 'Event received, but pull already in progress' 
+        });
+      }
+      
+      if (now - lastPullTime < PULL_COOLDOWN_MS) {
+        console.log('[Hikvision Webhook] Too soon since last pull, skipping this event');
+        return NextResponse.json({ 
+          success: true, 
+          message: 'Event received, but too soon since last pull' 
+        });
+      }
+      
+      // Trigger comprehensive attendance pull with increased maxResults and better date range
+      console.log('[Hikvision Webhook] Triggering comprehensive attendance pull...');
       await pullAttendanceFromHikvision();
       
       return NextResponse.json({ 
         success: true, 
-        message: 'Event received, attendance pull triggered' 
+        message: 'Event received, comprehensive attendance pull triggered with 20k maxResults and 9-day range' 
       });
       
     } catch (parseError) {
@@ -70,20 +96,62 @@ export async function POST(request: NextRequest) {
 
 // Function to pull attendance data from Hikvision
 async function pullAttendanceFromHikvision() {
+  // Set rate limiting flags
+  isCurrentlyPulling = true;
+  lastPullTime = Date.now();
+  
   try {
-    console.log('[Hikvision Pull] Starting attendance data pull...');
+    console.log('[Hikvision Pull] Starting comprehensive attendance data pull triggered by event...');
     
-    // Get the date range for pulling (last 7 days to current)
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 7);
+    // Use the same comprehensive date range as the manual pull button
+    // Import the timezone function here
+    const { getNowInEgypt } = await import('@/lib/timezone');
+    const todayEgypt = getNowInEgypt();
     
-    // Use the Hikvision client with proper digest auth
-    const hikvisionClient = new HikvisionClient();
-    const attendanceData = await hikvisionClient.pullAttendanceData(startDate, endDate);
+    // Start from 7 days ago at midnight, end tomorrow at 23:59:59 (same as UI)
+    const startDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() - 7, 0, 0, 0);
+    const endDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() + 1, 23, 59, 59);
+    
+    console.log('[Hikvision Pull] Using comprehensive date range:', {
+      egyptTime: todayEgypt.toISOString(),
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      dateRange: `${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
+      maxResults: '20000 (increased for comprehensive pull)'
+    });
+    
+    // Try curl approach first (most reliable)
+    console.log('[Hikvision Pull] Attempting curl approach...');
+    let attendanceData = null;
+
+    const curlResult = await pullHikvisionDataWithCurl(startDate, endDate);
+    if (curlResult.success && curlResult.data) {
+      attendanceData = curlResult.data;
+      console.log('[Hikvision Pull] Successfully pulled data using curl');
+    } else {
+      console.log('[Hikvision Pull] Curl approach failed:', curlResult.error);
+      
+      // Fallback to fetch approach
+      console.log('[Hikvision Pull] Attempting fetch approach...');
+      const fetchResult = await pullHikvisionDataWithFetch(startDate, endDate);
+      if (fetchResult.success && fetchResult.data) {
+        attendanceData = fetchResult.data;
+        console.log('[Hikvision Pull] Successfully pulled data using fetch');
+      } else {
+        console.log('[Hikvision Pull] Fetch approach failed:', fetchResult.error);
+        
+        // Final fallback to original client
+        console.log('[Hikvision Pull] Attempting original Hikvision client...');
+        const hikvisionClient = new HikvisionClient();
+        attendanceData = await hikvisionClient.pullAttendanceData(startDate, endDate);
+        if (attendanceData) {
+          console.log('[Hikvision Pull] Successfully pulled data using Hikvision client');
+        }
+      }
+    }
     
     if (!attendanceData) {
-      console.error('[Hikvision Pull] Failed to retrieve attendance data');
+      console.error('[Hikvision Pull] Failed to retrieve attendance data using all methods');
       return;
     }
     
@@ -94,6 +162,10 @@ async function pullAttendanceFromHikvision() {
     
   } catch (error) {
     console.error('[Hikvision Pull] Error pulling attendance data:', error);
+  } finally {
+    // Reset rate limiting flag
+    isCurrentlyPulling = false;
+    console.log('[Hikvision Pull] Attendance pull completed, ready for next event');
   }
 }
 
@@ -124,18 +196,15 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
           continue;
         }
         
-        // Find employee by Hikvision employee number
+        // Find employee by fingerprint ID
         let employee = await prisma.employee.findFirst({
           where: {
-            OR: [
-              { hikvisionEmployeeId: employeeNo },
-              { fingerprintId: employeeNo } // Fallback to fingerprintId for backward compatibility
-            ]
+            fingerprintId: employeeNo
           }
         });
         
         if (!employee) {
-          console.log(`[Hikvision Process] Employee not found for Hikvision ID: ${employeeNo}, creating new employee...`);
+          console.log(`[Hikvision Process] Employee not found for fingerprint ID: ${employeeNo}, creating new employee...`);
           
           // Auto-create employee from Hikvision data (minimal data only)
           const config = getHikvisionConfig();
@@ -147,23 +216,22 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
                 name: employeeName,
                 // email is optional, so we don't include it
                 position: config.position,
-                hikvisionEmployeeId: employeeNo,
-                fingerprintId: employeeNo, // Also set as fingerprintId for backward compatibility
+                fingerprintId: employeeNo,
                 // hourlyRate and paymentBasis will use schema defaults (0 and "Daily")
               }
             });
             
-            console.log(`[Hikvision Process] Auto-created employee: ${employee.name} (ID: ${employee.id}) for Hikvision ID: ${employeeNo}`);
+            console.log(`[Hikvision Process] Auto-created employee: ${employee.name} (ID: ${employee.id}) for fingerprint ID: ${employeeNo}`);
           } catch (createError) {
-            console.error(`[Hikvision Process] Failed to create employee for Hikvision ID ${employeeNo}:`, createError);
+            console.error(`[Hikvision Process] Failed to create employee for fingerprint ID ${employeeNo}:`, createError);
             continue;
           }
         }
         
         console.log(`[Hikvision Process] Processing event for employee: ${employee.name} at ${eventTime.toISOString()}`);
         
-        // Get the date for grouping (local date)
-        const eventDate = new Date(eventTime.getFullYear(), eventTime.getMonth(), eventTime.getDate());
+        // Get the date for grouping (no timezone adjustment - use the event time as-is for date)
+        const eventDate = new Date(eventTime.toISOString().split('T')[0] + 'T00:00:00.000Z');
         
         // Check if we already have attendance for this employee on this date
         const existingAttendance = await prisma.attendance.findUnique({

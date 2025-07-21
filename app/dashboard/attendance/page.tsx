@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, AlertCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import { formatEgyptTime } from '@/lib/timezone';
+import { RefreshCw, AlertCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatEgyptTime, getNowInEgypt } from '@/lib/timezone';
 import { parseISO, format } from 'date-fns';
 import Link from 'next/link';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -42,16 +41,32 @@ interface AttendanceResponse {
 }
 
 export default function AttendancePage() {
-  const router = useRouter();
   const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshResult, setRefreshResult] = useState<string | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Hydration effect
+  useEffect(() => {
+    console.log('[Attendance Page] Component mounting/hydrating');
+    setIsHydrated(true);
+    console.log('[Attendance Page] Hydration complete');
+  }, []);
 
   const fetchAttendance = useCallback(async (page: number, search: string) => {
     try {
+      console.log('[Attendance Page] Fetching attendance data:', {
+        page,
+        search,
+        isHydrated,
+        timestamp: new Date().toISOString()
+      });
+      
       setIsLoading(true);
       const params = new URLSearchParams({
         page: page.toString(),
@@ -67,20 +82,28 @@ export default function AttendancePage() {
       });
       
       if (!response.ok) {
+        console.error('[Attendance Page] Fetch failed:', response.status, response.statusText);
         throw new Error('Failed to fetch attendance data');
       }
       
       const data: AttendanceResponse = await response.json();
+      console.log('[Attendance Page] Data received:', {
+        recordCount: data.data.length,
+        pagination: data.pagination,
+        firstRecord: data.data[0],
+        isHydrated
+      });
+      
       setAttendanceData(data.data);
       setPagination(data.pagination);
       setError(null);
     } catch (err) {
+      console.error('[Attendance Page] Error fetching attendance:', err);
       setError('خطأ في تحميل بيانات الحضور. يرجى المحاولة مرة أخرى.');
-      console.error('Error fetching attendance:', err);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [isHydrated]);
 
   useEffect(() => {
     fetchAttendance(currentPage, searchTerm);
@@ -97,10 +120,97 @@ export default function AttendancePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePullAttendanceData = async () => {
+    console.log('[Attendance Page] Manual pull triggered by user');
+    setIsRefreshing(true);
+    setRefreshResult(null);
+    setError(null);
+
+    try {
+      // Use a comprehensive date range to ensure we get today's logs
+      // Pull from 7 days ago to tomorrow (to account for any timezone issues)
+      const todayEgypt = getNowInEgypt();
+      
+      // Start from 7 days ago at midnight
+      const startDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() - 7, 0, 0, 0);
+      // End tomorrow at 23:59:59 to ensure we capture today's logs regardless of timezone
+      const endDate = new Date(todayEgypt.getFullYear(), todayEgypt.getMonth(), todayEgypt.getDate() + 1, 23, 59, 59);
+      
+      console.log('[Attendance Page] Pulling comprehensive attendance data:', {
+        egyptTime: todayEgypt.toISOString(),
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        dateRange: `${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
+        maxResults: '20000 (increased from 5000)',
+        isHydrated,
+        timestamp: new Date().toISOString()
+      });
+      
+      const response = await fetch('/api/debug/test-hikvision-integration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const results = data.data.processedResults;
+        const eventCount = results.eventsProcessed || 0;
+        
+        setRefreshResult(
+          `تم سحب البيانات بنجاح! ` +
+          `معالجة ${eventCount} حدث، ` +
+          `${results.employeesMatched || 0} موظف موجود، ` +
+          `${results.employeesAutoCreated || 0} موظف جديد، ` +
+          `${results.attendanceRecordsCreated || 0} سجل حضور جديد، ` +
+          `${results.attendanceRecordsUpdated || 0} سجل محدث. ` +
+          `(استخدمت حد أقصى 20,000 سجل من ${startDate.toLocaleDateString()} إلى ${endDate.toLocaleDateString()})`
+        );
+        
+        // Refresh the attendance data
+        fetchAttendance(currentPage, searchTerm);
+        
+        // Clear success message after 10 seconds (longer for more detailed message)
+        setTimeout(() => setRefreshResult(null), 10000);
+      } else {
+        setError(data.error || 'فشل في سحب بيانات الحضور من الجهاز');
+      }
+    } catch (err) {
+      setError('خطأ في الاتصال بجهاز البصمة. يرجى المحاولة مرة أخرى.');
+      console.error('Error pulling attendance data:', err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     try {
-      return format(parseISO(dateString), 'MMM d, yyyy');
-    } catch {
+      console.log('[Attendance Page] Formatting date:', { 
+        input: dateString, 
+        isServer: typeof window === 'undefined',
+        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'server'
+      });
+      
+      // Use a more consistent date formatting approach
+      const date = parseISO(dateString);
+      if (isNaN(date.getTime())) {
+        console.warn('[Attendance Page] Invalid date parsed:', dateString);
+        return 'تاريخ غير صالح';
+      }
+      
+      // Use a simple, consistent format that works the same on server and client
+      const formatted = format(date, 'yyyy-MM-dd');
+      console.log('[Attendance Page] Date formatted:', { input: dateString, output: formatted });
+      return formatted;
+    } catch (error) {
+      console.error('[Attendance Page] Date formatting error:', error, 'for date:', dateString);
       return 'تاريخ غير صالح';
     }
   };
@@ -158,6 +268,16 @@ export default function AttendancePage() {
     );
   };
 
+  // Log environment info
+  console.log('[Attendance Page] Render environment:', {
+    isServer: typeof window === 'undefined',
+    isHydrated,
+    hasAttendanceData: attendanceData.length > 0,
+    isLoading,
+    error: !!error,
+    timestamp: new Date().toISOString()
+  });
+
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -165,9 +285,13 @@ export default function AttendancePage() {
           <h1 className="text-2xl font-bold">سجلات الحضور</h1>
           <p className="text-muted-foreground mt-1">عرض وإدارة بيانات حضور الموظفين</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/attendance/upload')} className="w-full md:w-auto">
-          <Upload className="h-4 w-4 ml-2 cursor-pointer" />
-          رفع سجل الحضور
+        <Button 
+          onClick={handlePullAttendanceData} 
+          disabled={isRefreshing}
+          className="w-full md:w-auto"
+        >
+          <RefreshCw className={`h-4 w-4 ml-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+          {isRefreshing ? 'جاري السحب...' : 'سحب بيانات الحضور'}
         </Button>
       </div>
 
@@ -212,6 +336,18 @@ export default function AttendancePage() {
             <div className="flex items-center gap-2 text-red-700">
               <AlertCircle className="h-4 w-4" />
               <span>{error}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Success Message */}
+      {refreshResult && (
+        <Card className="mb-6 border-green-200 bg-green-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 text-green-700">
+              <RefreshCw className="h-4 w-4" />
+              <span>{refreshResult}</span>
             </div>
           </CardContent>
         </Card>
@@ -263,17 +399,23 @@ export default function AttendancePage() {
                           {record.employee.name}
                         </Link>
                       </TableCell>
-                      <TableCell className="text-right">{formatDate(record.date)}</TableCell>
                       <TableCell className="text-right">
-                        {record.checkIn 
+                        {isHydrated ? formatDate(record.date) : record.date}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {isHydrated && record.checkIn 
                           ? formatEgyptTime(record.checkIn)
-                          : <span className="text-muted-foreground">غير مسجل</span>
+                          : record.checkIn 
+                            ? record.checkIn 
+                            : <span className="text-muted-foreground">غير مسجل</span>
                         }
                       </TableCell>
                       <TableCell className="text-right">
-                        {record.checkOut 
+                        {isHydrated && record.checkOut 
                           ? formatEgyptTime(record.checkOut)
-                          : <span className="text-muted-foreground">غير مسجل</span>
+                          : record.checkOut 
+                            ? record.checkOut
+                            : <span className="text-muted-foreground">غير مسجل</span>
                         }
                       </TableCell>
                       <TableCell className="text-right">

@@ -68,6 +68,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Match all request paths except for API routes that handle their own auth
-    '/((?!api/(?!employees|attendance)).*)',
+    // Exclude webhook endpoints like /api/attendance (for Hikvision webhooks)
+    '/((?!api/).*)',
   ],
 }; 

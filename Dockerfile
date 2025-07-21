@@ -35,8 +35,8 @@ RUN npm run build
 # Production stage
 FROM node:18-slim
 
-# Install OpenSSL
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+# Install OpenSSL and curl (needed for Hikvision API calls)
+RUN apt-get update -y && apt-get install -y openssl curl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

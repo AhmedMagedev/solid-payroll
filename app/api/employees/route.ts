@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     
     const data = await request.json();
     
-    const { name, email, position, phone, fingerprintId, hikvisionEmployeeId, hourlyRate, paymentBasis } = data;
+    const { name, email, position, phone, fingerprintId, hourlyRate, paymentBasis } = data;
 
   if (!name || !position || !hourlyRate || !fingerprintId) {
     return NextResponse.json(
@@ -85,7 +85,6 @@ export async function POST(request: NextRequest) {
         position,
         phone: phone || null,
         fingerprintId,
-        hikvisionEmployeeId: hikvisionEmployeeId || null,
         hourlyRate: parseFloat(hourlyRate),
         paymentBasis: paymentBasis || 'Monthly',
       },

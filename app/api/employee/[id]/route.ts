@@ -107,7 +107,7 @@ export async function PUT(request: NextRequest) {
         position: data.position,
         phone: data.phone || null,
         fingerprintId: data.fingerprintId,
-        hikvisionEmployeeId: data.hikvisionEmployeeId || null,
+
         hourlyRate: data.hourlyRate,
         paymentBasis: data.paymentBasis || 'Monthly', // Default to Monthly if not provided
       },

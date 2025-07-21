@@ -105,27 +105,26 @@ class HikvisionClient {
 
   async pullAttendanceData(startDate: Date, endDate: Date): Promise<HikvisionResponse | null> {
     try {
-      console.log('[Hikvision Client] Pulling attendance data...');
+      console.log('[Hikvision Client] Pulling attendance data using curl-like approach...');
       
-      const uri = '/ISAPI/AccessControl/AcsEvent?format=json';
-      const url = `${this.baseUrl}${uri}`;
+      const url = `${this.baseUrl}/ISAPI/AccessControl/AcsEvent?format=json`;
       
-      // Format dates for Hikvision API (they expect +03:00 timezone)
+      // Format dates for Hikvision API (use local time without timezone offset)
       const formatHikvisionDate = (date: Date, isEndDate = false) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const time = isEndDate ? '23:59:59' : '00:00:00';
-        return `${year}-${month}-${day}T${time}+03:00`;
+        return `${year}-${month}-${day}T${time}`;
       };
 
       const requestBody = {
         AcsEventCond: {
-          searchID: "1",
+          searchID: "today",
           searchResultPosition: 0,
-          maxResults: 100,
-          major: 0,
-          minor: 0,
+          maxResults: 20000, // Increased from 5000 to ensure we get all logs
+          major: 5,
+          minor: 38,
           startTime: formatHikvisionDate(startDate),
           endTime: formatHikvisionDate(endDate, true)
         }
@@ -134,69 +133,90 @@ class HikvisionClient {
       console.log('[Hikvision Client] Request parameters:', {
         startTime: requestBody.AcsEventCond.startTime,
         endTime: requestBody.AcsEventCond.endTime,
-        url
+        url,
+        username: this.username
       });
 
-      // First request to get the digest challenge
-      const initialResponse = await fetch(url, {
+      // Use basic auth with digest challenge handling
+      // This approach mirrors the working curl command
+      const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
+      
+      console.log('[Hikvision Client] Making request with Basic Auth (will be challenged for Digest)...');
+      
+      // Make the request - if it requires digest auth, the server will challenge us
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Basic ${auth}`,
         },
         body: JSON.stringify(requestBody)
       });
 
-      if (initialResponse.status === 401) {
-        // Parse WWW-Authenticate header
-        const authHeader = initialResponse.headers.get('WWW-Authenticate');
-        if (!authHeader || !authHeader.startsWith('Digest')) {
-          throw new Error('Server did not return a Digest challenge');
-        }
-
-        console.log('[Hikvision Client] Received digest challenge, authenticating...');
+      if (response.status === 401) {
+        console.log('[Hikvision Client] Received 401, attempting digest authentication...');
         
-        const authParams = this.parseWWWAuthenticate(authHeader);
-        
-        // Generate digest authentication
-        const digestAuth = this.generateDigestAuth({
-          username: this.username,
-          password: this.password,
-          realm: authParams.realm || '',
-          nonce: authParams.nonce || '',
-          uri,
-          method: 'POST',
-          qop: authParams.qop,
-          opaque: authParams.opaque
-        });
-
-        // Make authenticated request
-        const authenticatedResponse = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': digestAuth
-          },
-          body: JSON.stringify(requestBody)
-        });
-
-        if (!authenticatedResponse.ok) {
-          console.error('[Hikvision Client] Authenticated request failed:', 
-            authenticatedResponse.status, authenticatedResponse.statusText);
+        const authHeader = response.headers.get('WWW-Authenticate');
+        if (!authHeader) {
+          console.error('[Hikvision Client] No WWW-Authenticate header in 401 response');
           return null;
         }
 
-        const data = await authenticatedResponse.json();
+        console.log('[Hikvision Client] Auth header:', authHeader);
+        
+        if (authHeader.includes('Digest')) {
+          // Parse digest challenge
+          const authParams = this.parseWWWAuthenticate(authHeader);
+          
+          // Generate digest authentication for the exact URI
+          const digestAuth = this.generateDigestAuth({
+            username: this.username,
+            password: this.password,
+            realm: authParams.realm || '',
+            nonce: authParams.nonce || '',
+            uri: '/ISAPI/AccessControl/AcsEvent?format=json',
+            method: 'POST',
+            qop: authParams.qop,
+            opaque: authParams.opaque
+          });
+
+          console.log('[Hikvision Client] Making authenticated request with digest...');
+          
+          // Make authenticated request
+          const authenticatedResponse = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': digestAuth
+            },
+            body: JSON.stringify(requestBody)
+          });
+
+          if (!authenticatedResponse.ok) {
+            console.error('[Hikvision Client] Digest authenticated request failed:', 
+              authenticatedResponse.status, authenticatedResponse.statusText);
+            // Try to read response body for more details
+            const errorText = await authenticatedResponse.text();
+            console.error('[Hikvision Client] Error response body:', errorText);
+            return null;
+          }
+
+          const data = await authenticatedResponse.json();
+          console.log('[Hikvision Client] Successfully retrieved attendance data with digest auth');
+          return data;
+        } else {
+          console.error('[Hikvision Client] Server requires authentication but no Digest challenge found');
+          return null;
+        }
+      } else if (response.ok) {
+        // Request succeeded with basic auth or no auth
+        const data = await response.json();
         console.log('[Hikvision Client] Successfully retrieved attendance data');
         return data;
-
-      } else if (initialResponse.ok) {
-        // No authentication required
-        const data = await initialResponse.json();
-        console.log('[Hikvision Client] Successfully retrieved attendance data (no auth required)');
-        return data;
       } else {
-        console.error('[Hikvision Client] Initial request failed:', 
-          initialResponse.status, initialResponse.statusText);
+        console.error('[Hikvision Client] Request failed:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('[Hikvision Client] Error response body:', errorText);
         return null;
       }
 
