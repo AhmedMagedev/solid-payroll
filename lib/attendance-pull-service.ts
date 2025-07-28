@@ -2,6 +2,7 @@ import HikvisionClient from '@/lib/hikvision-client';
 import { pullHikvisionDataWithCurl, pullHikvisionDataWithFetch } from '@/lib/hikvision-curl';
 import { prisma } from '@/app/lib/prisma';
 import { getHikvisionConfig, sanitizeEmployeeName } from '@/lib/hikvision-config';
+import { DateTime } from 'luxon';
 
 export interface AttendancePullResult {
   success: boolean;
@@ -134,7 +135,7 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         
         // Extract data from event
         const employeeNo = event.employeeNoString;
-        const eventTime = new Date(event.time);
+        const eventTime = DateTime.fromISO(event.time, { zone: 'utc' }).toJSDate();
         
         if (!employeeNo) {
           console.log('[Attendance Pull Service] Skipping event with no employee number. Event details:', {
