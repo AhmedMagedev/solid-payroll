@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import HikvisionClient from '@/lib/hikvision-client';
 import { pullHikvisionDataWithCurl, pullHikvisionDataWithFetch } from '@/lib/hikvision-curl';
-import { getHikvisionConfig, sanitizeEmployeeName } from '@/lib/hikvision-config';
 
 // Rate limiting: prevent multiple simultaneous pulls
 let isCurrentlyPulling = false;
@@ -157,8 +156,19 @@ async function pullAttendanceFromHikvision() {
     
     console.log('[Hikvision Pull] Received data:', attendanceData);
     
-    // Process the attendance data
-    await processHikvisionAttendanceData(attendanceData);
+    // Process the attendance data using the shared service for consistency
+    const { pullAndProcessAttendanceData } = await import('@/lib/attendance-pull-service');
+    const result = await pullAndProcessAttendanceData(startDate, endDate);
+    
+    if (result.success && result.data) {
+      console.log('[Hikvision Pull] Processing completed:', {
+        eventsProcessed: result.data.processedResults.eventsProcessed,
+        attendanceRecordsCreated: result.data.processedResults.attendanceRecordsCreated,
+        attendanceRecordsUpdated: result.data.processedResults.attendanceRecordsUpdated
+      });
+    } else {
+      console.error('[Hikvision Pull] Processing failed:', result.error);
+    }
     
   } catch (error) {
     console.error('[Hikvision Pull] Error pulling attendance data:', error);
@@ -169,157 +179,7 @@ async function pullAttendanceFromHikvision() {
   }
 }
 
-// Function to process Hikvision attendance data and save to database
-async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Array<{ employeeNoString?: string; time: string; eventType?: string; majorEventType?: number; subEventType?: number; name?: string }> } }) {
-  try {
-    console.log('[Hikvision Process] Processing attendance data...');
-    
-    if (!data.AcsEvent || !data.AcsEvent.InfoList) {
-      console.log('[Hikvision Process] No attendance events found in response');
-      return;
-    }
-    
-    const events = data.AcsEvent.InfoList;
-    console.log(`[Hikvision Process] Found ${events.length} attendance events`);
-    
-    let processedCount = 0;
-    
-    for (const event of events) {
-      try {
-        // Extract data from event
-        const employeeNo = event.employeeNoString;
-        const eventTime = new Date(event.time);
-        // Note: eventType might be used in future for determining check-in vs check-out
-        
-        if (!employeeNo) {
-          console.log('[Hikvision Process] Skipping event with no employee number');
-          continue;
-        }
-        
-        // Find employee by fingerprint ID
-        let employee = await prisma.employee.findFirst({
-          where: {
-            fingerprintId: employeeNo
-          }
-        });
-        
-        if (!employee) {
-          console.log(`[Hikvision Process] Employee not found for fingerprint ID: ${employeeNo}, creating new employee...`);
-          
-          // Auto-create employee from Hikvision data (minimal data only)
-          const config = getHikvisionConfig();
-          const employeeName = sanitizeEmployeeName(event.name, employeeNo);
-          
-          try {
-            employee = await prisma.employee.create({
-              data: {
-                name: employeeName,
-                // email is optional, so we don't include it
-                position: config.position,
-                fingerprintId: employeeNo,
-                // hourlyRate and paymentBasis will use schema defaults (0 and "Daily")
-              }
-            });
-            
-            console.log(`[Hikvision Process] Auto-created employee: ${employee.name} (ID: ${employee.id}) for fingerprint ID: ${employeeNo}`);
-          } catch (createError) {
-            console.error(`[Hikvision Process] Failed to create employee for fingerprint ID ${employeeNo}:`, createError);
-            continue;
-          }
-        }
-        
-        console.log(`[Hikvision Process] Processing event for employee: ${employee.name} at ${eventTime.toISOString()}`);
-        
-        // Get the date for grouping (no timezone adjustment - use the event time as-is for date)
-        const eventDate = new Date(eventTime.toISOString().split('T')[0] + 'T00:00:00.000Z');
-        
-        // Check if we already have attendance for this employee on this date
-        const existingAttendance = await prisma.attendance.findUnique({
-          where: {
-            employeeId_date: {
-              employeeId: employee.id,
-              date: eventDate
-            }
-          }
-        });
-        
-        if (existingAttendance) {
-          // Update existing attendance record
-          const updateData: {
-            checkIn?: Date;
-            checkOut?: Date;
-            hoursWorked?: number;
-            actualHoursWorked?: number;
-            updatedAt?: Date;
-          } = {};
 
-          const currentCheckIn = existingAttendance.checkIn;
-          const currentCheckOut = existingAttendance.checkOut;
-
-          if (!currentCheckIn) {
-            updateData.checkIn = eventTime;
-          } else if (eventTime < currentCheckIn) {
-            updateData.checkIn = eventTime;
-            if (!currentCheckOut || currentCheckIn > currentCheckOut) {
-              updateData.checkOut = currentCheckIn;
-            }
-          } else if (!currentCheckOut) {
-            if (eventTime > currentCheckIn) {
-              updateData.checkOut = eventTime;
-            }
-          } else if (eventTime > currentCheckOut) {
-            updateData.checkOut = eventTime;
-          }
-
-          // Recalculate hours worked if we have both check-in and check-out
-          const newCheckIn = updateData.checkIn || currentCheckIn;
-          const newCheckOut = updateData.checkOut || currentCheckOut;
-
-          if (newCheckIn && newCheckOut && newCheckOut > newCheckIn) {
-            const hours = (newCheckOut.getTime() - newCheckIn.getTime()) / (1000 * 60 * 60);
-            updateData.hoursWorked = hours;
-            updateData.actualHoursWorked = hours;
-          }
-          
-          if (Object.keys(updateData).length > 0) {
-            await prisma.attendance.update({
-              where: { id: existingAttendance.id },
-              data: {
-                ...updateData,
-                updatedAt: new Date()
-              }
-            });
-            console.log(`[Hikvision Process] Updated attendance for ${employee.name} on ${eventDate.toDateString()}`);
-          }
-        } else {
-          // Create new attendance record
-          await prisma.attendance.create({
-            data: {
-              employeeId: employee.id,
-              date: eventDate,
-              checkIn: eventTime,
-              checkOut: null, // Will be updated by subsequent events
-              hoursWorked: null,
-              actualHoursWorked: 0,
-              isPaidDay: true // Will be calculated later by penalty system
-            }
-          });
-          console.log(`[Hikvision Process] Created new attendance for ${employee.name} on ${eventDate.toDateString()}`);
-        }
-        
-        processedCount++;
-        
-      } catch (eventError) {
-        console.error('[Hikvision Process] Error processing individual event:', eventError);
-      }
-    }
-    
-    console.log(`[Hikvision Process] Successfully processed ${processedCount} attendance events`);
-    
-  } catch (error) {
-    console.error('[Hikvision Process] Error processing attendance data:', error);
-  }
-}
 
 export async function GET(request: NextRequest) {
   try {

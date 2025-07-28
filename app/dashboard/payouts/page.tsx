@@ -204,7 +204,7 @@ export default function AllPayoutsPage() {
 
   const getStatusBadge = (isPaid: boolean, paymentDate: string | null) => {
     if (isPaid) {
-      const dateText = paymentDate ? ` on ${formatEgyptTime(paymentDate, 'MMM d')}` : '';
+              const dateText = paymentDate ? ` on ${formatEgyptTime(paymentDate)}` : '';
       return <Badge className="bg-green-600 hover:bg-green-700">Paid{dateText}</Badge>;
     }
     return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Pending</Badge>;
@@ -517,10 +517,10 @@ export default function AllPayoutsPage() {
                         {getStatusBadge(payout.isPaid, payout.paymentDate)}
                       </TableCell>
                       <TableCell>
-                        {payout.paymentDate ? formatEgyptTime(payout.paymentDate, 'MMM d, yyyy') : '-'}
+                        {payout.paymentDate ? formatEgyptTime(payout.paymentDate) : '-'}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {formatEgyptTime(payout.updatedAt, 'MMM d, h:mm a')}
+                        {formatEgyptTime(payout.updatedAt)}
                       </TableCell>
                       <TableCell>
                         <Button asChild variant="ghost" size="sm">

@@ -484,11 +484,11 @@ export default function EmployeeAttendancePage() {
                                         </div>
                                       </td>
                                       <td className="px-4 py-3 text-sm text-gray-700 text-right">
-                                        {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'غير متوفر'}
+                                        {record.checkIn ? formatEgyptTime(record.checkIn) : 'غير متوفر'}
                                       </td>
                                       <td className="px-4 py-3 text-sm text-gray-700 text-right">
                                         {record.checkOut 
-                                          ? formatEgyptTime(record.checkOut, 'h:mm a') 
+                                          ? formatEgyptTime(record.checkOut) 
                                           : '—'}
                                       </td>
                                       <td className="px-4 py-3 text-right">

@@ -367,7 +367,7 @@ export default function PayoutAdjustments({
                         {adjustment.reason}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {formatEgyptTime(adjustment.createdAt, 'MMM dd, yyyy hh:mm a')}
+                        {formatEgyptTime(adjustment.createdAt)}
                       </div>
                     </div>
                   </div>

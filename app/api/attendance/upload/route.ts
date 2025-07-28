@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/app/generated/prisma';
 import { verifyToken } from '@/app/lib/auth';
-// Removed timezone conversion imports - keeping dates/times as-is
-// import { startOfWeek, endOfWeek, format } from 'date-fns'; // Commented out for now
-import { parseEgyptTimeToUtc } from '@/lib/timezone';
+// Simplified timezone handling - using times as-is without conversion
+import { parseEgyptTimeToUtc, getWorkDateForEvent } from '@/lib/timezone';
 import { processAttendanceWithPenalties } from '@/lib/penalty-calculator';
 
 const prisma = new PrismaClient();
@@ -103,7 +102,7 @@ export async function POST(request: NextRequest) {
       console.log(`[API] Parsing line: ${line}`);
       console.log(`[API] Extracted - DeviceID: ${deviceId}, Timestamp: ${timeString}`);
 
-      // Parse the timestamp as Egypt time (local) and convert to UTC for storage
+      // Parse the timestamp as-is without timezone conversion
       const checkInDateTime = parseEgyptTimeToUtc(timeString);
       if (!checkInDateTime || isNaN(checkInDateTime.getTime())) {
         console.log(`Skipping record ${line}: Invalid timestamp "${timeString}"`);
@@ -122,20 +121,15 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Calculate if this should be a paid day based on grace period
-      // Simple grace period check without timezone conversion
+      // Calculate if this should be a paid day based on grace period (no timezone conversion)
       const [hours, minutes] = workingHoursStart.split(':');
       const graceEndTime = new Date(checkInDateTime);
       graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
       const isPaidDay = checkInDateTime <= graceEndTime;
 
-      // Use Egypt time for the date boundary
-      const dateObj = parseEgyptTimeToUtc(parts[1] + ' 00:00:00');
-      if (!dateObj) {
-        console.warn(`[API] Invalid date for attendance record: ${parts[1]}`);
-        continue;
-      }
-      const dateKey = parts[1]; // Use the original date string YYYY-MM-DD
+      // Use work date assignment for shift handling (early morning events assigned to previous day)
+      const dateObj = getWorkDateForEvent(checkInDateTime);
+      const dateKey = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD format
       const employeeKey = `${employee.id}-${dateKey}`;
 
       // Create employee entry if not exists
@@ -184,7 +178,7 @@ export async function POST(request: NextRequest) {
 
         console.log(`[API] Employee ${employee.name} on ${date}: First record: ${firstRecord}, Last record: ${lastRecord}`);
 
-        // Parse check-in and check-out times as Egypt time (local)
+        // Parse check-in and check-out times as-is without timezone conversion
         const parseTime = (timeStr: string) => {
           return parseEgyptTimeToUtc(timeStr);
         };
@@ -192,12 +186,13 @@ export async function POST(request: NextRequest) {
         const checkIn = parseTime(firstRecord);
         const checkOut = parseTime(lastRecord);
 
-        // Use Egypt time for the date boundary
-        const dateObj = parseEgyptTimeToUtc(date + ' 00:00:00');
-        if (!dateObj) {
-          console.warn(`[API] Invalid date for attendance record: ${date}`);
+        // Use work date assignment for the attendance record
+        const sampleCheckIn = parseTime(firstRecord);
+        if (!sampleCheckIn) {
+          console.warn(`[API] Invalid check-in time for date calculation: ${firstRecord}`);
           continue;
         }
+        const dateObj = getWorkDateForEvent(sampleCheckIn);
 
         if (!checkIn) {
           console.warn(`[API] Invalid check-in time for employee ${employee.name}: ${firstRecord}`);

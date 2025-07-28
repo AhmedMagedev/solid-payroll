@@ -185,8 +185,8 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
         results.employeesMatched++;
         console.log(`[Attendance Pull Service] Processing event for employee: ${employee.name} at ${eventTime.toISOString()}`);
         
-        // Get the date for grouping (no timezone adjustment - use the event time as-is for date)
-        const eventDate = new Date(eventTime.toISOString().split('T')[0] + 'T00:00:00.000Z');
+        // Get the date for grouping (use event time as-is without timezone adjustments)
+        const eventDate = new Date(eventTime.getFullYear(), eventTime.getMonth(), eventTime.getDate(), 0, 0, 0, 0);
         
         // Check if we already have attendance for this employee on this date
         const existingAttendance = await prisma.attendance.findUnique({
@@ -208,23 +208,32 @@ async function processHikvisionAttendanceData(data: { AcsEvent?: { InfoList?: Ar
             updatedAt?: Date;
           } = {};
           
-          if (!existingAttendance.checkIn || eventTime < existingAttendance.checkIn) {
+          const currentCheckIn = existingAttendance.checkIn;
+          const currentCheckOut = existingAttendance.checkOut;
+
+          if (!currentCheckIn) {
             updateData.checkIn = eventTime;
-          }
-          
-          if (!existingAttendance.checkOut || eventTime > (existingAttendance.checkOut || new Date(0))) {
+          } else if (eventTime < currentCheckIn) {
+            updateData.checkIn = eventTime;
+            if (!currentCheckOut || currentCheckIn > currentCheckOut) {
+              updateData.checkOut = currentCheckIn;
+            }
+          } else if (!currentCheckOut) {
+            if (eventTime > currentCheckIn) {
+              updateData.checkOut = eventTime;
+            }
+          } else if (eventTime > currentCheckOut) {
             updateData.checkOut = eventTime;
           }
-          
+
           // Recalculate hours worked if we have both check-in and check-out
-          if (updateData.checkIn || updateData.checkOut) {
-            const checkIn = updateData.checkIn || existingAttendance.checkIn;
-            const checkOut = updateData.checkOut || existingAttendance.checkOut;
-            
-            if (checkIn && checkOut && checkOut > checkIn) {
-              updateData.hoursWorked = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
-              updateData.actualHoursWorked = updateData.hoursWorked;
-            }
+          const newCheckIn = updateData.checkIn || currentCheckIn;
+          const newCheckOut = updateData.checkOut || currentCheckOut;
+
+          if (newCheckIn && newCheckOut && newCheckOut > newCheckIn) {
+            const hours = (newCheckOut.getTime() - newCheckIn.getTime()) / (1000 * 60 * 60);
+            updateData.hoursWorked = hours;
+            updateData.actualHoursWorked = hours;
           }
           
           if (Object.keys(updateData).length > 0) {

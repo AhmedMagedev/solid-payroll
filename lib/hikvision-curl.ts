@@ -149,7 +149,7 @@ async function performDigestAuth(
 export async function pullHikvisionDataWithCurl(startDate: Date, endDate: Date): Promise<HikvisionCurlResponse> {
   return new Promise((resolve) => {
     try {
-      // Format dates for Hikvision API (use local time without timezone offset)
+      // Format dates for Hikvision API (use dates as-is without timezone adjustment)
       const formatHikvisionDate = (date: Date, isEndDate = false) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -176,11 +176,34 @@ export async function pullHikvisionDataWithCurl(startDate: Date, endDate: Date):
       });
 
       // Get credentials from environment or use defaults
-      const hikvisionUrl = process.env.HIKVISION_URL || 'http://solid-metals.ddns.net:8080';
-      const hikvisionUsername = process.env.HIKVISION_USERNAME || 'admin';
-      const hikvisionPassword = process.env.HIKVISION_PASSWORD || '192837465@S';
+      const rawHikvisionUrl = process.env.HIKVISION_URL || '';
+      const rawHikvisionUsername = process.env.HIKVISION_USERNAME || '';
+      const rawHikvisionPassword = process.env.HIKVISION_PASSWORD || '';
+      
+      // Clean up the base URL - remove quotes and ensure no trailing slash or duplicate endpoints
+      const hikvisionUrl = rawHikvisionUrl
+        .replace(/['"]/g, '') // Remove any quotes
+        .replace(/\/+$/, '') // Remove trailing slashes
+        .replace(/\/ISAPI.*$/, ''); // Remove any existing API endpoint path
+        
+      // Clean up credentials - remove quotes
+      const hikvisionUsername = rawHikvisionUsername.replace(/['"]/g, '');
+      const hikvisionPassword = rawHikvisionPassword.replace(/['"]/g, '');
+      
+      // Validate required configuration
+      if (!hikvisionUrl || !hikvisionUsername || !hikvisionPassword) {
+        throw new Error(`Missing Hikvision configuration: URL=${!!hikvisionUrl}, Username=${!!hikvisionUsername}, Password=${!!hikvisionPassword}`);
+      }
+      
       const credentials = `${hikvisionUsername}:${hikvisionPassword}`;
       const fullUrl = `${hikvisionUrl}/ISAPI/AccessControl/AcsEvent?format=json`;
+      
+      console.log('[Hikvision Curl] Cleaned URL components:', {
+        rawUrl: rawHikvisionUrl,
+        cleanedUrl: hikvisionUrl,
+        fullUrl: fullUrl,
+        username: hikvisionUsername ? `${hikvisionUsername.slice(0, 3)}***` : 'empty'
+      });
 
       // Prepare curl command exactly as provided
       const curlArgs = [
@@ -249,7 +272,7 @@ export async function pullHikvisionDataWithFetch(startDate: Date, endDate: Date)
   try {
     console.log('[Hikvision Fetch] Attempting fetch with improved digest auth...');
 
-    // Format dates for Hikvision API (use local time without timezone offset)
+    // Format dates for Hikvision API (use dates as-is without timezone adjustment)
     const formatHikvisionDate = (date: Date, isEndDate = false) => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -270,10 +293,33 @@ export async function pullHikvisionDataWithFetch(startDate: Date, endDate: Date)
       }
     };
 
-    const hikvisionUrl = process.env.HIKVISION_URL || 'http://solid-metals.ddns.net:8080';
-    const hikvisionUsername = process.env.HIKVISION_USERNAME || 'admin';
-    const hikvisionPassword = process.env.HIKVISION_PASSWORD || '192837465@S';
+    const rawHikvisionUrl = process.env.HIKVISION_URL || '';
+    const rawHikvisionUsername = process.env.HIKVISION_USERNAME || '';
+    const rawHikvisionPassword = process.env.HIKVISION_PASSWORD || '';
+    
+    // Clean up the base URL - remove quotes and ensure no trailing slash or duplicate endpoints
+    const hikvisionUrl = rawHikvisionUrl
+      .replace(/['"]/g, '') // Remove any quotes
+      .replace(/\/+$/, '') // Remove trailing slashes
+      .replace(/\/ISAPI.*$/, ''); // Remove any existing API endpoint path
+      
+    // Clean up credentials - remove quotes
+    const hikvisionUsername = rawHikvisionUsername.replace(/['"]/g, '');
+    const hikvisionPassword = rawHikvisionPassword.replace(/['"]/g, '');
+    
+    // Validate required configuration
+    if (!hikvisionUrl || !hikvisionUsername || !hikvisionPassword) {
+      throw new Error(`Missing Hikvision configuration: URL=${!!hikvisionUrl}, Username=${!!hikvisionUsername}, Password=${!!hikvisionPassword}`);
+    }
+      
     const url = `${hikvisionUrl}/ISAPI/AccessControl/AcsEvent?format=json`;
+    
+    console.log('[Hikvision Fetch] Cleaned URL components:', {
+      rawUrl: rawHikvisionUrl,
+      cleanedUrl: hikvisionUrl,
+      fullUrl: url,
+      username: hikvisionUsername ? `${hikvisionUsername.slice(0, 3)}***` : 'empty'
+    });
     
     console.log('[Hikvision Fetch] Request parameters:', {
       url,

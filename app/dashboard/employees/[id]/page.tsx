@@ -220,7 +220,7 @@ export default function EmployeeProfilePage() {
                   <Calendar className="h-4 w-4 ml-2" />
                   <span>تاريخ الانضمام</span>
                 </dt>
-                <dd className="mt-1 text-base text-left">{employee.createdAt ? formatEgyptTime(employee.createdAt, 'MMM d, yyyy') : 'غير متوفر'}</dd>
+                <dd className="mt-1 text-base text-left">{employee.createdAt ? formatEgyptTime(employee.createdAt) : 'غير متوفر'}</dd>
               </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-muted-foreground flex items-center">

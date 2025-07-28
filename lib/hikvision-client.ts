@@ -34,9 +34,21 @@ class HikvisionClient {
   private password: string;
 
   constructor(baseUrl?: string, username?: string, password?: string) {
-    this.baseUrl = baseUrl || process.env.HIKVISION_URL || 'http://solid-metals.ddns.net:8080';
-    this.username = username || process.env.HIKVISION_USERNAME || 'admin';
-    this.password = password || process.env.HIKVISION_PASSWORD || '192837465@S';
+    const rawBaseUrl = baseUrl || process.env.HIKVISION_URL || '';
+    
+    // Clean up the base URL - remove quotes and ensure no trailing slash or duplicate endpoints
+    this.baseUrl = rawBaseUrl
+      .replace(/['"]/g, '') // Remove any quotes
+      .replace(/\/+$/, '') // Remove trailing slashes
+      .replace(/\/ISAPI.*$/, ''); // Remove any existing API endpoint path
+      
+    this.username = (username || process.env.HIKVISION_USERNAME || '').replace(/['"]/g, '');
+    this.password = (password || process.env.HIKVISION_PASSWORD || '').replace(/['"]/g, '');
+    
+    // Validate required configuration
+    if (!this.baseUrl || !this.username || !this.password) {
+      throw new Error(`Missing Hikvision configuration: URL=${!!this.baseUrl}, Username=${!!this.username}, Password=${!!this.password}`);
+    }
   }
 
   private parseWWWAuthenticate(authHeader: string): Partial<DigestAuthParams> {
@@ -109,7 +121,7 @@ class HikvisionClient {
       
       const url = `${this.baseUrl}/ISAPI/AccessControl/AcsEvent?format=json`;
       
-      // Format dates for Hikvision API (use local time without timezone offset)
+      // Format dates for Hikvision API (use dates as-is without timezone adjustment)
       const formatHikvisionDate = (date: Date, isEndDate = false) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -130,11 +142,17 @@ class HikvisionClient {
         }
       };
 
+      console.log('[Hikvision Client] Cleaned URL components:', {
+        baseUrl: this.baseUrl,
+        fullUrl: url,
+        username: this.username ? `${this.username.slice(0, 3)}***` : 'empty'
+      });
+      
       console.log('[Hikvision Client] Request parameters:', {
         startTime: requestBody.AcsEventCond.startTime,
         endTime: requestBody.AcsEventCond.endTime,
         url,
-        username: this.username
+        username: this.username ? `${this.username.slice(0, 3)}***` : 'empty'
       });
 
       // Use basic auth with digest challenge handling

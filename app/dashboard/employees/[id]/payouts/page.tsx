@@ -956,7 +956,7 @@ export default function EmployeePayoutsPage() {
                       {/* Payment status on the right */}
                       {currentState.isPaid && (
                         <Badge variant="outline" className="bg-green-500 text-white text-xs">
-                          Paid{existingPayout?.paymentDate ? ` on ${formatEgyptTime(existingPayout.paymentDate, 'MMM d, yyyy')}` : ''}
+                          Paid{existingPayout?.paymentDate ? ` on ${formatEgyptTime(existingPayout.paymentDate)}` : ''}
                         </Badge>
                       )}
                       <div className="flex items-center">
@@ -1457,11 +1457,11 @@ export default function EmployeePayoutsPage() {
                                                   </div>
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-gray-700">
-                                                  {record.checkIn ? formatEgyptTime(record.checkIn, 'h:mm a') : 'N/A'}
+                                                  {record.checkIn ? formatEgyptTime(record.checkIn) : 'N/A'}
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-gray-700">
                                                   {record.checkOut 
-                                                    ? formatEgyptTime(record.checkOut, 'h:mm a') 
+                                                    ? formatEgyptTime(record.checkOut) 
                                                     : '—'}
                                                 </td>
                                                 <td className="px-4 py-3">

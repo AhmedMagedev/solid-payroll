@@ -14,21 +14,17 @@ export async function POST() {
 
     console.log(`[DEBUG] Using settings: Start: ${workingHoursStart}, Grace: ${lateAllowanceMinutes} minutes`);
 
-    // Helper function to check if check-in is beyond grace period
+    // Helper function to check if check-in is beyond grace period (no timezone conversion)
     function isCheckInBeyondGracePeriod(checkInTime: Date): boolean {
       try {
         // Parse working hours start time
         const [hours, minutes] = workingHoursStart.split(':');
         
-        // Convert stored UTC time back to local time (UTC+3) for comparison
-        const timezoneOffset = 3 * 60; // UTC+3 in minutes
-        const localCheckIn = new Date(checkInTime.getTime() + (timezoneOffset * 60 * 1000));
-        
-        // Create the grace end time for the same day as check-in in local time
-        const graceEndTime = new Date(localCheckIn);
+        // Use check-in time as-is without timezone conversion
+        const graceEndTime = new Date(checkInTime);
         graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
         
-        return localCheckIn > graceEndTime;
+        return checkInTime > graceEndTime;
       } catch {
         return false;
       }
@@ -63,18 +59,16 @@ export async function POST() {
       if (examples.length < 5) {
         const [hours, minutes] = workingHoursStart.split(':');
         
-        // Convert stored UTC time back to local time for display
-        const timezoneOffset = 3 * 60; // UTC+3 in minutes
-        const localCheckIn = new Date(checkInTime.getTime() + (timezoneOffset * 60 * 1000));
-        const graceEndTime = new Date(localCheckIn);
+        // Use check-in time as-is without timezone conversion
+        const graceEndTime = new Date(checkInTime);
         graceEndTime.setHours(parseInt(hours), parseInt(minutes) + lateAllowanceMinutes, 0, 0);
         
         examples.push({
           employee: record.employee.name,
           date: record.date.toISOString().split('T')[0],
-          checkIn: localCheckIn.toISOString(), // Show local time
+          checkIn: checkInTime.toISOString(), // Show time as-is
           graceEndTime: graceEndTime.toISOString(),
-          isLate: localCheckIn > graceEndTime,
+          isLate: checkInTime > graceEndTime,
           currentlyPaid,
           shouldBePaid,
           willUpdate: shouldBePaid !== currentlyPaid
